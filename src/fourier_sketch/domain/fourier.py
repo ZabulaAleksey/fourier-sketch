@@ -3,6 +3,7 @@
 from cmath import phase as complex_phase
 from dataclasses import dataclass
 from enum import StrEnum
+from math import hypot, isfinite
 
 from ._validation import finite_complex, immutable_tuple, integer
 from .errors import DomainValidationError
@@ -18,6 +19,16 @@ class FrequencyConvention(StrEnum):
     """Supported frequency-label convention."""
 
     SIGNED = "signed"
+
+
+class SpectrumOrdering(StrEnum):
+    """Deterministic views over one complete Fourier spectrum."""
+
+    SIGNED = "signed"
+    ABSOLUTE_FREQUENCY = "absolute_frequency"
+    AMPLITUDE_DESCENDING = "amplitude_descending"
+    INTERLEAVED = "interleaved"
+    EXPLICIT = "explicit"
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,7 +55,10 @@ class FourierCoefficient:
     @property
     def amplitude(self) -> float:
         """Magnitude of the coefficient."""
-        return abs(self.value)
+        magnitude = hypot(self.value.real, self.value.imag)
+        if not isfinite(magnitude):
+            raise DomainValidationError("coefficient amplitude must be finite")
+        return magnitude
 
     @property
     def phase(self) -> float:

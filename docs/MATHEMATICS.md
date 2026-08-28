@@ -55,9 +55,9 @@ k(m) = m - N   otherwise
 Для even N Nyquist bin `m=N/2` имеет signed label `k=-N/2`. Этот выбор применяется одинаково в
 reference DFT, NumPy adapter, serialization, ordering и labels.
 
-В public `FourierSpectrum.coefficients` complete set FS-002 хранится в FFT storage order `m`, а
-каждый coefficient несёт canonical signed `k(m)`. Математические views/orderings не меняют values
-и добавляются отдельно в FS-003. Reference DFT ограничен `N ≤ 2048`, NumPy FFT —
+В public `FourierSpectrum.coefficients` complete set хранится в FFT storage order `m`, а каждый
+coefficient несёт canonical signed `k(m)`. Математические views/orderings FS-003 не меняют values.
+Reference DFT ограничен `N ≤ 2048`, NumPy FFT —
 `N ≤ 262144`; backend выбирается явно, без silent fallback.
 
 ## Coefficient representation
@@ -131,7 +131,17 @@ Permutation selected vectors меняет промежуточные `P_j` и в
 - absolute frequency;
 - amplitude descending с детерминированным tie-break;
 - interleaved `0,+1,-1,+2,-2,…` с доступными bins;
-- explicit unique set/order.
+- explicit complete permutation.
+
+Точные keys FS-003: signed — `frequency`; absolute — `(abs(frequency), frequency)`; amplitude —
+`(-amplitude, abs(frequency), frequency)`. Interleaved использует `0,+1,-1,+2,-2,…`, поэтому
+единственный even-N Nyquist bin `-N/2` располагается после доступной положительной пары. Explicit
+ordering требует каждый bin ровно один раз. Explicit partial set относится к FS-004 selection API,
+а не к complete-spectrum view.
+
+Magnitude вычисляется overflow-safe способом. Если finite real/imaginary components образуют
+непредставимый finite magnitude/energy, public API возвращает typed validation error, а не
+`OverflowError`, `NaN` или `Inf`.
 
 ## Partial reconstruction и energy
 

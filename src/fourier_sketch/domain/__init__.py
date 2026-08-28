@@ -8,6 +8,7 @@ from .fourier import (
     FourierNormalization,
     FourierSpectrum,
     FrequencyConvention,
+    SpectrumOrdering,
 )
 from .piecewise_curve import PiecewiseCurve
 from .point import Point2D
@@ -23,4 +24,5 @@ __all__ = [
     "FrequencyConvention",
     "PiecewiseCurve",
     "Point2D",
+    "SpectrumOrdering",
 ]

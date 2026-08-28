@@ -37,6 +37,7 @@ Hypothesis добавлен в FS-002. Реализованы:
 - DFT/IDFT round-trip finite arrays;
 - translation/DC и complex scaling;
 - reference DFT/FFT parity;
+- deterministic complete-spectrum ordering/permutation, включая even-N Nyquist;
 
 Planned для соответствующих stages:
 

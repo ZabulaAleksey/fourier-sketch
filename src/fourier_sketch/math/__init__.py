@@ -8,6 +8,7 @@ from .conversion import (
 )
 from .errors import FourierBackendError
 from .frequencies import signed_frequencies, signed_frequency
+from .spectrum import ordered_coefficients, spectrum_energy
 from .transforms import MAX_FFT_SAMPLES, MAX_REFERENCE_SAMPLES, fft_dft, idft, reference_dft
 
 __all__ = [
@@ -19,8 +20,10 @@ __all__ = [
     "curve_to_complex_samples",
     "fft_dft",
     "idft",
+    "ordered_coefficients",
     "point_to_complex",
     "reference_dft",
     "signed_frequencies",
     "signed_frequency",
+    "spectrum_energy",
 ]

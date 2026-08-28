@@ -7,15 +7,17 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 ## Текущее состояние
 
-Реализованы каркас `FS-000`, domain model `FS-001` и математический transform slice `FS-002`.
+Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002` и spectrum analysis
+slice `FS-003`.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
 `fourier_sketch.math` выполняет complex conversion, canonical signed-frequency mapping, bounded
-reference DFT, explicit NumPy FFT и IDFT.
+reference DFT, explicit NumPy FFT, IDFT, total spectrum energy и deterministic complete-spectrum
+views: signed, absolute-frequency, amplitude, interleaved и explicit.
 
-Следующий этап одобренной последовательности — `FS-003` (Fourier Spectrum orderings/energy); он
-начинается только после commit evidence FS-002.
+Следующий этап одобренной последовательности — `FS-004` (partial reconstruction and metrics); он
+начинается только после terminal evidence FS-003.
 
 ## Целевой pipeline
 
@@ -69,7 +71,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 
 ## Ограничения
 
-Проект пока не имеет пользовательского entry point. Spectrum orderings/selection, partial
-reconstruction, epicycle math, rendering, mouse/image input, GUI и export остаются planned.
+Проект пока не имеет пользовательского entry point. Partial selection/reconstruction, epicycle
+math, rendering, mouse/image input, GUI и export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
