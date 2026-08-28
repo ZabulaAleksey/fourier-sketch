@@ -26,8 +26,8 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 
 Этап `FS-009` завершён: selectable arc-length resampling и измеримое сравнение с текущим
 uniform-by-index baseline доступны в одном MVP. Этап `FS-010` завершил безопасный локальный
-PNG/JPEG input, grayscale и threshold intermediate. Текущий stage — `FS-011`: два явных edge
-mode без contour interpretation.
+PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` добавляет два явно разных edge
+mode без contour interpretation: project-owned binary boundary и OpenCV Canny.
 
 ## Целевой pipeline
 
@@ -116,6 +116,22 @@ threshold result. Существующий destination сохраняется б
 oversized, multiframe и content с неподдерживаемым фактическим format завершаются controlled exit
 `2`; full path и image payload не выводятся.
 
+## Edge detection
+
+FS-011 diagnostic продолжает тот же безопасный image path и экспортирует выбранный binary edge
+intermediate:
+
+```powershell
+uv run python -m fourier_sketch.cli.edges input.jpg --output edges.png --algorithm threshold_boundary --connectivity 8
+uv run python -m fourier_sketch.cli.edges input.jpg --output canny.png --algorithm canny --canny-low 100 --canny-high 200 --canny-aperture 3 --canny-gradient l2
+```
+
+`threshold_boundary` использует thresholded binary mask и выбранную 4/8-connectivity; `canny`
+использует grayscale и headless OpenCV. Summary показывает output basename, algorithm/backend,
+dimensions и число edge pixels. Режимы не считаются эквивалентными и не подменяют друг друга:
+недоступный Canny завершается controlled exit `2`. Empty edge map остаётся валидным diagnostic
+result; contour/curve появятся только в FS-012.
+
 ## Проверки
 
 ```powershell
@@ -130,15 +146,15 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — domain/math, imaging contracts/Pillow adapter, application use cases,
+- `src/fourier_sketch/` — domain/math, imaging contracts/Pillow/OpenCV adapters, application use cases,
   presentation resources, renderer/CLI;
 - `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.
 
 ## Ограничения
 
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
-Freehand input, единый Matplotlib MVP, arc-length resampling и безопасный image preprocessing
-реализованы как проверяемые vertical slices. Edge/contour pipeline, product GUI и animation export
-остаются planned.
+Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing и два
+edge intermediate реализованы как проверяемые vertical slices. Contour interpretation, product GUI
+и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

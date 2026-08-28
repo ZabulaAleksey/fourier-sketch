@@ -8,6 +8,7 @@ from .diagnostic_epicycles import (
     RenderVisibility,
     TimelineState,
 )
+from .edge_detection import detect_preprocessed_edges, export_edge_result
 from .freehand import (
     DEFAULT_FREEHAND_HARMONICS,
     DEFAULT_FREEHAND_SAMPLES,
@@ -38,6 +39,8 @@ __all__ = [
     "ResamplingMethod",
     "TimelineState",
     "build_freehand_timeline",
+    "detect_preprocessed_edges",
+    "export_edge_result",
     "export_preprocessing_result",
     "preprocess_local_image",
     "select_preprocessing_raster",

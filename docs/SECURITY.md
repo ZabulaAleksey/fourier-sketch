@@ -30,6 +30,9 @@
 - FS-010 image adapter: file size проверяется до read/decode, read ограничен `25 MiB + 1`, Pillow
   registry ограничен actual PNG/JPEG, decompression warnings становятся errors, dimensions
   проверяются до `load()` и после EXIF transpose; multiframe input не принимается;
+- FS-011 boundary принимает только typed binary raster и explicit 4/8-connectivity; Canny принимает
+  только typed grayscale raster, `0 ≤ low < high ≤ 255`, aperture `3|5|7` и boolean L2 flag;
+- OpenCV output проверяется как same-sized `uint8` binary raster до публикации результата;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -63,11 +66,21 @@ destination создаётся одним exclusive hard-link operation и су�
 failure temp удаляется. Explicit overwrite использует atomic replace. CLI success/failure не
 выводит source full path, pixels или EXIF payload.
 
+FS-011 edge export переиспользует тот же FS-010 publication boundary. CLI success сообщает только
+output basename, dimensions, selected algorithm/backend и aggregate edge count; raw pixels,
+source path и backend exception detail не выводятся.
+
 ## Dependencies and supply chain
 
 Canonical manager/lockfile определены в `docs/DEPENDENCIES.md`. Новые CV/UI/codec dependencies
 получают maintenance/license/platform review в своём stage. Install/build scripts не выполняются
 из untrusted project/session input.
+
+`opencv-python-headless` 5.0.0.93 выбран для Canny без GUI/Qt surface. Adapter загружается лениво,
+не исполняет shell/subprocess и не принимает plugin name от пользователя; malformed/throwing
+backend output становится typed `BACKEND_FAILURE` без partial result или fallback. Любой обычный
+import-time exception становится privacy-safe `BACKEND_UNAVAILABLE`; version допускается только
+как bounded ASCII identifier и сверяется с algorithm-specific provenance contract до CLI output.
 
 ## Privacy and logging
 
@@ -94,8 +107,10 @@ Fallback Policy наследуется и здесь не копируется.
 - integration: decoder rejects corrupt/oversized payload before unsafe processing;
 - component: user sees validation/cancel/export overwrite states;
 - E2E: representative invalid image and existing destination do not crash or lose data;
+- FS-011: unavailable/malformed Canny, invalid parameters, algorithm selection, privacy и
+  overwrite проходят unit/component/live E2E checks без algorithm substitution;
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stage `FS-010` has live decode/limit/overwrite/privacy evidence; Stage `FS-022` cannot complete
-without overwrite/partial-output/codec-failure evidence.
+Stages `FS-010`/`FS-011` have live decode/limit/edge/overwrite/privacy evidence; Stage `FS-022`
+cannot complete without overwrite/partial-output/codec-failure evidence.

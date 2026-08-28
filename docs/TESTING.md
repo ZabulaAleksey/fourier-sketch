@@ -28,7 +28,7 @@ Stage `FS-000`: clean environment, package import/version, overlay structure.
 ### Unit
 
 Value invariants, conversions, reference formulas, ordering, metrics, validators, individual image
-transforms, graph/routing primitives и export serializers.
+transforms, threshold-boundary/Canny adapters, graph/routing primitives и export serializers.
 
 ### Property
 
@@ -64,6 +64,10 @@ FS-010 реализовал boundary `bounded local bytes → allowlisted Pillow
 grayscale/binary → PNG publication`: реальные PNG/JPEG/TIFF/APNG/corrupt/oversized fixtures
 проверяют actual format, EXIF orientation, оба budgets, transform provenance и overwrite safety.
 
+FS-011 реализовал boundary `FS-010 grayscale/binary → explicit threshold boundary или OpenCV
+Canny → typed same-sized binary edge raster → PNG`: synthetic shape fixtures проверяют 4/8
+connectivity, Canny parameters, distinct algorithm output, backend provenance и source immutability.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -87,6 +91,11 @@ invalid-options и existing-output states; live subprocess E2E проходит 
 binary PNG и privacy-safe corrupt failure. Это самостоятельный preprocessing slice, а полный
 `image → contour → Fourier` E2E остаётся `BLOCKED_BY_BACKEND` до FS-013.
 
+FS-011 component/live evidence запускает localized edge CLI для обоих selected algorithms,
+проверяет algorithm-specific parameters, same-sized binary PNG, existing-output preservation и
+privacy-safe corrupt failure. Unavailable/malformed Canny подтверждён negative unit path без
+fallback; contour extraction всё ещё отсутствует, поэтому FS-013 E2E остаётся blocked.
+
 ### E2E
 
 Критические live paths:
@@ -94,7 +103,7 @@ binary PNG и privacy-safe corrupt failure. Это самостоятельны�
 1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
 2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-007`, input slice реализован;
    `FS-008` подтверждает cohesive controls и exact endpoint-history ledger);
-3. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
+3. image file → decode/edges (`FS-011`, реализован) → contour → same Fourier/chain → trace (`FS-013`);
 4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не

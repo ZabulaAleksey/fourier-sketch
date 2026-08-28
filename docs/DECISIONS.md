@@ -217,3 +217,27 @@ CPU, но исключает file TOCTOU между verification и decode; budg
 **Миграция / откат:** Удаление direct Pillow и `imaging`/image CLI возвращает проект к FS-009 без
 изменения curve/Fourier APIs. Изменение форматов, limits, first-frame или threshold semantics
 требует SPEC/security/accepted-test migration.
+
+## 2026-08-28 — ADR-012: Разные edge semantics и headless OpenCV Canny без fallback
+
+**Контекст:** FS-011 должен дать диагностический edge intermediate для thresholded binary mask и
+grayscale image. Эти алгоритмы имеют разные входы и результаты; единый auto-select API скрыл бы
+semantics и сделал backend failure неоднозначным.
+
+**Решение:** Project-owned NumPy transform возвращает foreground-side boundary бинарной маски с
+explicit 4/8-connectivity и outside-as-background. Canny реализован отдельным лениво загружаемым
+adapter к `opencv-python-headless` 5.0.0.93 с validated low/high, Sobel aperture и L1/L2 choice.
+Оба возвращают immutable `EdgeDetectionResult`: same-sized binary raster, exact algorithm/backend,
+typed parameters и source stage/dimensions. OpenCV unavailable/failure не переключает algorithm.
+
+**Рассмотренные альтернативы:** Реализовать Canny самостоятельно; использовать full GUI OpenCV;
+автоматически выбирать algorithm или fallback на threshold boundary; считать edge map contour;
+возвращать raw NumPy/OpenCV arrays через application boundary.
+
+**Последствия:** Диагностические результаты воспроизводимы и честно сравнимы, но не объявляются
+эквивалентными или «лучшими». Headless wheel увеличивает runtime graph; его platform/license/
+third-party notices проверяются в dependency contract. Empty edge map остаётся валидным output.
+
+**Миграция / откат:** Удаление direct OpenCV отключает только Canny; project threshold boundary и
+FS-010 остаются работоспособными без автоматического route change. Любое изменение edge semantics
+или fallback требует SPEC/ADR/accepted-test migration.

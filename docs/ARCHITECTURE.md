@@ -2,14 +2,15 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-009` создали immutable domain/numerical core, application timeline, bounded
+Stages `FS-000`–`FS-010` создали immutable domain/numerical core, application timeline, bounded
 freehand capture, cohesive control surface, resource locale boundary и diagnostic Matplotlib/CLI
 adapter. Остальные product modules являются целевой архитектурой и появляются строго в
 соответствующих stages.
 
-Текущий FS-010 добавляет Pillow-neutral immutable raster/provenance contracts, fail-closed Pillow
-adapter, application preprocessing use case и localized diagnostic CLI. Edge/contour semantics в
-этом stage отсутствуют.
+FS-011 расширяет Pillow-neutral immutable raster contract типизированным edge result. Project-owned
+NumPy boundary потребляет binary raster, а explicit headless OpenCV adapter запускает Canny только
+на grayscale. Оба пути возвращают binary raster с algorithm/backend/parameter provenance; contour
+semantics остаётся deferred до FS-012.
 
 ## Архитектурные цели
 
@@ -50,11 +51,11 @@ src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
 ├── math/                       # существует: FS-002..FS-005 core + FS-007/FS-009 resampling
-├── application/                # существует: timeline, freehand и image preprocessing use cases
+├── application/                # существует: timeline, freehand, preprocessing и edge use cases
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
 ├── render/                     # существует: Matplotlib frame/PNG/freehand adapters
-├── cli/                        # существует: diagnostic, freehand и image live entry points
-├── imaging/                    # существует: FS-010 contracts/Pillow adapter; FS-011+ planned
+├── cli/                        # существует: diagnostic, freehand, image и edges live entry points
+├── imaging/                    # существует: FS-010/FS-011 raster, Pillow и edge adapters
 ├── routing/                    # planned FS-012, FS-015..FS-017
 └── ui/                         # planned FS-021
 ```
@@ -82,7 +83,7 @@ flow и planned continuations:
 ```text
 canonical Curve → FFT → `EpicycleTimeline` → immutable `EpicycleFrame` → Matplotlib/PNG
 Matplotlib pointer events → bounded capture → cleanup/index resample → Curve → тот же timeline
-image → decode/transforms → contour/route → curve → same Fourier use case
+image → decode/transforms → explicit edge mode → contour/route → curve → same Fourier use case
 chain timeline → future animation exporter
 raster → separate FFT2 use case
 ```
@@ -137,6 +138,13 @@ Application затем независимо применяет fixed median 3x3,
 invert. Diagnostic export выбирает ровно один named intermediate, кодирует PNG до публикации и
 использует temporary sibling + exclusive hard-link publication либо explicit atomic replace.
 
+FS-011 `EdgeDetectionResult` связывает same-sized binary edge raster с explicit algorithm,
+backend version, typed parameters и source stage/dimensions. `threshold_boundary` считает
+foreground-side boundary по 4/8-neighborhood с outside-as-background semantics. Canny adapter
+лениво загружает `cv2`, валидирует low/high/aperture/L2 и backend output, но не пропускает OpenCV
+objects через application API. Application выбирает binary source только для boundary и grayscale
+только для Canny; unavailable/failing Canny не запускает другой algorithm.
+
 ## Data flow и provenance
 
 Каждый significant result хранит достаточный provenance: source kind, parameters, sample count,
@@ -147,6 +155,11 @@ export request.
 FS-010 provenance содержит actual `PNG`/`JPEG`, encoded byte count, source/oriented dimensions,
 валидированный EXIF orientation и ordered transform names. Source path, EXIF payload и pixels в
 provenance/CLI failure не входят.
+
+FS-011 provenance содержит точные `threshold_boundary|canny`, backend (`fourier-sketch/numpy` или
+`opencv/<version>` с bounded ASCII identifier), algorithm-specific parameters, source
+stage/dimensions и edge pixel count. Binary edge payload доступен как diagnostic artifact, но не
+называется contour/curve.
 
 FS-002 сохраняет complete coefficients в FFT storage order с canonical signed labels. Reference
 DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим
@@ -172,7 +185,8 @@ fallback — `en`; pseudo-locale используется в component checks. D
 
 Недоверенные границы: local image bytes/metadata, mouse samples, user parameters, export path и
 optional codec/backend output. Limits и failure semantics определены в system SPEC и
-`docs/SECURITY.md`. Сетевой/backend boundary отсутствует (`BDX-L0`).
+`docs/SECURITY.md`. Сетевой/service backend отсутствует (`BDX-L0`); OpenCV является локальным
+library adapter с валидируемым output contract.
 
 ## Packaging и deployment
 

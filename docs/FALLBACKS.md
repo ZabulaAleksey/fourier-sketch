@@ -50,5 +50,23 @@ project image/export backend.
 | Recovery | исправить input/options/dependency и повторить operation явно |
 
 Grayscale и threshold не являются fallback друг для друга: оба результата создаются одним
-успешным use case и экспортируются только через explicit `--stage`. Недоступность будущего Canny
+успешным use case и экспортируются только через explicit `--stage`. Недоступность Canny в FS-011
 не изменяет FS-010 binary semantics.
+
+## Edge detection (FS-011)
+
+| Поле | Контракт |
+|---|---|
+| Project path | explicit `threshold_boundary` на FS-010 binary raster |
+| Optional backend path | explicit OpenCV Canny на FS-010 grayscale raster |
+| Failure signal | stable `EdgeDetectionError.code`; localized CLI exit `2` |
+| Retry | отсутствует для deterministic parameter/backend failure |
+| Automatic fallback | Canny ↔ threshold boundary запрещён |
+| Degraded result | отсутствует; malformed backend output не публикуется |
+| Provenance | algorithm, backend/version, exact parameters, source stage/dimensions |
+| Recovery | исправить parameters/dependency и явно повторить выбранный algorithm |
+
+Недоступный OpenCV делает unavailable только explicit Canny operation. `threshold_boundary`
+остаётся отдельной доступной capability, но приложение не запускает её вместо Canny и не выдаёт
+один результат за эквивалент другого. Empty edge map является complete diagnostic result, а не
+degraded contour.

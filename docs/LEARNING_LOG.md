@@ -274,3 +274,47 @@ caveat: contour/edge behavior не входит в FS-010
 - `src/fourier_sketch/imaging/pillow_backend.py`
 - `tests/integration/test_image_preprocessing_pipeline.py`
 - `tests/e2e/test_image_preprocessing_e2e.py`
+
+## 2026-08-28 — Параметры неактивного algorithm не должны блокировать выбранный path
+
+### Problem
+
+- Один CLI предлагает два edge algorithm с разными input stages и наборами параметров.
+
+### Symptom
+
+- Первая композиция CLI создавала оба parameter object до dispatch; невалидный Canny threshold
+  мог бы остановить явно выбранный `threshold_boundary`, хотя Canny не запускался.
+
+### Root cause
+
+- Presentation boundary валидировал общий namespace аргументов вместо active capability contract.
+
+### Failed attempts
+
+- Общий eager construction выглядел компактно, но делал независимые algorithms неявно связанными.
+
+### Fix
+
+- CLI сначала разрешает selected algorithm и конструирует только его typed parameters;
+  application dispatch сохраняет отдельные binary/grayscale paths без fallback.
+
+### Verification
+
+```text
+command / check: FS-011 unit/application/component/live E2E targeted suite
+result: PASS — explicit algorithms, invalid Canny parameters and no-fallback failures
+scope: threshold boundary, OpenCV Canny, localized CLI and diagnostic PNG
+caveat: edge map не является contour до FS-012
+```
+
+### Prevention
+
+- Multi-backend CLI валидирует shared input отдельно, а backend-specific options — только после
+  explicit selection; inactive backend не становится скрытой prerequisite.
+
+### Links
+
+- `src/fourier_sketch/cli/edges.py`
+- `src/fourier_sketch/application/edge_detection.py`
+- `tests/component/test_edge_cli_component.py`

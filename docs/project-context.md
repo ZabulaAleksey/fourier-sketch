@@ -7,7 +7,7 @@
 - Complexity: `COMPLEX`; mode: production-oriented staged development.
 - Current SDLC at bootstrap: specification + architecture.
 - Domains: scientific computing, computer vision, desktop visualization.
-- Stack: Python 3.12+, NumPy, Matplotlib и direct Pillow 12.3.0.
+- Stack: Python 3.12+, NumPy, Matplotlib, direct Pillow 12.3.0 и headless OpenCV 5.0.0.93.
 - Backend DX: `BDX-L0` — backend/runtime service отсутствует.
 - Monitoring class: `active` во время явной разработки; внешняя automation не настроена.
 - First validated desktop environment: Windows; paths обязаны оставаться portable.
@@ -32,8 +32,9 @@
 
 ## Open project decisions
 
-- Pillow выбран как bounded PNG/JPEG preprocessing backend в FS-010; Canny backend выбирается в
-  FS-011 без изменения Pillow-neutral raster contract;
+- Pillow выбран как bounded PNG/JPEG preprocessing backend в FS-010; FS-011 использует
+  project-owned NumPy threshold boundary и explicit `opencv-python-headless` Canny без изменения
+  Pillow-neutral raster contract и без fallback между algorithms;
 - PySide6 introduction and packaging proof occur in `FS-021`/`FS-023`;
 - MP4 encoder/backend is unresolved until `FS-022` capability/license evidence;
 - additional production locales require explicit product decision.

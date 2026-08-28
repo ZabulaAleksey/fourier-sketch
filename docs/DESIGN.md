@@ -68,7 +68,19 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - invalid/corrupt/oversized/multiframe input получает localized controlled failure без full path,
   raw exception, metadata или pixel payload;
 - grayscale и binary доступны как разные intermediates; invert не меняет grayscale;
-- existing output требует явного `--overwrite`; edge/contour controls отсутствуют до своих stages.
+- existing output требует явного `--overwrite`; contour controls отсутствуют до своего stage.
+
+## Edge detection FS-011 — фактический diagnostic baseline
+
+- отдельный CLI выбирает `threshold_boundary|canny`; active algorithm и backend видимы в success
+  summary и не маскируются общим названием «vectorization»;
+- threshold-boundary показывает 4/8-connectivity, Canny — low/high, Sobel aperture и L1/L2 norm;
+- параметры неактивного algorithm не валидируются как условие запуска выбранного режима;
+- output — same-sized binary PNG и edge pixel count, но не contour/curve preview;
+- empty edge map является успешным диагностическим состоянием; unavailable Canny показывает
+  localized controlled failure без автоматического переключения на threshold boundary;
+- existing output требует explicit `--overwrite`; full path, pixels и backend exception не
+  выводятся.
 
 ## Принцип продукта
 

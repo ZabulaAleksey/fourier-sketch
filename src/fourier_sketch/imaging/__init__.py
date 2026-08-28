@@ -1,5 +1,16 @@
 """Typed raster contracts and explicit image backend adapters."""
 
+from .edge_detection import detect_canny_edges, detect_threshold_boundary
+from .edge_model import (
+    BoundaryConnectivity,
+    CannyParameters,
+    EdgeAlgorithm,
+    EdgeDetectionError,
+    EdgeDetectionResult,
+    EdgeFailureCode,
+    EdgeParameters,
+    ThresholdBoundaryParameters,
+)
 from .model import (
     MAX_DECODED_IMAGE_PIXELS,
     MAX_ENCODED_IMAGE_BYTES,
@@ -27,8 +38,15 @@ from .pillow_backend import (
 __all__ = [
     "MAX_DECODED_IMAGE_PIXELS",
     "MAX_ENCODED_IMAGE_BYTES",
+    "BoundaryConnectivity",
+    "CannyParameters",
     "DecodedImage",
     "DenoiseMode",
+    "EdgeAlgorithm",
+    "EdgeDetectionError",
+    "EdgeDetectionResult",
+    "EdgeFailureCode",
+    "EdgeParameters",
     "ImageDecodeProvenance",
     "ImageFailureCode",
     "ImageFormat",
@@ -38,9 +56,12 @@ __all__ = [
     "ImagePreprocessingResult",
     "RasterImage",
     "RasterStage",
+    "ThresholdBoundaryParameters",
     "autocontrast_grayscale",
     "decode_image_bytes",
     "decode_local_image",
+    "detect_canny_edges",
+    "detect_threshold_boundary",
     "export_raster_png",
     "median_denoise",
     "threshold_grayscale",
