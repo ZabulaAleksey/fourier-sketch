@@ -2,10 +2,10 @@
 
 ## Текущий этап
 
-- Stage ID: `FS-006`.
-- Lifecycle: `completed`.
-- Evidence level: implementation, live diagnostic E2E, installed-wheel resource and review PASS.
-- Branch: `feature/fs-002-fs-006-core-renderer`.
+- Stage ID: `FS-007`.
+- Lifecycle: `in_progress`.
+- Evidence level: FS-006 committed and verified; FS-007 baseline gate PASS.
+- Branch: `feature/fs-007-fs-011-input-imaging`.
 
 ## Подтверждённо реализовано
 
@@ -29,7 +29,7 @@
 
 ## В процессе
 
-- None.
+- FS-007 bounded freehand capture, index resampling and actual Matplotlib event path.
 
 ## Известные блокеры
 
@@ -42,7 +42,7 @@
 
 ## Следующая задача
 
-No active implementation stage. FS-007 is planned and requires explicit authorization.
+Finish FS-007 live pointer-to-trace evidence and stop at its terminal gate before FS-008.
 
 ## Интеграция
 
@@ -54,3 +54,4 @@ No active implementation stage. FS-007 is planned and requires explicit authoriz
   traceability, roadmap, plan/status and selected stage record synchronized with FS-006 evidence.
 - `prompts/STAGES.md` remains canonical; it was not moved into `docs/` because the project context
   selector and global staged-overlay contract address that path explicitly.
+- User authorized sequential implementation of FS-007 through FS-011; exact selector is FS-007.

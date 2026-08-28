@@ -19,7 +19,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 | Stage | Результат |
 |---|---|
-| `FS-007` | Freehand Input |
+| `FS-007` | Freehand Input (`in_progress`) |
 | `FS-008` | First live freehand-to-trace MVP |
 | `FS-009` | Arc-Length Parameterization |
 

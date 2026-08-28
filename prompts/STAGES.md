@@ -327,15 +327,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-007 — Freehand Input
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: capture mouse path and feed a valid curve through the existing Fourier/renderer path.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-006 → FS-007`; diagnostic renderer must be completed.
 - Entry evidence: working renderer controls and curve/Fourier application contracts.
-- Current gate: dependency satisfied by FS-006 commit `1abc0be`; stage remains `planned` until
-  explicit authorization.
+- Current gate: dependency satisfied by FS-006 commit `1abc0be`; user authorized sequential
+  implementation through FS-011.
 
 ### Scope / non-goals / invariants
 
