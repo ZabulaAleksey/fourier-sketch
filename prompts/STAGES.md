@@ -592,7 +592,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-012 → FS-013`; FS-012 synthetic/live pipeline must be completed.
 - Entry evidence: safe input, contour integration and diagnostic renderer E2E data.
-- Current gate: satisfied; implementation is complete and included in local `main@eb71ec6` through
+- Current gate: satisfied; implementation commit `e918761` is an ancestor of local `main` through
   the chained FS-014 fast-forward merge. Remote push has not been performed.
 
 ### Scope / non-goals / invariants
@@ -632,7 +632,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-013 → FS-014`; image MVP and safe preprocessing must be completed.
 - Entry evidence: binary image contract and reviewed skeleton algorithm/dependency.
-- Current gate: completed and included in local `main@eb71ec6`; prerequisite, implementation,
+- Current gate: completed; feature tip `eb71ec6` is an ancestor of local `main`; prerequisite, implementation,
   runnable slice, documentation, verification and local integration gates satisfied 2026-08-29.
 
 ### Scope / non-goals / invariants

@@ -16,8 +16,8 @@ FS-013 и FS-014 завершены, проверены и fast-forward merged �
 
 ## Integration state
 
-- Локальный `main`: `eb71ec6`, содержит commits FS-013 и FS-014.
-- `origin/main`: `c13f74d`; локальный `main` ahead на 4 commits.
+- Локальный `main` содержит feature tip `eb71ec6` и post-merge status synchronization.
+- `origin/main` остаётся на `c13f74d`; локальные commits ещё не опубликованы.
 - Push/PR/release/deployment не выполнялись и требуют отдельного разрешения.
 
 ## Перед активацией FS-015

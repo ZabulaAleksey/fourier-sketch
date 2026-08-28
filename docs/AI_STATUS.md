@@ -4,8 +4,8 @@
 
 - Last completed Stage ID: `FS-014`.
 - Lifecycle: `completed`; validated, committed и fast-forward merged в локальный `main`.
-- Local target: `main@eb71ec6`, содержит chained FS-013/FS-014 history.
-- Remote state: `origin/main@c13f74d`; локальный `main` ahead на 4 commits.
+- Local target: `main` содержит chained FS-013/FS-014 feature tip `eb71ec6` и post-merge sync.
+- Remote state: `origin/main@c13f74d`; локальные commits ещё не опубликованы.
 - Next Stage ID: `FS-015`, lifecycle `planned`; implementation не авторизована.
 - Push/PR/release/deployment не выполнялись.
 

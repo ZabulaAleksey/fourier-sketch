@@ -226,7 +226,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | regression and static gates | repository | full tests + Ruff + mypy + frozen sync + overlay + diff | PASS |
 | manual visual evidence | ellipse intermediates/contour/K=12 endpoint trace | rendered PNG inspection | PASS |
 | independent security review | untrusted input/path/cancel/publication boundary | read-only re-review | GO |
-| integration evidence | local `main` contains FS-013 through chained fast-forward | `main@eb71ec6` | PASS |
+| integration evidence | local `main` contains FS-013 through chained fast-forward | `e918761` is ancestor of local `main` | PASS |
 
 ## Stage FS-014 evidence
 
@@ -241,7 +241,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | dependency reproducibility | direct scikit-image 0.26.0 | lock + frozen sync | PASS |
 | regression/static/overlay gates | repository | 427 pytest + Ruff + mypy + overlay + diff | PASS |
 | independent review | correctness + security | read-only re-reviews | GO — no actionable findings |
-| integration evidence | local `main` contains FS-014 feature tip | fast-forward `eb71ec6` | PASS |
+| integration evidence | local `main` contains FS-014 feature tip | `eb71ec6` is ancestor of local `main` | PASS |
 
 ## Acceptance coverage targets
 
