@@ -2,67 +2,69 @@
 
 ## Текущая цель
 
-`FS-013` реализован и проверен как cohesive Matplotlib image MVP от выбранного локального PNG/JPEG
-до видимых intermediates, dominant contour и анимируемого endpoint trace. Не начинать `FS-014`
-без отдельной пользовательской команды; текущий handoff ожидает проверку или разрешение на merge.
+Реализовать `FS-014` как самостоятельный диагностический vertical slice: безопасно подготовленный
+binary raster проходит через явно выбранный thinning backend, возвращает same-sized immutable
+skeleton с provenance и доступен через preview/export без graph/routing из будущих stages.
 
 ## Активный stage
 
-- Stage ID: `FS-013`
-- Lifecycle: `completed`.
-- Branch: `feature/fs-013-image-mvp`.
-- Authorization: пользователь подтвердил push `main` и разрешил продолжение 2026-08-28.
-- DAG: `FS-012 → FS-013`; FS-012 завершён, проверен и находится в `origin/main@c13f74d`.
+- Stage ID: `FS-014`
+- Lifecycle: `in_progress`.
+- Branch: `feature/fs-014-skeletonization`.
+- Authorization: пользователь явно разрешил продолжение 2026-08-29.
+- DAG: `FS-013 → FS-014`; prerequisite `FS-013` completed, validated и committed в `e918761`.
+- Integration boundary: ветка построена поверх ещё не слитого `FS-013`; `main` и `origin/main`
+  остаются на `c13f74d`, merge/push/PR не выполняются без отдельного разрешения.
+
+## Reviewed algorithm/dependency
+
+- Primary: `scikit-image 0.26.x`, explicit `skimage.morphology.skeletonize(..., method="lee")`.
+- Причина explicit Lee: official API поддерживает Lee для 2D и обещает single-pixel-wide skeleton;
+  default 2D Zhang не выбран из-за открытого upstream defect для некоторых dense masks в 0.26.0.
+- Backend возвращает bool array, application adapter валидирует shape/dtype/subset и преобразует его
+  в существующий immutable binary `RasterImage`.
+- Automatic algorithm/backend fallback отсутствует; unavailable/malformed backend fail closed с
+  typed privacy-safe failure и explicit provenance.
 
 ## Runnable vertical slice
 
-- Entry: пользователь запускает один MVP entry point с локальным simple-shape PNG/JPEG.
-- Path: safe decode → preprocessing controls → explicit edge mode → dominant contour → normalized
-  Curve → arc-length samples → accepted FFT/timeline → immutable frame → Matplotlib multi-panel
-  intermediates и actual endpoint trace.
-- Observable result: source-derived grayscale/binary/edge/contour diagnostics, selected limitations,
-  controls и rotating trace находятся на одной рабочей поверхности.
+- Entry: пользователь запускает documented skeleton CLI с локальным PNG/JPEG line-art input.
+- Path: FS-010 safe decode/preprocessing → binary raster → explicit Lee thinning → typed result →
+  atomic binary PNG export и actual source/skeleton preview.
+- Observable result: same-sized one-pixel skeleton, source/skeleton pixel counts, algorithm/backend
+  и output basename без full path/pixel payload; empty foreground остаётся успешным empty result.
 
 ## Scope и invariants
 
-- Один documented launch/action flow и reusable application/view-state boundary.
-- Controls: threshold/denoise/autocontrast/invert, explicit edge algorithm/parameters,
-  sample/harmonic/speed и timeline play/pause/restart.
-- States: initial, processing, ready, no-contour empty, validation/runtime error и cancelled.
-- Cancellation не публикует stale/partial result как complete; retry всегда явный.
-- UI/renderer не вычисляет CV/Fourier logic и использует существующий
-  `build_dominant_contour_timeline`/`EpicycleTimeline` path.
-- Source path/payload/native detail не попадают в UI status или logs; resource limits FS-010–FS-012
-  сохраняются.
-- Все user-facing strings идут через `resources/en.json`; production/fallback locale — `en`,
-  pseudo-locale проверяет expansion.
+- Typed skeleton result/failure/provenance и lazy scikit-image adapter.
+- Source dimensions и binary semantics сохраняются; source не мутируется, output foreground не
+  выходит за source foreground.
+- Line/T/cross/loop/noise fixtures проверяют topology-preserving properties без brittle full-image
+  snapshot как единственного oracle.
+- Preview/export используют существующие localization и transactional path boundaries.
+- Cancellation cooperative: проверяется до/после backend call; cancelled/stale result не
+  публикуется как complete, retry только explicit.
+- Existing image limits сохраняются; новый backend не получает unchecked dimensions.
 
 ## Non-goals / deferred
 
-- PySide6 shell, packaging и окончательный accessibility matrix — `FS-021`.
-- Skeletonization — `FS-014`; graph/routing/multiple components — `FS-015`–`FS-017`.
-- Идеальная обработка arbitrary photos, background removal и 2D FFT не входят в stage.
-- Animation/data export не расширяется: FS-013 допускает только диагностический preview/Agg evidence.
+- Graph nodes, endpoints/junction degree и component topology — `FS-015`.
+- Multiple components, PiecewiseCurve и routing — `FS-016`–`FS-017`.
+- PySide6 shell и measured hard cancellation latency — `FS-021`/`FS-023`.
+- Automatic Zhang/OpenCV/project-owned fallback запрещён.
 
 ## PASS evidence / DoD
 
-- Новые unit tests для typed state/config/cancellation и transactional publication.
-- Integration проходит реальные PNG/JPEG → preprocessing/edges/contour/timeline boundaries.
-- Component tests вызывают actual Matplotlib controls и проверяют initial/processing/ready/empty/
-  error/cancel плюс pseudo-locale/text expansion.
-- Live E2E запускает documented client entry point, получает intermediates и actual endpoint trace;
-  corrupt/no-contour/cancel scenarios не дают ложного completed state.
-- Новые unit/integration/component/live E2E: 29 tests PASS после review hardening.
-- Полный terminal regression suite: 387 tests PASS; Ruff, strict mypy, frozen sync, overlay и diff
-  gates PASS.
-- Визуальный multi-panel PNG проверен: четыре различимые панели, selected contour, actual endpoint
-  trace и читаемые limits.
-- Независимый security review: GO после hard-link no-overwrite publication, unsafe-path guard и
-  Unicode line-separator escaping; cooperative native-call cancellation явно deferred до FS-023.
-- Completion Documentation Synchronization Gate выполнен; stage committed и остановлен перед
-  `FS-014`.
+- Unit/property tests: typed contracts, source immutability, shape/subset, line/T/cross/loop/noise,
+  empty/cancel/unavailable/malformed backend и no-fallback semantics.
+- Integration: real PNG/JPEG → FS-010 binary → actual scikit-image Lee → typed skeleton/export.
+- Component: actual Matplotlib/Agg preview и cancel/late-result suppression.
+- Live E2E: documented CLI создаёт readable skeleton PNG и preview; corrupt/existing-output/backend
+  failures не теряют data и не раскрывают full path.
+- Full pytest, Ruff, strict mypy, frozen clean restore, dependency/overlay/diff gates PASS.
+- Completion Documentation Synchronization Gate и independent reviewer выполнены до terminal claim.
 
-## Integration boundary
+## Handoff
 
-Baseline `main` и `origin/main` совпадают на `c13f74d`. FS-013 находится только в
-`feature/fs-013-image-mvp`; push/merge/PR/release для этого этапа не выполнялись.
+После проверенного atomic commit остановиться перед `FS-015`. Merge/push/PR/release не выполнять
+без отдельного разрешения пользователя.

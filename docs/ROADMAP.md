@@ -24,13 +24,12 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-Нет активного этапа реализации. `FS-014` остаётся planned и требует отдельной команды пользователя.
+`FS-014` — Skeletonization (`in_progress`), authorized 2026-08-29.
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-014` | Skeletonization |
 | `FS-015` | Skeleton Graph |
 | `FS-016` | Multiple Components / PiecewiseCurve |
 | `FS-017` | Forced Continuous Routing |

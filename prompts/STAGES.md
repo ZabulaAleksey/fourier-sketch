@@ -625,15 +625,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-014 — Skeletonization
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: convert validated line art/binary images to a diagnosable one-pixel skeleton.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-013 → FS-014`; image MVP and safe preprocessing must be completed.
 - Entry evidence: binary image contract and reviewed skeleton algorithm/dependency.
-- Current gate: prerequisite satisfied by completed FS-013; implementation remains planned and is
-  not authorized or started.
+- Current gate: prerequisite satisfied by completed FS-013; implementation authorized and started
+  on `feature/fs-014-skeletonization` 2026-08-29.
 
 ### Scope / non-goals / invariants
 

@@ -2,13 +2,14 @@
 
 ## Текущий этап
 
-- Active Stage ID: `FS-013`.
-- Lifecycle: `completed`.
-- Branch: `feature/fs-013-image-mvp`.
-- Goal: cohesive user-selected image → intermediates/controls → dominant contour → actual endpoint
-  trace Matplotlib MVP.
+- Active Stage ID: `FS-014`.
+- Lifecycle: `in_progress`.
+- Branch: `feature/fs-014-skeletonization`.
+- Goal: validated binary image → explicit Lee thinning → typed skeleton → preview/export.
 - Baseline: локальный `main` и `origin/main` совпадают на `c13f74d`.
-- Authorization: пользователь подтвердил push и разрешил продолжение 2026-08-28.
+- Chained baseline: `FS-013` completed/validated/committed в `e918761`, но ещё не merged/pushed;
+  текущая ветка создана поверх этого commit.
+- Authorization: пользователь явно разрешил продолжение 2026-08-29.
 
 ## Подтверждённо реализовано
 
@@ -52,19 +53,19 @@
 
 ## В процессе
 
-- Нет активной реализации; ветка ожидает пользовательскую проверку или разрешение на merge.
+- `FS-014` активирован; выбран explicit `scikit-image 0.26.x` Lee backend без automatic fallback.
+- До terminal status требуются code/tests, live CLI E2E, component cancel/preview, full gates и review.
 
 ## Следующее разумное действие
 
-Проверить FS-013 или слить `feature/fs-013-image-mvp` в `main` только после явного разрешения.
-`FS-014` не начинать в рамках текущего handoff.
+Реализовать и проверить только `FS-014`, затем остановиться перед `FS-015`. Merge/push/PR остаются
+неразрешёнными внешними действиями.
 
 ## Синхронизация документации
 
-- `README.md`, `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md`, `prompts/STAGES.md`,
-  архитектурные, design, security, testing, traceability, dependency, fallback и learning
-  документы синхронизированы с проверенным состоянием `FS-013`.
-- Completion Documentation Synchronization Gate выполнен в рабочей ветке; post-merge gate ещё не
+- `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md` и `prompts/STAGES.md` синхронизированы с
+  активацией `FS-014`; остальные state-bearing документы пока отражают завершённый `FS-013`.
+- Completion Documentation Synchronization Gate для `FS-014` ещё не выполнен; post-merge gate не
   применим, поскольку merge не разрешён и не выполнялся.
 - Стабильные system/image-to-curve/desktop-export SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
