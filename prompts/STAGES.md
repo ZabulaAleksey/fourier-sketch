@@ -582,15 +582,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-013 — Image-to-Fourier MVP
 
-- Lifecycle: `planned`; second live product milestone.
+- Lifecycle: `in_progress`; second live product milestone.
 - Goal: deliver cohesive user-selected image → dominant contour → rotating endpoint trace workflow.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-012 → FS-013`; FS-012 synthetic/live pipeline must be completed.
 - Entry evidence: safe input, contour integration and diagnostic renderer E2E data.
-- Current gate: technical prerequisite FS-012 is completed; FS-013 remains `planned` and requires
-  separate explicit authorization before activation.
+- Current gate: satisfied by completed FS-012, synchronized `main`/`origin/main@c13f74d` and explicit
+  user authorization on 2026-08-28; implementation is active on `feature/fs-013-image-mvp`.
 
 ### Scope / non-goals / invariants
 

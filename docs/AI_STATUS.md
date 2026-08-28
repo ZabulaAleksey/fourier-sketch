@@ -2,11 +2,13 @@
 
 ## Текущий этап
 
-- Последний завершённый Stage ID: `FS-012`.
-- Lifecycle: `completed`.
-- Следующий этап: `FS-013` (`planned`, не начат).
-- Integration: FS-012 feature tip `ad93921` fast-forward merged в локальный `main`.
-- Remote `origin/main` не обновлялся; push/PR/release не выполнялись.
+- Active Stage ID: `FS-013`.
+- Lifecycle: `in_progress`.
+- Branch: `feature/fs-013-image-mvp`.
+- Goal: cohesive user-selected image → intermediates/controls → dominant contour → actual endpoint
+  trace Matplotlib MVP.
+- Baseline: локальный `main` и `origin/main` совпадают на `c13f74d`.
+- Authorization: пользователь подтвердил push и разрешил продолжение 2026-08-28.
 
 ## Подтверждённо реализовано
 
@@ -46,17 +48,23 @@
 - OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
   число кандидатов, но native crash нельзя преобразовать в typed Python error.
 
+## В процессе
+
+- Typed application/view state и cooperative cancellation boundary.
+- Multi-panel Matplotlib surface с preprocessing/edge/sample/harmonic controls.
+- Live image-to-endpoint-trace E2E, negative states и terminal evidence.
+
 ## Следующее разумное действие
 
-После отдельной явной авторизации активировать `FS-013`; до неё implementation-задача отсутствует.
+Завершить только `FS-013`, собрать terminal evidence и остановиться перед `FS-014`.
 
 ## Синхронизация документации
 
 - `README.md`, `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md`, `prompts/STAGES.md`,
   архитектурные, design, security, testing, traceability, dependency, fallback и learning
   документы синхронизированы с проверенным состоянием `FS-012`.
-- Post-merge Documentation Synchronization Gate на локальном `main` выполнен; selector следующего
-  этапа переведён на planned `FS-013` без его активации.
+- Post-merge Documentation Synchronization Gate на локальном `main` выполнен; после подтверждённого
+  push selector `FS-013` активирован в рабочей ветке.
 - Стабильные system/image-to-curve SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.
