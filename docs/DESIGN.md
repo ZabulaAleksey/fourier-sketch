@@ -68,7 +68,8 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - invalid/corrupt/oversized/multiframe input получает localized controlled failure без full path,
   raw exception, metadata или pixel payload;
 - grayscale и binary доступны как разные intermediates; invert не меняет grayscale;
-- existing output требует явного `--overwrite`; contour controls отсутствуют до своего stage.
+- existing output требует явного `--overwrite`; contour controls не смешиваются с этим CLI и
+  доступны в отдельном FS-012 diagnostic entry point.
 
 ## Edge detection FS-011 — фактический diagnostic baseline
 
@@ -81,6 +82,19 @@ FS-008 расширяет этот же workflow controls и live evidence, не
   localized controlled failure без автоматического переключения на threshold boundary;
 - existing output требует explicit `--overwrite`; full path, pixels и backend exception не
   выводятся.
+
+## Dominant contour FS-012 — фактический diagnostic baseline
+
+- отдельный localized CLI принимает safe image/edge options плюс `samples`, `harmonics`, `speed`,
+  `frames` и `frame-delta`, затем рисует существующий epicycle frame в PNG;
+- success summary показывает output basename, selected edge algorithm, bounded contour backend,
+  aggregate candidate/contour/sample/trace counts, но не path или pixels;
+- `no contour` является самостоятельным empty state: summary объясняет причину, output не создаётся;
+- rendered frame переиспользует фактические original/reconstruction/chain/trace слои FS-006 и не
+  вводит отдельную декоративную contour preview математику;
+- existing output сохраняется без `--overwrite`; backend/resource/parameter failure локализован и
+  не показывает raw native detail;
+- cohesive interactive image controls, side-by-side intermediates и recovery UI остаются FS-013.
 
 ## Принцип продукта
 

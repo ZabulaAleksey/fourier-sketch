@@ -241,3 +241,30 @@ third-party notices проверяются в dependency contract. Empty edge ma
 **Миграция / откат:** Удаление direct OpenCV отключает только Canny; project threshold boundary и
 FS-010 остаются работоспособными без автоматического route change. Любое изменение edge semantics
 или fallback требует SPEC/ADR/accepted-test migration.
+
+## 2026-08-28 — ADR-013: Project-owned dominant contour и нормализованные pixel centers
+
+**Контекст:** `findContours` возвращает backend-ordered raster sequences; их порядок, ориентация,
+start point и pixel units не являются стабильным domain contract. FS-012 должен выбрать ровно один
+contour и воспроизводимо передать его в уже проверенный Fourier path без скрытого bridge.
+
+**Решение:** OpenCV используется только с `RETR_EXTERNAL` и `CHAIN_APPROX_NONE`. Adapter проверяет
+typed binary input, native shape/dtype/bounds/adjacency/source-foreground binding, simple-cycle
+uniqueness, edge density, candidate count и aggregate point budget. Project-owned routing выбирает minimum key
+`(-abs(area2), -bbox_area, -point_count, canonical_signature)`. Closed sequence приводится к
+counter-clockwise domain orientation и topmost/leftmost raster start. Pixel centers центрируются,
+Y инвертируется, обе оси масштабируются одним `2/max(width-1,height-1)`. Затем применяется только
+существующий arc-length resampling и timeline.
+
+**Рассмотренные альтернативы:** `max(cv.contourArea)` с backend-order tie; `CHAIN_APPROX_SIMPLE`;
+растянуть X/Y независимо; оставить pixel units; автоматически соединить компоненты; подменить
+contour skeleton/convex hull; добавить второй CV backend.
+
+**Последствия:** Результат инвариантен к backend candidate order, cyclic shift и reversal; Fourier
+amplitudes выражены в нормализованной, а не pixel шкале. Holes и остальные disconnected external
+components намеренно не входят в Curve. Empty/degenerate input возвращает typed no-contour result;
+budget/backend failure остаётся ошибкой без alternate algorithm.
+
+**Миграция / откат:** Удаление FS-012 contour/routing/application/CLI modules возвращает проект к
+FS-011 и не меняет edge/Fourier contracts. Изменение selection key, transform ID, orientation,
+start-point или budgets требует SPEC/ADR/accepted-test migration.

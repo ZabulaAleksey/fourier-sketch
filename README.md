@@ -27,8 +27,9 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 Этап `FS-009` завершён: selectable arc-length resampling и измеримое сравнение с текущим
 uniform-by-index baseline доступны в одном MVP. Этап `FS-010` завершил безопасный локальный
 PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` завершён и добавил два явно
-разных edge mode без contour interpretation: project-owned binary boundary и OpenCV Canny.
-Следующий `FS-012` запланирован, но не запущен.
+разных edge mode: project-owned binary boundary и OpenCV Canny. `FS-012` завершает следующий
+самостоятельный slice: детерминированно выбирает один внешний dominant contour, нормализует его в
+closed `Curve`, применяет arc-length resampling и передаёт в существующий Fourier/timeline/renderer.
 
 ## Целевой pipeline
 
@@ -131,7 +132,28 @@ uv run python -m fourier_sketch.cli.edges input.jpg --output canny.png --algorit
 использует grayscale и headless OpenCV. Summary показывает output basename, algorithm/backend,
 dimensions и число edge pixels. Режимы не считаются эквивалентными и не подменяют друг друга:
 недоступный Canny завершается controlled exit `2`. Empty edge map остаётся валидным diagnostic
-result; contour/curve появятся только в FS-012.
+result и не объявляется contour/curve.
+
+## Dominant contour to endpoint trace
+
+FS-012 использует OpenCV `RETR_EXTERNAL` + `CHAIN_APPROX_NONE` только для bounded extraction.
+Порядок OpenCV не является семантикой: project-owned policy выбирает максимальную exact shoelace
+area, затем bounding-box area, point count и canonical signature. Выбранная последовательность
+нормализуется counter-clockwise, начинается с topmost/leftmost raster pixel и преобразуется из
+pixel centers в центрированные aspect-preserving domain coordinates.
+
+Живой диагностический путь до реального endpoint trace:
+
+```powershell
+uv run python -m fourier_sketch.cli.contours input.png --output contour-trace.png --algorithm threshold_boundary --samples 256 --harmonics 25 --frames 60
+uv run python -m fourier_sketch.cli.contours input.jpg --output canny-trace.png --algorithm canny --canny-low 50 --canny-high 150
+```
+
+Summary показывает только output basename, выбранный algorithm, bounded backend identifier,
+aggregate candidate/point/sample/trace counts. Пустая edge map или только degenerate fragments
+возвращают явный успешный no-contour state без Curve, timeline и PNG. Backend failure и resource
+limit дают controlled exit `2`; другой contour algorithm не подставляется. Stage выбирает ровно
+один внешний contour: holes, disconnected components, skeleton и forced routing остаются deferred.
 
 ## Проверки
 
@@ -147,15 +169,15 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — domain/math, imaging contracts/Pillow/OpenCV adapters, application use cases,
-  presentation resources, renderer/CLI;
+- `src/fourier_sketch/` — domain/math, imaging contracts/Pillow/OpenCV adapters, project-owned
+  routing policy, application use cases, presentation resources, renderer/CLI;
 - `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.
 
 ## Ограничения
 
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
-Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing и два
-edge intermediate реализованы как проверяемые vertical slices. Contour interpretation, product GUI
-и animation export остаются planned.
+Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
+edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
+Cohesive product image flow, multi-component routing, product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

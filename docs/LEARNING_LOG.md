@@ -318,3 +318,55 @@ caveat: edge map не является contour до FS-012
 - `src/fourier_sketch/cli/edges.py`
 - `src/fourier_sketch/application/edge_detection.py`
 - `tests/component/test_edge_cli_component.py`
+
+## 2026-08-28 — Ненулевая contour area не доказывает замкнутую topology
+
+### Problem
+
+- `findContours(CHAIN_APPROX_NONE)` может представить тонкий открытый L/T fragment как
+  backtracking sequence с повторными pixels и маленькой ненулевой shoelace area.
+
+### Symptom
+
+- Первичная FS-012 реализация принимала такой candidate, неявно закрывала seam через `Curve` и
+  создавала timeline, хотя forced routing и hidden connections отложены.
+
+### Root cause
+
+- Проверялись только adjacent/terminal duplicates, area и seam adjacency; non-terminal repeats,
+  принадлежность points исходному foreground и content-independent timeline options отсутствовали
+  в полном typed boundary.
+
+### Failed attempts
+
+- Synthetic square/zero-area line fixtures прошли, но не воспроизвели фактический OpenCV output
+  для branched/open one-pixel fragments.
+
+### Fix
+
+- Usable candidate теперь является simple adjacent cycle с уникальными pixels; каждый point
+  обязан ссылаться на `255` в source edge map. Реальные OpenCV L/T fragments дают `NoContourResult`.
+- Timeline speed валидируется до CV-path даже для blank input. Retained geometry ограничена
+  250k edge pixels / 25k candidates / 100k aggregate points до Python-object expansion.
+- Path-derived success basename экранирует control/format/surrogate и bidi characters.
+
+### Verification
+
+```text
+command / check: targeted FS-012 review regressions; full pytest; Ruff; mypy; frozen sync; overlay
+result: PASS — 59 targeted, 358 full
+scope: topology, source binding, resource budget, option consistency, terminal safety, live trace
+caveat: multi-component/open-route semantics остаются deferred до FS-016/FS-017
+```
+
+### Prevention
+
+- Для CV adapter тестировать не только идеальные shapes, но и actual backend representation
+  открытых branches; topology contract должен быть сильнее одной area metric.
+
+### Links
+
+- `src/fourier_sketch/imaging/contour_model.py`
+- `src/fourier_sketch/imaging/opencv_contours.py`
+- `tests/unit/imaging/test_opencv_contours.py`
+- `tests/integration/test_dominant_contour_pipeline.py`

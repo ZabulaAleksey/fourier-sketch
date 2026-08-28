@@ -35,6 +35,8 @@
 - Pillow выбран как bounded PNG/JPEG preprocessing backend в FS-010; FS-011 использует
   project-owned NumPy threshold boundary и explicit `opencv-python-headless` Canny без изменения
   Pillow-neutral raster contract и без fallback между algorithms;
+- FS-012 переиспользует OpenCV только для bounded external-contour extraction; dominant selection,
+  simple-cycle gate и centered aspect-preserving raster-to-domain transform принадлежат проекту;
 - PySide6 introduction and packaging proof occur in `FS-021`/`FS-023`;
 - MP4 encoder/backend is unresolved until `FS-022` capability/license evidence;
 - additional production locales require explicit product decision.

@@ -33,6 +33,12 @@
 - FS-011 boundary принимает только typed binary raster и explicit 4/8-connectivity; Canny принимает
   только typed grayscale raster, `0 ≤ low < high ≤ 255`, aperture `3|5|7` и boolean L2 flag;
 - OpenCV output проверяется как same-sized `uint8` binary raster до публикации результата;
+- FS-012 до contour extraction ограничивает edge map 250 000 foreground pixels, после backend —
+  25 000 candidates и 100 000 aggregate points; превышение даёт typed `RESOURCE_LIMIT` до
+  расширения raw coordinates в retained Python objects;
+- contour backend output проверяется как integer `(N,1,2)`/`(N,2)`, внутри source bounds и с
+  `CHAIN_APPROX_NONE` adjacency; points обязаны ссылаться на foreground source edge, а usable
+  candidate — быть simple cycle без повторных pixels; malformed output не становится Curve;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -89,6 +95,9 @@ duration, error code и basename only when needed; они не содержат 
 full coefficient arrays, secrets или full path by default. Export/session persistence получает
 отдельный retention contract до реализации.
 
+FS-012 success summary показывает только basename; Unicode control/format/surrogate и bidi
+characters экранируются как `\\uXXXX`/`\\UXXXXXXXX`, чтобы filename не менял terminal/log display.
+
 ## Failure and fallback invariants
 
 - validation/integrity/resource-limit failure → fail closed;
@@ -109,8 +118,10 @@ Fallback Policy наследуется и здесь не копируется.
 - E2E: representative invalid image and existing destination do not crash or lose data;
 - FS-011: unavailable/malformed Canny, invalid parameters, algorithm selection, privacy и
   overwrite проходят unit/component/live E2E checks без algorithm substitution;
+- FS-012: dense input, excessive candidate count, unavailable/malformed contour backend,
+  degenerate/no-contour, privacy, inactive options и existing output проходят negative tests;
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stages `FS-010`/`FS-011` have live decode/limit/edge/overwrite/privacy evidence; Stage `FS-022`
+Stages `FS-010`–`FS-012` have live decode/limit/edge/contour/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.

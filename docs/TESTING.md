@@ -68,6 +68,11 @@ FS-011 реализовал boundary `FS-010 grayscale/binary → explicit thres
 Canny → typed same-sized binary edge raster → PNG`: synthetic shape fixtures проверяют 4/8
 connectivity, Canny parameters, distinct algorithm output, backend provenance и source immutability.
 
+FS-012 реализовал boundary `edge result → external candidates → dominant closed Curve →
+arc-length samples → FFT/timeline → Agg PNG`: unit/property tests проверяют exact selection key,
+backend-order/cyclic/reversal invariance, coordinate/orientation/start policies, malformed output и
+budgets; real threshold/Canny integration проверяет endpoint equality.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -89,12 +94,18 @@ capture, сравнивает measured CV и проверяет transactional re
 FS-010 component evidence запускает localized image CLI in-process и проверяет success,
 invalid-options и existing-output states; live subprocess E2E проходит local JPEG → transforms →
 binary PNG и privacy-safe corrupt failure. Это самостоятельный preprocessing slice, а полный
-`image → contour → Fourier` E2E остаётся `BLOCKED_BY_BACKEND` до FS-013.
+cohesive product `image → controls → contour → Fourier` E2E остаётся scope FS-013.
 
 FS-011 component/live evidence запускает localized edge CLI для обоих selected algorithms,
 проверяет algorithm-specific parameters, same-sized binary PNG, existing-output preservation и
 privacy-safe corrupt failure. Unavailable/malformed Canny подтверждён negative unit path без
-fallback; contour extraction всё ещё отсутствует, поэтому FS-013 E2E остаётся blocked.
+fallback.
+
+FS-012 component/live evidence запускает localized contour CLI, проходит реальный local
+PNG → decode/preprocess → выбранные edges → OpenCV external extraction → dominant/resampled Curve →
+тот же timeline/renderer → PNG. Assertions проверяют provenance/sample/trace counts, existing-output
+preservation, pseudo locale и explicit empty result без Curve/timeline/artifact. Это runnable
+diagnostic slice; cohesive interactive product workflow по-прежнему относится к FS-013.
 
 ### E2E
 
@@ -103,7 +114,8 @@ fallback; contour extraction всё ещё отсутствует, поэтом�
 1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
 2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-007`, input slice реализован;
    `FS-008` подтверждает cohesive controls и exact endpoint-history ledger);
-3. image file → decode/edges (`FS-011`, реализован) → contour → same Fourier/chain → trace (`FS-013`);
+3. image file → decode/edges (`FS-011`) → dominant contour/Curve → same Fourier/chain → trace
+   (`FS-012`, diagnostic slice реализован; cohesive product flow — `FS-013`);
 4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не

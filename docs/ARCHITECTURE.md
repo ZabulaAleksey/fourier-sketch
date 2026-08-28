@@ -7,10 +7,10 @@ freehand capture, cohesive control surface, resource locale boundary и diagnost
 adapter. Остальные product modules являются целевой архитектурой и появляются строго в
 соответствующих stages.
 
-FS-011 расширяет Pillow-neutral immutable raster contract типизированным edge result. Project-owned
-NumPy boundary потребляет binary raster, а explicit headless OpenCV adapter запускает Canny только
-на grayscale. Оба пути возвращают binary raster с algorithm/backend/parameter provenance; contour
-semantics остаётся deferred до FS-012.
+FS-011 расширил Pillow-neutral immutable raster contract типизированным edge result. FS-012 добавил
+typed external-contour extraction, отдельный project-owned routing policy и application composition
+до принятого `EpicycleTimeline`. OpenCV не выбирает dominant contour и не задаёт его порядок:
+selection, normalization и raster-to-domain transform принадлежат проекту.
 
 ## Архитектурные цели
 
@@ -51,12 +51,12 @@ src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
 ├── math/                       # существует: FS-002..FS-005 core + FS-007/FS-009 resampling
-├── application/                # существует: timeline, freehand, preprocessing и edge use cases
+├── application/                # существует: timeline, freehand, image/edge/contour use cases
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
 ├── render/                     # существует: Matplotlib frame/PNG/freehand adapters
-├── cli/                        # существует: diagnostic, freehand, image и edges live entry points
-├── imaging/                    # существует: FS-010/FS-011 raster, Pillow и edge adapters
-├── routing/                    # planned FS-012, FS-015..FS-017
+├── cli/                        # существует: diagnostic, freehand, image, edges и contours
+├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
+├── routing/                    # существует: FS-012 dominant policy; FS-015..FS-017 planned
 └── ui/                         # planned FS-021
 ```
 
@@ -83,7 +83,7 @@ flow и planned continuations:
 ```text
 canonical Curve → FFT → `EpicycleTimeline` → immutable `EpicycleFrame` → Matplotlib/PNG
 Matplotlib pointer events → bounded capture → cleanup/index resample → Curve → тот же timeline
-image → decode/transforms → explicit edge mode → contour/route → curve → same Fourier use case
+image → decode/transforms → explicit edge mode → dominant contour → closed Curve → same Fourier use case
 chain timeline → future animation exporter
 raster → separate FFT2 use case
 ```
@@ -145,6 +145,24 @@ foreground-side boundary по 4/8-neighborhood с outside-as-background semantic
 objects через application API. Application выбирает binary source только для boundary и grayscale
 только для Canny; unavailable/failing Canny не запускает другой algorithm.
 
+FS-012 разделяет library extraction и продуктовую семантику. `imaging.opencv_contours` вызывает
+`findContours` с `RETR_EXTERNAL`/`CHAIN_APPROX_NONE`, проверяет native output, source-foreground
+membership, simple-cycle uniqueness, adjacency и budgets, очищает adjacent/terminal duplicates и
+отбрасывает zero-area/open-backtracking candidates. `routing.dominant_contour`
+выбирает ровно один candidate по ключу `-area2, -bbox_area, -point_count, canonical_signature`,
+независимому от backend order. Он разворачивает raster sequence в counter-clockwise domain order,
+вращает closed sequence к topmost/leftmost pixel и применяет transform:
+
+```text
+scale = 2 / max(width - 1, height - 1)
+x = (column - (width - 1)/2) * scale
+y = ((height - 1)/2 - row) * scale
+```
+
+`application.dominant_contour` сохраняет preprocessing/edge/extraction provenance, применяет только
+существующий `resample_curve_by_arc_length`, `build_freehand_timeline` и renderer. Empty/degenerate
+extraction возвращает `ImageNoContourResult`: Curve, Fourier state и PNG при этом не создаются.
+
 ## Data flow и provenance
 
 Каждый significant result хранит достаточный provenance: source kind, parameters, sample count,
@@ -160,6 +178,10 @@ FS-011 provenance содержит точные `threshold_boundary|canny`, back
 `opencv/<version>` с bounded ASCII identifier), algorithm-specific parameters, source
 stage/dimensions и edge pixel count. Binary edge payload доступен как diagnostic artifact, но не
 называется contour/curve.
+
+FS-012 provenance добавляет extraction backend, exact external/none modes, candidate count,
+selected area/bounds/point count, selection policy, source dimensions, coordinate transform, scale,
+orientation и start-point policy. Source path, raster payload и raw native error в него не входят.
 
 FS-002 сохраняет complete coefficients в FFT storage order с canonical signed labels. Reference
 DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим

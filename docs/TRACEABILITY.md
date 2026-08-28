@@ -10,7 +10,7 @@
 | Behavior | Requirements | Stage(s) | Planned implementation boundary | Planned evidence | Текущий статус |
 |---|---|---|---|---|---|
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | verified cohesive MVP |
-| `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | verified through diagnostic edge output; contour/Fourier path planned |
+| `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | verified through dominant-contour diagnostic trace; cohesive product flow FS-013 |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
@@ -197,6 +197,21 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | independent security review | import privacy/provenance fixes | reviewer + re-review | GO |
 | commit evidence | FS-011 implementation | Git commit | PASS — `b0c3334` |
 
+## Stage FS-012 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| bounded external extraction | `imaging/contour_model.py`, `opencv_contours.py` | unit malformed/budget + real OpenCV | PASS |
+| deterministic dominant key | `routing/dominant_contour.py` | unit ties/order + property cyclic/reversal | PASS |
+| normalized closed Curve | transform/orientation/start provenance | unit exact geometry + integration | PASS |
+| accepted math reuse | arc-length → FFT → existing timeline | integration endpoint-history assertions | PASS |
+| live diagnostic path | localized contour CLI → existing Agg renderer | component + subprocess E2E | PASS |
+| empty/no-fallback/privacy | typed no-contour/error and safe summary | negative unit/component/live E2E | PASS |
+| regression and static gates | repository | 358 tests + Ruff + mypy + frozen sync + overlay + diff | PASS |
+| manual visual evidence | selected ellipse contour, K=12, endpoint trace | rendered PNG inspection | PASS |
+| independent review | correctness + security | read-only reviewers | GO — no remaining/new P0/P1/P2 |
+| commit evidence | FS-012 implementation and hardening | Git commits | PASS — `418192a`, `a1c211c` |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |
@@ -204,9 +219,9 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | AC-SYS-001/002 | analytical + property | FS-002 |
 | AC-SYS-003/005 | unit + property | FS-005 |
 | AC-SYS-004 | integration + E2E | FS-006 diagnostic + FS-008 freehand |
-| AC-SYS-006/007 | integration + E2E | FS-011 diagnostic edges; complete image trace FS-013 + FS-016 |
+| AC-SYS-006/007 | integration + E2E | FS-012 dominant diagnostic trace; product/multi-component FS-013 + FS-016 |
 | AC-SYS-008 | architecture + integration | FS-020 |
 | AC-SYS-009 | integration + E2E | FS-022 |
 | AC-SYS-010 | stage/evidence review | every stage |
 | AC-SYS-011 | component + E2E | FS-006, FS-021 |
-| AC-SYS-012 | negative integration/E2E | FS-010, FS-011, FS-022, FS-023 |
+| AC-SYS-012 | negative integration/E2E | FS-010, FS-011, FS-012, FS-022, FS-023 |

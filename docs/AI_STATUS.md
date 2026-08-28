@@ -2,36 +2,34 @@
 
 ## Текущий этап
 
-- Active Stage ID: `FS-012`.
-- Lifecycle: `in_progress`.
-- Branch: `feature/fs-012-dominant-contour`.
-- Goal: dominant external contour → normalized closed `Curve` → arc-length resampling → existing
-  Fourier/epicycle endpoint trace.
-- Authorization: пользователь разрешил слияние предыдущей ветки и продолжение 2026-08-28.
+- Последний завершённый Stage ID: `FS-012`.
+- Lifecycle: `completed`.
+- Рабочая ветка: `feature/fs-012-dominant-contour`.
+- Следующий этап: `FS-013` (`planned`, не начат).
+- Локальный `main`: `8a15a9e`; текущая ветка ещё не слита и не отправлена в remote.
 
 ## Подтверждённо реализовано
 
-- FS-000/FS-001: scaffold и immutable domain model.
-- FS-002–FS-005: Fourier transforms, spectrum/selection/reconstruction/metrics и epicycle math.
-- FS-006: timeline, immutable renderer frame, Matplotlib/Agg adapters и locale boundary.
-- FS-007–FS-009: bounded freehand path, live controls и arc-length parameterization.
-- FS-010: safe local PNG/JPEG preprocessing.
-- FS-011: threshold-boundary/Canny diagnostics с typed provenance и fail-closed backend boundary.
+- `FS-000`–`FS-006`: scaffold, immutable domain model, Fourier pipeline, metrics, epicycle math,
+  timeline и диагностический Matplotlib/Agg renderer.
+- `FS-007`–`FS-009`: bounded freehand input, live freehand-to-trace MVP и arc-length
+  parameterization.
+- `FS-010`–`FS-011`: безопасный локальный PNG/JPEG preprocessing и typed threshold/Canny edge
+  diagnostics.
+- `FS-012`: bounded external-contour extraction, project-owned deterministic dominant selection,
+  canonical orientation/start point, normalized `Curve`, resampling и реальный
+  image → contour → Fourier → epicycle endpoint-trace CLI/E2E путь.
+- Пустой либо непригодный contour возвращает явный no-contour result без выдуманного outline или
+  скрытого fallback.
 
-## Baseline перед FS-012
+## Evidence FS-012
 
-- Локальный `main`: `8a15a9e`; FS-007–FS-011 и post-merge status синхронизированы.
-- Full suite: 299 tests PASS.
-- Ruff, mypy, frozen sync, overlay validator и diff check: PASS.
-- FS-011 independent security re-review: GO, новых P0/P1/P2 нет.
-- Remote `origin/main` не обновлялся; push/PR/release не выполнялись.
-
-## В процессе
-
-- Typed contour extraction contracts и OpenCV external-contour adapter.
-- Project-owned deterministic dominant selection и canonical coordinate/orientation/start policy.
-- Application/CLI vertical slice до actual timeline endpoint trace и diagnostic PNG.
-- Новые FS-012 tests и terminal documentation/evidence sync.
+- Implementation commits: `418192a`, `a1c211c`; activation commit: `cee63d0`.
+- Targeted unit/integration/component/E2E/property suite: 59 tests PASS.
+- Full repository suite: 358 tests PASS.
+- `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
+- Визуальная проверка диагностического PNG с выбранным ellipse contour и endpoint trace: PASS.
+- Независимые correctness и security re-review: GO; новых P0/P1/P2 замечаний нет.
 
 ## Известные блокеры
 
@@ -39,19 +37,24 @@
 
 ## Ограничения / deferred
 
-- В FS-012 выбирается только один внешний контур; multi-component semantics отложены до FS-016.
-- Open/dangling edge fragments не превращаются скрыто в closed curve.
-- Product-level image workflow и polish относятся к FS-013.
-- Skeleton, graph и forced routing не входят в этап.
-- Surface остаётся диагностическим Matplotlib/CLI, не финальным PySide6 shell.
+- Выбирается один внешний контур; multi-component semantics отложена до `FS-016`.
+- Open/dangling edge fragments не преобразуются в замкнутую кривую.
+- Product-level image workflow и polish относятся к `FS-013`.
+- Skeleton, graph и forced routing не входят в `FS-012`.
+- Диагностическая поверхность остаётся Matplotlib/CLI, а не финальным PySide6 shell.
+- OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
+  число кандидатов, но native crash нельзя преобразовать в typed Python error.
 
-## Следующая задача
+## Следующее разумное действие
 
-Завершить только `FS-012`, собрать terminal evidence, выполнить независимый review и остановиться до
-`FS-013`.
+После явного разрешения слить `feature/fs-012-dominant-contour` в `main`, выполнить post-merge
+documentation gate и только затем отдельно активировать `FS-013`.
 
 ## Синхронизация документации
 
-- `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md` и record `FS-012` активированы.
-- Остальные state-bearing документы будут обновлены после подтверждённой реализации и проверок.
+- `README.md`, `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md`, `prompts/STAGES.md`,
+  архитектурные, design, security, testing, traceability, dependency, fallback и learning
+  документы синхронизированы с проверенным состоянием `FS-012`.
+- Стабильные system/image-to-curve SPEC и математический контракт проверены: требования не
+  изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.

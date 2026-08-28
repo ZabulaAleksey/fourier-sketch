@@ -538,15 +538,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-012 — Dominant Contour to Curve
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`.
 - Goal: extract one deterministic dominant contour and feed it to the proven Fourier/epicycle path.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-011 + FS-009 + FS-008 → FS-012`; all three must be completed at start.
 - Entry evidence: edge map contract, arc-length resampling and freehand endpoint-trace application.
-- Current gate: satisfied by FS-008/FS-009/FS-011 completion and explicit user authorization on
-  2026-08-28; implementation is active on `feature/fs-012-dominant-contour`.
+- Completion gate: satisfied on `feature/fs-012-dominant-contour`; implementation commits
+  `418192a` and `a1c211c` contain the verified vertical slice.
 
 ### Scope / non-goals / invariants
 
@@ -565,8 +565,12 @@ completion claim. Evidence records environment/branch and caveats.
 
 ### PASS evidence
 
-- Unit contour selection/orientation/ties/no-result; integration real prior stages; live/synthetic
-  E2E asserts contour provenance and endpoint trace history; full/static/component/overlay PASS.
+- 59 targeted unit/integration/component/E2E/property tests and 358 full-suite tests PASS.
+- Frozen sync, Ruff, strict mypy, project-overlay validator and diff check PASS.
+- Live/synthetic E2E verifies contour provenance and endpoint trace history; rendered diagnostic
+  PNG visual QA PASS.
+- Independent correctness and security re-review: GO, with no remaining/new P0/P1/P2 findings.
+- No accepted pre-FS-012 test, fixture, golden or scenario was modified.
 
 ### Temporary / deferred / failure
 
@@ -585,7 +589,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-012 → FS-013`; FS-012 synthetic/live pipeline must be completed.
 - Entry evidence: safe input, contour integration and diagnostic renderer E2E data.
-- Current gate: unsatisfied while FS-012 is planned.
+- Current gate: technical prerequisite FS-012 is completed; FS-013 remains `planned` and requires
+  separate explicit authorization before activation.
 
 ### Scope / non-goals / invariants
 

@@ -70,3 +70,20 @@ Grayscale и threshold не являются fallback друг для друга
 остаётся отдельной доступной capability, но приложение не запускает её вместо Canny и не выдаёт
 один результат за эквивалент другого. Empty edge map является complete diagnostic result, а не
 degraded contour.
+
+## Dominant contour (FS-012)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | OpenCV external extraction → project-owned dominant selection |
+| Budgets | edge pixels `≤250,000`; candidates `≤25,000`; raw points `≤100,000` |
+| Failure signal | stable `ContourExtractionError.code`; localized CLI exit `2` |
+| Retry | отсутствует для deterministic extraction/validation/resource failure |
+| Automatic fallback | другой retrieval/approximation/backend, hull, skeleton или bridge запрещены |
+| Empty result | `NoContourResult`; CLI exit `0`, Curve/timeline/PNG не создаются |
+| Provenance | backend, extraction modes, selection/transform/orientation/start policies и metrics |
+| Recovery | изменить input/preprocessing или dependency и явно повторить operation |
+
+`no contour` — полноценный пустой результат, а не degraded success. Backend/resource failure не
+превращается в empty result, а empty result не запускает Fourier path. Остальные candidates не
+соединяются и не выдаются за единую curve; multi-component policy относится к FS-016.

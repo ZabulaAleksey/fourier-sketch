@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-011)
+## Текущая dependency surface (FS-012)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
@@ -54,7 +54,13 @@ L2-gradient flag; adapter валидирует эти параметры и same
 Apache-2.0, Python wrapper — MIT. Перед redistribution installer всё равно должен включить
 third-party notices из фактического wheel/lock graph.
 
+FS-012 не добавляет dependency: тот же headless OpenCV используется только для `findContours` с
+`RETR_EXTERNAL` и `CHAIN_APPROX_NONE`; selection/normalization остаются project-owned Python code.
+Official shape contract подтверждает, что `RETR_EXTERNAL` извлекает только крайние внешние contours,
+а `CHAIN_APPROX_NONE` сохраняет все соседние contour points.
+
 Review sources: [OpenCV 5.0 Canny documentation](https://docs.opencv.org/5.0/py_tutorials/py_imgproc/py_canny/py_canny.html),
+[OpenCV structural analysis API](https://docs.opencv.org/5.0/main_modules/imgproc_shape.html),
 [PyPI opencv-python-headless](https://pypi.org/project/opencv-python-headless/),
 [OpenCV Apache-2.0 license](https://github.com/opencv/opencv/blob/4.x/LICENSE),
 [opencv-python MIT license](https://github.com/opencv/opencv-python/blob/4.x/LICENSE.txt).
