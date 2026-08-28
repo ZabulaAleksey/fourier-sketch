@@ -20,11 +20,11 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-010` | Validated image input, grayscale, threshold | `completed` |
 | `FS-011` | Explicit threshold-boundary and Canny edge diagnostics | `completed` |
 
-## Ближайший этап (planned, не запущен)
+## Текущий этап
 
 | Stage | Результат | Gate |
 |---|---|---|
-| `FS-012` | Dominant contour to curve | technical prerequisites complete; awaiting authorization |
+| `FS-012` | Dominant contour to curve | `in_progress`; prerequisites and authorization confirmed |
 
 ## Image-to-curve pipeline
 

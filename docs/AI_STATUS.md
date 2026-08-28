@@ -2,66 +2,56 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-011`.
-- Lifecycle: `completed`; active implementation: none.
-- Next candidate: `FS-012`, `planned` and awaiting explicit user authorization.
-- Integration: stages `FS-007`–`FS-011` fast-forward merged into local `main` at `a0a362e`;
-  post-merge status synchronization is performed on `docs/fs-011-merge-status`.
+- Active Stage ID: `FS-012`.
+- Lifecycle: `in_progress`.
+- Branch: `feature/fs-012-dominant-contour`.
+- Goal: dominant external contour → normalized closed `Curve` → arc-length resampling → existing
+  Fourier/epicycle endpoint trace.
+- Authorization: пользователь разрешил слияние предыдущей ветки и продолжение 2026-08-28.
 
 ## Подтверждённо реализовано
 
-- FS-000/FS-001 project scaffold and immutable domain model.
-- FS-002–FS-005 Fourier transforms, spectrum/selection/reconstruction/metrics and epicycle math.
-- FS-006 timeline, immutable renderer frame, Matplotlib/Agg adapters and locale boundary.
-- FS-007 bounded freehand capture, explicit uniform-by-index resampling and actual event path.
-- FS-008 cohesive Play/Pause/Restart/speed/harmonic surface and exact live endpoint-history E2E.
-- FS-009 selectable arc-length resampling, spacing metrics and same-surface comparison.
-- FS-010 safe local PNG/JPEG preprocessing with typed grayscale/binary diagnostics.
-- FS-011 project-owned 4/8-connectivity threshold boundary and explicit headless OpenCV Canny,
-  typed parameter/backend provenance, localized CLI and safe diagnostic PNG publication.
-- Latest implementation commit: `b0c3334`.
+- FS-000/FS-001: scaffold и immutable domain model.
+- FS-002–FS-005: Fourier transforms, spectrum/selection/reconstruction/metrics и epicycle math.
+- FS-006: timeline, immutable renderer frame, Matplotlib/Agg adapters и locale boundary.
+- FS-007–FS-009: bounded freehand path, live controls и arc-length parameterization.
+- FS-010: safe local PNG/JPEG preprocessing.
+- FS-011: threshold-boundary/Canny diagnostics с typed provenance и fail-closed backend boundary.
 
-## FS-011 evidence
+## Baseline перед FS-012
 
-- Full suite: 299 tests PASS; independent targeted security re-review: 45 tests PASS.
-- Ruff, mypy, uv lock/frozen sync, overlay and diff checks: PASS.
-- Live subprocess E2E: local image → selected edge algorithm → readable same-sized binary PNG.
-- Manual visual QA: boundary/Canny shape outputs and summaries PASS.
-- Negative evidence: invalid parameters, empty map, unavailable/malformed native backend, unsafe
-  provenance, corrupt input, privacy and overwrite paths PASS without silent fallback.
-- Independent security review: GO after import-failure/privacy and backend-identifier fixes.
+- Локальный `main`: `8a15a9e`; FS-007–FS-011 и post-merge status синхронизированы.
+- Full suite: 299 tests PASS.
+- Ruff, mypy, frozen sync, overlay validator и diff check: PASS.
+- FS-011 independent security re-review: GO, новых P0/P1/P2 нет.
+- Remote `origin/main` не обновлялся; push/PR/release не выполнялись.
 
 ## В процессе
 
-- None.
+- Typed contour extraction contracts и OpenCV external-contour adapter.
+- Project-owned deterministic dominant selection и canonical coordinate/orientation/start policy.
+- Application/CLI vertical slice до actual timeline endpoint trace и diagnostic PNG.
+- Новые FS-012 tests и terminal documentation/evidence sync.
 
 ## Известные блокеры
 
-- None for completed FS-011.
-- FS-012 is intentionally not started because this batch ended at FS-011.
+- Нет.
 
 ## Ограничения / deferred
 
-- Current surface is diagnostic Matplotlib/CLI, not the final PySide6 shell.
-- Image scope remains local PNG/JPEG single-frame only; remote input is excluded.
-- Edge results are diagnostic rasters; contour/curve interpretation starts only in FS-012.
-- No product GUI or animation codec/export framework yet.
+- В FS-012 выбирается только один внешний контур; multi-component semantics отложены до FS-016.
+- Open/dangling edge fragments не превращаются скрыто в closed curve.
+- Product-level image workflow и polish относятся к FS-013.
+- Skeleton, graph и forced routing не входят в этап.
+- Surface остаётся диагностическим Matplotlib/CLI, не финальным PySide6 shell.
 
 ## Следующая задача
 
-После явной авторизации спланировать и реализовать `FS-012`; до неё сохранить repository в
-текущем verified state.
-
-## Интеграция
-
-- Local `main`: FS-007–FS-011 merge confirmed at `a0a362e`.
-- Remote `origin/main`: not pushed; PR/release NOT PERFORMED.
+Завершить только `FS-012`, собрать terminal evidence, выполнить независимый review и остановиться до
+`FS-013`.
 
 ## Синхронизация документации
 
-- README, architecture, decisions, dependencies, design, fallbacks, security, testing, learning,
-  project context and traceability synchronized through FS-011.
-- Relevant system/image SPEC and MATHEMATICS checked; their stable contracts did not require edits.
-- Plan/status/roadmap and selected stage record carry FS-011 terminal evidence; FS-012 remains
-  planned/unauthorized.
-- `prompts/STAGES.md` remains canonical and intentionally stays outside `docs/`.
+- `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md` и record `FS-012` активированы.
+- Остальные state-bearing документы будут обновлены после подтверждённой реализации и проверок.
+- `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.

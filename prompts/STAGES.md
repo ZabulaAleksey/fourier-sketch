@@ -538,15 +538,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-012 — Dominant Contour to Curve
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: extract one deterministic dominant contour and feed it to the proven Fourier/epicycle path.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-011 + FS-009 + FS-008 → FS-012`; all three must be completed at start.
 - Entry evidence: edge map contract, arc-length resampling and freehand endpoint-trace application.
-- Current gate: technical prerequisites satisfied by FS-008/FS-009/FS-011 completion; stage remains
-  `planned` and cannot start without explicit user authorization.
+- Current gate: satisfied by FS-008/FS-009/FS-011 completion and explicit user authorization on
+  2026-08-28; implementation is active on `feature/fs-012-dominant-contour`.
 
 ### Scope / non-goals / invariants
 
