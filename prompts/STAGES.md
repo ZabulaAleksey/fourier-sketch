@@ -116,7 +116,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-002 — Complex Curve + DFT / IDFT
 
-- Lifecycle: `implemented_unverified`.
+- Lifecycle: `completed`.
 - Goal: deliver reference and NumPy Fourier transforms with one signed-frequency convention.
 - Context: FC-FR-002/003 and `docs/MATHEMATICS.md`.
 
@@ -149,8 +149,8 @@ completion claim. Evidence records environment/branch and caveats.
   dependency diff and overlay validator.
 - PASS includes explicit `atol/rtol` rationale and no NaN/Inf masking.
 - Current evidence: analytical unit, Hypothesis property, real reference/NumPy integration, frozen
-  restore, Ruff and mypy PASS; reviewer sample-budget/non-finite findings fixed; final docs/commit
-  gate pending.
+  restore, Ruff and mypy PASS; reviewer sample-budget/non-finite findings fixed; implementation
+  commit `cc65b5a`.
 
 ### Temporary / deferred / failure
 
@@ -163,14 +163,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-003 — Fourier Spectrum
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: expose deterministic spectrum metadata, coefficient properties, energy and orderings.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-002 → FS-003`; FS-002 transform parity must be completed.
 - Entry evidence: signed coefficient set and accepted Fourier Core tests.
-- Current gate: unsatisfied while FS-002 is planned.
+- Current gate: satisfied — FS-002 completed with commit `cc65b5a`; user authorized continuation.
 
 ### Scope / non-goals / invariants
 

@@ -2,106 +2,67 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-002`: conversion `Point2D ↔ complex`, canonical signed frequencies,
-reference DFT, явный NumPy FFT adapter и reference IDFT. Lifecycle: `implemented_unverified`;
-final regression/documentation/commit gate выполняется.
-
-Пользователь одобрил последовательную реализацию `FS-002`–`FS-006`, но текущий исполнимый slice
-ограничен FS-002; следующий stage начнётся только после terminal evidence и commit текущего.
+Реализовать Stage `FS-003`: deterministic spectrum energy и views/orderings без изменения
+coefficient values и без partial selection. Lifecycle: `in_progress`.
 
 ## Связанные требования
 
 - SPEC: `specs/features/fourier-core.spec.md`.
-- IDs: FC-FR-002, FC-FR-003, FC-AC-001, FC-AC-002, AC-SYS-001, AC-SYS-002, AC-SYS-010.
-- Математический контракт: `docs/MATHEMATICS.md`.
-- Stage contract: `prompts/STAGES.md`, heading `FS-002`.
+- IDs: FC-FR-004, FC-FR-005, FC-AC-003, FR-HARMONICS-001, AC-SYS-010.
+- Stage contract: `prompts/STAGES.md`, heading `FS-003`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: `FS-002`.
-- Completed prerequisite: `FS-001` (`63d7c10`, validated and committed).
-- DAG: `FS-001 → FS-002`.
-- Self-reference/cycle/forward dependency: none.
-- Entry gate: satisfied; пользователь разрешил продолжение, clean FS-001 baseline PASS.
+- Stage ID: `FS-003`.
+- Completed prerequisite: FS-002 implementation `cc65b5a`, all numerical gates PASS.
+- DAG: `FS-002 → FS-003`; no cycle/forward dependency.
+- Entry gate: satisfied; user already authorized the FS-002–FS-006 sequence.
 
-## Входные предпосылки
+## Runnable vertical slice и consumer scenario
 
-| Предпосылка | Evidence |
-|---|---|
-| Domain values and invariants | FS-001 committed, public domain tests PASS |
-| Frozen environment | `uv sync --all-groups --frozen` PASS |
-| Stable formula and signed bins | accepted SPEC + `docs/MATHEMATICS.md` + ADR-002 |
-| Dependency capability | NumPy/Hypothesis support Python 3.12; license/platform review complete |
+- Entry: consumer transforms a canonical circle with `fft_dft`.
+- Path: complete spectrum → energy summary → signed/absolute/amplitude/interleaved/explicit full
+  ordering views.
+- Observable result: `k=+1` is dominant and every view is a deterministic permutation of the same
+  complete coefficient set.
 
-## Runnable vertical slice и concrete consumer scenario
+## Scope / non-goals
 
-- Entry: public `fourier_sketch.math` API receives a finite non-empty `Curve`.
-- Path: curve → Python complex samples → reference/NumPy coefficients → `FourierSpectrum` →
-  IDFT → reconstructed complex samples/points.
-- Observable result: constant/circle/impulse analytical fixtures and round-trip pass without
-  FS-003 or later modules.
+- Scope: `SpectrumOrdering`, deterministic tie-breaks, complete explicit permutation and total
+  squared-amplitude energy.
+- Non-goals: partial K/explicit subset, reconstruction, metrics, epicycles and charts.
+- Invariant: ordering never changes a coefficient or constructs an invalid partial spectrum.
 
-## Scope
+## Tie-break contract
 
-### Входит
-
-- explicit point/curve complex conversion;
-- FFT-storage-to-signed-frequency mapping including even-N negative Nyquist;
-- bounded O(N²) reference DFT as correctness oracle;
-- explicit NumPy FFT adapter without silent fallback;
-- reference IDFT and public imports;
-- NumPy runtime, Hypothesis dev dependency and generated lockfile.
-
-### Не входит
-
-- spectrum ordering/energy, selection/metrics, epicycles, renderer;
-- automatic backend fallback;
-- leaking `numpy.ndarray`/NumPy scalars through public boundaries.
+- signed: `frequency`;
+- absolute: `(abs(frequency), frequency)`;
+- amplitude: `(-amplitude, abs(frequency), frequency)`;
+- interleaved: `0,+1,-1,+2,-2,…` over available bins;
+- explicit: exactly one occurrence of every complete-spectrum frequency in caller order.
 
 ## Рабочие задачи
 
 | № | Задача | Статус |
 |---|---|---|
-| 1 | Baseline, architecture and dependency capability review | completed |
-| 2 | Add dependencies through `uv` and verify graph | completed |
-| 3 | Implement conversion/frequencies/transforms public API | completed |
-| 4 | Add analytical/property/integration contracts | completed |
-| 5 | Run frozen/full/static/overlay/SPEC/reviewer gates | completed |
-| 6 | Synchronize docs and commit FS-002 evidence | in_progress |
+| 1 | Verify FS-002 terminal evidence and FS-003 entry | completed |
+| 2 | Implement ordering enum/views and energy API | in_progress |
+| 3 | Add deterministic unit/property/integration contracts | pending |
+| 4 | Run full/static/overlay/reviewer/SPEC gates | pending |
+| 5 | Synchronize docs and commit FS-003 | pending |
 
 ## Acceptance / PASS
 
-- [x] FC-FR-002 conversion preserves value and order.
-- [x] FC-FR-003 exact formulas, normalization and signed bins match the mathematical contract.
-- [x] Reference/NumPy parity and IDFT round-trip pass with explicit tolerances.
-- [x] Empty/non-finite/oversized inputs/results fail with typed errors.
-- [ ] Full regression/static/overlay/reviewer/documentation gates pass.
-
-## Fallback и resource contract
-
-- Primary optimized path is the explicitly called NumPy adapter.
-- Reference DFT is a separately called bounded correctness oracle, not an automatic fallback.
-- Invalid input, dependency/backend error or reference size overflow fails explicitly; no retry and
-  no silent backend substitution.
+- [ ] All orderings are deterministic permutations of the same complete set.
+- [ ] Explicit ordering rejects missing/duplicate/unknown frequencies.
+- [ ] Energy equals `Σ|C_k|²`; zero spectrum energy is `0.0`.
+- [ ] Circle fixture reports dominant `k=+1`.
+- [ ] Full quality/reviewer/documentation gates pass.
 
 ## Deferred
 
-- Spectrum views/energy (`FS-003`), selection/reconstruction metrics (`FS-004`), epicycles
-  (`FS-005`) and visualization (`FS-006`).
-
-## Проверки
-
-```powershell
-uv sync --all-groups --frozen
-uv run pytest -m unit
-uv run pytest -m property
-uv run pytest -m integration
-uv run pytest
-uv run ruff check .
-uv run mypy
-py -3 ~/.codex/tools/validate_project_overlay.py .
-```
+- Partial selection and retained energy (`FS-004`), epicycles (`FS-005`), visualization (`FS-006`).
 
 ## Условие перехода
 
-FS-003 начинается только после FS-002 `completed` и commit evidence.
+FS-004 начинается только после FS-003 terminal evidence и commit.

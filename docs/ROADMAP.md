@@ -9,13 +9,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 |---|---|---|
 | `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `completed` |
 | `FS-001` | Immutable Domain Model, typed validation, public imports | `completed` |
-| `FS-002` | Complex conversion, reference/NumPy DFT and IDFT | `implemented_unverified` |
+| `FS-002` | Complex conversion, reference/NumPy DFT and IDFT | `completed` |
 
 ## Ближайшая математическая основа (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-003` | Fourier Spectrum and ordering |
+| `FS-003` | Fourier Spectrum and ordering (`in_progress`) |
 | `FS-004` | Partial Reconstruction and metrics |
 | `FS-005` | Epicycle Mathematics and endpoint equivalence |
 | `FS-006` | Diagnostic matplotlib Epicycle Renderer |

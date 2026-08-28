@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | planned |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
-| `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | implemented_unverified |
+| `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | planned |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | planned |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | planned |
@@ -68,7 +68,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 
 ## Stage FS-002 evidence
 
-| Contract | Artifact | Check | Status before commit evidence |
+| Contract | Artifact | Check | Status |
 |---|---|---|---|
 | FC-FR-002 conversion | `math/conversion.py` | unit + Curve integration | PASS |
 | FC-FR-003 formulas/signed bins | `math/frequencies.py`, `math/transforms.py` | analytical + property | PASS |
@@ -77,7 +77,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | resource/non-finite failure | transform boundaries | negative unit tests | PASS |
 | no silent fallback | explicit `reference_dft` / `fft_dft` API | backend-failure unit test | PASS |
 | independent review | FS-002 diff | reviewer gate | PASS after sample-budget/IDFT fixes |
-| commit evidence | FS-002 implementation | Git commit | PENDING |
+| commit evidence | FS-002 implementation | Git commit | PASS — `cc65b5a` |
 
 ## Acceptance coverage targets
 
