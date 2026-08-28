@@ -13,8 +13,8 @@
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
-| `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | planned |
-| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | planned |
+| `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
+| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | partial — endpoint verified |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | planned |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
@@ -101,6 +101,18 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | resource boundaries | reconstruction API | pre-allocation/work negative tests | PASS |
 | independent review | FS-004 diff and fixes | reviewer + re-review | PASS |
 | commit evidence | FS-004 implementation | Git commit | PASS — `743a859` |
+
+## Stage FS-005 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| rotating vector/DC/±k | `math/epicycles.py` | analytical unit | PASS |
+| chain connectivity/geometry | `build_epicycle_chain` | unit + property | PASS |
+| endpoint/reconstruction | FS-005 chain vs FS-004 API | property + integration | PASS |
+| ordering/permutation endpoint | generated complete selections | property | PASS |
+| finite/angular overflow | epicycle public API | negative unit | PASS |
+| independent review | FS-005 diff and fixes | reviewer + re-review | PASS |
+| commit evidence | FS-005 implementation | Git commit | PASS — `419b60c` |
 
 ## Acceptance coverage targets
 

@@ -2,29 +2,28 @@
 
 ## Текущий этап
 
-- Stage ID: `FS-005`.
+- Stage ID: `FS-006`.
 - Lifecycle: `in_progress`.
-- Evidence level: FS-004 committed and verified; FS-005 not yet implemented.
+- Evidence level: FS-005 committed and verified; FS-006 not yet implemented.
 - Branch: `feature/fs-002-fs-006-core-renderer`.
 
 ## Подтверждённо реализовано
 
 - FS-000/FS-001 project scaffold and immutable domain model.
-- FS-002 conversion, canonical signed bins and explicit reference/NumPy transforms.
-- FS-003 spectrum energy and deterministic complete-spectrum ordering views.
-- FS-004 immutable selection, reconstruction, retained energy and typed error metrics.
-- FS-004 implementation commit: `743a859`.
+- FS-002–FS-004 Fourier transforms, spectrum views, selection, reconstruction and metrics.
+- FS-005 renderer-independent epicycle chain mathematics and endpoint equivalence.
+- FS-005 implementation commit: `419b60c`.
 
-## FS-004 evidence
+## FS-005 evidence
 
 - Frozen restore: PASS, 17 packages.
-- Unit/property/integration/component/full: PASS; full suite 110 tests.
+- Unit/property/integration/component/full: PASS; full suite 124 tests.
 - Ruff/mypy/overlay/diff: PASS.
-- Reviewer/re-review: PASS after full-energy overflow and value-provenance evidence fixes.
+- Reviewer/re-review: PASS after typed angular-overflow and direct geometry evidence fixes.
 
 ## В процессе
 
-- FS-005 epicycle rotation, chain geometry and endpoint equivalence.
+- FS-006 Matplotlib dependency, application timeline, renderer, CLI and locale resources.
 
 ## Известные блокеры
 
@@ -32,12 +31,12 @@
 
 ## Ограничения / deferred
 
-- No persistent trace, user-facing renderer or controls yet.
-- FS-004 reconstruction limits are 262144 output samples / 16777216 evaluated terms.
+- First surface is diagnostic Matplotlib, not the final PySide6 shell.
+- No freehand/image input or animation codec/export framework yet.
 
 ## Следующая задача
 
-Finish FS-005 and commit endpoint-equivalence evidence before FS-006.
+Finish FS-006 live headless/user-control evidence and stop before FS-007.
 
 ## Интеграция
 
@@ -45,5 +44,5 @@ Finish FS-005 and commit endpoint-equivalence evidence before FS-006.
 
 ## Синхронизация документации
 
-- FS-004 implementation, ADR/security/math/learning evidence synchronized; FS-005 selector active.
-- `DESIGN.md`, `DEPENDENCIES.md` and `FALLBACKS.md` checked without changes.
+- FS-005 endpoint milestone synchronized; FS-006 exact selector activated.
+- Dependency/design/i18n/security docs require factual update during FS-006.

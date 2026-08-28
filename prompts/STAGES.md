@@ -243,7 +243,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-005 — Epicycle Mathematics
 
-- Lifecycle: `in_progress`; critical milestone.
+- Lifecycle: `completed`; critical milestone; implementation commit `419b60c`.
 - Goal: prove head-to-tail rotating vector model and endpoint/reconstruction equivalence.
 
 ### Dependency DAG & entry preconditions
@@ -271,6 +271,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Analytical unit: DC, ±k, amplitude, phase; property: connectivity, permutation endpoint,
   endpoint/reconstruction over generated finite sets/times; integration consumes real spectrum.
 - Full pytest/Ruff/mypy/overlay/diff checks; explicit tolerances and accumulation caveat.
+- Evidence: 124 tests PASS; Ruff/mypy/overlay/diff PASS; independent reviewer and re-review PASS.
 
 ### Temporary / deferred / failure
 
@@ -278,18 +279,18 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: visualization/trace history FS-006.
 - Performance: no premature vectorized state that obscures provenance.
 - Docs: math relation and critical traceability verified/updated; status milestone evidence.
-- Handoff: commit; do not start rendering until math PASS; stop before FS-006.
+- Handoff: terminal endpoint evidence committed; FS-006 entry is satisfied.
 
 ## FS-006 — Diagnostic Epicycle Renderer
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: render actual chain states with circles/vectors/endpoint/persistent endpoint trace.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-005 → FS-006`; FS-005 endpoint property must be completed.
 - Entry evidence: immutable/explicit chain state API and renderer dependency review.
-- Current gate: unsatisfied while FS-005 is planned.
+- Current gate: satisfied — FS-005 completed with commit `419b60c`; user authorized continuation.
 
 ### Scope / non-goals / invariants
 
