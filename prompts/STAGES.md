@@ -204,7 +204,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-004 — Partial Reconstruction and Metrics
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; implementation commit `743a859`.
 - Goal: reconstruct from explicit harmonic selections and report defined errors.
 
 ### Dependency DAG & entry preconditions
@@ -231,6 +231,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - Unit/property tests for full/partial, explicit bins, errors, degenerates and retained energy.
 - Integration compares full reconstruction with FS-002 IDFT; full suite/static/overlay checks PASS.
+- Evidence: 110 tests PASS; Ruff/mypy/overlay/diff PASS; independent reviewer and re-review PASS.
 
 ### Temporary / deferred / failure
 
@@ -238,18 +239,18 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: epicycle chain FS-005 and charts/controls.
 - Failure: invalid K/set rejected; no automatic ordering substitution.
 - Docs: math/traceability/status/plan updated with actual metric semantics.
-- Handoff: commit and stop before FS-005.
+- Handoff: terminal evidence committed; FS-005 entry is satisfied.
 
 ## FS-005 — Epicycle Mathematics
 
-- Lifecycle: `planned`; critical milestone.
+- Lifecycle: `in_progress`; critical milestone.
 - Goal: prove head-to-tail rotating vector model and endpoint/reconstruction equivalence.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-004 → FS-005`; FS-004 selected reconstruction must be completed.
 - Entry evidence: accepted coefficient selection and reconstruction API.
-- Current gate: unsatisfied while FS-004 is planned.
+- Current gate: satisfied — FS-004 completed with commit `743a859`; user authorized continuation.
 
 ### Scope / non-goals / invariants
 

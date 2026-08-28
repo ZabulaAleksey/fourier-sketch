@@ -11,13 +11,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-001` | Immutable Domain Model, typed validation, public imports | `completed` |
 | `FS-002` | Complex conversion, reference/NumPy DFT and IDFT | `completed` |
 | `FS-003` | Fourier Spectrum energy and deterministic ordering views | `completed` |
+| `FS-004` | Partial Reconstruction and metrics | `completed` |
 
 ## Ближайшая математическая основа (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-004` | Partial Reconstruction and metrics (`in_progress`) |
-| `FS-005` | Epicycle Mathematics and endpoint equivalence |
+| `FS-005` | Epicycle Mathematics and endpoint equivalence (`in_progress`) |
 | `FS-006` | Diagnostic matplotlib Epicycle Renderer |
 | `FS-007` | Freehand Input |
 | `FS-008` | First live freehand-to-trace MVP |

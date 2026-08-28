@@ -2,63 +2,64 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-004`: явный coefficient selection, continuous/discrete partial
-reconstruction и определённые error/energy metrics. Lifecycle: `in_progress`.
+Реализовать critical milestone Stage `FS-005`: математическую head-to-tail epicycle chain и
+доказать equivalence её endpoint с FS-004 reconstruction. Lifecycle: `in_progress`.
 
 ## Связанные требования
 
-- SPEC: `specs/features/fourier-core.spec.md`.
-- IDs: FC-FR-005, FC-FR-006, FC-AC-003, FC-AC-004, FR-HARMONICS-001, AC-SYS-010.
-- Stage contract: `prompts/STAGES.md`, heading `FS-004`.
+- SPEC: `specs/features/epicycle-animation.spec.md`.
+- IDs: EP-FR-001, EP-FR-002, EP-FR-003, EP-AC-001..003, BH-EPICYCLE-001,
+  BH-EPICYCLE-TRACE-001, AC-SYS-003, AC-SYS-005, AC-SYS-010.
+- Stage contract: `prompts/STAGES.md`, heading `FS-005`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: `FS-004`.
-- Completed prerequisite: FS-003 implementation `f004f68`, 75 tests and all quality gates PASS.
-- DAG: `FS-003 → FS-004`; no cycle/forward dependency.
-- Entry gate: satisfied; user authorized the FS-002–FS-006 sequence.
+- Stage ID: `FS-005`.
+- Completed prerequisite: FS-004 implementation `743a859`, 110 tests and review PASS.
+- DAG: `FS-004 → FS-005`; no cycle/forward dependency.
+- Entry gate: satisfied; selected reconstruction API is accepted and committed.
 
 ## Runnable vertical slice и consumer scenario
 
-- Entry: consumer transforms a canonical circle or square and chooses K/order or an explicit set.
-- Path: complete spectrum → `CoefficientSelection` → reconstruction grid → metrics.
-- Observable result: full selection matches FS-002 IDFT; partial selection returns finite points,
-  retained energy and defined error diagnostics without FS-005.
+- Entry: public API receives a `CoefficientSelection`, finite normalized time and optional origin.
+- Path: coefficients → rotating local values → head-to-tail `EpicycleVector` values →
+  `EpicycleChainState`.
+- Observable result: every start/end/center/radius is renderer-ready and endpoint equals
+  `origin + reconstruct_at(selection, time)` without FS-006.
 
 ## Scope / non-goals / invariants
 
-- Scope: immutable 1..N selection; first-K deterministic ordering; explicit unique subset;
-  continuous/discrete reconstruction; MSE/RMSE/max/normalized error; retained energy.
-- Non-goals: epicycle geometry, timeline, renderer and monotonic-error claims for arbitrary order.
-- Invariants: selection is not a partial `FourierSpectrum`; caller's explicit order is preserved;
-  selected bins belong to one complete spectrum; aligned inputs only; no silent NaN/Inf.
-- Zero-reference rule: normalized error is `0` only for exact reconstruction; otherwise a typed
-  undefined state. Zero-energy retained ratio is `1` for full selection and `0` for partial.
+- Scope: `v_k(t)`, DC/±k direction, phase/amplitude/angular velocity, sequential chain, origin,
+  centers and endpoint.
+- Non-goals: trace history, animation loop, Matplotlib/PySide, controls and mouse/image input.
+- Invariants: first start equals origin; every next start equals previous end; every center equals
+  vector start; endpoint equals last end; source selection order is preserved.
+- Periodic evaluation accepts any finite time and reduces it to one period only for stable phase
+  calculation; reported state time remains the caller value.
 
 ## Рабочие задачи
 
 | № | Задача | Статус |
 |---|---|---|
-| 1 | Verify FS-003 terminal evidence and FS-004 entry | completed |
-| 2 | Implement selection and reconstruction contracts | in_progress |
-| 3 | Implement metrics and degenerate-state semantics | pending |
-| 4 | Add unit/property/integration contracts | pending |
-| 5 | Run full/static/overlay/reviewer/SPEC gates | pending |
-| 6 | Synchronize docs and commit FS-004 | pending |
+| 1 | Verify FS-004 terminal evidence and FS-005 entry | completed |
+| 2 | Implement rotating-vector and chain builders | in_progress |
+| 3 | Add analytical/property/integration parity contracts | pending |
+| 4 | Run full/static/overlay/reviewer/SPEC gates | pending |
+| 5 | Synchronize milestone docs and commit FS-005 | pending |
 
 ## Acceptance / PASS
 
-- [ ] Every valid selection contains exactly the requested 1..N unique spectrum bins.
-- [ ] Full selection reconstruction matches FS-002 IDFT on the canonical sample grid.
-- [ ] Partial continuous/discrete reconstruction follows the documented Fourier formula.
-- [ ] Metrics are finite and zero-denominator behavior is explicit and typed.
-- [ ] Retained energy follows the documented zero-energy convention.
+- [ ] DC is stationary; positive/negative frequency direction, phase and amplitude are analytical.
+- [ ] Chain connectivity and domain structural invariants hold for every generated case.
+- [ ] Coefficient permutation changes intermediate centers but not endpoint within tolerance.
+- [ ] Endpoint equals origin plus FS-004 reconstruction for generated selections/times.
+- [ ] Real FFT spectrum/selection flows into a public chain state.
 - [ ] Full quality/reviewer/documentation gates pass.
 
 ## Deferred
 
-- Epicycle chain (`FS-005`), diagnostic timeline/renderer (`FS-006`) and performance claims.
+- Persistent trace/timeline/renderer and controls (`FS-006`).
 
 ## Условие перехода
 
-FS-005 начинается только после FS-004 terminal evidence и commit.
+FS-006 начинается только после FS-005 endpoint-equivalence terminal evidence и commit.

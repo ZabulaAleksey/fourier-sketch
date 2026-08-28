@@ -12,7 +12,7 @@
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | planned |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
-| `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | partial — ordering verified |
+| `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | planned |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | planned |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | planned |
@@ -89,6 +89,18 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | canonical circle summary | real FFT → spectrum analysis | integration | PASS |
 | independent review | FS-003 diff | reviewer gate | PASS after magnitude/Nyquist fixes |
 | commit evidence | FS-003 implementation | Git commit | PASS — `f004f68` |
+
+## Stage FS-004 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| first-K/explicit selection | `domain/selection.py`, `math/selection.py` | unit + property | PASS |
+| full/partial reconstruction | `math/reconstruction.py` | analytical + property + integration | PASS |
+| error/degenerate metrics | `math/metrics.py` | formula/zero-norm/overflow unit tests | PASS |
+| retained energy/value provenance | `retained_energy_ratio` | zero/full/partial/provenance tests | PASS |
+| resource boundaries | reconstruction API | pre-allocation/work negative tests | PASS |
+| independent review | FS-004 diff and fixes | reviewer + re-review | PASS |
+| commit evidence | FS-004 implementation | Git commit | PASS — `743a859` |
 
 ## Acceptance coverage targets
 
