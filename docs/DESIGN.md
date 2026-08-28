@@ -2,9 +2,26 @@
 
 ## Статус
 
-UI ещё не реализован. Этот документ фиксирует approved target behavior из product SPEC, а не
-утверждает наличие screens. Первый diagnostic user-facing surface планируется в `FS-006`, полный
-PySide6 shell — в `FS-021`.
+FS-006 реализовал временную diagnostic Matplotlib surface и headless PNG. Раздел «Diagnostic
+FS-006» ниже фиксирует фактический UI; остальная information architecture остаётся approved target
+для полного PySide6 shell `FS-021`.
+
+## Diagnostic FS-006 — фактический baseline
+
+- resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;
+- Play, Pause, Restart; speed slider `0.1..100.0`; harmonic slider `1..min(N,4096)`;
+- CheckButtons для circles, vectors, endpoint, trace, original и reconstruction;
+- restart ставит `paused`, time `0` и оставляет ровно один новый endpoint в trace;
+- status показывает state, time, K и speed; legend различает original/reconstruction/trace/endpoint;
+- цвета: circles `#457b9d`, vectors `#1d3557`, endpoint `#d00000`, trace `#e76f51`,
+  original `#8b95a5`, reconstruction `#2a9d8f`; линии/markers дополнительно различаются формой;
+- axes сохраняют equal aspect и fit с margin; renderer не меняет curve/chain state при resize;
+- labels берутся из `resources/en.json`; pseudo locale расширяет literals ASCII-markers
+  `[!! … !!]`.
+
+Ограничения diagnostic UI: нет workflow navigation, labels toggle, keyboard/accessibility layer,
+reduced-motion integration, saved locale и production-grade inline errors. Они не объявляются
+готовыми до FS-021; controlled CLI failures доступны уже сейчас.
 
 ## Принцип продукта
 

@@ -43,7 +43,6 @@ Hypothesis добавлен в FS-002. Реализованы:
 
 Planned для соответствующих stages:
 
-- trace samples equal chain endpoint samples;
 - resampling order/endpoints/closed semantics.
 
 ### Integration
@@ -51,19 +50,27 @@ Planned для соответствующих stages:
 Real boundaries: Curve → spectrum → chain, image decoder → transform, contour → application use
 case, renderer consumes chain state, exporter consumes the same timeline, locale resource loader.
 
+FS-006 реализовал integration boundary `EpicycleFrame → Matplotlib artists/Agg PNG`: circle
+center/radius и arrow geometry сравниваются с chain state, visibility не мутирует math, existing
+destination сохраняется.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
 toggles, keyboard navigation, default/fallback/pseudo-locale, text expansion. Headless/offscreen
 mode допустим только если он выполняет actual component code.
 
+FS-006 component evidence покрывает play/pause/restart, speed/K, six visibility toggles, trace
+budget и locale fallback/pseudo. Полный PySide state/accessibility matrix остаётся FS-021.
+
 ### E2E
 
 Критические live paths:
 
-1. freehand input → Curve → Fourier → chain → endpoint trace (`FS-008`);
-2. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
-3. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
+2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-008`);
+3. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
+4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.

@@ -126,3 +126,25 @@ data interoperable. Caller обязан обработать typed undefined nor
 
 **Миграция / откат:** Persisted selection пока отсутствует. Изменение value provenance или limits
 требует SPEC/ADR/test migration до появления session/export formats.
+
+## 2026-08-28 — ADR-008: Immutable render frame и временный Matplotlib diagnostic UI
+
+**Контекст:** FS-006 нужен runnable visual slice до PySide6, но renderer не должен стать вторым
+источником Fourier/reconstruction/trace logic. Первая user-facing surface также требует locale и
+safe output boundary.
+
+**Решение:** Mutable `EpicycleTimeline` живёт в application и emit-ит immutable `EpicycleFrame`.
+Trace append получает только `chain.endpoint`; visibility находится в frame. Matplotlib рисует
+готовую geometry, interactive widgets вызывают controller, Agg headless использует тот же путь.
+Strings загружаются из English JSON с algorithmic pseudo/fallback. PNG публикуется через temporary
+sibling без implicit overwrite.
+
+**Рассмотренные альтернативы:** Вычислять reconstruction в paint callback; хранить trace в
+renderer; сразу добавить PySide6; hardcoded labels; использовать screenshot-only acceptance.
+
+**Последствия:** Diagnostic UI полностью runnable и заменяем как adapter; FS-021 может сменить
+presentation framework без изменения math/application contracts. Live CLI E2E является
+acceptance evidence, screenshot — только visual QA.
+
+**Миграция / откат:** Удаление Matplotlib adapter не меняет domain/math. Новый renderer обязан
+потреблять `EpicycleFrame` и пройти те же endpoint/visibility/locale contracts.

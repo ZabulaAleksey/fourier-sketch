@@ -17,18 +17,25 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-002)
+## Текущая dependency surface (FS-006)
 
 - build backend: Hatchling;
-- runtime: NumPy `>=2.5.2` для explicit FFT adapter;
+- runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
+  interactive/Agg adapters;
 - development: pytest, Ruff, mypy, Hypothesis `>=6.165.10` для property contracts.
 
 Lockfile exact versions являются воспроизводимым evidence. FS-002 review подтвердил Python 3.12,
 Windows wheels и open-source license metadata: NumPy — BSD-compatible SPDX expression, Hypothesis —
-MPL-2.0. NumPy не выходит через public API; Hypothesis остаётся dev-only.
+MPL-2.0. FS-006 frozen lock установил Matplotlib `3.11.1`; package metadata подтверждает
+Matplotlib license agreement (PSF-compatible), Python 3.12 и Windows wheel. Его direct/transitive
+graph: contourpy, cycler, fonttools, kiwisolver, packaging, Pillow, pyparsing, python-dateutil и
+six; локальная metadata review не обнаружила copyleft requirement для project code.
 
-Matplotlib, Pillow/OpenCV/scikit-image, PySide6 и animation codec dependencies добавляются только
-в первом stage реального использования с tests и license/platform review.
+NumPy не выходит через public API; Hypothesis остаётся dev-only. Pillow в FS-006 — только
+transitive dependency Matplotlib и не считается реализованным image decoder/capability проекта.
+
+Direct Pillow/OpenCV/scikit-image, PySide6 и animation codec dependencies добавляются только в
+первом stage реального использования с tests и license/platform review.
 
 ## Cleanup classification
 

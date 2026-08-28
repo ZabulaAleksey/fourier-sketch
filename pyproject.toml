@@ -9,6 +9,7 @@ description = "Staged toolkit for Fourier representations and epicycle reconstru
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "matplotlib>=3.10.6",
     "numpy>=2.5.2",
 ]
 

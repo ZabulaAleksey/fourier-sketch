@@ -2,10 +2,9 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-005` создали package scaffold, immutable domain layer и независимый numerical
-math layer для transforms, spectrum views, selection, reconstruction, metrics и epicycle chains.
-Остальные product modules являются целевой архитектурой и появляются строго в соответствующих
-stages.
+Stages `FS-000`–`FS-006` создали immutable domain/numerical core, application timeline, resource
+locale boundary и diagnostic Matplotlib/CLI adapter. Остальные product modules являются целевой
+архитектурой и появляются строго в соответствующих stages.
 
 ## Архитектурные цели
 
@@ -46,12 +45,13 @@ src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
 ├── math/                       # существует: FS-002..FS-005 Fourier/epicycle core
+├── application/                # существует: FS-006 timeline/frame/control state
+├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
+├── render/                     # существует: Matplotlib frame/PNG/manual adapter
+├── cli/                        # существует: diagnostic live entry point
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
-├── render/                     # planned FS-006, FS-018, FS-022
-├── application/                # появляется с первым composed use case
-├── ui/                         # planned FS-021
-└── cli/ or examples/           # только реальный runnable diagnostic entry point stage
+└── ui/                         # planned FS-021
 ```
 
 Empty directories и placeholder interfaces заранее не создаются.
@@ -71,12 +71,14 @@ Transport/export DTO не должны становиться domain types. Rast
 
 ### Application
 
-Use cases принимают typed inputs/config и возвращают typed results/diagnostics. Планируемые flows:
+Use cases принимают typed inputs/config и возвращают typed results/diagnostics. Реальный первый
+flow и planned continuations:
 
 ```text
+canonical Curve → FFT → `EpicycleTimeline` → immutable `EpicycleFrame` → Matplotlib/PNG
 freehand → cleanup/resample → spectrum → selection → chain timeline
 image → decode/transforms → contour/route → curve → same Fourier use case
-chain timeline → interactive renderer or animation exporter
+chain timeline → future animation exporter
 raster → separate FFT2 use case
 ```
 
@@ -96,6 +98,11 @@ Visibility flags живут в view state и не меняют chain state.
 FS-005 `build_epicycle_chain` является единственной factory геометрии: она сохраняет selection
 order, вычисляет rotating local value и последовательно переиспользует предыдущий `end` как
 следующий `start`. Renderer FS-006 получает готовый state и не повторяет reconstruction.
+
+FS-006 `EpicycleTimeline` — единственная mutable boundary текущего slice. Каждый emitted
+`EpicycleFrame` immutable; trace append получает только `chain.endpoint`. Matplotlib adapter рисует
+circle/vector/endpoint/overlays из frame, не импортируется domain/math слоями и не вычисляет
+Fourier state. CLI создаёт canonical Curve и проходит тот же application boundary.
 
 ## Data flow и provenance
 

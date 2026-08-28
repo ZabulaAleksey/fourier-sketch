@@ -8,7 +8,8 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 ## Текущее состояние
 
 Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002`, spectrum analysis
-`FS-003`, partial reconstruction/metrics `FS-004` и epicycle mathematics `FS-005`.
+`FS-003`, partial reconstruction/metrics `FS-004`, epicycle mathematics `FS-005` и diagnostic
+renderer `FS-006`.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
@@ -18,9 +19,11 @@ views: signed, absolute-frequency, amplitude, interleaved и explicit. Отде�
 `CoefficientSelection` поддерживает first-K и explicit subset, continuous/sample-grid
 reconstruction, retained energy и typed error metrics. `build_epicycle_chain` превращает selection
 в renderer-ready head-to-tail state, чей endpoint равен reconstruction с учётом origin.
+`fourier_sketch.application` управляет timeline/trace, а Matplotlib adapter потребляет immutable
+frames и поддерживает interactive window и headless PNG.
 
-Следующий этап одобренной последовательности — `FS-006` (diagnostic Matplotlib renderer); он
-начинается только после terminal evidence FS-005.
+Следующий planned stage — `FS-007` (freehand input); текущая пятиэтапная последовательность на
+FS-006 завершается и не запускает FS-007 автоматически.
 
 ## Целевой pipeline
 
@@ -55,6 +58,23 @@ uv sync --all-groups --frozen
 
 `uv` использует общий machine cache, но создаёт изолированную project-local `.venv`.
 
+## Diagnostic renderer
+
+Interactive Matplotlib window с Play/Pause/Restart, speed, harmonic count и visibility controls:
+
+```powershell
+uv run python -m fourier_sketch.cli.diagnostic
+```
+
+Живой headless путь `fixture → FFT → selection → timeline → renderer → PNG`:
+
+```powershell
+uv run python -m fourier_sketch.cli.diagnostic --headless --output epicycles.png --frames 120 --harmonics 15
+```
+
+Production/fallback locale — `en`; `--locale pseudo` включает диагностическую expanded locale.
+Существующий output не перезаписывается и возвращает controlled failure.
+
 ## Проверки
 
 ```powershell
@@ -69,12 +89,12 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — independent domain и numerical math layers;
-- `tests/` — smoke, unit, property, integration и component executable contracts.
+- `src/fourier_sketch/` — domain/math, application timeline, presentation resources, renderer/CLI;
+- `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.
 
 ## Ограничения
 
-Проект пока не имеет пользовательского entry point. Diagnostic rendering, mouse/image input, GUI
-и export остаются planned.
+Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
+Mouse/image input, product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

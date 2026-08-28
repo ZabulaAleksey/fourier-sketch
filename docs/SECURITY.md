@@ -22,6 +22,7 @@
 - numeric input проверяет finite values, ranges и allocation estimate;
 - interactive harmonics: `1..min(N, 4096)`; larger batch mode требует explicit command и budget;
 - FS-004 batch reconstruction: максимум `262144` output samples и `16777216` evaluated terms;
+- FS-006 timeline: maximum speed `100`, trace `10000` points, headless frames `1..9999`;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -40,6 +41,11 @@ terminal completion. GUI не запускает overlapping conflicting jobs. A
 - partial/temp artifact при failure классифицируется и сообщается; unrelated files не удаляются;
 - external encoder вызывается argument list без shell interpolation;
 - project never writes outside user-selected destination implicitly.
+
+FS-006 diagnostic PNG принимает только explicit `.png` path с существующим parent. Encode идёт во
+temporary sibling, затем destination резервируется через exclusive create и публикуется atomic
+replace; existing destination без отдельного overwrite decision не меняется. CLI не предоставляет
+overwrite flag и сообщает только basename, не полный path.
 
 ## Dependencies and supply chain
 
