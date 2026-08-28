@@ -18,6 +18,11 @@ from .freehand import (
     FreehandCurveResult,
     build_freehand_timeline,
 )
+from .image_preprocessing import (
+    export_preprocessing_result,
+    preprocess_local_image,
+    select_preprocessing_raster,
+)
 
 __all__ = [
     "DEFAULT_FREEHAND_HARMONICS",
@@ -33,4 +38,7 @@ __all__ = [
     "ResamplingMethod",
     "TimelineState",
     "build_freehand_timeline",
+    "export_preprocessing_result",
+    "preprocess_local_image",
+    "select_preprocessing_raster",
 ]

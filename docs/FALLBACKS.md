@@ -35,3 +35,20 @@ Reference implementation не заменяет недоступный NumPy back
 Agg не является silent fallback: пользователь/automation выбирает `--headless` явно. Недоступный
 Matplotlib останавливает entry point; Pillow/transitive codec не используется как альтернативный
 project image/export backend.
+
+## Local image preprocessing (FS-010)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | Pillow 12.3.0, explicit actual PNG/JPEG allowlist |
+| Budgets | encoded `≤25 MiB`; decoded `≤40,000,000` pixels |
+| Failure signal | stable `ImageInputError.code`; localized CLI exit `2` |
+| Retry | отсутствует для local deterministic validation/decode failure |
+| Automatic fallback | другой decoder/format, truncated recovery и first-frame fallback запрещены |
+| Degraded result | отсутствует; partial transform result не публикуется |
+| Provenance | actual format, byte count, source/oriented dimensions, EXIF decision, transforms |
+| Recovery | исправить input/options/dependency и повторить operation явно |
+
+Grayscale и threshold не являются fallback друг для друга: оба результата создаются одним
+успешным use case и экспортируются только через explicit `--stage`. Недоступность будущего Canny
+не изменяет FS-010 binary semantics.

@@ -60,6 +60,10 @@ destination сохраняется.
 FS-007 реализовал boundary `pointer capture → cleaned/index-resampled Curve → FFT → timeline →
 Matplotlib frame`; tests проверяют source/sample provenance, one-point DC и open/closed topology.
 
+FS-010 реализовал boundary `bounded local bytes → allowlisted Pillow verify/decode → typed
+grayscale/binary → PNG publication`: реальные PNG/JPEG/TIFF/APNG/corrupt/oversized fixtures
+проверяют actual format, EXIF orientation, оба budgets, transform provenance и overwrite safety.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -77,6 +81,11 @@ FS-008 component evidence вызывает фактические Button press/r
 
 FS-009 component/live evidence вызывает RadioButtons method selection на ready actual-event
 capture, сравнивает measured CV и проверяет transactional restore для one-point arc failure.
+
+FS-010 component evidence запускает localized image CLI in-process и проверяет success,
+invalid-options и existing-output states; live subprocess E2E проходит local JPEG → transforms →
+binary PNG и privacy-safe corrupt failure. Это самостоятельный preprocessing slice, а полный
+`image → contour → Fourier` E2E остаётся `BLOCKED_BY_BACKEND` до FS-013.
 
 ### E2E
 

@@ -60,6 +60,16 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - zero-length arc selection показывает controlled invalid state и возвращает selector к method,
   который соответствует сохранённому timeline; silent fallback отсутствует.
 
+## Image preprocessing FS-010 — фактический diagnostic baseline
+
+- локальный CLI принимает source, output, `grayscale|binary`, threshold `0..255`, fixed
+  `none|median_3`, autocontrast, invert, overwrite и locale;
+- success summary показывает только output basename, actual format, oriented dimensions и stage;
+- invalid/corrupt/oversized/multiframe input получает localized controlled failure без full path,
+  raw exception, metadata или pixel payload;
+- grayscale и binary доступны как разные intermediates; invert не меняет grayscale;
+- existing output требует явного `--overwrite`; edge/contour controls отсутствуют до своих stages.
+
 ## Принцип продукта
 
 Главный визуальный объект — причинная цепочка:

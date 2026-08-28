@@ -2,14 +2,14 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-008` создали immutable domain/numerical core, application timeline, bounded
+Stages `FS-000`–`FS-009` создали immutable domain/numerical core, application timeline, bounded
 freehand capture, cohesive control surface, resource locale boundary и diagnostic Matplotlib/CLI
 adapter. Остальные product modules являются целевой архитектурой и появляются строго в
 соответствующих stages.
 
-Текущий FS-009 добавляет в math второй explicit resampling method и immutable spacing metrics;
-application result хранит выбранный method и measured source/output diagnostics. Existing MVP
-RadioButtons transactionally перестраивают ready capture через тот же FFT/timeline boundary.
+Текущий FS-010 добавляет Pillow-neutral immutable raster/provenance contracts, fail-closed Pillow
+adapter, application preprocessing use case и localized diagnostic CLI. Edge/contour semantics в
+этом stage отсутствуют.
 
 ## Архитектурные цели
 
@@ -49,12 +49,12 @@ domain, math           → Python stdlib + NumPy only when introduced
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
-├── math/                       # существует: FS-002..FS-005 core + FS-007 index resampling
-├── application/                # существует: FS-006 timeline + FS-007 freehand use case
+├── math/                       # существует: FS-002..FS-005 core + FS-007/FS-009 resampling
+├── application/                # существует: timeline, freehand и image preprocessing use cases
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
 ├── render/                     # существует: Matplotlib frame/PNG/freehand adapters
-├── cli/                        # существует: diagnostic и freehand live entry points
-├── imaging/                    # planned FS-010..FS-014, FS-020
+├── cli/                        # существует: diagnostic, freehand и image live entry points
+├── imaging/                    # существует: FS-010 contracts/Pillow adapter; FS-011+ planned
 ├── routing/                    # planned FS-012, FS-015..FS-017
 └── ui/                         # planned FS-021
 ```
@@ -128,12 +128,25 @@ FS-009 `ResamplingMethod` различает `uniform_index` и `arc_length`. Ar
 отклоняет non-positive/non-finite total length. Method switch публикует result/timeline только
 после полного успешного rebuild; при failure предыдущий method/result остаётся согласованным с UI.
 
+FS-010 `imaging.model` хранит one-byte `RasterImage` как grayscale или binary, decode provenance,
+transform sequence и stable privacy-safe failure code без Pillow/NumPy values в public result.
+`pillow_backend` сначала проверяет file size, читает не более 25 MiB + 1, дважды открывает один
+immutable byte payload: первый pass ограничивает format/dimensions и выполняет `verify()`, второй
+проверяет single-frame, читает EXIF, полностью декодирует, применяет orientation и grayscale.
+Application затем независимо применяет fixed median 3x3, autocontrast и inclusive threshold/
+invert. Diagnostic export выбирает ровно один named intermediate, кодирует PNG до публикации и
+использует temporary sibling + exclusive hard-link publication либо explicit atomic replace.
+
 ## Data flow и provenance
 
 Каждый significant result хранит достаточный provenance: source kind, parameters, sample count,
 Fourier convention, selected frequencies и algorithm/backend. Пользовательский image/sample
 payload не копируется в logs. Intermediate image results доступны только по явному diagnostic/
 export request.
+
+FS-010 provenance содержит actual `PNG`/`JPEG`, encoded byte count, source/oriented dimensions,
+валидированный EXIF orientation и ordered transform names. Source path, EXIF payload и pixels в
+provenance/CLI failure не входят.
 
 FS-002 сохраняет complete coefficients в FFT storage order с canonical signed labels. Reference
 DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим

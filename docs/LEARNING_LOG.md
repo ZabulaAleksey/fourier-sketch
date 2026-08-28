@@ -228,3 +228,49 @@ caveat: spacing CV не измеряет perceptual или Fourier reconstructio
 - `src/fourier_sketch/math/resampling.py`
 - `tests/integration/test_arc_length_freehand_pipeline.py`
 - `tests/property/test_arc_length_resampling_properties.py`
+
+## 2026-08-28 — Pillow verification и decode должны использовать независимые открытия bytes
+
+### Problem
+
+- PNG metadata/frame inspection может продвинуть или закрыть internal file pointer, после чего
+  `verify()` уже не является корректным immediate operation.
+
+### Symptom
+
+- Первый FS-010 targeted run дал `RuntimeError: verify must be called directly after open` на
+  обычном валидном PNG; binary exporter также ошибочно требовал grayscale stage.
+
+### Root cause
+
+- Один Pillow object одновременно использовался для metadata inspection, multiframe check и
+  integrity verification; generic PNG export переиспользовал transform-only grayscale guard.
+
+### Failed attempts
+
+- Перенос multiframe check после verify не помог: `getexif()` на PNG тоже мог materialize state.
+
+### Fix
+
+- Immutable bounded payload открывается отдельно для immediate header `verify()` и отдельно для
+  metadata/frame/full decode. Transform guard и generic raster-to-PNG conversion разделены.
+
+### Verification
+
+```text
+command / check: FS-010 unit/integration/component/live E2E targeted suite
+result: PASS — 39 tests after typed provenance/integrity review regressions
+scope: PNG/JPEG, TIFF spoof, APNG, corrupt/truncated, 25 MiB/40 MP, EXIF, transforms, overwrite
+caveat: contour/edge behavior не входит в FS-010
+```
+
+### Prevention
+
+- Decoder integration tests должны использовать real format plugins и вызывать integrity API в
+  документированном lifecycle; adapter types не должны сужать generic export semantics.
+
+### Links
+
+- `src/fourier_sketch/imaging/pillow_backend.py`
+- `tests/integration/test_image_preprocessing_pipeline.py`
+- `tests/e2e/test_image_preprocessing_e2e.py`

@@ -7,7 +7,7 @@
 - Complexity: `COMPLEX`; mode: production-oriented staged development.
 - Current SDLC at bootstrap: specification + architecture.
 - Domains: scientific computing, computer vision, desktop visualization.
-- Stack: Python 3.12+; actual FS-000 runtime dependencies отсутствуют.
+- Stack: Python 3.12+, NumPy, Matplotlib и direct Pillow 12.3.0.
 - Backend DX: `BDX-L0` — backend/runtime service отсутствует.
 - Monitoring class: `active` во время явной разработки; внешняя automation не настроена.
 - First validated desktop environment: Windows; paths обязаны оставаться portable.
@@ -32,7 +32,8 @@
 
 ## Open project decisions
 
-- exact CV backend combination выбирается when `FS-010`/`FS-011` begins;
+- Pillow выбран как bounded PNG/JPEG preprocessing backend в FS-010; Canny backend выбирается в
+  FS-011 без изменения Pillow-neutral raster contract;
 - PySide6 introduction and packaging proof occur in `FS-021`/`FS-023`;
 - MP4 encoder/backend is unresolved until `FS-022` capability/license evidence;
 - additional production locales require explicit product decision.

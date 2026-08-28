@@ -9,7 +9,8 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002`, spectrum analysis
 `FS-003`, partial reconstruction/metrics `FS-004`, epicycle mathematics `FS-005`, diagnostic
-renderer `FS-006`, bounded freehand input `FS-007` и cohesive freehand-to-trace MVP `FS-008`.
+renderer `FS-006`, bounded freehand input `FS-007`, cohesive freehand-to-trace MVP `FS-008` и
+arc-length parameterization `FS-009`.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
@@ -99,6 +100,21 @@ zero-time endpoint.
 перестраивает текущий stroke без второго Fourier path и показывает measured mean spacing/CV.
 Zero-total-length arc input завершается typed error и не переключается молча на index method.
 
+## Image preprocessing
+
+FS-010 diagnostic принимает локальный PNG/JPEG, проверяет 25 MiB encoded и 40 MP decoded budgets,
+реальный decoder format и single-frame policy, затем применяет EXIF orientation и строит отдельные
+grayscale/binary intermediates:
+
+```powershell
+uv run python -m fourier_sketch.cli.image input.jpg --output threshold.png --threshold 128 --denoise median_3 --autocontrast
+```
+
+`--stage grayscale|binary` выбирает экспортируемый intermediate, `--invert` инвертирует только
+threshold result. Существующий destination сохраняется без `--overwrite`. Corrupt, truncated,
+oversized, multiframe и content с неподдерживаемым фактическим format завершаются controlled exit
+`2`; full path и image payload не выводятся.
+
 ## Проверки
 
 ```powershell
@@ -113,14 +129,15 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — domain/math, application timeline/freehand, presentation resources,
-  renderer/CLI;
+- `src/fourier_sketch/` — domain/math, imaging contracts/Pillow adapter, application use cases,
+  presentation resources, renderer/CLI;
 - `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.
 
 ## Ограничения
 
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
-Freehand input и единый Matplotlib MVP workflow реализованы как проверяемый vertical slice.
-Arc-length parameterization, image input, product GUI и animation export остаются planned.
+Freehand input, единый Matplotlib MVP, arc-length resampling и безопасный image preprocessing
+реализованы как проверяемые vertical slices. Edge/contour pipeline, product GUI и animation export
+остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

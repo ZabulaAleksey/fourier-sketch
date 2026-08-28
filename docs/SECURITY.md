@@ -27,6 +27,9 @@
   проверяется до дальнейшего накопления/FFT, а consecutive duplicates игнорируются;
 - FS-009 arc-length: cumulative/segment/output structures ограничены source `10000` и output
   `4096`; non-finite distance/sum/variance fail closed до публикации нового timeline;
+- FS-010 image adapter: file size проверяется до read/decode, read ограничен `25 MiB + 1`, Pillow
+  registry ограничен actual PNG/JPEG, decompression warnings становятся errors, dimensions
+  проверяются до `load()` и после EXIF transpose; multiframe input не принимается;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -54,6 +57,11 @@ overwrite flag и сообщает только basename, не полный path
 FS-007 Matplotlib adapter принимает только finite data coordinates из своих drawing axes и только
 left-button stroke. Events вне axes, invalid collaborators/options и превышение capture budget
 завершаются без создания timeline; raw pointer samples не выводятся в status/CLI errors.
+
+FS-010 diagnostic PNG полностью кодируется во временный sibling до публикации. Без `--overwrite`
+destination создаётся одним exclusive hard-link operation и существующие данные не меняются; при
+failure temp удаляется. Explicit overwrite использует atomic replace. CLI success/failure не
+выводит source full path, pixels или EXIF payload.
 
 ## Dependencies and supply chain
 
@@ -89,5 +97,5 @@ Fallback Policy наследуется и здесь не копируется.
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stage `FS-010` cannot complete without live decode/limit evidence; Stage `FS-022` cannot complete
+Stage `FS-010` has live decode/limit/overwrite/privacy evidence; Stage `FS-022` cannot complete
 without overwrite/partial-output/codec-failure evidence.

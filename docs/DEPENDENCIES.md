@@ -17,11 +17,12 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-006)
+## Текущая dependency surface (FS-010)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
-  interactive/Agg adapters;
+  interactive/Agg adapters; Pillow `>=12.3.0` для allowlisted PNG/JPEG decode и bounded image
+  transforms;
 - development: pytest, Ruff, mypy, Hypothesis `>=6.165.10` для property contracts.
 
 Lockfile exact versions являются воспроизводимым evidence. FS-002 review подтвердил Python 3.12,
@@ -31,10 +32,21 @@ Matplotlib license agreement (PSF-compatible), Python 3.12 и Windows wheel. Е�
 graph: contourpy, cycler, fonttools, kiwisolver, packaging, Pillow, pyparsing, python-dateutil и
 six; локальная metadata review не обнаружила copyleft requirement для project code.
 
-NumPy не выходит через public API; Hypothesis остаётся dev-only. Pillow в FS-006 — только
-transitive dependency Matplotlib и не считается реализованным image decoder/capability проекта.
+NumPy и Pillow objects не выходят через public application API; Hypothesis остаётся dev-only.
+FS-010 повысил уже присутствовавший transitive Pillow до direct dependency и зафиксировал
+12.3.0 в lockfile. Official package metadata подтверждает Python `>=3.10`, Windows wheels и
+MIT-CMU license; project использует Python `>=3.12`. Official security guide подтверждает
+content-based format detection и decompression-bomb warning/error semantics, поэтому adapter
+дополнительно передаёт `formats=("PNG", "JPEG")`, превращает warning в error и применяет более
+строгий project pixel limit до `load()`.
 
-Direct Pillow/OpenCV/scikit-image, PySide6 и animation codec dependencies добавляются только в
+Review sources: [PyPI Pillow](https://pypi.org/project/pillow/),
+[security guide](https://pillow.readthedocs.io/en/stable/handbook/security.html),
+[format handbook](https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html),
+[ImageOps API](https://pillow.readthedocs.io/en/stable/reference/ImageOps.html),
+[MIT-CMU license](https://github.com/python-pillow/Pillow/blob/main/LICENSE).
+
+Direct OpenCV/scikit-image, PySide6 и animation codec dependencies добавляются только в
 первом stage реального использования с tests и license/platform review.
 
 ## Cleanup classification

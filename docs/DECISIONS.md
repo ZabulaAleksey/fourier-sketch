@@ -192,3 +192,28 @@ uniform cumulative targets, но quality claims ограничены измер�
 **Миграция / откат:** Default остаётся `uniform_index`, поэтому существующие callers не меняют
 поведение. Удаление selector не меняет FFT/timeline contracts; изменение method semantics требует
 SPEC/ADR/test migration.
+
+## 2026-08-28 — ADR-011: Pillow-neutral raster contract и fail-closed PNG/JPEG adapter
+
+**Контекст:** FS-010 должен декодировать недоверенные local images и публиковать диагностируемые
+intermediates, но Pillow object не должен стать application/domain API, а широкий decoder registry
+не должен автоматически активировать TIFF/EPS/WebP и другие parsers.
+
+**Решение:** Pillow 12.3.0 становится direct dependency только внутри `imaging` adapter. Public
+contract — immutable one-byte `RasterImage`, actual-format/dimension/EXIF provenance и stable
+`ImageFailureCode`. Adapter проверяет 25 MiB до decoder, открывает immutable bytes только с
+PNG/JPEG allowlist, проверяет 40 MP до `load()`, выполняет отдельный `verify()` pass, отвергает
+multiframe и применяет EXIF transpose. Grayscale, fixed median 3x3, autocontrast и threshold/invert
+остаются отдельными transforms. Retry и silent decoder fallback отсутствуют.
+
+**Рассмотренные альтернативы:** Передавать Pillow objects через application; доверять extension;
+использовать весь Pillow registry; добавить OpenCV до FS-011; хранить только final binary без
+intermediate/provenance; молча брать первый animation frame.
+
+**Последствия:** FS-011 получает backend-neutral grayscale/binary contract. Image bytes, full path
+и EXIF payload не попадают в result/error. Двойное открытие одного memory payload стоит немного
+CPU, но исключает file TOCTOU между verification и decode; budgets ограничивают память/работу.
+
+**Миграция / откат:** Удаление direct Pillow и `imaging`/image CLI возвращает проект к FS-009 без
+изменения curve/Fourier APIs. Изменение форматов, limits, first-frame или threshold semantics
+требует SPEC/security/accepted-test migration.
