@@ -2,9 +2,8 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-001`: только domain values, invariants, typed validation и public imports,
-не начиная DFT, renderer или image pipeline. Lifecycle: `implemented_unverified`; реализация и
-review завершены, финальный rerun/documentation/commit gate ещё выполняется.
+Stage `FS-001` завершён: domain values, invariants, typed validation и public imports реализованы,
+проверены и зафиксированы в `63d7c10`. Lifecycle: `completed`. FS-002 автоматически не начинается.
 
 ## Связанные требования
 
@@ -67,14 +66,14 @@ review завершены, финальный rerun/documentation/commit gate е
 | 2 | Add domain values with typed validation | 1 | completed |
 | 3 | Add accepted unit contracts and public imports | 2 | completed |
 | 4 | Run unit/full/lint/type/overlay gates | 3 | completed |
-| 5 | Synchronize traceability/status/docs and commit | 4 | in_progress |
+| 5 | Synchronize traceability/status/docs and commit | 4 | completed |
 
 ## Acceptance / PASS criteria
 
 - [x] Public domain API represents every FS-001 value without future implementation.
 - [x] Valid and invalid invariants have accepted unit evidence.
 - [x] Domain layer has no UI/render/CV dependency.
-- [ ] Full canonical checks pass; diff reviewed; documentation gate complete.
+- [x] Full canonical checks pass; diff reviewed; documentation gate complete.
 
 ## Проверка
 
@@ -106,7 +105,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - [x] `FS-000` terminal prerequisite подтверждён до старта.
 - [x] Runnable consumer scenario and PASS evidence exist without future stage.
 - [x] Unit + regression + lint + type + overlay checks PASS.
-- [ ] Completion Documentation Synchronization Gate and Git diff review complete.
+- [x] Completion Documentation Synchronization Gate and Git diff review complete.
 
 ## Условие остановки
 

@@ -8,7 +8,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | Stage | Результат | Статус |
 |---|---|---|
 | `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `completed` |
-| `FS-001` | Immutable Domain Model, typed validation, public imports | `implemented_unverified` |
+| `FS-001` | Immutable Domain Model, typed validation, public imports | `completed` |
 
 ## Ближайшая математическая основа (planned)
 

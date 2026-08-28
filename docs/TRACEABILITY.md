@@ -55,7 +55,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 
 ## Stage FS-001 evidence
 
-| Contract | Artifact | Check | Status before commit evidence |
+| Contract | Artifact | Check | Status |
 |---|---|---|---|
 | FC-FR-001 finite/non-empty curve values | `src/fourier_sketch/domain/point.py`, `curve.py`, `piecewise_curve.py` | unit tests | PASS |
 | FC-FR-004 coefficient/spectrum values | `src/fourier_sketch/domain/fourier.py` | unit tests, canonical signed-bin negative case | PASS |
@@ -64,7 +64,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | typed malformed-input failures | domain constructors | negative unit tests | PASS |
 | dependency boundary | domain imports | Ruff/mypy + import audit | PASS — stdlib/internal only |
 | independent review | FS-001 diff | reviewer gate | PASS after canonical-bin and typed-error fixes |
-| commit evidence | FS-001 implementation | Git commit | PENDING |
+| commit evidence | FS-001 implementation | Git commit | PASS — `63d7c10` |
 
 ## Acceptance coverage targets
 

@@ -3,8 +3,8 @@
 ## Текущий этап
 
 - Stage ID: `FS-001`
-- Lifecycle: `implemented_unverified`
-- Evidence level: `validated locally` — reviewer findings исправлены; final gates PASS; commit pending
+- Lifecycle: `completed`
+- Evidence level: `committed` — implementation commit `63d7c10`, final gates PASS
 - Branch: `feature/fs-001-domain-model`
 
 ## Prerequisites и runnable path
@@ -23,7 +23,7 @@
 
 ## В процессе
 
-- Completion documentation synchronization, final rerun and commit evidence.
+- None. FS-002 не начат.
 
 ## Известные блокеры
 
@@ -37,7 +37,7 @@
 
 ## Следующая рекомендуемая задача
 
-Finish FS-001 commit evidence and stop before FS-002.
+По отдельной команде пользователя спланировать/начать FS-002; до команды не изменять product code.
 
 ## Последние проверенные команды
 
@@ -87,6 +87,7 @@ result: PASS; stale docs, canonical signed bins and typed malformed-input findin
 - Initial empty main commit: `a2bda62`.
 - Bootstrap implementation commit: `878f724` on `feature/project-bootstrap`.
 - Bootstrap completion commit: `d6a2df8`, also at `origin/feature/project-bootstrap`.
+- FS-001 implementation commit: `63d7c10` on `feature/fs-001-domain-model`.
 - Merge/push/release: NOT PERFORMED.
 
 ## Синхронизация документации
@@ -99,5 +100,5 @@ result: PASS; stale docs, canonical signed bins and typed malformed-input findin
 
 ## Заметки для следующей сессии Codex
 
-FS-001 is implemented and locally reviewed, but terminal completion requires final rerun and commit
-evidence. Do not begin FS-002 automatically.
+FS-001 completed with committed evidence. Do not begin FS-002 automatically; рабочая ветка не
+merged и не pushed.
