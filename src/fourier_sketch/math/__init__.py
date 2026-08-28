@@ -18,7 +18,11 @@ from .reconstruction import (
 )
 from .resampling import (
     MAX_RESAMPLED_POINTS,
+    CurveSpacingMetrics,
+    ResamplingMethod,
     cleanup_consecutive_duplicates,
+    curve_spacing_metrics,
+    resample_curve_by_arc_length,
     resample_curve_by_index,
 )
 from .selection import select_first, select_frequencies
@@ -31,11 +35,14 @@ __all__ = [
     "MAX_RECONSTRUCTION_TERMS",
     "MAX_REFERENCE_SAMPLES",
     "MAX_RESAMPLED_POINTS",
+    "CurveSpacingMetrics",
     "FourierBackendError",
+    "ResamplingMethod",
     "build_epicycle_chain",
     "cleanup_consecutive_duplicates",
     "complex_samples_to_curve",
     "complex_to_point",
+    "curve_spacing_metrics",
     "curve_to_complex_samples",
     "fft_dft",
     "idft",
@@ -45,6 +52,7 @@ __all__ = [
     "reconstruct_samples",
     "reconstruction_metrics",
     "reference_dft",
+    "resample_curve_by_arc_length",
     "resample_curve_by_index",
     "retained_energy_ratio",
     "rotating_value",

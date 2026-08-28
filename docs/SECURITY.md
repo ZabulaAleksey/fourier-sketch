@@ -25,6 +25,8 @@
 - FS-006 timeline: maximum speed `100`, trace `10000` points, headless frames `1..9999`;
 - FS-007 freehand: максимум `10000` принятых pointer points и `4096` resampled points; budget
   проверяется до дальнейшего накопления/FFT, а consecutive duplicates игнорируются;
+- FS-009 arc-length: cumulative/segment/output structures ограничены source `10000` и output
+  `4096`; non-finite distance/sum/variance fail closed до публикации нового timeline;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion

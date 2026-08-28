@@ -183,3 +183,48 @@ caveat: platform pointer coalescing остаётся ответственнос�
 
 - `src/fourier_sketch/render/matplotlib_freehand.py`
 - `tests/component/test_freehand_mvp_controls_component.py`
+
+## 2026-08-28 — Равномерность sampling требует измеримого определения
+
+### Problem
+
+- «Более равномерная кривая» неоднозначна: equal source indices и equal traveled distance дают
+  разные результаты, а визуальное впечатление не является quality contract.
+
+### Symptom
+
+- На source `x=(0,0.1,1,4)` index output имел spacing от `0.02` до `0.6`, хотя sample count был
+  фиксирован и порядок сохранялся.
+
+### Root cause
+
+- `uniform_index` равномерно параметризует source vertex indices, а не cumulative segment length.
+
+### Failed attempts
+
+- N/A — stage contract заранее запретил считать arc-length универсально лучшим без метрики.
+
+### Fix
+
+- Добавлен explicit `arc_length` method и typed spacing metrics. На зафиксированном fixture при
+  `N=16` index CV равен `0.917196816392`, arc-length CV — `0`.
+
+### Verification
+
+```text
+command / check: unit/property comparison; actual selector integration/E2E; measured CLI snippet
+result: PASS
+scope: open/closed topology, zero length, same source/method comparison and endpoint trace
+caveat: spacing CV не измеряет perceptual или Fourier reconstruction quality
+```
+
+### Prevention
+
+- Любой future sampling quality claim должен называть metric, fixture, topology и baseline; новые
+  algorithms не заменяют default молча.
+
+### Links
+
+- `src/fourier_sketch/math/resampling.py`
+- `tests/integration/test_arc_length_freehand_pipeline.py`
+- `tests/property/test_arc_length_resampling_properties.py`

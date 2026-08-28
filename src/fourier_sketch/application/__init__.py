@@ -1,5 +1,7 @@
 """Application use cases for Fourier Sketch."""
 
+from fourier_sketch.math import ResamplingMethod
+
 from .diagnostic_epicycles import (
     EpicycleFrame,
     EpicycleTimeline,
@@ -28,6 +30,7 @@ __all__ = [
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
     "RenderVisibility",
+    "ResamplingMethod",
     "TimelineState",
     "build_freehand_timeline",
 ]

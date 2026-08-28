@@ -41,10 +41,12 @@ Hypothesis добавлен в FS-002. Реализованы:
 - full/partial reconstruction, retained-energy bounds и explicit normalized-error states;
 - epicycle connectivity, permutation-invariant endpoint и endpoint/reconstruction parity;
 - index-resampling order, exact open endpoints, closed seam и bounded output;
+- arc-length order/exact open endpoints/closed seam, zero-length failure и uniform straight-line
+  spacing;
 
 Planned для соответствующих stages:
 
-- arc-length spacing/zero-length semantics (`FS-009`).
+- adaptive/curvature-aware sampling (`FS-028`).
 
 ### Integration
 
@@ -72,6 +74,9 @@ FS-007 component evidence вызывает фактические Matplotlib cal
 
 FS-008 component evidence вызывает фактические Button press/release events и Slider callbacks на
 той же surface: pre-input safety, play/pause/restart, speed/K, release coordinate и trace reset.
+
+FS-009 component/live evidence вызывает RadioButtons method selection на ready actual-event
+capture, сравнивает measured CV и проверяет transactional restore для one-point arc failure.
 
 ### E2E
 

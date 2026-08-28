@@ -50,6 +50,16 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - release coordinate внутри drawing axes принимается как последний point даже без отдельного
   motion callback.
 
+## Arc-length selector FS-009 — фактический baseline
+
+- RadioButtons `Index`/`Arc length` расположены под Play/Pause/Restart и принадлежат той же
+  freehand surface;
+- выбор до drawing задаёт method следующего result; выбор после valid stroke transactionally
+  перестраивает его через существующий timeline;
+- drawing status показывает selected method, mean spacing и CV, а не обещание «лучшего» результата;
+- zero-length arc selection показывает controlled invalid state и возвращает selector к method,
+  который соответствует сохранённому timeline; silent fallback отсутствует.
+
 ## Принцип продукта
 
 Главный визуальный объект — причинная цепочка:

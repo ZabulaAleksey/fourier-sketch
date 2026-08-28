@@ -7,6 +7,7 @@ from collections.abc import Sequence
 from typing import NoReturn
 
 from fourier_sketch.domain import DomainValidationError
+from fourier_sketch.math import ResamplingMethod
 from fourier_sketch.presentation import Translator, resolve_locale
 from fourier_sketch.render import run_freehand_interactive
 
@@ -34,6 +35,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             harmonic_count=options.harmonics,
             speed=options.speed,
             closed=options.closed,
+            resampling_method=ResamplingMethod(options.resampling),
         )
     except (_ArgumentValidationError, DomainValidationError, OSError):
         print(
@@ -60,6 +62,12 @@ def _parser(translator: Translator) -> argparse.ArgumentParser:
     )
     parser.add_argument("--speed", type=float, default=1.0, help=translator.text("cli.help.speed"))
     parser.add_argument("--closed", action="store_true", help=translator.text("cli.help.closed"))
+    parser.add_argument(
+        "--resampling",
+        choices=tuple(method.value for method in ResamplingMethod),
+        default=ResamplingMethod.UNIFORM_INDEX.value,
+        help=translator.text("cli.help.resampling"),
+    )
     parser.add_argument("--locale", default=None, help=translator.text("cli.help.locale"))
     return parser
 

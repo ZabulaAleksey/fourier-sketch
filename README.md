@@ -85,13 +85,18 @@ Production/fallback locale — `en`; `--locale pseudo` включает диаг
 uv run python -m fourier_sketch.cli.freehand
 ```
 
-Доступны `--samples`, `--harmonics`, `--speed`, `--closed` и `--locale`. Левая кнопка рисует stroke,
-`R` сбрасывает его, `Esc` отменяет capture. Input ограничен 10 000 pointer samples, а результат —
-4096 samples; превышение budget завершается явным controlled state.
+Доступны `--samples`, `--harmonics`, `--speed`, `--closed`, `--resampling` и `--locale`. Левая
+кнопка рисует stroke, `R` сбрасывает его, `Esc` отменяет capture. Input ограничен 10 000 pointer
+samples, а результат — 4096 samples; превышение budget завершается явным controlled state.
 
 На той же surface доступны Play, Pause, Restart, speed и harmonic sliders. Они управляют timeline,
 созданным из текущего stroke; Restart сохраняет source curve и сбрасывает trace к одному
 zero-time endpoint.
+
+`--resampling uniform_index` сохраняет исходный deterministic baseline; `--resampling arc_length`
+равномерно размещает samples по cumulative polyline length. Radio selector на той же surface
+перестраивает текущий stroke без второго Fourier path и показывает measured mean spacing/CV.
+Zero-total-length arc input завершается typed error и не переключается молча на index method.
 
 ## Проверки
 

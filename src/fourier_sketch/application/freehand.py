@@ -6,9 +6,13 @@ from enum import StrEnum
 from fourier_sketch.application.diagnostic_epicycles import EpicycleTimeline
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D, SpectrumOrdering
 from fourier_sketch.math import (
+    CurveSpacingMetrics,
+    ResamplingMethod,
     cleanup_consecutive_duplicates,
+    curve_spacing_metrics,
     curve_to_complex_samples,
     fft_dft,
+    resample_curve_by_arc_length,
     resample_curve_by_index,
 )
 
@@ -75,15 +79,24 @@ class FreehandCurveResult:
     sampled_curve: Curve
     captured_count: int
     cleaned_count: int
-    method: str = "uniform_index"
+    method: ResamplingMethod = ResamplingMethod.UNIFORM_INDEX
+    source_spacing: CurveSpacingMetrics | None = None
+    sampled_spacing: CurveSpacingMetrics | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.source_curve, Curve) or not isinstance(self.sampled_curve, Curve):
             raise DomainValidationError("freehand result curves must be Curve values")
         if self.source_curve.closed != self.sampled_curve.closed:
             raise DomainValidationError("freehand source and sampled topology must match")
-        if self.method != "uniform_index":
-            raise DomainValidationError("FS-007 supports only uniform_index resampling")
+        if not isinstance(self.method, ResamplingMethod):
+            raise DomainValidationError("freehand method must be a ResamplingMethod")
+        if any(
+            value is not None and not isinstance(value, CurveSpacingMetrics)
+            for value in (self.source_spacing, self.sampled_spacing)
+        ):
+            raise DomainValidationError("freehand spacing must use CurveSpacingMetrics values")
+        if (self.source_spacing is None) != (self.sampled_spacing is None):
+            raise DomainValidationError("freehand spacing metrics must be both present or absent")
         if any(
             isinstance(value, bool) or not isinstance(value, int)
             for value in (self.captured_count, self.cleaned_count)
@@ -147,22 +160,38 @@ class FreehandCapture:
         self._state = CaptureState.EMPTY
         return self.snapshot()
 
-    def build_curve(self, *, sample_count: int, closed: bool) -> FreehandCurveResult:
+    def build_curve(
+        self,
+        *,
+        sample_count: int,
+        closed: bool,
+        method: ResamplingMethod = ResamplingMethod.UNIFORM_INDEX,
+    ) -> FreehandCurveResult:
         if self._state is not CaptureState.READY:
             raise DomainValidationError("capture must be ready before building a curve")
         if not isinstance(closed, bool):
             raise DomainValidationError("closed must be a boolean")
+        if not isinstance(method, ResamplingMethod):
+            raise DomainValidationError("method must be a ResamplingMethod")
         captured = tuple(self._points)
         cleaned = cleanup_consecutive_duplicates(captured)
         if not cleaned:
             raise DomainValidationError("capture must contain at least one point")
         source = Curve(cleaned, closed=closed)
-        sampled = resample_curve_by_index(source, sample_count)
+        sampled = (
+            resample_curve_by_index(source, sample_count)
+            if method is ResamplingMethod.UNIFORM_INDEX
+            else resample_curve_by_arc_length(source, sample_count)
+        )
+        source_spacing, sampled_spacing = _spacing_pair(source, sampled)
         return FreehandCurveResult(
             source_curve=source,
             sampled_curve=sampled,
             captured_count=len(captured),
             cleaned_count=len(cleaned),
+            method=method,
+            source_spacing=source_spacing,
+            sampled_spacing=sampled_spacing,
         )
 
 
@@ -202,3 +231,21 @@ def _validated_point(value: Point2D) -> Point2D:
     if not isinstance(value, Point2D):
         raise DomainValidationError("pointer value must be a Point2D")
     return value
+
+
+def _spacing_pair(
+    source: Curve,
+    sampled: Curve,
+) -> tuple[CurveSpacingMetrics | None, CurveSpacingMetrics | None]:
+    if not _has_measurable_spacing(source) or not _has_measurable_spacing(sampled):
+        return None, None
+    try:
+        return curve_spacing_metrics(source), curve_spacing_metrics(sampled)
+    except DomainValidationError:
+        return None, None
+
+
+def _has_measurable_spacing(curve: Curve) -> bool:
+    starts = curve.points if curve.closed else curve.points[:-1]
+    ends = curve.points[1:] + ((curve.points[0],) if curve.closed else ())
+    return any(start != end for start, end in zip(starts, ends, strict=True))

@@ -7,6 +7,10 @@ freehand capture, cohesive control surface, resource locale boundary и diagnost
 adapter. Остальные product modules являются целевой архитектурой и появляются строго в
 соответствующих stages.
 
+Текущий FS-009 добавляет в math второй explicit resampling method и immutable spacing metrics;
+application result хранит выбранный method и measured source/output diagnostics. Existing MVP
+RadioButtons transactionally перестраивают ready capture через тот же FFT/timeline boundary.
+
 ## Архитектурные цели
 
 - один численный контракт для 1D complex Fourier;
@@ -118,6 +122,11 @@ FS-008 не добавляет второго application path. Matplotlib `Butt
 тому `EpicycleTimeline`, который создан после capture. Harmonic change использует transactional
 timeline validation и сбрасывает trace к endpoint нового chain state; release coordinate внутри
 drawing axes добавляется даже без предшествующего motion event.
+
+FS-009 `ResamplingMethod` различает `uniform_index` и `arc_length`. Arc-length implementation
+строит bounded cumulative segment array, включает seam только для closed Curve и fail-closed
+отклоняет non-positive/non-finite total length. Method switch публикует result/timeline только
+после полного успешного rebuild; при failure предыдущий method/result остаётся согласованным с UI.
 
 ## Data flow и provenance
 

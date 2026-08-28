@@ -7,7 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.backend_bases import KeyEvent, MouseButton, MouseEvent
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
-from matplotlib.widgets import Button, Slider
+from matplotlib.widgets import Button, RadioButtons, Slider
 
 from fourier_sketch.application import (
     DEFAULT_FREEHAND_HARMONICS,
@@ -18,6 +18,7 @@ from fourier_sketch.application import (
     FreehandCapture,
     FreehandCaptureSnapshot,
     FreehandCurveResult,
+    ResamplingMethod,
     build_freehand_timeline,
 )
 from fourier_sketch.application.diagnostic_epicycles import (
@@ -42,12 +43,14 @@ class FreehandControlPanel:
         restart_button: Button,
         speed_slider: Slider,
         harmonic_slider: Slider | None,
+        method_buttons: RadioButtons,
     ) -> None:
         self.play_button = play_button
         self.pause_button = pause_button
         self.restart_button = restart_button
         self.speed_slider = speed_slider
         self.harmonic_slider = harmonic_slider
+        self.method_buttons = method_buttons
 
 
 class FreehandSurface:
@@ -64,6 +67,7 @@ class FreehandSurface:
         harmonic_count: int | None = None,
         speed: float = 1.0,
         closed: bool = False,
+        resampling_method: ResamplingMethod = ResamplingMethod.UNIFORM_INDEX,
         capture: FreehandCapture | None = None,
     ) -> None:
         if not isinstance(figure, Figure):
@@ -91,6 +95,7 @@ class FreehandSurface:
         self._harmonic_count = validated_harmonic_count
         self._speed = normalized_speed
         self._closed = validated_closed
+        self._resampling_method = _validated_resampling_method(resampling_method)
         if capture is not None and not isinstance(capture, FreehandCapture):
             raise DomainValidationError("capture must be a FreehandCapture")
         self._capture = FreehandCapture() if capture is None else capture
@@ -139,6 +144,10 @@ class FreehandSurface:
         if self._controls is None:
             raise DomainValidationError("freehand controls are not attached")
         return self._controls
+
+    @property
+    def resampling_method(self) -> ResamplingMethod:
+        return self._resampling_method
 
     def capture_snapshot(self) -> FreehandCaptureSnapshot:
         return self._capture.snapshot()
@@ -216,24 +225,42 @@ class FreehandSurface:
         self._harmonic_count = validated
         return self._show_frame(frame)
 
+    def set_resampling_method(self, method: ResamplingMethod) -> EpicycleFrame | None:
+        """Select a method and rebuild the current ready capture transactionally."""
+        validated = _validated_resampling_method(method)
+        if self._capture.snapshot().state is not CaptureState.READY:
+            self._resampling_method = validated
+            self._synchronize_method_control(validated)
+            return None
+        try:
+            result, timeline, frame = self._build_ready_pipeline(validated)
+        except DomainValidationError:
+            self._status_key = "freehand.status.invalid"
+            self._synchronize_method_control(self._resampling_method)
+            self._draw_capture()
+            return None
+        self._resampling_method = validated
+        self._publish_pipeline(result, timeline, frame)
+        return frame
+
     def attach_controls(self) -> FreehandControlPanel:
         """Attach one reusable control set to this surface."""
         if self._controls is not None:
             return self._controls
         play_button = Button(
-            self.figure.add_axes((0.08, 0.12, 0.10, 0.055)),
+            self.figure.add_axes((0.08, 0.20, 0.10, 0.055)),
             self._translator.text("control.play"),
         )
         pause_button = Button(
-            self.figure.add_axes((0.20, 0.12, 0.10, 0.055)),
+            self.figure.add_axes((0.20, 0.20, 0.10, 0.055)),
             self._translator.text("control.pause"),
         )
         restart_button = Button(
-            self.figure.add_axes((0.32, 0.12, 0.10, 0.055)),
+            self.figure.add_axes((0.32, 0.20, 0.10, 0.055)),
             self._translator.text("control.restart"),
         )
         speed_slider = Slider(
-            self.figure.add_axes((0.52, 0.14, 0.38, 0.035)),
+            self.figure.add_axes((0.52, 0.21, 0.38, 0.035)),
             self._translator.text("control.speed"),
             min(0.1, self._speed),
             MAX_SPEED,
@@ -242,13 +269,22 @@ class FreehandSurface:
         harmonic_slider: Slider | None = None
         if self._sample_count > 1:
             harmonic_slider = Slider(
-                self.figure.add_axes((0.52, 0.07, 0.38, 0.035)),
+                self.figure.add_axes((0.52, 0.14, 0.38, 0.035)),
                 self._translator.text("control.harmonics"),
                 1,
                 self._sample_count,
                 valinit=self._harmonic_count,
                 valstep=1,
             )
+        method_labels = tuple(
+            self._translator.text(f"resampling.{method.value}") for method in ResamplingMethod
+        )
+        method_buttons = RadioButtons(
+            self.figure.add_axes((0.08, 0.02, 0.34, 0.12)),
+            method_labels,
+            active=tuple(ResamplingMethod).index(self._resampling_method),
+        )
+        label_to_method = dict(zip(method_labels, ResamplingMethod, strict=True))
 
         play_button.on_clicked(lambda _event: self.play())
         pause_button.on_clicked(lambda _event: self.pause())
@@ -256,12 +292,19 @@ class FreehandSurface:
         speed_slider.on_changed(lambda value: self.set_speed(float(value)))
         if harmonic_slider is not None:
             harmonic_slider.on_changed(self._on_harmonic_control)
+
+        def select_method(label: str | None) -> None:
+            if label is not None:
+                self.set_resampling_method(label_to_method[label])
+
+        method_buttons.on_clicked(select_method)
         self._controls = FreehandControlPanel(
             play_button=play_button,
             pause_button=pause_button,
             restart_button=restart_button,
             speed_slider=speed_slider,
             harmonic_slider=harmonic_slider,
+            method_buttons=method_buttons,
         )
         return self._controls
 
@@ -312,31 +355,12 @@ class FreehandSurface:
         if snapshot.state is not CaptureState.READY:
             return
         try:
-            result = self._capture.build_curve(
-                sample_count=self._sample_count,
-                closed=self._closed,
-            )
-            timeline = build_freehand_timeline(
-                result.sampled_curve,
-                harmonic_count=min(
-                    self._harmonic_count,
-                    result.sampled_curve.sample_count,
-                ),
-                speed=self._speed,
-            )
-            frame = timeline.play()
+            result, timeline, frame = self._build_ready_pipeline(self._resampling_method)
         except DomainValidationError:
             self._status_key = "freehand.status.invalid"
             self._draw_capture()
             return
-        self._curve_result = result
-        self._timeline = timeline
-        self._latest_frame = frame
-        self._synchronize_controls(timeline)
-        self._status_key = "freehand.status.ready"
-        self._draw_capture()
-        draw_frame(self.render_axes, frame, self._translator)
-        self.figure.canvas.draw_idle()
+        self._publish_pipeline(result, timeline, frame)
 
     def _on_key(self, event: KeyEvent) -> None:
         if event.key == "escape":
@@ -377,6 +401,22 @@ class FreehandSurface:
             va="top",
             fontsize=9,
         )
+        if self._curve_result is not None and self._curve_result.sampled_spacing is not None:
+            spacing = self._curve_result.sampled_spacing
+            self.drawing_axes.text(
+                0.01,
+                0.92,
+                self._translator.text(
+                    "freehand.spacing",
+                    method=self._translator.text(f"resampling.{self._curve_result.method.value}"),
+                    mean=spacing.mean_length,
+                    variation=spacing.coefficient_of_variation,
+                ),
+                transform=self.drawing_axes.transAxes,
+                ha="left",
+                va="top",
+                fontsize=8,
+            )
         self.drawing_axes.text(
             0.01,
             0.01,
@@ -440,12 +480,57 @@ class FreehandSurface:
 
         harmonic_slider = self._controls.harmonic_slider
         if harmonic_slider is None:
+            self._synchronize_method_control(self._resampling_method)
             return
         harmonic_eventson = harmonic_slider.eventson
         harmonic_slider.eventson = False
         harmonic_slider.set_val(timeline.harmonic_count)
         harmonic_slider.eventson = harmonic_eventson
         harmonic_slider.set_active(timeline.maximum_harmonics > 1)
+        self._synchronize_method_control(self._resampling_method)
+
+    def _synchronize_method_control(self, method: ResamplingMethod) -> None:
+        if self._controls is None:
+            return
+        buttons = self._controls.method_buttons
+        eventson = buttons.eventson
+        buttons.eventson = False
+        buttons.set_active(tuple(ResamplingMethod).index(method))
+        buttons.eventson = eventson
+
+    def _build_ready_pipeline(
+        self,
+        method: ResamplingMethod,
+    ) -> tuple[FreehandCurveResult, EpicycleTimeline, EpicycleFrame]:
+        result = self._capture.build_curve(
+            sample_count=self._sample_count,
+            closed=self._closed,
+            method=method,
+        )
+        timeline = build_freehand_timeline(
+            result.sampled_curve,
+            harmonic_count=min(
+                self._harmonic_count,
+                result.sampled_curve.sample_count,
+            ),
+            speed=self._speed,
+        )
+        return result, timeline, timeline.play()
+
+    def _publish_pipeline(
+        self,
+        result: FreehandCurveResult,
+        timeline: EpicycleTimeline,
+        frame: EpicycleFrame,
+    ) -> None:
+        self._curve_result = result
+        self._timeline = timeline
+        self._latest_frame = frame
+        self._synchronize_controls(timeline)
+        self._status_key = "freehand.status.ready"
+        self._draw_capture()
+        draw_frame(self.render_axes, frame, self._translator)
+        self.figure.canvas.draw_idle()
 
 
 def create_freehand_surface(
@@ -455,16 +540,18 @@ def create_freehand_surface(
     harmonic_count: int | None = None,
     speed: float = 1.0,
     closed: bool = False,
+    resampling_method: ResamplingMethod = ResamplingMethod.UNIFORM_INDEX,
     capture: FreehandCapture | None = None,
 ) -> FreehandSurface:
     """Create an Agg-backed surface suitable for component and live headless tests."""
     if not isinstance(translator, Translator):
         raise DomainValidationError("translator must be a Translator")
     validated = _validated_surface_options(sample_count, harmonic_count, speed, closed)
-    figure = Figure(figsize=(12.0, 6.0))
+    validated_method = _validated_resampling_method(resampling_method)
+    figure = Figure(figsize=(12.0, 7.0))
     FigureCanvasAgg(figure)
     drawing_axes, render_axes = figure.subplots(1, 2)
-    figure.subplots_adjust(wspace=0.25, bottom=0.27)
+    figure.subplots_adjust(wspace=0.25, bottom=0.34)
     surface = FreehandSurface(
         figure,
         drawing_axes,
@@ -474,6 +561,7 @@ def create_freehand_surface(
         harmonic_count=validated[1],
         speed=validated[2],
         closed=validated[3],
+        resampling_method=validated_method,
         capture=capture,
     )
     surface.attach_controls()
@@ -487,6 +575,7 @@ def run_freehand_interactive(
     harmonic_count: int | None = None,
     speed: float = 1.0,
     closed: bool = False,
+    resampling_method: ResamplingMethod = ResamplingMethod.UNIFORM_INDEX,
     interval_ms: int = 33,
 ) -> None:
     """Open the fully working temporary freehand diagnostic window."""
@@ -495,12 +584,13 @@ def run_freehand_interactive(
     if isinstance(interval_ms, bool) or not isinstance(interval_ms, int) or interval_ms < 10:
         raise DomainValidationError("interval_ms must be an integer of at least 10")
     validated = _validated_surface_options(sample_count, harmonic_count, speed, closed)
+    validated_method = _validated_resampling_method(resampling_method)
 
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation
 
-    figure, axes = plt.subplots(1, 2, figsize=(12.0, 6.0))
-    figure.subplots_adjust(wspace=0.25, bottom=0.27)
+    figure, axes = plt.subplots(1, 2, figsize=(12.0, 7.0))
+    figure.subplots_adjust(wspace=0.25, bottom=0.34)
     surface = FreehandSurface(
         figure,
         axes[0],
@@ -510,6 +600,7 @@ def run_freehand_interactive(
         harmonic_count=validated[1],
         speed=validated[2],
         closed=validated[3],
+        resampling_method=validated_method,
     )
     surface.attach_controls()
 
@@ -559,3 +650,9 @@ def _validated_surface_options(
     if not isinstance(closed, bool):
         raise DomainValidationError("closed must be a boolean")
     return sample_count, validated_harmonic_count, normalized_speed, closed
+
+
+def _validated_resampling_method(value: ResamplingMethod) -> ResamplingMethod:
+    if not isinstance(value, ResamplingMethod):
+        raise DomainValidationError("resampling_method must be a ResamplingMethod")
+    return value

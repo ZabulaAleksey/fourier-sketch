@@ -182,7 +182,7 @@ typed undefined/degenerate metric state; silent `NaN` запрещён.
 
 ## Arc-length parameterization
 
-До FS-009 freehand slice использует явно названный baseline `uniform_index`. После удаления
+Freehand slice сохраняет явно названный baseline `uniform_index`. После удаления
 consecutive duplicates для `M` source points строятся `N` samples:
 
 ```text
@@ -195,7 +195,7 @@ linear interpolation. В closed случае индекс циклически �
 первый output sample не повторяется в конце. One-point input остаётся одним point независимо от
 requested count и даёт DC-only signal. Это не arc-length parameterization и не объявляется ею.
 
-Для ordered points `p_j` cumulative length:
+FS-009 добавляет отдельный `arc_length`. Для ordered points `p_j` cumulative length:
 
 ```text
 s_0 = 0
@@ -203,8 +203,21 @@ s_j = Σ(r=1..j) |p_r - p_(r-1)|
 u_j = s_j / s_last
 ```
 
-Closed semantics включают closing segment только по явному contract. Zero total length не
-resample-ится и возвращает validation error. Интерполяция сохраняет order и open endpoints.
+Для open Curve targets равны `jL/(N-1)` и первый/последний output назначаются exact source
+endpoints. Для closed Curve closing segment `p_(M-1) → p_0` входит в `L`, targets равны `jL/N`, а
+первый output не повторяется в конце. Linear interpolation сохраняет source order.
+
+Zero/non-finite total length не resample-ится и возвращает typed validation error; silent fallback
+на index method запрещён. `N=1` для non-zero path возвращает первый point, а spacing diagnostics
+явно недоступны из-за отсутствия segment.
+
+Spacing diagnostics измеряют фактические adjacent distances output Curve (для closed — вместе с
+seam): segment count, total/mean/min/max, population standard deviation и coefficient of variation
+`CV = σ/mean`. Они сравнивают конкретный fixture и не доказывают универсальное улучшение Fourier
+approximation. Для fixture `x=(0,0.1,1,4), N=16`: index `CV≈0.917196816392`, arc-length `CV=0`.
+Если segment spacing не представим как positive finite `float` (включая underflow), typed
+application result оставляет обе spacing metrics недоступными; ancillary diagnostics не блокируют
+принятый resampling/timeline path.
 
 ## Discontinuous curves
 

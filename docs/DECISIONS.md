@@ -170,3 +170,25 @@ component/E2E evidence проходит через фактические callba
 
 **Миграция / откат:** Adapter можно заменить без изменения `FreehandCapture` и math contracts.
 Изменение limits или значения `uniform_index` требует SPEC/ADR/test migration.
+
+## 2026-08-28 — ADR-010: Arc-length как явный method с измеряемой, а не абсолютной quality
+
+**Контекст:** FS-009 должен улучшить равномерность spatial samples, не меняя принятый FS-007
+index baseline молча и не утверждая универсальное улучшение Fourier approximation.
+
+**Решение:** `ResamplingMethod` содержит отдельные `uniform_index` и `arc_length`. Arc method
+использует cumulative polyline length, explicit open/closed targets и тот же limit 4096. Typed
+`CurveSpacingMetrics` сообщает mean/min/max/standard deviation/CV. UI method switch rebuild-ит
+ready capture transactionally; zero-length arc failure сохраняет предыдущий согласованный result.
+
+**Рассмотренные альтернативы:** Молча заменить index algorithm; автоматически fallback-нуться на
+index при zero length; объявить меньший spacing CV доказательством лучшего Fourier result; добавить
+adaptive/curvature sampling раньше FS-028.
+
+**Последствия:** Оба method воспроизводимы и сравниваются на одном source. Arc-length гарантирует
+uniform cumulative targets, но quality claims ограничены измеренными fixtures. One-point DC
+остаётся доступным через index method; `N=1` non-zero arc result имеет typed unavailable spacing.
+
+**Миграция / откат:** Default остаётся `uniform_index`, поэтому существующие callers не меняют
+поведение. Удаление selector не меняет FFT/timeline contracts; изменение method semantics требует
+SPEC/ADR/test migration.
