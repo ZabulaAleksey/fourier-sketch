@@ -3,8 +3,9 @@
 ## Статус документа
 
 Stages `FS-000`–`FS-007` создали immutable domain/numerical core, application timeline, bounded
-freehand capture, resource locale boundary и diagnostic Matplotlib/CLI adapter. Остальные product
-modules являются целевой архитектурой и появляются строго в соответствующих stages.
+freehand capture, resource locale boundary и diagnostic Matplotlib/CLI adapter. Текущий FS-008
+расширяет тот же adapter cohesive control surface. Остальные product modules являются целевой
+архитектурой и появляются строго в соответствующих stages.
 
 ## Архитектурные цели
 
@@ -111,6 +112,12 @@ points и создаёт `FreehandCurveResult` с source/sample provenance. `Fre
 event handlers: завершённый stroke проходит через `build_freehand_timeline` и существующий
 `draw_frame`. Drawing axes имеют стабильную coordinate system на время capture; events вне них
 игнорируются.
+
+FS-008 не добавляет второго application path. Matplotlib `Button`/`Slider` вызывают public
+`FreehandSurface` commands, которые делегируют play/pause/restart/speed/harmonic операции ровно
+тому `EpicycleTimeline`, который создан после capture. Harmonic change использует transactional
+timeline validation и сбрасывает trace к endpoint нового chain state; release coordinate внутри
+drawing axes добавляется даже без предшествующего motion event.
 
 ## Data flow и provenance
 

@@ -138,3 +138,48 @@ caveat: uniform_index остаётся baseline; arc-length method относи�
 - `src/fourier_sketch/render/matplotlib_freehand.py`
 - `tests/property/test_resampling_properties.py`
 - `tests/e2e/test_freehand_surface_e2e.py`
+
+## 2026-08-28 — Pointer release является самостоятельным input event
+
+### Problem
+
+- Реальный drag может завершиться release coordinate, для которого framework не прислал отдельный
+  последний motion event.
+
+### Symptom
+
+- В visual QA последний видимый release point отсутствовал в source stroke, хотя весь последующий
+  Fourier/trace path работал корректно.
+
+### Root cause
+
+- Adapter завершал `pointer_up()` без попытки принять finite release coordinate из drawing axes.
+
+### Failed attempts
+
+- FS-007 tests всегда отправляли release в координате последнего motion, поэтому duplicate cleanup
+  маскировал отсутствие самостоятельного release contract.
+
+### Fix
+
+- При release активный capture сначала принимает coordinate через тот же bounded `pointer_move`,
+  затем переходит в READY. Outside-axes release по-прежнему только завершает текущий stroke.
+
+### Verification
+
+```text
+command / check: FS-008 component actual-event test; full pytest; visual QA
+result: PASS
+scope: press → release без motion, ordinary drag, point budget и source provenance
+caveat: platform pointer coalescing остаётся ответственностью Matplotlib backend
+```
+
+### Prevention
+
+- Event-driven input tests должны отдельно покрывать press-only, press→release и
+  press→motion→release sequences, а не считать motion обязательным перед release.
+
+### Links
+
+- `src/fourier_sketch/render/matplotlib_freehand.py`
+- `tests/component/test_freehand_mvp_controls_component.py`

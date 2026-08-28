@@ -38,6 +38,18 @@ reduced-motion integration, saved locale и production-grade inline errors. Он
 
 FS-008 расширяет этот же workflow controls и live evidence, не создавая второй input/Fourier path.
 
+## Freehand MVP FS-008 — фактический baseline
+
+- Play/Pause/Restart расположены под drawing panel; speed и harmonic sliders — под render panel;
+- controls до первого stroke безопасны и не создают timeline или placeholder result;
+- speed/harmonic values, заданные до drawing, применяются при создании timeline;
+- Pause сохраняет time/trace, Play продолжает тот же timeline, Restart сохраняет source stroke,
+  ставит timeline на паузу при `t=0` и оставляет один actual endpoint в trace;
+- harmonic change перестраивает selection/reconstruction/chain внутри существующего timeline и
+  начинает trace с endpoint нового state;
+- release coordinate внутри drawing axes принимается как последний point даже без отдельного
+  motion callback.
+
 ## Принцип продукта
 
 Главный визуальный объект — причинная цепочка:

@@ -9,7 +9,8 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002`, spectrum analysis
 `FS-003`, partial reconstruction/metrics `FS-004`, epicycle mathematics `FS-005`, diagnostic
-renderer `FS-006` и bounded freehand input `FS-007`.
+renderer `FS-006` и bounded freehand input `FS-007`. Stage `FS-008` сейчас расширяет этот slice до
+cohesive freehand-to-trace MVP.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
@@ -23,8 +24,8 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 принимает реальные pointer events, строит `Curve` через uniform-by-index resampling и передаёт её в
 тот же Fourier/timeline/renderer path.
 
-Текущий stage — `FS-008`: он превращает уже работающий freehand slice в единый управляемый
-workflow с live E2E evidence. Arc-length resampling и image input остаются отдельными stages.
+После terminal gate FS-008 следующий stage — `FS-009`: selectable arc-length resampling и
+измеримое сравнение с текущим uniform-by-index baseline. Image input начинается отдельно с FS-010.
 
 ## Целевой pipeline
 
@@ -89,6 +90,10 @@ uv run python -m fourier_sketch.cli.freehand
 `R` сбрасывает его, `Esc` отменяет capture. Input ограничен 10 000 pointer samples, а результат —
 4096 samples; превышение budget завершается явным controlled state.
 
+На той же surface доступны Play, Pause, Restart, speed и harmonic sliders. Они управляют timeline,
+созданным из текущего stroke; Restart сохраняет source curve и сбрасывает trace к одному
+zero-time endpoint.
+
 ## Проверки
 
 ```powershell
@@ -110,7 +115,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 ## Ограничения
 
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
-Freehand input реализован как проверяемый slice; единый MVP workflow относится к FS-008.
+Freehand input реализован; единый Matplotlib MVP workflow проходит terminal verification FS-008.
 Arc-length parameterization, image input, product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

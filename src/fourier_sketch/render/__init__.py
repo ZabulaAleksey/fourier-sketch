@@ -2,12 +2,14 @@
 
 from .matplotlib_epicycles import draw_frame, render_frame_png, run_interactive
 from .matplotlib_freehand import (
+    FreehandControlPanel,
     FreehandSurface,
     create_freehand_surface,
     run_freehand_interactive,
 )
 
 __all__ = [
+    "FreehandControlPanel",
     "FreehandSurface",
     "create_freehand_surface",
     "draw_frame",

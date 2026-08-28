@@ -7,6 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.backend_bases import KeyEvent, MouseButton, MouseEvent
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
+from matplotlib.widgets import Button, Slider
 
 from fourier_sketch.application import (
     DEFAULT_FREEHAND_HARMONICS,
@@ -28,6 +29,25 @@ from fourier_sketch.math import MAX_RESAMPLED_POINTS
 from fourier_sketch.presentation import Translator
 
 from .matplotlib_epicycles import draw_frame
+
+
+class FreehandControlPanel:
+    """Persistent Matplotlib controls bound to one freehand surface."""
+
+    def __init__(
+        self,
+        *,
+        play_button: Button,
+        pause_button: Button,
+        restart_button: Button,
+        speed_slider: Slider,
+        harmonic_slider: Slider | None,
+    ) -> None:
+        self.play_button = play_button
+        self.pause_button = pause_button
+        self.restart_button = restart_button
+        self.speed_slider = speed_slider
+        self.harmonic_slider = harmonic_slider
 
 
 class FreehandSurface:
@@ -77,6 +97,7 @@ class FreehandSurface:
         self._curve_result: FreehandCurveResult | None = None
         self._timeline: EpicycleTimeline | None = None
         self._latest_frame: EpicycleFrame | None = None
+        self._controls: FreehandControlPanel | None = None
         self._status_key = "freehand.status.empty"
         self._callback_ids = (
             figure.canvas.mpl_connect("button_press_event", self._on_press),
@@ -113,6 +134,12 @@ class FreehandSurface:
             raise DomainValidationError("freehand frame is not available")
         return self._latest_frame
 
+    @property
+    def controls(self) -> FreehandControlPanel:
+        if self._controls is None:
+            raise DomainValidationError("freehand controls are not attached")
+        return self._controls
+
     def capture_snapshot(self) -> FreehandCaptureSnapshot:
         return self._capture.snapshot()
 
@@ -138,10 +165,105 @@ class FreehandSurface:
 
     def tick(self, delta_seconds: float) -> EpicycleFrame:
         frame = self.timeline.advance(delta_seconds)
-        self._latest_frame = frame
-        draw_frame(self.render_axes, frame, self._translator)
-        self.figure.canvas.draw_idle()
-        return frame
+        return self._show_frame(frame)
+
+    def play(self) -> EpicycleFrame | None:
+        """Start the captured stroke timeline without creating an alternate path."""
+        if self._timeline is None:
+            self._show_missing_timeline()
+            return None
+        return self._show_frame(self._timeline.play())
+
+    def pause(self) -> EpicycleFrame | None:
+        """Pause the captured stroke timeline."""
+        if self._timeline is None:
+            self._show_missing_timeline()
+            return None
+        return self._show_frame(self._timeline.pause())
+
+    def restart(self) -> EpicycleFrame | None:
+        """Restart the current timeline while preserving the accepted source stroke."""
+        if self._timeline is None:
+            self._show_missing_timeline()
+            return None
+        return self._show_frame(self._timeline.restart())
+
+    def set_speed(self, speed: float) -> EpicycleFrame | None:
+        """Apply a validated speed to the current or next stroke timeline."""
+        normalized = _validated_surface_options(
+            self._sample_count,
+            self._harmonic_count,
+            speed,
+            self._closed,
+        )[2]
+        self._speed = normalized
+        if self._timeline is None:
+            return None
+        return self._show_frame(self._timeline.set_speed(normalized))
+
+    def set_harmonic_count(self, harmonic_count: int) -> EpicycleFrame | None:
+        """Apply an explicit harmonic count without weakening timeline validation."""
+        validated = _validated_surface_options(
+            self._sample_count,
+            harmonic_count,
+            self._speed,
+            self._closed,
+        )[1]
+        if self._timeline is None:
+            self._harmonic_count = validated
+            return None
+        frame = self._timeline.set_harmonic_count(validated)
+        self._harmonic_count = validated
+        return self._show_frame(frame)
+
+    def attach_controls(self) -> FreehandControlPanel:
+        """Attach one reusable control set to this surface."""
+        if self._controls is not None:
+            return self._controls
+        play_button = Button(
+            self.figure.add_axes((0.08, 0.12, 0.10, 0.055)),
+            self._translator.text("control.play"),
+        )
+        pause_button = Button(
+            self.figure.add_axes((0.20, 0.12, 0.10, 0.055)),
+            self._translator.text("control.pause"),
+        )
+        restart_button = Button(
+            self.figure.add_axes((0.32, 0.12, 0.10, 0.055)),
+            self._translator.text("control.restart"),
+        )
+        speed_slider = Slider(
+            self.figure.add_axes((0.52, 0.14, 0.38, 0.035)),
+            self._translator.text("control.speed"),
+            min(0.1, self._speed),
+            MAX_SPEED,
+            valinit=self._speed,
+        )
+        harmonic_slider: Slider | None = None
+        if self._sample_count > 1:
+            harmonic_slider = Slider(
+                self.figure.add_axes((0.52, 0.07, 0.38, 0.035)),
+                self._translator.text("control.harmonics"),
+                1,
+                self._sample_count,
+                valinit=self._harmonic_count,
+                valstep=1,
+            )
+
+        play_button.on_clicked(lambda _event: self.play())
+        pause_button.on_clicked(lambda _event: self.pause())
+        restart_button.on_clicked(lambda _event: self.restart())
+        speed_slider.on_changed(lambda value: self.set_speed(float(value)))
+        if harmonic_slider is not None:
+            harmonic_slider.on_changed(self._on_harmonic_control)
+        self._controls = FreehandControlPanel(
+            play_button=play_button,
+            pause_button=pause_button,
+            restart_button=restart_button,
+            speed_slider=speed_slider,
+            harmonic_slider=harmonic_slider,
+        )
+        return self._controls
 
     def disconnect(self) -> None:
         for callback_id in self._callback_ids:
@@ -178,6 +300,10 @@ class FreehandSurface:
     def _on_release(self, event: MouseEvent) -> None:
         if event.button is not MouseButton.LEFT:
             return
+        if self._capture.snapshot().state is CaptureState.CAPTURING:
+            release_point = self._event_point(event)
+            if release_point is not None:
+                self._capture.pointer_move(release_point)
         snapshot = self._capture.pointer_up()
         if snapshot.state is CaptureState.LIMIT_REACHED:
             self._status_key = "freehand.status.limit"
@@ -206,6 +332,7 @@ class FreehandSurface:
         self._curve_result = result
         self._timeline = timeline
         self._latest_frame = frame
+        self._synchronize_controls(timeline)
         self._status_key = "freehand.status.ready"
         self._draw_capture()
         draw_frame(self.render_axes, frame, self._translator)
@@ -279,6 +406,47 @@ class FreehandSurface:
         self.render_axes.set_axis_off()
         self.figure.canvas.draw_idle()
 
+    def _show_frame(self, frame: EpicycleFrame) -> EpicycleFrame:
+        self._latest_frame = frame
+        draw_frame(self.render_axes, frame, self._translator)
+        self.figure.canvas.draw_idle()
+        return frame
+
+    def _show_missing_timeline(self) -> None:
+        self._draw_empty_render_state()
+        return None
+
+    def _on_harmonic_control(self, value: float) -> None:
+        try:
+            self.set_harmonic_count(int(value))
+        except DomainValidationError:
+            if self._controls is not None and self._controls.harmonic_slider is not None:
+                slider = self._controls.harmonic_slider
+                eventson = slider.eventson
+                slider.eventson = False
+                slider.set_val(self.timeline.harmonic_count)
+                slider.eventson = eventson
+            self._status_key = "freehand.status.invalid"
+            self._draw_capture()
+
+    def _synchronize_controls(self, timeline: EpicycleTimeline) -> None:
+        if self._controls is None:
+            return
+        speed_slider = self._controls.speed_slider
+        speed_eventson = speed_slider.eventson
+        speed_slider.eventson = False
+        speed_slider.set_val(timeline.speed)
+        speed_slider.eventson = speed_eventson
+
+        harmonic_slider = self._controls.harmonic_slider
+        if harmonic_slider is None:
+            return
+        harmonic_eventson = harmonic_slider.eventson
+        harmonic_slider.eventson = False
+        harmonic_slider.set_val(timeline.harmonic_count)
+        harmonic_slider.eventson = harmonic_eventson
+        harmonic_slider.set_active(timeline.maximum_harmonics > 1)
+
 
 def create_freehand_surface(
     translator: Translator,
@@ -296,8 +464,8 @@ def create_freehand_surface(
     figure = Figure(figsize=(12.0, 6.0))
     FigureCanvasAgg(figure)
     drawing_axes, render_axes = figure.subplots(1, 2)
-    figure.subplots_adjust(wspace=0.25)
-    return FreehandSurface(
+    figure.subplots_adjust(wspace=0.25, bottom=0.27)
+    surface = FreehandSurface(
         figure,
         drawing_axes,
         render_axes,
@@ -308,6 +476,8 @@ def create_freehand_surface(
         closed=validated[3],
         capture=capture,
     )
+    surface.attach_controls()
+    return surface
 
 
 def run_freehand_interactive(
@@ -330,7 +500,7 @@ def run_freehand_interactive(
     from matplotlib.animation import FuncAnimation
 
     figure, axes = plt.subplots(1, 2, figsize=(12.0, 6.0))
-    figure.subplots_adjust(wspace=0.25)
+    figure.subplots_adjust(wspace=0.25, bottom=0.27)
     surface = FreehandSurface(
         figure,
         axes[0],
@@ -341,6 +511,7 @@ def run_freehand_interactive(
         speed=validated[2],
         closed=validated[3],
     )
+    surface.attach_controls()
 
     def animate(_frame_index: int) -> tuple[Any, ...]:
         if surface.has_timeline:

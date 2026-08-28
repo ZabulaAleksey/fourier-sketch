@@ -70,13 +70,16 @@ budget и locale fallback/pseudo. Полный PySide state/accessibility matrix
 FS-007 component evidence вызывает фактические Matplotlib callbacks для press/motion/release/key,
 проверяет stable drawing coordinates, ignore-outside behavior, reset/cancel и controlled limits.
 
+FS-008 component evidence вызывает фактические Button press/release events и Slider callbacks на
+той же surface: pre-input safety, play/pause/restart, speed/K, release coordinate и trace reset.
+
 ### E2E
 
 Критические live paths:
 
 1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
 2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-007`, input slice реализован;
-   cohesive controlled workflow завершается в `FS-008`);
+   `FS-008` подтверждает cohesive controls и exact endpoint-history ledger);
 3. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
 4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
