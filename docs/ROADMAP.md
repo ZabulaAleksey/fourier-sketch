@@ -1,0 +1,70 @@
+# Roadmap Fourier Sketch
+
+Roadmap — краткий индекс. Полный scope/PASS contract каждого этапа находится только в
+`prompts/STAGES.md`. Status подтверждается `docs/AI_STATUS.md`, а не этим списком.
+
+## Выполняется
+
+| Stage | Результат | Статус bootstrap |
+|---|---|---|
+| `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `in_progress` |
+
+## Ближайшая математическая основа
+
+| Stage | Результат |
+|---|---|
+| `FS-001` | Domain Model |
+| `FS-002` | Complex Curve + reference DFT / FFT / IDFT |
+| `FS-003` | Fourier Spectrum and ordering |
+| `FS-004` | Partial Reconstruction and metrics |
+| `FS-005` | Epicycle Mathematics and endpoint equivalence |
+| `FS-006` | Diagnostic matplotlib Epicycle Renderer |
+| `FS-007` | Freehand Input |
+| `FS-008` | First live freehand-to-trace MVP |
+| `FS-009` | Arc-Length Parameterization |
+
+## Image-to-curve pipeline
+
+| Stage | Результат |
+|---|---|
+| `FS-010` | Validated image input, grayscale, threshold |
+| `FS-011` | Edge Detection |
+| `FS-012` | Dominant contour to curve |
+| `FS-013` | Live image-to-epicycle-trace MVP |
+| `FS-014` | Skeletonization |
+| `FS-015` | Skeleton Graph |
+| `FS-016` | Multiple Components / PiecewiseCurve |
+| `FS-017` | Forced Continuous Routing |
+| `FS-018` | Discontinuous Fourier Mode |
+| `FS-019` | Discontinuity Spectrum Analysis |
+| `FS-020` | Separate 2D Fourier Image Mode |
+
+## Product shell, export and hardening
+
+| Stage | Результат |
+|---|---|
+| `FS-021` | PySide6 GUI with central Epicycles view |
+| `FS-022` | Data/image/GIF and capability-gated MP4 export |
+| `FS-023` | Numerical, performance, cancellation and packaging hardening |
+
+## Optional extensions
+
+Эти stages planned, но не являются обязательными для milestone `FS-023`:
+
+| Stage | Результат |
+|---|---|
+| `FS-024` | Harmonic Inspector |
+| `FS-025` | Frequency Solo |
+| `FS-026` | Harmonic Build-Up Animation |
+| `FS-027` | Curve Simplification |
+| `FS-028` | Adaptive Sampling |
+| `FS-029` | Better Single-Stroke Optimization |
+| `FS-030` | Educational Mode |
+
+## Milestones
+
+- M1: `FS-005` — mathematics proves endpoint equivalence.
+- M2: `FS-008` — freehand live E2E.
+- M3: `FS-013` — image live E2E.
+- M4: `FS-022` — desktop/export live E2E.
+- M5: `FS-023` — hardened core product.
