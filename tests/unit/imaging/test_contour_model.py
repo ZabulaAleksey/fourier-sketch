@@ -16,9 +16,15 @@ pytestmark = pytest.mark.unit
 def test_candidate_records_exact_area_and_inclusive_bounds() -> None:
     points = (
         PixelPoint(1, 1),
+        PixelPoint(2, 1),
+        PixelPoint(3, 1),
         PixelPoint(4, 1),
+        PixelPoint(4, 2),
         PixelPoint(4, 3),
+        PixelPoint(3, 3),
+        PixelPoint(2, 3),
         PixelPoint(1, 3),
+        PixelPoint(1, 2),
     )
 
     candidate = ContourCandidate(
@@ -38,10 +44,18 @@ def test_candidate_records_exact_area_and_inclusive_bounds() -> None:
     (
         (PixelPoint(0, 0), PixelPoint(1, 0)),
         (PixelPoint(0, 0), PixelPoint(1, 0), PixelPoint(2, 0)),
+        (PixelPoint(0, 0), PixelPoint(2, 0), PixelPoint(2, 2), PixelPoint(0, 2)),
         (PixelPoint(0, 0), PixelPoint(1, 0), PixelPoint(1, 0), PixelPoint(0, 1)),
+        (
+            PixelPoint(0, 0),
+            PixelPoint(1, 0),
+            PixelPoint(1, 1),
+            PixelPoint(0, 1),
+            PixelPoint(1, 0),
+        ),
     ),
 )
-def test_candidate_rejects_degenerate_or_duplicate_sequences(
+def test_candidate_rejects_degenerate_or_non_simple_sequences(
     points: tuple[PixelPoint, ...],
 ) -> None:
     with pytest.raises(DomainValidationError):

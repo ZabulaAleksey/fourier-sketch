@@ -7,9 +7,9 @@ from fourier_sketch.domain import DomainValidationError
 
 from .edge_model import EdgeDetectionResult
 
-MAX_CONTOUR_EDGE_PIXELS = 1_000_000
-MAX_CONTOUR_CANDIDATES = 100_000
-MAX_TOTAL_CONTOUR_POINTS = 2_000_000
+MAX_CONTOUR_EDGE_PIXELS = 250_000
+MAX_CONTOUR_CANDIDATES = 25_000
+MAX_TOTAL_CONTOUR_POINTS = 100_000
 CONTOUR_RETRIEVAL_MODE = "external"
 CONTOUR_APPROXIMATION_MODE = "none"
 
@@ -64,12 +64,23 @@ class ContourCandidate:
             not isinstance(point, PixelPoint) for point in self.points
         ):
             raise DomainValidationError("contour points must be a PixelPoint tuple")
-        if len(self.points) < 3 or len(set(self.points)) < 3:
-            raise DomainValidationError("contour candidate requires three distinct pixels")
+        if len(self.points) < 3 or len(set(self.points)) != len(self.points):
+            raise DomainValidationError(
+                "contour candidate requires a simple cycle of unique pixels"
+            )
         if self.points[0] == self.points[-1] or any(
             left == right for left, right in zip(self.points, self.points[1:], strict=False)
         ):
             raise DomainValidationError("contour candidate must not contain adjacent duplicates")
+        if any(
+            max(abs(left.column - right.column), abs(left.row - right.row)) > 1
+            for left, right in zip(
+                self.points,
+                (*self.points[1:], self.points[0]),
+                strict=True,
+            )
+        ):
+            raise DomainValidationError("contour candidate must be an adjacent closed cycle")
         if type(self.signed_area2) is not int or self.signed_area2 == 0:
             raise DomainValidationError("contour candidate requires non-zero exact area")
         if self.signed_area2 != signed_shoelace_area2(self.points):
@@ -125,6 +136,12 @@ class ContourExtractionResult:
             for point in candidate.points
         ):
             raise DomainValidationError("contour candidate lies outside its source raster")
+        if any(
+            self.source.edges.pixels[point.row * width + point.column] != 255
+            for candidate in self.candidates
+            for point in candidate.points
+        ):
+            raise DomainValidationError("contour candidate must reference source edge pixels")
 
     @property
     def candidate_count(self) -> int:

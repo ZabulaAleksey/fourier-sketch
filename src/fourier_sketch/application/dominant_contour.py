@@ -2,7 +2,10 @@
 
 from dataclasses import dataclass
 
-from fourier_sketch.application.diagnostic_epicycles import EpicycleTimeline
+from fourier_sketch.application.diagnostic_epicycles import (
+    EpicycleTimeline,
+    validate_timeline_speed,
+)
 from fourier_sketch.application.edge_detection import detect_preprocessed_edges
 from fourier_sketch.application.freehand import build_freehand_timeline
 from fourier_sketch.domain import Curve, DomainValidationError
@@ -106,6 +109,7 @@ def build_dominant_contour_timeline(
         raise DomainValidationError("contour sample_count must be between 3 and 4096")
     if type(harmonic_count) is not int or not 1 <= harmonic_count <= sample_count:
         raise DomainValidationError("contour harmonic_count must be between 1 and sample_count")
+    normalized_speed = validate_timeline_speed(speed)
     edges = detect_preprocessed_edges(
         preprocessing,
         algorithm,
@@ -125,7 +129,7 @@ def build_dominant_contour_timeline(
     timeline = build_freehand_timeline(
         sampled_curve,
         harmonic_count=harmonic_count,
-        speed=speed,
+        speed=normalized_speed,
     )
     return ImageContourTimelineResult(
         preprocessing=preprocessing,

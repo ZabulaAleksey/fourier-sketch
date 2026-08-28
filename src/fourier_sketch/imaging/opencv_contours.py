@@ -76,7 +76,11 @@ def extract_external_contours(source: EdgeDetectionResult) -> ContourExtractionR
 
     candidates: list[ContourCandidate] = []
     for raw in raw_contours:
-        candidate = _candidate_from_backend(raw, source.source_dimensions)
+        candidate = _candidate_from_backend(
+            raw,
+            source.source_dimensions,
+            source.edges.pixels,
+        )
         if candidate is not None:
             candidates.append(candidate)
     return ContourExtractionResult(
@@ -151,6 +155,7 @@ def _validated_raw_shape(raw: object) -> tuple[int, ...]:
 def _candidate_from_backend(
     raw: NDArray[Any],
     source_dimensions: tuple[int, int],
+    source_pixels: bytes,
 ) -> ContourCandidate | None:
     _validated_raw_shape(raw)
     width, height = source_dimensions
@@ -164,12 +169,17 @@ def _candidate_from_backend(
                 ContourFailureCode.BACKEND_FAILURE,
                 "OpenCV contour candidate lies outside the source raster",
             )
+        if source_pixels[row * width + column] != 255:
+            raise ContourExtractionError(
+                ContourFailureCode.BACKEND_FAILURE,
+                "OpenCV contour candidate does not reference an edge pixel",
+            )
         point = PixelPoint(column=column, row=row)
         if not points or point != points[-1]:
             points.append(point)
     if len(points) > 1 and points[-1] == points[0]:
         points.pop()
-    if len(points) < 3 or len(set(points)) < 3:
+    if len(points) < 3 or len(set(points)) != len(points):
         return None
     sequence = tuple(points)
     _validate_chain_adjacency(sequence)

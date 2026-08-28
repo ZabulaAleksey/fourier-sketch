@@ -7,11 +7,13 @@ import pytest
 from fourier_sketch.imaging import (
     ContourCandidate,
     ContourExtractionResult,
+    EdgeAlgorithm,
+    EdgeDetectionResult,
     PixelPoint,
     RasterImage,
     RasterStage,
+    ThresholdBoundaryParameters,
     contour_bounding_box,
-    detect_threshold_boundary,
     signed_shoelace_area2,
 )
 from fourier_sketch.routing import (
@@ -41,7 +43,14 @@ def _extraction(
     empty_edges: bool = False,
 ) -> ContourExtractionResult:
     pixels = bytes(width * height) if empty_edges else bytes([255]) * (width * height)
-    edges = detect_threshold_boundary(RasterImage(width, height, pixels, RasterStage.BINARY))
+    edges = EdgeDetectionResult(
+        edges=RasterImage(width, height, pixels, RasterStage.BINARY),
+        algorithm=EdgeAlgorithm.THRESHOLD_BOUNDARY,
+        backend="fourier-sketch/numpy",
+        parameters=ThresholdBoundaryParameters(),
+        source_stage=RasterStage.BINARY,
+        source_dimensions=(width, height),
+    )
     return ContourExtractionResult(
         candidates=tuple(candidates),
         source=edges,
@@ -50,19 +59,33 @@ def _extraction(
 
 
 def test_dominant_selection_uses_area_then_bbox_then_point_count() -> None:
-    square = _candidate(((0, 0), (2, 0), (2, 2), (0, 2)))
-    equal_area_larger_box = _candidate(((0, 0), (4, 0), (0, 2)))
-    equal_area_box_more_points = _candidate(((0, 0), (2, 0), (2, 1), (2, 2), (0, 2)))
+    square = _candidate(
+        ((0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1))
+    )
+    smaller_diamond = _candidate(((1, 0), (2, 1), (1, 2), (0, 1)))
+    equal_area_larger_box = _candidate(
+        ((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (3, 1), (2, 1), (1, 1), (0, 1))
+    )
+    equal_area_box_fewer_points = smaller_diamond
+    equal_area_box_more_points = _candidate(
+        ((0, 0), (1, 0), (2, 0), (1, 1), (0, 2), (0, 1))
+    )
 
+    area_winner = select_dominant_contour(_extraction(smaller_diamond, square))
     bbox_winner = select_dominant_contour(_extraction(square, equal_area_larger_box))
-    points_winner = select_dominant_contour(_extraction(square, equal_area_box_more_points))
+    points_winner = select_dominant_contour(
+        _extraction(equal_area_box_fewer_points, equal_area_box_more_points)
+    )
 
+    assert area_winner.candidate == square  # type: ignore[union-attr]
     assert bbox_winner.candidate == equal_area_larger_box  # type: ignore[union-attr]
     assert points_winner.candidate == equal_area_box_more_points  # type: ignore[union-attr]
 
 
 def test_exact_tie_uses_canonical_signature_not_backend_order() -> None:
-    first = _candidate(((0, 0), (2, 0), (2, 2), (0, 2)))
+    first = _candidate(
+        ((0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1))
+    )
     second = _candidate(
         tuple((point.column, point.row) for point in reversed(first.points))
     )
@@ -78,7 +101,9 @@ def test_exact_tie_uses_canonical_signature_not_backend_order() -> None:
 
 
 def test_normalization_is_counter_clockwise_and_starts_topmost_leftmost() -> None:
-    clockwise_raster = _candidate(((1, 0), (3, 0), (3, 2), (1, 2)))
+    clockwise_raster = _candidate(
+        ((1, 0), (2, 0), (3, 0), (3, 1), (3, 2), (2, 2), (1, 2), (1, 1))
+    )
     selection = select_dominant_contour(
         _extraction(clockwise_raster, width=5, height=3)
     )
@@ -102,12 +127,12 @@ def test_normalization_is_counter_clockwise_and_starts_topmost_leftmost() -> Non
 
 
 @pytest.mark.parametrize("reverse", (False, True))
-@pytest.mark.parametrize("shift", range(4))
+@pytest.mark.parametrize("shift", range(8))
 def test_normalized_curve_is_invariant_to_candidate_rotation_and_direction(
     shift: int,
     reverse: bool,
 ) -> None:
-    base = ((1, 0), (3, 0), (3, 2), (1, 2))
+    base = ((1, 0), (2, 0), (3, 0), (3, 1), (3, 2), (2, 2), (1, 2), (1, 1))
     variant = tuple(reversed(base)) if reverse else base
     variant = variant[shift:] + variant[:shift]
     selection = select_dominant_contour(

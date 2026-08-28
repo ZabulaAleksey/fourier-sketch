@@ -83,6 +83,33 @@ def test_cli_component_localizes_invalid_timeline_parameters(
     assert "frames must" not in captured.err
 
 
+def test_blank_image_with_invalid_speed_is_failure_not_empty_success(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    source = tmp_path / "blank.png"
+    output = tmp_path / "must-not-exist.png"
+    Image.new("L", (8, 8), 0).save(source)
+
+    code = main(
+        [
+            str(source),
+            "--output",
+            str(output),
+            "--speed",
+            "0",
+            "--locale",
+            "pseudo",
+        ]
+    )
+
+    captured = capsys.readouterr()
+    assert code == 2
+    assert "[!!" in captured.err
+    assert "No usable contour" not in captured.out
+    assert not output.exists()
+
+
 def test_inactive_canny_options_do_not_block_boundary_path(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
@@ -128,3 +155,22 @@ def test_cli_component_preserves_existing_output(
     assert code == 2
     assert output.read_bytes() == b"user-owned"
     assert "already exists" in captured.err
+
+
+def test_cli_component_escapes_bidi_control_in_displayed_output_name(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    source = tmp_path / "shape.png"
+    output = tmp_path / "trace\u202egnp.png"
+    image = Image.new("L", (12, 12), 0)
+    ImageDraw.Draw(image).rectangle((2, 2, 9, 9), fill=255)
+    image.save(source)
+
+    code = main([str(source), "--output", str(output), "--frames", "1"])
+
+    captured = capsys.readouterr()
+    assert code == 0
+    assert output.exists()
+    assert "\u202e" not in captured.out
+    assert "\\u202e" in captured.out

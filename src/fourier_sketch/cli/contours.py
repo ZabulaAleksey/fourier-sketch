@@ -3,6 +3,7 @@
 import argparse
 import locale as system_locale
 import sys
+import unicodedata
 from collections.abc import Sequence
 from math import isfinite
 from pathlib import Path
@@ -14,6 +15,7 @@ from fourier_sketch.application import (
     ImageNoContourResult,
     build_dominant_contour_timeline,
     preprocess_local_image,
+    validate_timeline_speed,
 )
 from fourier_sketch.domain import DomainValidationError
 from fourier_sketch.imaging import (
@@ -52,7 +54,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         options = _parser(translator).parse_args(arguments)
         algorithm = EdgeAlgorithm(options.algorithm)
-        _validate_timeline_options(options.frames, options.frame_delta)
+        _validate_timeline_options(options.frames, options.frame_delta, options.speed)
         boundary_parameters = ThresholdBoundaryParameters()
         canny_parameters = CannyParameters()
         if algorithm is EdgeAlgorithm.THRESHOLD_BOUNDARY:
@@ -103,7 +105,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             translator.text(
                 "cli.contour_success",
-                name=output.name,
+                name=_safe_display_basename(output),
                 algorithm=result.edges.algorithm.value,
                 backend=result.normalized.provenance.extraction_backend,
                 candidates=result.selection.extraction.candidate_count,
@@ -231,7 +233,7 @@ def _boundary_parameters(connectivity: str) -> ThresholdBoundaryParameters:
     return ThresholdBoundaryParameters(parsed)
 
 
-def _validate_timeline_options(frames: int, frame_delta: float) -> None:
+def _validate_timeline_options(frames: int, frame_delta: float, speed: float) -> None:
     if type(frames) is not int or not 1 <= frames <= 9_999:
         raise DomainValidationError("frames must be between 1 and 9999")
     if (
@@ -241,6 +243,7 @@ def _validate_timeline_options(frames: int, frame_delta: float) -> None:
         or frame_delta <= 0.0
     ):
         raise DomainValidationError("frame_delta must be positive and finite")
+    validate_timeline_speed(speed)
 
 
 def _canny_parameters(low: str, high: str, aperture: str, gradient: str) -> CannyParameters:
@@ -300,6 +303,22 @@ def _requested_locale(arguments: list[str]) -> str | None:
         if value == "--locale" and index + 1 < len(arguments):
             return arguments[index + 1]
     return None
+
+
+def _safe_display_basename(path: Path) -> str:
+    """Escape terminal controls in the only path-derived success field."""
+    dangerous_bidi = frozenset({"BN", "LRE", "LRI", "LRO", "PDF", "PDI", "RLE", "RLI", "RLO"})
+    escaped: list[str] = []
+    for character in path.name:
+        category = unicodedata.category(character)
+        if category in {"Cc", "Cf", "Cs"} or unicodedata.bidirectional(character) in dangerous_bidi:
+            codepoint = ord(character)
+            escaped.append(
+                f"\\u{codepoint:04x}" if codepoint <= 0xFFFF else f"\\U{codepoint:08x}"
+            )
+        else:
+            escaped.append(character)
+    return "".join(escaped)
 
 
 if __name__ == "__main__":

@@ -60,3 +60,19 @@ def test_blank_image_returns_no_contour_without_curve_or_timeline(tmp_path: Path
     assert isinstance(result, ImageNoContourResult)
     assert result.edges.is_empty
     assert result.no_contour.extraction.candidates == ()
+
+
+def test_open_l_fragment_returns_no_contour_without_timeline(tmp_path: Path) -> None:
+    source = tmp_path / "open-l.png"
+    image = Image.new("L", (12, 12), 0)
+    ImageDraw.Draw(image).line(((3, 2), (3, 9), (9, 9)), fill=255, width=1)
+    image.save(source)
+
+    result = build_dominant_contour_timeline(
+        preprocess_local_image(source),
+        EdgeAlgorithm.THRESHOLD_BOUNDARY,
+    )
+
+    assert isinstance(result, ImageNoContourResult)
+    assert not result.edges.is_empty
+    assert result.no_contour.extraction.candidates == ()

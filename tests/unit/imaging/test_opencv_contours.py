@@ -9,6 +9,7 @@ from numpy.typing import NDArray
 
 from fourier_sketch.imaging import (
     MAX_CONTOUR_CANDIDATES,
+    MAX_TOTAL_CONTOUR_POINTS,
     ContourExtractionError,
     ContourFailureCode,
     EdgeAlgorithm,
@@ -55,6 +56,25 @@ def _edge_result(width: int = 5, height: int = 5) -> Any:
     )
 
 
+def _typed_edge_map(
+    coordinates: Sequence[tuple[int, int]],
+    *,
+    width: int = 8,
+    height: int = 8,
+) -> EdgeDetectionResult:
+    pixels = bytearray(width * height)
+    for column, row in coordinates:
+        pixels[row * width + column] = 255
+    return EdgeDetectionResult(
+        edges=RasterImage(width, height, bytes(pixels), RasterStage.BINARY),
+        algorithm=EdgeAlgorithm.THRESHOLD_BOUNDARY,
+        backend="fourier-sketch/numpy",
+        parameters=ThresholdBoundaryParameters(),
+        source_stage=RasterStage.BINARY,
+        source_dimensions=(width, height),
+    )
+
+
 def test_adapter_cleans_terminal_duplicate_and_ignores_zero_area_candidate(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -62,7 +82,7 @@ def test_adapter_cleans_terminal_duplicate_and_ignores_zero_area_candidate(
         [[[1, 1]], [[2, 1]], [[3, 1]], [[3, 2]], [[3, 3]], [[2, 3]], [[1, 3]], [[1, 2]], [[1, 1]]],
         dtype=np.int32,
     )
-    line = np.array([[[0, 0]], [[1, 0]], [[2, 0]], [[1, 0]]], dtype=np.int32)
+    line = np.array([[[1, 1]], [[2, 1]], [[3, 1]], [[2, 1]]], dtype=np.int32)
     backend = _FakeBackend((line, square))
     monkeypatch.setattr(
         "fourier_sketch.imaging.opencv_contours._load_opencv_backend",
@@ -121,6 +141,22 @@ def test_real_empty_edge_map_returns_typed_empty_extraction() -> None:
     assert result.source.is_empty
 
 
+@pytest.mark.parametrize(
+    "coordinates",
+    (
+        ((2, 2), (2, 3), (2, 4), (2, 5), (3, 5), (4, 5), (5, 5)),
+        ((2, 2), (3, 2), (4, 2), (3, 3), (3, 4), (3, 5)),
+    ),
+    ids=("open-l", "open-t"),
+)
+def test_real_opencv_open_fragments_do_not_become_closed_candidates(
+    coordinates: Sequence[tuple[int, int]],
+) -> None:
+    result = extract_external_contours(_typed_edge_map(coordinates))
+
+    assert result.candidates == ()
+
+
 def test_dense_edge_map_fails_before_loading_backend(monkeypatch: pytest.MonkeyPatch) -> None:
     width = 1_001
     height = 1_000
@@ -165,6 +201,21 @@ def test_candidate_count_budget_is_fail_closed(monkeypatch: pytest.MonkeyPatch) 
     assert captured.value.code is ContourFailureCode.RESOURCE_LIMIT
 
 
+def test_aggregate_point_budget_fails_before_python_object_expansion(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    oversized = np.zeros((MAX_TOTAL_CONTOUR_POINTS + 1, 1, 2), dtype=np.int32)
+    monkeypatch.setattr(
+        "fourier_sketch.imaging.opencv_contours._load_opencv_backend",
+        lambda: _FakeBackend((oversized,)),
+    )
+
+    with pytest.raises(ContourExtractionError) as captured:
+        extract_external_contours(_edge_result())
+
+    assert captured.value.code is ContourFailureCode.RESOURCE_LIMIT
+
+
 def test_backend_import_failure_is_typed_without_native_detail(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -182,3 +233,21 @@ def test_backend_import_failure_is_typed_without_native_detail(
 
     assert captured.value.code is ContourFailureCode.BACKEND_UNAVAILABLE
     assert "sensitive native detail" not in str(captured.value)
+
+
+def test_backend_candidate_must_reference_actual_edge_pixels(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    square = np.array(
+        [[[2, 2]], [[3, 2]], [[3, 3]], [[2, 3]]],
+        dtype=np.int32,
+    )
+    monkeypatch.setattr(
+        "fourier_sketch.imaging.opencv_contours._load_opencv_backend",
+        lambda: _FakeBackend((square,)),
+    )
+
+    with pytest.raises(ContourExtractionError) as captured:
+        extract_external_contours(_typed_edge_map(((0, 0),)))
+
+    assert captured.value.code is ContourFailureCode.BACKEND_FAILURE

@@ -7,6 +7,7 @@ from .diagnostic_epicycles import (
     EpicycleTimeline,
     RenderVisibility,
     TimelineState,
+    validate_timeline_speed,
 )
 from .dominant_contour import (
     DEFAULT_CONTOUR_HARMONICS,
@@ -56,4 +57,5 @@ __all__ = [
     "export_preprocessing_result",
     "preprocess_local_image",
     "select_preprocessing_raster",
+    "validate_timeline_speed",
 ]

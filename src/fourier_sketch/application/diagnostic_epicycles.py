@@ -102,7 +102,7 @@ class EpicycleFrame:
         ):
             raise DomainValidationError("frame curves and selection sample_count must match")
         object.__setattr__(self, "trace", trace)
-        object.__setattr__(self, "speed", _validated_speed(self.speed))
+        object.__setattr__(self, "speed", validate_timeline_speed(self.speed))
 
 
 class EpicycleTimeline:
@@ -133,7 +133,7 @@ class EpicycleTimeline:
         self._visibility = visibility or RenderVisibility()
         self._state = TimelineState.PAUSED
         self._time = 0.0
-        self._speed = _validated_speed(speed)
+        self._speed = validate_timeline_speed(speed)
         self._selection = self._make_selection(harmonic_count)
         self._reconstruction = self._make_reconstruction()
         self._chain = build_epicycle_chain(self._selection, self._time)
@@ -197,7 +197,7 @@ class EpicycleTimeline:
         return self._frame()
 
     def set_speed(self, speed: float) -> EpicycleFrame:
-        self._speed = _validated_speed(speed)
+        self._speed = validate_timeline_speed(speed)
         return self._frame()
 
     def set_harmonic_count(self, harmonic_count: int) -> EpicycleFrame:
@@ -250,7 +250,8 @@ class EpicycleTimeline:
         )
 
 
-def _validated_speed(value: float) -> float:
+def validate_timeline_speed(value: float) -> float:
+    """Validate and normalize the shared interactive timeline speed contract."""
     normalized = _finite_real(value, field_name="speed")
     if normalized <= 0.0 or normalized > MAX_SPEED:
         raise DomainValidationError(f"speed must be greater than zero and at most {MAX_SPEED}")
