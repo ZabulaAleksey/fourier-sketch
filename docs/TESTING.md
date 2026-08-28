@@ -1,0 +1,114 @@
+# Test strategy Fourier Sketch
+
+## Source of contract
+
+SPEC/ADR задают требования; accepted tests/fixtures/goldens являются executable contract и
+evidence. Обычная implementation не изменяет их ради green. Новые tests добавляются до первой
+приёмки соответствующего behavior и после этого считаются принятыми.
+
+## Канонические команды
+
+```powershell
+uv sync --all-groups --frozen
+uv run pytest
+uv run ruff check .
+uv run mypy
+py -3 ~/.codex/tools/validate_project_overlay.py .
+```
+
+После появления packaging/GUI/export project manifest и CI расширят command surface; команды не
+считаются каноническими до фиксации в `pyproject.toml`, README и этом документе.
+
+## Уровни
+
+### Smoke
+
+Stage `FS-000`: clean environment, package import/version, overlay structure.
+
+### Unit
+
+Value invariants, conversions, reference formulas, ordering, metrics, validators, individual image
+transforms, graph/routing primitives и export serializers.
+
+### Property
+
+После добавления Hypothesis в фактическом stage:
+
+- DFT/IDFT round-trip finite arrays;
+- translation/DC и complex scaling;
+- reference DFT/FFT parity;
+- epicycle endpoint/reconstruction parity across time/orderings;
+- trace samples equal chain endpoint samples;
+- resampling order/endpoints/closed semantics.
+
+### Integration
+
+Real boundaries: Curve → spectrum → chain, image decoder → transform, contour → application use
+case, renderer consumes chain state, exporter consumes the same timeline, locale resource loader.
+
+### Component
+
+Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
+toggles, keyboard navigation, default/fallback/pseudo-locale, text expansion. Headless/offscreen
+mode допустим только если он выполняет actual component code.
+
+### E2E
+
+Критические live paths:
+
+1. freehand input → Curve → Fourier → chain → endpoint trace (`FS-008`);
+2. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
+3. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+
+До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
+заменяется mock-only success. Для local desktop equivalent backend — application/core path.
+
+## Numerical fixtures
+
+Planned accepted fixtures: constant, circle, ellipse, square, triangle, line, spiral,
+figure-eight, letter-like curve, two disconnected circles, explicit jump и noisy contour.
+Fixture generation фиксирует N, orientation, parameterization и expected property, а не только
+картинку.
+
+Circle convention example при `z[n] = exp(i2πn/N)`: dominant coefficient `C_(+1)=1` с прочими
+coefficients около zero. Если screen Y-axis inversion применяется, она остаётся presentation
+transform и не меняет domain fixture silently.
+
+## Tolerances and evidence
+
+Каждый numerical test задаёт `atol/rtol` рядом с rationale (N, scale, algorithm). Сравнение с
+renderer pixels не заменяет numerical assertion. NaN/Inf и degenerate metrics проверяются
+отдельно.
+
+Evidence report для gate:
+
+```text
+command/check
+result: PASS | FAIL | BLOCKED | NOT RUN
+scope and environment/commit
+caveat
+```
+
+## Stage gates
+
+- functional change: релевантные unit + integration + component;
+- mathematical invariant: unit + property + analytical fixture;
+- user-facing stage: component + live E2E;
+- security boundary: negative/integration tests;
+- performance claim: recorded baseline/benchmark + correctness parity;
+- dependency change: lockfile + frozen clean restore.
+
+Full `uv run pytest` остаётся regression suite. Test count не фиксируется в docs, чтобы не создавать
+stale claims.
+
+## Manual diagnostics
+
+Visual stages сохраняют command, fixture/inputs, expected geometry/state и observed result. Manual
+check дополняет, но не заменяет assertions. Screenshots/golden вводятся только после стабильной
+rendering contract и отдельной acceptance.
+
+## Coverage
+
+FS-000 не задаёт искусственный percentage target. До hardening pure math/domain critical branches
+должны иметь behavior/property coverage; Stage `FS-023` фиксирует measured baseline и разумный
+regression threshold до заявления о target.
