@@ -2,67 +2,63 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-003`: deterministic spectrum energy и views/orderings без изменения
-coefficient values и без partial selection. Lifecycle: `in_progress`.
+Реализовать Stage `FS-004`: явный coefficient selection, continuous/discrete partial
+reconstruction и определённые error/energy metrics. Lifecycle: `in_progress`.
 
 ## Связанные требования
 
 - SPEC: `specs/features/fourier-core.spec.md`.
-- IDs: FC-FR-004, FC-FR-005, FC-AC-003, FR-HARMONICS-001, AC-SYS-010.
-- Stage contract: `prompts/STAGES.md`, heading `FS-003`.
+- IDs: FC-FR-005, FC-FR-006, FC-AC-003, FC-AC-004, FR-HARMONICS-001, AC-SYS-010.
+- Stage contract: `prompts/STAGES.md`, heading `FS-004`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: `FS-003`.
-- Completed prerequisite: FS-002 implementation `cc65b5a`, all numerical gates PASS.
-- DAG: `FS-002 → FS-003`; no cycle/forward dependency.
-- Entry gate: satisfied; user already authorized the FS-002–FS-006 sequence.
+- Stage ID: `FS-004`.
+- Completed prerequisite: FS-003 implementation `f004f68`, 75 tests and all quality gates PASS.
+- DAG: `FS-003 → FS-004`; no cycle/forward dependency.
+- Entry gate: satisfied; user authorized the FS-002–FS-006 sequence.
 
 ## Runnable vertical slice и consumer scenario
 
-- Entry: consumer transforms a canonical circle with `fft_dft`.
-- Path: complete spectrum → energy summary → signed/absolute/amplitude/interleaved/explicit full
-  ordering views.
-- Observable result: `k=+1` is dominant and every view is a deterministic permutation of the same
-  complete coefficient set.
+- Entry: consumer transforms a canonical circle or square and chooses K/order or an explicit set.
+- Path: complete spectrum → `CoefficientSelection` → reconstruction grid → metrics.
+- Observable result: full selection matches FS-002 IDFT; partial selection returns finite points,
+  retained energy and defined error diagnostics without FS-005.
 
-## Scope / non-goals
+## Scope / non-goals / invariants
 
-- Scope: `SpectrumOrdering`, deterministic tie-breaks, complete explicit permutation and total
-  squared-amplitude energy.
-- Non-goals: partial K/explicit subset, reconstruction, metrics, epicycles and charts.
-- Invariant: ordering never changes a coefficient or constructs an invalid partial spectrum.
-
-## Tie-break contract
-
-- signed: `frequency`;
-- absolute: `(abs(frequency), frequency)`;
-- amplitude: `(-amplitude, abs(frequency), frequency)`;
-- interleaved: `0,+1,-1,+2,-2,…` over available bins;
-- explicit: exactly one occurrence of every complete-spectrum frequency in caller order.
+- Scope: immutable 1..N selection; first-K deterministic ordering; explicit unique subset;
+  continuous/discrete reconstruction; MSE/RMSE/max/normalized error; retained energy.
+- Non-goals: epicycle geometry, timeline, renderer and monotonic-error claims for arbitrary order.
+- Invariants: selection is not a partial `FourierSpectrum`; caller's explicit order is preserved;
+  selected bins belong to one complete spectrum; aligned inputs only; no silent NaN/Inf.
+- Zero-reference rule: normalized error is `0` only for exact reconstruction; otherwise a typed
+  undefined state. Zero-energy retained ratio is `1` for full selection and `0` for partial.
 
 ## Рабочие задачи
 
 | № | Задача | Статус |
 |---|---|---|
-| 1 | Verify FS-002 terminal evidence and FS-003 entry | completed |
-| 2 | Implement ordering enum/views and energy API | in_progress |
-| 3 | Add deterministic unit/property/integration contracts | pending |
-| 4 | Run full/static/overlay/reviewer/SPEC gates | pending |
-| 5 | Synchronize docs and commit FS-003 | pending |
+| 1 | Verify FS-003 terminal evidence and FS-004 entry | completed |
+| 2 | Implement selection and reconstruction contracts | in_progress |
+| 3 | Implement metrics and degenerate-state semantics | pending |
+| 4 | Add unit/property/integration contracts | pending |
+| 5 | Run full/static/overlay/reviewer/SPEC gates | pending |
+| 6 | Synchronize docs and commit FS-004 | pending |
 
 ## Acceptance / PASS
 
-- [ ] All orderings are deterministic permutations of the same complete set.
-- [ ] Explicit ordering rejects missing/duplicate/unknown frequencies.
-- [ ] Energy equals `Σ|C_k|²`; zero spectrum energy is `0.0`.
-- [ ] Circle fixture reports dominant `k=+1`.
+- [ ] Every valid selection contains exactly the requested 1..N unique spectrum bins.
+- [ ] Full selection reconstruction matches FS-002 IDFT on the canonical sample grid.
+- [ ] Partial continuous/discrete reconstruction follows the documented Fourier formula.
+- [ ] Metrics are finite and zero-denominator behavior is explicit and typed.
+- [ ] Retained energy follows the documented zero-energy convention.
 - [ ] Full quality/reviewer/documentation gates pass.
 
 ## Deferred
 
-- Partial selection and retained energy (`FS-004`), epicycles (`FS-005`), visualization (`FS-006`).
+- Epicycle chain (`FS-005`), diagnostic timeline/renderer (`FS-006`) and performance claims.
 
 ## Условие перехода
 
-FS-004 начинается только после FS-003 terminal evidence и commit.
+FS-005 начинается только после FS-004 terminal evidence и commit.

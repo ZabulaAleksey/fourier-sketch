@@ -12,7 +12,7 @@
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | planned |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
-| `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | planned |
+| `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | partial — ordering verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | planned |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | planned |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | planned |
@@ -78,6 +78,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | no silent fallback | explicit `reference_dft` / `fft_dft` API | backend-failure unit test | PASS |
 | independent review | FS-002 diff | reviewer gate | PASS after sample-budget/IDFT fixes |
 | commit evidence | FS-002 implementation | Git commit | PASS — `cc65b5a` |
+
+## Stage FS-003 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| deterministic complete views | `math/spectrum.py` | unit + property permutations/ties | PASS |
+| even-N signed/interleaved convention | spectrum ordering | explicit Nyquist unit cases | PASS |
+| total finite energy | `spectrum_energy` | analytical + overflow-negative unit cases | PASS |
+| canonical circle summary | real FFT → spectrum analysis | integration | PASS |
+| independent review | FS-003 diff | reviewer gate | PASS after magnitude/Nyquist fixes |
+| commit evidence | FS-003 implementation | Git commit | PASS — `f004f68` |
 
 ## Acceptance coverage targets
 

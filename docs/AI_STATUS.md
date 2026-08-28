@@ -2,27 +2,28 @@
 
 ## Текущий этап
 
-- Stage ID: `FS-003`.
+- Stage ID: `FS-004`.
 - Lifecycle: `in_progress`.
-- Evidence level: FS-003 not yet implemented; FS-002 committed.
+- Evidence level: FS-003 committed and verified; FS-004 not yet implemented.
 - Branch: `feature/fs-002-fs-006-core-renderer`.
 
 ## Подтверждённо реализовано
 
 - FS-000/FS-001 project scaffold and immutable domain model.
 - FS-002 conversion, canonical signed bins, bounded reference DFT, explicit NumPy FFT and IDFT.
-- FS-002 implementation commit: `cc65b5a`.
+- FS-003 spectrum energy and deterministic complete-spectrum ordering views.
+- FS-003 implementation commit: `f004f68`.
 
-## FS-002 evidence
+## FS-003 evidence
 
-- Frozen restore/lock: PASS, 17 packages.
-- Unit/property/integration/component/full: PASS; full suite 57 tests.
-- Ruff/mypy/overlay/diff/public consumer/dependency boundary: PASS.
-- Reviewer findings on FFT budget, finite IDFT and reference integration: resolved.
+- Frozen restore: PASS, 17 packages.
+- Unit/property/integration/component/full: PASS; full suite 75 tests.
+- Ruff/mypy/overlay/diff: PASS.
+- Reviewer: no P0/P1; overflow-safe magnitude and even-N Nyquist test fixes verified.
 
 ## В процессе
 
-- FS-003 complete-spectrum ordering views and energy.
+- FS-004 coefficient selection, reconstruction and metrics.
 
 ## Известные блокеры
 
@@ -30,12 +31,12 @@
 
 ## Ограничения / deferred
 
-- No partial selection/reconstruction/epicycle/rendering yet.
+- No epicycle chain or user-facing renderer yet.
 - Reference and NumPy backends remain explicit; no automatic fallback.
 
 ## Следующая задача
 
-Finish FS-003 and commit its evidence before FS-004.
+Finish FS-004 and commit its evidence before FS-005.
 
 ## Интеграция
 
@@ -43,5 +44,5 @@ Finish FS-003 and commit its evidence before FS-004.
 
 ## Синхронизация документации
 
-- FS-002 completion synchronized; FS-003 exact plan/status/stage selector activated.
-- Other canonical docs are checked again at FS-003 completion.
+- FS-003 implementation and terminal evidence synchronized; FS-004 exact selector activated.
+- `DESIGN.md`, `SECURITY.md`, `DEPENDENCIES.md` and `FALLBACKS.md` checked without changes.

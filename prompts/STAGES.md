@@ -163,7 +163,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-003 — Fourier Spectrum
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; implementation commit `f004f68`.
 - Goal: expose deterministic spectrum metadata, coefficient properties, energy and orderings.
 
 ### Dependency DAG & entry preconditions
@@ -191,6 +191,8 @@ completion claim. Evidence records environment/branch and caveats.
 - Unit/property tests for amplitudes/phases/unique bins/all orderings and analytical fixture.
 - Full pytest/Ruff/mypy/overlay/diff checks.
 - PASS: every ordering contains same set; metadata records convention/N.
+- Evidence: 75 tests PASS; Ruff/mypy/overlay/diff PASS; independent review PASS after
+  overflow-safe magnitude and even-N Nyquist coverage fixes.
 
 ### Temporary / deferred / failure
 
@@ -198,18 +200,18 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: selection/reconstruction FS-004 and visual spectrum FS-006/FS-019.
 - Performance: benchmark claims forbidden; deterministic correctness first.
 - Docs: traceability/status/plan, mathematics only if convention defect discovered.
-- Handoff: commit and stop before FS-004.
+- Handoff: terminal evidence committed; FS-004 entry is satisfied.
 
 ## FS-004 — Partial Reconstruction and Metrics
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: reconstruct from explicit harmonic selections and report defined errors.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-003 → FS-004`; FS-003 orderings/energy must be completed.
 - Entry evidence: spectrum public contract and analytical fixtures.
-- Current gate: unsatisfied while FS-003 is planned.
+- Current gate: satisfied — FS-003 completed with commit `f004f68`; user authorized continuation.
 
 ### Scope / non-goals / invariants
 
