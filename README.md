@@ -26,8 +26,9 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 
 Этап `FS-009` завершён: selectable arc-length resampling и измеримое сравнение с текущим
 uniform-by-index baseline доступны в одном MVP. Этап `FS-010` завершил безопасный локальный
-PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` добавляет два явно разных edge
-mode без contour interpretation: project-owned binary boundary и OpenCV Canny.
+PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` завершён и добавил два явно
+разных edge mode без contour interpretation: project-owned binary boundary и OpenCV Canny.
+Следующий `FS-012` запланирован, но не запущен.
 
 ## Целевой pipeline
 

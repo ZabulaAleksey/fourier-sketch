@@ -18,18 +18,18 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-008` | First live freehand-to-trace MVP | `completed` |
 | `FS-009` | Arc-Length Parameterization | `completed` |
 | `FS-010` | Validated image input, grayscale, threshold | `completed` |
+| `FS-011` | Explicit threshold-boundary and Canny edge diagnostics | `completed` |
 
-## Ближайшие этапы (planned)
+## Ближайший этап (planned, не запущен)
 
-| Stage | Результат |
-|---|---|
-| `FS-011` | Edge Detection (`in_progress`) |
+| Stage | Результат | Gate |
+|---|---|---|
+| `FS-012` | Dominant contour to curve | technical prerequisites complete; awaiting authorization |
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-012` | Dominant contour to curve |
 | `FS-013` | Live image-to-epicycle-trace MVP |
 | `FS-014` | Skeletonization |
 | `FS-015` | Skeleton Graph |

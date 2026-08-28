@@ -2,10 +2,9 @@
 
 ## Текущий этап
 
-- Stage ID: `FS-011`.
-- Lifecycle: `in_progress`.
-- Evidence level: FS-010 committed, fully verified and security-reviewed; FS-011 entry gate PASS
-  after official OpenCV Canny/headless/license review.
+- Last completed Stage ID: `FS-011`.
+- Lifecycle: `completed`; active implementation: none.
+- Next candidate: `FS-012`, `planned` and awaiting explicit user authorization.
 - Branch: `feature/fs-007-fs-011-input-imaging`.
 
 ## Подтверждённо реализовано
@@ -17,34 +16,40 @@
 - FS-008 cohesive Play/Pause/Restart/speed/harmonic surface and exact live endpoint-history E2E.
 - FS-009 selectable arc-length resampling, spacing metrics and same-surface comparison.
 - FS-010 safe local PNG/JPEG preprocessing with typed grayscale/binary diagnostics.
-- Latest implementation commit: `d63b1b0`.
+- FS-011 project-owned 4/8-connectivity threshold boundary and explicit headless OpenCV Canny,
+  typed parameter/backend provenance, localized CLI and safe diagnostic PNG publication.
+- Latest implementation commit: `b0c3334`.
 
-## FS-010 evidence
+## FS-011 evidence
 
-- Full suite 254 tests and FS-010 targeted 39 tests PASS.
+- Full suite: 299 tests PASS; independent targeted security re-review: 45 tests PASS.
 - Ruff, mypy, uv lock/frozen sync, overlay and diff checks: PASS.
-- Manual diagnostic visual QA: binary PNG and pseudo-locale summary PASS.
-- Real PNG/JPEG/TIFF/APNG/corrupt/oversized/EXIF/overwrite/privacy evidence PASS.
-- Independent security review: GO after nested typed-provenance integrity fix.
+- Live subprocess E2E: local image → selected edge algorithm → readable same-sized binary PNG.
+- Manual visual QA: boundary/Canny shape outputs and summaries PASS.
+- Negative evidence: invalid parameters, empty map, unavailable/malformed native backend, unsafe
+  provenance, corrupt input, privacy and overwrite paths PASS without silent fallback.
+- Independent security review: GO after import-failure/privacy and backend-identifier fixes.
 
 ## В процессе
 
-- FS-011 explicit threshold-boundary and Canny edge intermediates.
+- None.
 
 ## Известные блокеры
 
-- None.
+- None for completed FS-011.
+- FS-012 is intentionally not started because this batch ended at FS-011.
 
 ## Ограничения / deferred
 
 - Current surface is diagnostic Matplotlib/CLI, not the final PySide6 shell.
 - Image scope remains local PNG/JPEG single-frame only; remote input is excluded.
-- Edge results are diagnostic rasters; no contour/curve claim exists before FS-012.
+- Edge results are diagnostic rasters; contour/curve interpretation starts only in FS-012.
 - No product GUI or animation codec/export framework yet.
 
 ## Следующая задача
 
-Complete FS-011 and stop before FS-012; no further stage is authorized in this batch.
+После явной авторизации спланировать и реализовать `FS-012`; до неё сохранить repository в
+текущем verified state.
 
 ## Интеграция
 
@@ -52,9 +57,9 @@ Complete FS-011 and stop before FS-012; no further stage is authorized in this b
 
 ## Синхронизация документации
 
-- README, architecture, decisions, dependencies, design, fallbacks, security, testing, learning and
-  project context were synchronized with FS-010; mathematics and relevant SPEC were checked exact.
-- Traceability, roadmap, plan/status and selected stage record carry FS-010 completion evidence and
-  select FS-011.
+- README, architecture, decisions, dependencies, design, fallbacks, security, testing, learning,
+  project context and traceability synchronized through FS-011.
+- Relevant system/image SPEC and MATHEMATICS checked; their stable contracts did not require edits.
+- Plan/status/roadmap and selected stage record carry FS-011 terminal evidence; FS-012 remains
+  planned/unauthorized.
 - `prompts/STAGES.md` remains canonical and intentionally stays outside `docs/`.
-- User authorized sequential implementation of FS-007 through FS-011; exact selector is FS-011.

@@ -492,7 +492,9 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-011 — Edge Detection
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`.
+- Evidence: implementation commit `b0c3334`; full 299 tests, independent targeted 45 tests,
+  Ruff/mypy/frozen-lock/overlay/diff/manual visual gates PASS; security re-review GO.
 - Goal: produce diagnostic threshold-boundary and Canny edge maps from validated preprocessing.
 
 ### Dependency DAG & entry preconditions
@@ -505,7 +507,7 @@ completion claim. Evidence records environment/branch and caveats.
 ### Scope / non-goals / invariants
 
 - Scope: threshold boundary, Canny parameters, edge result/provenance, synthetic fixtures and
-  intermediate preview/export; add OpenCV only if accepted decision proves need.
+  intermediate preview/export; reviewed `opencv-python-headless` added as direct dependency.
 - Non-goals: contour ordering, skeletonization or routing.
 - Invariants: validated dimensions/types; deterministic parameters; backend named in result;
   algorithm errors are explicit and do not mutate source intermediate.
@@ -521,6 +523,9 @@ completion claim. Evidence records environment/branch and caveats.
 - Unit synthetic line/rectangle/noise cases; integration real FS-010 output through both modes;
   component/CLI selection; full/static/frozen-sync/overlay gates.
 - PASS includes negative thresholds/empty-edge state and no contour claim.
+- Actual evidence: same-sized binary outputs, 4/8-connectivity, Canny L1/L2/aperture/thresholds,
+  no-fallback/unavailable/malformed backend, privacy-safe import failures, bounded provenance,
+  overwrite and live subprocess PNG paths all PASS.
 
 ### Temporary / deferred / failure
 
@@ -529,7 +534,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Fallback: backend unavailable → Canny unavailable; threshold boundary may remain separately
   supported, visibly selected, never presented as equivalent Canny.
 - Docs: dependency/security/architecture/trace/status/plan.
-- Handoff: commit and stop before FS-012.
+- Handoff: implementation committed as `b0c3334`; stopped before FS-012 as authorized.
 
 ## FS-012 — Dominant Contour to Curve
 
@@ -540,7 +545,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-011 + FS-009 + FS-008 → FS-012`; all three must be completed at start.
 - Entry evidence: edge map contract, arc-length resampling and freehand endpoint-trace application.
-- Current gate: unsatisfied while FS-011 is incomplete.
+- Current gate: technical prerequisites satisfied by FS-008/FS-009/FS-011 completion; stage remains
+  `planned` and cannot start without explicit user authorization.
 
 ### Scope / non-goals / invariants
 
