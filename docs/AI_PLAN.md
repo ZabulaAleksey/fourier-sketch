@@ -43,5 +43,5 @@ repository остановлен перед `FS-012` и ожидает следу
 
 ## Integration boundary
 
-Merge, push, PR и старт `FS-012` не выполнялись. Текущая ветка:
-`feature/fs-007-fs-011-input-imaging`.
+Stages `FS-007`–`FS-011` fast-forward merged в локальный `main` на commit `a0a362e`. Push, PR,
+release и старт `FS-012` не выполнялись; remote `origin/main` остаётся без этих локальных commits.

@@ -5,7 +5,8 @@
 - Last completed Stage ID: `FS-011`.
 - Lifecycle: `completed`; active implementation: none.
 - Next candidate: `FS-012`, `planned` and awaiting explicit user authorization.
-- Branch: `feature/fs-007-fs-011-input-imaging`.
+- Integration: stages `FS-007`–`FS-011` fast-forward merged into local `main` at `a0a362e`;
+  post-merge status synchronization is performed on `docs/fs-011-merge-status`.
 
 ## Подтверждённо реализовано
 
@@ -53,7 +54,8 @@
 
 ## Интеграция
 
-- Current branch only; merge/push/release NOT PERFORMED.
+- Local `main`: FS-007–FS-011 merge confirmed at `a0a362e`.
+- Remote `origin/main`: not pushed; PR/release NOT PERFORMED.
 
 ## Синхронизация документации
 
