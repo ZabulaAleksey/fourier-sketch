@@ -7,11 +7,13 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 ## Текущее состояние
 
-Реализован только каркас Stage `FS-000`: независимый Git-репозиторий, Python package scaffold,
-воспроизводимое dependency-окружение, smoke contract и проектная документация. Domain model,
-DFT/FFT, rendering, mouse input, image processing, GUI и export ещё не реализованы.
+Реализованы каркас Stage `FS-000` и domain model Stage `FS-001`. Публичный пакет
+`fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
+Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Domain model
+локально проверен unit, integration и component contracts.
 
-Следующий запланированный этап — `FS-001` (Domain Model). Он не начинается автоматически.
+Следующий запланированный этап — `FS-002` (Complex Curve + DFT / IDFT). Он не начинается
+автоматически.
 
 ## Целевой pipeline
 
@@ -46,7 +48,7 @@ uv sync --all-groups --frozen
 
 `uv` использует общий machine cache, но создаёт изолированную project-local `.venv`.
 
-## Проверки Stage FS-000
+## Проверки
 
 ```powershell
 uv run pytest
@@ -60,11 +62,12 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — production package, пока только scaffold;
-- `tests/` — принятые executable contracts, пока smoke level.
+- `src/fourier_sketch/` — production package и независимый domain layer;
+- `tests/` — smoke, unit, integration и component executable contracts.
 
 ## Ограничения
 
-Проект пока не имеет пользовательского entry point и не строит Fourier coefficients. Заявленные
-в roadmap возможности являются planned, а не implemented. Проект не обещает идеальную
-векторизацию произвольных фотографий или оптимальный single-stroke route для любого изображения.
+Проект пока не имеет пользовательского entry point и не вычисляет Fourier coefficients: domain
+values не являются DFT/FFT implementation. Rendering, mouse/image input, GUI и export остаются
+planned. Проект не обещает идеальную векторизацию произвольных фотографий или оптимальный
+single-stroke route для любого изображения.

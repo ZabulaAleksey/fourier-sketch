@@ -53,6 +53,19 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | portable context | repository source/docs | machine-path audit | PASS |
 | commit evidence | bootstrap implementation | Git commit | PASS — `878f724` |
 
+## Stage FS-001 evidence
+
+| Contract | Artifact | Check | Status before commit evidence |
+|---|---|---|---|
+| FC-FR-001 finite/non-empty curve values | `src/fourier_sketch/domain/point.py`, `curve.py`, `piecewise_curve.py` | unit tests | PASS |
+| FC-FR-004 coefficient/spectrum values | `src/fourier_sketch/domain/fourier.py` | unit tests, canonical signed-bin negative case | PASS |
+| epicycle structural state | `src/fourier_sketch/domain/epicycle.py` | unit tests | PASS |
+| public consumer boundary | `fourier_sketch.domain` | integration + component tests | PASS |
+| typed malformed-input failures | domain constructors | negative unit tests | PASS |
+| dependency boundary | domain imports | Ruff/mypy + import audit | PASS — stdlib/internal only |
+| independent review | FS-001 diff | reviewer gate | PASS after canonical-bin and typed-error fixes |
+| commit evidence | FS-001 implementation | Git commit | PENDING |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

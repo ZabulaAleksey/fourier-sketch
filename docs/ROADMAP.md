@@ -5,15 +5,15 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Выполнено
 
-| Stage | Результат | Статус bootstrap |
+| Stage | Результат | Статус |
 |---|---|---|
 | `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `completed` |
+| `FS-001` | Immutable Domain Model, typed validation, public imports | `implemented_unverified` |
 
 ## Ближайшая математическая основа (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-001` | Domain Model |
 | `FS-002` | Complex Curve + reference DFT / FFT / IDFT |
 | `FS-003` | Fourier Spectrum and ordering |
 | `FS-004` | Partial Reconstruction and metrics |

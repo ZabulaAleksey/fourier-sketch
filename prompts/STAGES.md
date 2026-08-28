@@ -71,7 +71,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-001 — Domain Model
 
-- Lifecycle: `planned`.
+- Lifecycle: `implemented_unverified`.
 - Goal: implement only typed domain values and invariants required by later math/rendering.
 - Context: Fourier Core SPEC FC-FR-001 and domain boundaries in architecture.
 
@@ -79,7 +79,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-000 → FS-001`; at actual start FS-000 must be completed with frozen restore/smoke.
 - Entry evidence: accepted SPEC, clean Git baseline, test inventory, no conflicting domain API.
-- Current gate: unsatisfied until FS-000 terminal evidence is synchronized.
+- Current gate: satisfied — FS-000 is completed/committed; clean baseline passed on
+  `feature/fs-001-domain-model` before implementation.
 
 ### Scope / non-goals / invariants
 
@@ -100,6 +101,8 @@ completion claim. Evidence records environment/branch and caveats.
 - Add accepted unit tests for every value/invariant and public import path.
 - Run `uv run pytest -m unit`, full pytest, Ruff, mypy, overlay validator and diff check.
 - PASS: valid/invalid cases and dependency-boundary review succeed; no future module scaffold.
+- Current evidence: frozen restore, 30 unit, 1 integration, 1 component, full 33-test suite, Ruff,
+  mypy, overlay, public consumer path and dependency-boundary audit PASS; commit evidence pending.
 
 ### Temporary / deferred / failure
 

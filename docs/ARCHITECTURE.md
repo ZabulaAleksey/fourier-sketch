@@ -2,9 +2,9 @@
 
 ## Статус документа
 
-Stage `FS-000` создаёт только package scaffold. Описанные ниже product modules являются целевой
-архитектурой и появляются строго в соответствующих stages; отсутствие каталога сейчас не является
-дефектом bootstrap.
+Stages `FS-000` и `FS-001` создали package scaffold и независимый immutable domain layer.
+Остальные product modules являются целевой архитектурой и появляются строго в соответствующих
+stages; отсутствие их каталогов сейчас не является дефектом.
 
 ## Архитектурные цели
 
@@ -43,7 +43,7 @@ domain, math           → Python stdlib + NumPy only when introduced
 ```text
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
-├── domain/                     # planned FS-001
+├── domain/                     # существует: Stage FS-001 values и invariants
 ├── math/                       # planned FS-002..FS-005, FS-009, FS-019
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
@@ -119,7 +119,7 @@ optional codec/backend output. Limits и failure semantics определены 
 
 ## Packaging и deployment
 
-На FS-000 поддерживается source package через Python 3.12+ и `uv`. Desktop packaging target и
+На FS-001 поддерживается source package через Python 3.12+ и `uv`. Desktop packaging target и
 installer не выбраны; решение откладывается до hardening после platform evidence. Repository не
 зависит от machine-local prompt/Downloads path.
 
