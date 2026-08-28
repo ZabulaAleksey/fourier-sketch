@@ -7,13 +7,15 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 ## Текущее состояние
 
-Реализованы каркас Stage `FS-000` и domain model Stage `FS-001`. Публичный пакет
+Реализованы каркас `FS-000`, domain model `FS-001` и математический transform slice `FS-002`.
+Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
-Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Domain model
-локально проверен unit, integration и component contracts.
+Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
+`fourier_sketch.math` выполняет complex conversion, canonical signed-frequency mapping, bounded
+reference DFT, explicit NumPy FFT и IDFT.
 
-Следующий запланированный этап — `FS-002` (Complex Curve + DFT / IDFT). Он не начинается
-автоматически.
+Следующий этап одобренной последовательности — `FS-003` (Fourier Spectrum orderings/energy); он
+начинается только после commit evidence FS-002.
 
 ## Целевой pipeline
 
@@ -62,12 +64,12 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
 - `prompts/STAGES.md` — единственный подробный каталог этапов;
-- `src/fourier_sketch/` — production package и независимый domain layer;
-- `tests/` — smoke, unit, integration и component executable contracts.
+- `src/fourier_sketch/` — independent domain и numerical math layers;
+- `tests/` — smoke, unit, property, integration и component executable contracts.
 
 ## Ограничения
 
-Проект пока не имеет пользовательского entry point и не вычисляет Fourier coefficients: domain
-values не являются DFT/FFT implementation. Rendering, mouse/image input, GUI и export остаются
-planned. Проект не обещает идеальную векторизацию произвольных фотографий или оптимальный
-single-stroke route для любого изображения.
+Проект пока не имеет пользовательского entry point. Spectrum orderings/selection, partial
+reconstruction, epicycle math, rendering, mouse/image input, GUI и export остаются planned.
+Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
+обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

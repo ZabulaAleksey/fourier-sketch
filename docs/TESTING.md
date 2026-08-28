@@ -32,11 +32,14 @@ transforms, graph/routing primitives и export serializers.
 
 ### Property
 
-После добавления Hypothesis в фактическом stage:
+Hypothesis добавлен в FS-002. Реализованы:
 
 - DFT/IDFT round-trip finite arrays;
 - translation/DC и complex scaling;
 - reference DFT/FFT parity;
+
+Planned для соответствующих stages:
+
 - epicycle endpoint/reconstruction parity across time/orderings;
 - trace samples equal chain endpoint samples;
 - resampling order/endpoints/closed semantics.

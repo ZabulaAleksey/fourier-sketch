@@ -116,7 +116,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-002 — Complex Curve + DFT / IDFT
 
-- Lifecycle: `planned`.
+- Lifecycle: `implemented_unverified`.
 - Goal: deliver reference and NumPy Fourier transforms with one signed-frequency convention.
 - Context: FC-FR-002/003 and `docs/MATHEMATICS.md`.
 
@@ -124,8 +124,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-001 → FS-002`; FS-001 must be completed before start.
 - Entry evidence: domain API/unit suite, Python/NumPy capability review, accepted fixture convention.
-- Current gate: technical prerequisite satisfied by completed FS-001; stage remains `planned` and
-  starts only after a separate user command.
+- Current gate: satisfied — FS-001 completed; clean baseline and dependency capability review PASS;
+  user authorized sequential implementation through FS-006.
 
 ### Scope / non-goals / invariants
 
@@ -148,6 +148,9 @@ completion claim. Evidence records environment/branch and caveats.
 - `uv sync --all-groups --frozen`, targeted unit/property/integration, full pytest, Ruff, mypy,
   dependency diff and overlay validator.
 - PASS includes explicit `atol/rtol` rationale and no NaN/Inf masking.
+- Current evidence: analytical unit, Hypothesis property, real reference/NumPy integration, frozen
+  restore, Ruff and mypy PASS; reviewer sample-budget/non-finite findings fixed; final docs/commit
+  gate pending.
 
 ### Temporary / deferred / failure
 

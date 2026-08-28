@@ -2,9 +2,9 @@
 
 ## Статус документа
 
-Stages `FS-000` и `FS-001` создали package scaffold и независимый immutable domain layer.
-Остальные product modules являются целевой архитектурой и появляются строго в соответствующих
-stages; отсутствие их каталогов сейчас не является дефектом.
+Stages `FS-000`–`FS-002` создали package scaffold, immutable domain layer и независимый numerical
+math layer для conversion/DFT/FFT/IDFT. Остальные product modules являются целевой архитектурой и
+появляются строго в соответствующих stages.
 
 ## Архитектурные цели
 
@@ -44,7 +44,7 @@ domain, math           → Python stdlib + NumPy only when introduced
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
-├── math/                       # planned FS-002..FS-005, FS-009, FS-019
+├── math/                       # существует: FS-002 transforms; расширяется FS-003..FS-005
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
 ├── render/                     # planned FS-006, FS-018, FS-022
@@ -98,6 +98,10 @@ Visibility flags живут в view state и не меняют chain state.
 Fourier convention, selected frequencies и algorithm/backend. Пользовательский image/sample
 payload не копируется в logs. Intermediate image results доступны только по явному diagnostic/
 export request.
+
+FS-002 сохраняет complete coefficients в FFT storage order с canonical signed labels. Reference
+DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим
+fallback. Public boundary возвращает built-in complex/tuple/domain values, а не NumPy arrays.
 
 ## Concurrency и lifecycle
 

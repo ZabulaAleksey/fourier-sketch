@@ -2,111 +2,106 @@
 
 ## Текущая цель
 
-Stage `FS-001` завершён: domain values, invariants, typed validation и public imports реализованы,
-проверены и зафиксированы в `63d7c10`. Lifecycle: `completed`. FS-002 автоматически не начинается.
+Реализовать Stage `FS-002`: conversion `Point2D ↔ complex`, canonical signed frequencies,
+reference DFT, явный NumPy FFT adapter и reference IDFT. Lifecycle: `implemented_unverified`;
+final regression/documentation/commit gate выполняется.
+
+Пользователь одобрил последовательную реализацию `FS-002`–`FS-006`, но текущий исполнимый slice
+ограничен FS-002; следующий stage начнётся только после terminal evidence и commit текущего.
 
 ## Связанные требования
 
 - SPEC: `specs/features/fourier-core.spec.md`.
-- IDs: FC-FR-001, AC-SYS-010.
-- Stage contract: `prompts/STAGES.md`, heading `FS-001`.
+- IDs: FC-FR-002, FC-FR-003, FC-AC-001, FC-AC-002, AC-SYS-001, AC-SYS-002, AC-SYS-010.
+- Математический контракт: `docs/MATHEMATICS.md`.
+- Stage contract: `prompts/STAGES.md`, heading `FS-002`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: FS-001
-- Completed / verified prerequisites: `FS-000` (`878f724`, validated locally and committed).
-- DAG: `FS-000 → FS-001`.
+- Stage ID: `FS-002`.
+- Completed prerequisite: `FS-001` (`63d7c10`, validated and committed).
+- DAG: `FS-001 → FS-002`.
 - Self-reference/cycle/forward dependency: none.
-- Entry gate: satisfied; user command received, clean FS-000 baseline passed, dedicated feature
-  branch created.
+- Entry gate: satisfied; пользователь разрешил продолжение, clean FS-001 baseline PASS.
 
 ## Входные предпосылки
 
-| Предпосылка | Evidence доступности до старта |
+| Предпосылка | Evidence |
 |---|---|
-| Frozen Python environment | `uv sync --all-groups --frozen` PASS, Python 3.12.5 |
-| Package scaffold | `uv run pytest` PASS, 1 smoke test, commit `878f724` |
-| Stable domain requirement | accepted Fourier Core SPEC |
-| No existing accepted domain tests | repository test inventory before FS-001 |
+| Domain values and invariants | FS-001 committed, public domain tests PASS |
+| Frozen environment | `uv sync --all-groups --frozen` PASS |
+| Stable formula and signed bins | accepted SPEC + `docs/MATHEMATICS.md` + ADR-002 |
+| Dependency capability | NumPy/Hypothesis support Python 3.12; license/platform review complete |
 
-## Самостоятельный runnable vertical slice
+## Runnable vertical slice и concrete consumer scenario
 
-- Точка входа: public Python imports from `fourier_sketch.domain`.
-- Path: construct domain values → validate invariants → convert/inspect plain values.
-- Наблюдаемый результат: deterministic domain objects и typed validation errors.
-- Infrastructure в stage: только domain package и его tests; no NumPy/GUI/CV.
-
-## Concrete end-to-end scenario
-
-1. Consumer imports `Point2D`, `Curve`, `PiecewiseCurve`, coefficient/spectrum и epicycle state
-   value types.
-2. Consumer создаёт valid objects и получает явные values/properties.
-3. Invalid non-finite/empty/chain-inconsistent input получает typed error; unit consumer test PASS.
+- Entry: public `fourier_sketch.math` API receives a finite non-empty `Curve`.
+- Path: curve → Python complex samples → reference/NumPy coefficients → `FourierSpectrum` →
+  IDFT → reconstructed complex samples/points.
+- Observable result: constant/circle/impulse analytical fixtures and round-trip pass without
+  FS-003 or later modules.
 
 ## Scope
 
 ### Входит
 
-- domain dataclasses/value objects and validation;
-- explicit open/closed and piecewise semantics;
-- immutable/controlled collections;
-- unit tests of invariants and API imports.
+- explicit point/curve complex conversion;
+- FFT-storage-to-signed-frequency mapping including even-N negative Nyquist;
+- bounded O(N²) reference DFT as correctness oracle;
+- explicit NumPy FFT adapter without silent fallback;
+- reference IDFT and public imports;
+- NumPy runtime, Hypothesis dev dependency and generated lockfile.
 
 ### Не входит
 
-- complex conversion, DFT/FFT, vector rotation;
-- renderer, mouse/image input, persistence/export;
-- speculative adapters or empty modules for later stages.
+- spectrum ordering/energy, selection/metrics, epicycles, renderer;
+- automatic backend fallback;
+- leaking `numpy.ndarray`/NumPy scalars through public boundaries.
 
 ## Рабочие задачи
 
-| № | Задача | Depends | Статус |
-|---|---|---|---|
-| 1 | Re-read exact `FS-001` record and inspect Git/test baseline | FS-000 | completed |
-| 2 | Add domain values with typed validation | 1 | completed |
-| 3 | Add accepted unit contracts and public imports | 2 | completed |
-| 4 | Run unit/full/lint/type/overlay gates | 3 | completed |
-| 5 | Synchronize traceability/status/docs and commit | 4 | completed |
+| № | Задача | Статус |
+|---|---|---|
+| 1 | Baseline, architecture and dependency capability review | completed |
+| 2 | Add dependencies through `uv` and verify graph | completed |
+| 3 | Implement conversion/frequencies/transforms public API | completed |
+| 4 | Add analytical/property/integration contracts | completed |
+| 5 | Run frozen/full/static/overlay/SPEC/reviewer gates | completed |
+| 6 | Synchronize docs and commit FS-002 evidence | in_progress |
 
-## Acceptance / PASS criteria
+## Acceptance / PASS
 
-- [x] Public domain API represents every FS-001 value without future implementation.
-- [x] Valid and invalid invariants have accepted unit evidence.
-- [x] Domain layer has no UI/render/CV dependency.
-- [x] Full canonical checks pass; diff reviewed; documentation gate complete.
+- [x] FC-FR-002 conversion preserves value and order.
+- [x] FC-FR-003 exact formulas, normalization and signed bins match the mathematical contract.
+- [x] Reference/NumPy parity and IDFT round-trip pass with explicit tolerances.
+- [x] Empty/non-finite/oversized inputs/results fail with typed errors.
+- [ ] Full regression/static/overlay/reviewer/documentation gates pass.
 
-## Проверка
+## Fallback и resource contract
+
+- Primary optimized path is the explicitly called NumPy adapter.
+- Reference DFT is a separately called bounded correctness oracle, not an automatic fallback.
+- Invalid input, dependency/backend error or reference size overflow fails explicitly; no retry and
+  no silent backend substitution.
+
+## Deferred
+
+- Spectrum views/energy (`FS-003`), selection/reconstruction metrics (`FS-004`), epicycles
+  (`FS-005`) and visualization (`FS-006`).
+
+## Проверки
 
 ```powershell
+uv sync --all-groups --frozen
 uv run pytest -m unit
+uv run pytest -m property
+uv run pytest -m integration
 uv run pytest
 uv run ruff check .
 uv run mypy
 py -3 ~/.codex/tools/validate_project_overlay.py .
 ```
 
-## Допустимая временная реализация
+## Условие перехода
 
-- Plain typed Python value objects without serialization/framework integration.
-- Она полностью обслуживает FS-001 consumer path; future DFT only consumes it.
-
-## Deferred to future stages
-
-- complex conversion/DFT (`FS-002`), spectrum operations (`FS-003`), rotating vector math
-  (`FS-005`) и all user-facing paths.
-
-## Риски и откат
-
-- Не зафиксировать accidental convention в value types; math decisions остаются в MATHEMATICS.
-- Contract conflict → stop, update SPEC/ADR after user decision; do not rewrite accepted tests.
-
-## Definition of Done
-
-- [x] `FS-000` terminal prerequisite подтверждён до старта.
-- [x] Runnable consumer scenario and PASS evidence exist without future stage.
-- [x] Unit + regression + lint + type + overlay checks PASS.
-- [x] Completion Documentation Synchronization Gate and Git diff review complete.
-
-## Условие остановки
-
-После завершения `FS-001` остановиться; не начинать `FS-002` автоматически.
+FS-003 начинается только после FS-002 `completed` и commit evidence.

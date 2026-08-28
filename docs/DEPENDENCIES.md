@@ -17,14 +17,17 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Stage FS-000 dependency surface
+## Текущая dependency surface (FS-002)
 
 - build backend: Hatchling;
-- development: pytest, Ruff, mypy;
-- runtime: none.
+- runtime: NumPy `>=2.5.2` для explicit FFT adapter;
+- development: pytest, Ruff, mypy, Hypothesis `>=6.165.10` для property contracts.
 
-Lockfile exact versions являются воспроизводимым evidence. Runtime NumPy, property-test Hypothesis,
-Pillow/OpenCV/scikit-image, matplotlib, PySide6 и animation codec dependencies добавляются только
+Lockfile exact versions являются воспроизводимым evidence. FS-002 review подтвердил Python 3.12,
+Windows wheels и open-source license metadata: NumPy — BSD-compatible SPDX expression, Hypothesis —
+MPL-2.0. NumPy не выходит через public API; Hypothesis остаётся dev-only.
+
+Matplotlib, Pillow/OpenCV/scikit-image, PySide6 и animation codec dependencies добавляются только
 в первом stage реального использования с tests и license/platform review.
 
 ## Cleanup classification

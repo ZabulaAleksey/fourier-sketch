@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | planned |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
-| `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math/dft`, reconstruction | analytical + property | planned |
+| `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | implemented_unverified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | planned |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | planned |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | planned |
@@ -65,6 +65,19 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | dependency boundary | domain imports | Ruff/mypy + import audit | PASS — stdlib/internal only |
 | independent review | FS-001 diff | reviewer gate | PASS after canonical-bin and typed-error fixes |
 | commit evidence | FS-001 implementation | Git commit | PASS — `63d7c10` |
+
+## Stage FS-002 evidence
+
+| Contract | Artifact | Check | Status before commit evidence |
+|---|---|---|---|
+| FC-FR-002 conversion | `math/conversion.py` | unit + Curve integration | PASS |
+| FC-FR-003 formulas/signed bins | `math/frequencies.py`, `math/transforms.py` | analytical + property | PASS |
+| FC-AC-001 constant/circle/impulse | transform unit fixtures | analytical assertions | PASS |
+| FC-AC-002 parity/round-trip | Hypothesis + real NumPy adapter | property + integration | PASS |
+| resource/non-finite failure | transform boundaries | negative unit tests | PASS |
+| no silent fallback | explicit `reference_dft` / `fft_dft` API | backend-failure unit test | PASS |
+| independent review | FS-002 diff | reviewer gate | PASS after sample-budget/IDFT fixes |
+| commit evidence | FS-002 implementation | Git commit | PENDING |
 
 ## Acceptance coverage targets
 

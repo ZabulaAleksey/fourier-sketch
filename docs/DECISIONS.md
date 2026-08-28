@@ -83,3 +83,24 @@ pseudo-locale проверяет expansion/missing keys. Дополнитель�
 расширяет её, но не создаёт впервые.
 
 **Миграция / откат:** Новая locale добавляется ресурсами и tests без изменения math/application.
+
+## 2026-08-28 — ADR-006: Явные Fourier backends и bounded reference oracle
+
+**Контекст:** FS-002 требует одновременно прозрачную O(N²) формулу для доказательства корректности
+и NumPy FFT для рабочего numerical path. Автоматический fallback способен скрыть backend failure
+или случайно запустить квадратичную работу на большом input.
+
+**Решение:** `reference_dft` и `fft_dft` являются отдельными public operations. Complete spectrum
+хранит coefficients в FFT storage order с canonical signed labels. Public API возвращает built-in
+complex/tuple/domain values. Reference path ограничен 2048 samples, NumPy path — 262144 samples;
+оба fail closed на non-finite result. IDFT остаётся прозрачной reference reconstruction.
+
+**Рассмотренные альтернативы:** Один auto-select API; silent NumPy→reference fallback; NumPy arrays
+как public contract; неограниченный reference transform.
+
+**Последствия:** Backend/provenance наблюдаемы, analytical oracle остаётся доступным и bounded.
+Caller выбирает operation явно; future performance policy может добавить отдельный batch contract,
+но не ослабляет текущий limit молча.
+
+**Миграция / откат:** До persisted Fourier data миграции нет. Dependency rollback удаляет только
+FS-002 implementation и generated lockfile delta после восстановления FS-001 checks.
