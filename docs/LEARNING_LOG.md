@@ -370,3 +370,47 @@ caveat: multi-component/open-route semantics остаются deferred до FS-0
 - `src/fourier_sketch/imaging/opencv_contours.py`
 - `tests/unit/imaging/test_opencv_contours.py`
 - `tests/integration/test_dominant_contour_pipeline.py`
+
+## 2026-08-28 — Отмена UI operation требует generation gate, а не только Future.cancel
+
+### Problem
+
+- Pillow/OpenCV operation может уже выполняться, когда пользователь нажимает Cancel или запускает
+  новый Process; `Future.cancel()` не прерывает running native call.
+
+### Symptom
+
+- Без отдельного application gate поздний worker мог бы опубликовать ready result поверх
+  cancelled либо более нового processing state.
+
+### Root cause
+
+- Lifecycle task и lifecycle публикуемого product state — разные контракты; состояние `Future` не
+  доказывает актуальность результата для текущего user intent.
+
+### Fix
+
+- Каждая operation получает monotonic generation и отдельный cancel token. Проверки выполняются
+  после preprocessing, после contour/timeline composition и непосредственно под lock перед
+  terminal publication. Snapshot не содержит partial intermediates.
+
+### Verification
+
+```text
+command / check: FS-013 cancellation/stale unit + actual keyboard component + full regression
+result: PASS — targeted FS-013 suite and full repository suite
+scope: processing/cancel/new generation, late success suppression and visible recovery state
+caveat: native call remains cooperative and may finish in background; latency hardening is FS-023
+```
+
+### Prevention
+
+- Для любой cancellable worker operation связывать publication с immutable operation identity;
+  task cancellation без generation/current-intent check не считать достаточной защитой.
+
+### Links
+
+- `src/fourier_sketch/application/image_mvp.py`
+- `src/fourier_sketch/render/matplotlib_image_mvp.py`
+- `tests/unit/application/test_image_mvp_application.py`
+- `tests/component/test_image_mvp_surface_component.py`

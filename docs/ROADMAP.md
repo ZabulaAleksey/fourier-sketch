@@ -20,12 +20,11 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-010` | Validated image input, grayscale, threshold | `completed` |
 | `FS-011` | Explicit threshold-boundary and Canny edge diagnostics | `completed` |
 | `FS-012` | Dominant contour to normalized curve and diagnostic endpoint trace | `completed` |
+| `FS-013` | Live image-to-epicycle-trace MVP | `completed` |
 
 ## Текущий этап
 
-| Stage | Результат | Gate |
-|---|---|---|
-| `FS-013` | Live image-to-epicycle-trace MVP | `in_progress`; prerequisite, remote baseline and authorization confirmed |
+Нет активного этапа реализации. `FS-014` остаётся planned и требует отдельной команды пользователя.
 
 ## Image-to-curve pipeline
 

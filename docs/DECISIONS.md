@@ -268,3 +268,27 @@ budget/backend failure остаётся ошибкой без alternate algorith
 **Миграция / откат:** Удаление FS-012 contour/routing/application/CLI modules возвращает проект к
 FS-011 и не меняет edge/Fourier contracts. Изменение selection key, transform ID, orientation,
 start-point или budgets требует SPEC/ADR/accepted-test migration.
+
+## 2026-08-28 — ADR-014: Generation-safe image MVP поверх существующего timeline
+
+**Контекст:** FS-013 должен объединить decode/CV/Fourier path в отзывчивую Matplotlib surface, но
+не переносить CV/math в callbacks и не публиковать поздний результат после Cancel или повторного
+Process. Полный PySide6 worker framework относится к FS-021.
+
+**Решение:** `ImageMvpController` владеет monotonic generation, отдельным cancel token и immutable
+snapshot со states `initial|processing|ready|empty|error|cancelled`. Pipeline выполняется одним
+`ThreadPoolExecutor` worker; publish разрешён только current generation с неустановленным token.
+Renderer/CLI dispatch-ят application commands и используют тот же `ImageContourTimelineResult`,
+`EpicycleTimeline` и `draw_frame`. Headless four-panel PNG остаётся explicit mode и публикуется
+атомарно; no-contour получает recovery view, а не fabricated trace.
+
+**Рассмотренные альтернативы:** Синхронно блокировать Matplotlib event loop; вычислять CV/Fourier в
+widget callbacks; полагаться только на `Future.cancel()`; позволить late worker overwrite; создать
+второй UI timeline; автоматически переключать Canny/threshold mode.
+
+**Последствия:** MVP работает до PySide6 и одновременно формирует reusable view-state boundary.
+Отмена cooperative: уже начатый native call может закончиться, но его result не публикуется.
+Worker ограничен одним потоком; progress и guaranteed shutdown join остаются FS-021/FS-023.
+
+**Миграция / откат:** Matplotlib image surface и CLI можно удалить без изменения FS-010–FS-012 или
+math contracts. Изменение state/publication semantics требует SPEC/ADR/accepted-test migration.

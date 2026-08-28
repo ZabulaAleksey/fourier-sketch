@@ -3,7 +3,7 @@
 ## Текущий этап
 
 - Active Stage ID: `FS-013`.
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`.
 - Branch: `feature/fs-013-image-mvp`.
 - Goal: cohesive user-selected image → intermediates/controls → dominant contour → actual endpoint
   trace Matplotlib MVP.
@@ -21,18 +21,21 @@
 - `FS-012`: bounded external-contour extraction, project-owned deterministic dominant selection,
   canonical orientation/start point, normalized `Curve`, resampling и реальный
   image → contour → Fourier → epicycle endpoint-trace CLI/E2E путь.
+- `FS-013`: generation-safe `ImageMvpController`, background Matplotlib surface, четыре панели
+  intermediates/contour/epicycles, preprocessing/edge/sample/harmonic/speed controls, явные
+  initial/processing/ready/empty/error/cancelled states и единый interactive/headless live path.
 - Пустой либо непригодный contour возвращает явный no-contour result без выдуманного outline или
   скрытого fallback.
 
-## Evidence FS-012
+## Evidence FS-013
 
-- Implementation commits: `418192a`, `a1c211c`; activation commit: `cee63d0`.
-- Targeted unit/integration/component/E2E/property suite: 59 tests PASS.
-- Full repository suite: 358 tests PASS.
+- Activation commit: `92660de`.
+- Targeted unit/integration/component/live E2E suite: 29 tests PASS после security/correctness fixes.
+- Full terminal repository suite: 387 tests PASS.
 - `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
-- Post-merge full regression на target history: 358 tests PASS.
-- Визуальная проверка диагностического PNG с выбранным ellipse contour и endpoint trace: PASS.
-- Независимые correctness и security re-review: GO; новых P0/P1/P2 замечаний нет.
+- Визуальная проверка четырёхпанельного PNG с ellipse, выбранным contour и endpoint trace: PASS.
+- Независимые correctness/security reviews: GO после atomic no-overwrite, unsafe-path и Unicode
+  hardening; обязательных P0/P1/P2 findings не осталось.
 
 ## Известные блокеры
 
@@ -42,29 +45,27 @@
 
 - Выбирается один внешний контур; multi-component semantics отложена до `FS-016`.
 - Open/dangling edge fragments не преобразуются в замкнутую кривую.
-- Product-level image workflow и polish относятся к `FS-013`.
-- Skeleton, graph и forced routing не входят в `FS-012`.
+- Skeleton, graph и forced routing не входят в `FS-013`.
 - Диагностическая поверхность остаётся Matplotlib/CLI, а не финальным PySide6 shell.
 - OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
   число кандидатов, но native crash нельзя преобразовать в typed Python error.
 
 ## В процессе
 
-- Typed application/view state и cooperative cancellation boundary.
-- Multi-panel Matplotlib surface с preprocessing/edge/sample/harmonic controls.
-- Live image-to-endpoint-trace E2E, negative states и terminal evidence.
+- Нет активной реализации; ветка ожидает пользовательскую проверку или разрешение на merge.
 
 ## Следующее разумное действие
 
-Завершить только `FS-013`, собрать terminal evidence и остановиться перед `FS-014`.
+Проверить FS-013 или слить `feature/fs-013-image-mvp` в `main` только после явного разрешения.
+`FS-014` не начинать в рамках текущего handoff.
 
 ## Синхронизация документации
 
 - `README.md`, `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md`, `prompts/STAGES.md`,
   архитектурные, design, security, testing, traceability, dependency, fallback и learning
-  документы синхронизированы с проверенным состоянием `FS-012`.
-- Post-merge Documentation Synchronization Gate на локальном `main` выполнен; после подтверждённого
-  push selector `FS-013` активирован в рабочей ветке.
-- Стабильные system/image-to-curve SPEC и математический контракт проверены: требования не
+  документы синхронизированы с проверенным состоянием `FS-013`.
+- Completion Documentation Synchronization Gate выполнен в рабочей ветке; post-merge gate ещё не
+  применим, поскольку merge не разрешён и не выполнялся.
+- Стабильные system/image-to-curve/desktop-export SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.

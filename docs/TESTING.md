@@ -105,7 +105,13 @@ FS-012 component/live evidence запускает localized contour CLI, про�
 PNG → decode/preprocess → выбранные edges → OpenCV external extraction → dominant/resampled Curve →
 тот же timeline/renderer → PNG. Assertions проверяют provenance/sample/trace counts, existing-output
 preservation, pseudo locale и explicit empty result без Curve/timeline/artifact. Это runnable
-diagnostic slice; cohesive interactive product workflow по-прежнему относится к FS-013.
+diagnostic slice; FS-013 переиспользует его без изменения accepted FS-012 контрактов.
+
+FS-013 component evidence вызывает реальные Matplotlib Button/Slider/CheckButtons/key callbacks,
+проверяет initial/processing/ready/empty/error/cancelled, control enablement, pseudo expansion и
+cancelled late-result suppression. Integration проходит обе explicit edge ветки до общего
+timeline endpoint; live subprocess E2E создаёт четырёхпанельный PNG, recovery PNG для no-contour,
+privacy-safe corrupt failure и existing-output preservation.
 
 ### E2E
 
@@ -114,8 +120,8 @@ diagnostic slice; cohesive interactive product workflow по-прежнему о
 1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
 2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-007`, input slice реализован;
    `FS-008` подтверждает cohesive controls и exact endpoint-history ledger);
-3. image file → decode/edges (`FS-011`) → dominant contour/Curve → same Fourier/chain → trace
-   (`FS-012`, diagnostic slice реализован; cohesive product flow — `FS-013`);
+3. image file → controls/decode/edges → dominant contour/Curve → same Fourier/chain → trace
+   (`FS-013`, cohesive Matplotlib/headless product flow реализован);
 4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не

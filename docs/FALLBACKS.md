@@ -87,3 +87,19 @@ degraded contour.
 `no contour` — полноценный пустой результат, а не degraded success. Backend/resource failure не
 превращается в empty result, а empty result не запускает Fourier path. Остальные candidates не
 соединяются и не выдаются за единую curve; multi-component policy относится к FS-016.
+
+## Image MVP generation and cancellation (FS-013)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | один explicit image config → FS-010..FS-012 pipeline → existing timeline/frame |
+| Failure signal | `ERROR` со stable resource key; CLI exit `2`; raw exception/path отсутствуют |
+| Cancellation | current token устанавливается, snapshot становится `CANCELLED`, partial result не публикуется |
+| Stale work | generation mismatch отбрасывает late ready/empty/error без изменения current snapshot |
+| Automatic fallback | другой edge algorithm, decoder, contour route или sync UI path запрещены |
+| Empty result | `EMPTY` с FS-012 provenance; interactive recovery или explicit headless recovery PNG |
+| Retry | только новый explicit `Process`/Enter/CLI invocation с новой generation |
+
+`Cancel` не останавливает native/Pillow/OpenCV call принудительно: проверка token происходит между
+bounded pipeline steps и перед publication. Это cooperative cancellation, а не false-complete
+fallback; FS-023 отвечает за measured cancellation latency и hardening representative large input.

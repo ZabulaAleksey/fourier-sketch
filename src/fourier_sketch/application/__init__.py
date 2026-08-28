@@ -27,11 +27,19 @@ from .freehand import (
     FreehandCurveResult,
     build_freehand_timeline,
 )
+from .image_mvp import (
+    ImageMvpConfig,
+    ImageMvpController,
+    ImageMvpResult,
+    ImageMvpSnapshot,
+    ImageMvpState,
+)
 from .image_preprocessing import (
     export_preprocessing_result,
     preprocess_local_image,
     select_preprocessing_raster,
 )
+from .local_paths import LocalPathError, validate_local_path
 
 __all__ = [
     "DEFAULT_CONTOUR_HARMONICS",
@@ -46,7 +54,13 @@ __all__ = [
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
     "ImageContourTimelineResult",
+    "ImageMvpConfig",
+    "ImageMvpController",
+    "ImageMvpResult",
+    "ImageMvpSnapshot",
+    "ImageMvpState",
     "ImageNoContourResult",
+    "LocalPathError",
     "RenderVisibility",
     "ResamplingMethod",
     "TimelineState",
@@ -57,5 +71,6 @@ __all__ = [
     "export_preprocessing_result",
     "preprocess_local_image",
     "select_preprocessing_raster",
+    "validate_local_path",
     "validate_timeline_speed",
 ]

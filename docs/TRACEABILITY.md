@@ -10,12 +10,12 @@
 | Behavior | Requirements | Stage(s) | Planned implementation boundary | Planned evidence | Текущий статус |
 |---|---|---|---|---|---|
 | `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | verified cohesive MVP |
-| `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | verified through dominant-contour diagnostic trace; cohesive product flow FS-013 |
+| `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | verified cohesive image MVP |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
-| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic and cohesive freehand MVP |
-| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | verified in Matplotlib MVP; product UI deferred FS-021 |
+| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-013 | chain state → trace adapter | property + integration + E2E | verified for freehand and image MVPs |
+| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-013, FS-021 | renderer timeline/view state | component + E2E | verified in both Matplotlib MVPs; PySide6 UI deferred FS-021 |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
 
@@ -213,6 +213,19 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | commit evidence | FS-012 implementation and hardening | Git commits | PASS — `418192a`, `a1c211c` |
 | integration evidence | local `main` contains FS-012 feature tip | fast-forward `ad93921` + post-merge gates | PASS |
 
+## Stage FS-013 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| typed generation/view state | `application/image_mvp.py` | unit state/config/stale/cancel/error | PASS |
+| cohesive image workflow | `render/matplotlib_image_mvp.py` | actual controls + four-panel component | PASS |
+| accepted math reuse | dominant contour → existing timeline/draw_frame | both-edge integration endpoint assertions | PASS |
+| live client path | `cli/image_mvp.py` interactive/headless entry | subprocess E2E + readable PNG | PASS |
+| empty/error/cancel/privacy | resource state + transactional publication | negative unit/component/E2E | PASS |
+| regression and static gates | repository | full tests + Ruff + mypy + frozen sync + overlay + diff | PASS |
+| manual visual evidence | ellipse intermediates/contour/K=12 endpoint trace | rendered PNG inspection | PASS |
+| independent security review | untrusted input/path/cancel/publication boundary | read-only re-review | GO |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |
@@ -220,7 +233,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | AC-SYS-001/002 | analytical + property | FS-002 |
 | AC-SYS-003/005 | unit + property | FS-005 |
 | AC-SYS-004 | integration + E2E | FS-006 diagnostic + FS-008 freehand |
-| AC-SYS-006/007 | integration + E2E | FS-012 dominant diagnostic trace; product/multi-component FS-013 + FS-016 |
+| AC-SYS-006/007 | integration + E2E | FS-013 cohesive dominant trace; multi-component FS-016 |
 | AC-SYS-008 | architecture + integration | FS-020 |
 | AC-SYS-009 | integration + E2E | FS-022 |
 | AC-SYS-010 | stage/evidence review | every stage |

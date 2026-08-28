@@ -12,6 +12,12 @@ typed external-contour extraction, отдельный project-owned routing poli
 до принятого `EpicycleTimeline`. OpenCV не выбирает dominant contour и не задаёт его порядок:
 selection, normalization и raster-to-domain transform принадлежат проекту.
 
+FS-013 добавил reusable `ImageMvpController`: immutable snapshots имеют generation и явные
+`initial|processing|ready|empty|error|cancelled` states. Долгий local decode/CV path выполняется в
+одном bounded worker, а публикация результата проверяет generation/cancel token; partial или stale
+result никогда не становится ready. `ImageMvpSurface` и headless CLI только dispatch-ят controller
+commands и переиспользуют `build_dominant_contour_timeline`, `EpicycleTimeline` и `draw_frame`.
+
 ## Архитектурные цели
 
 - один численный контракт для 1D complex Fourier;
@@ -53,8 +59,8 @@ src/fourier_sketch/
 ├── math/                       # существует: FS-002..FS-005 core + FS-007/FS-009 resampling
 ├── application/                # существует: timeline, freehand, image/edge/contour use cases
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
-├── render/                     # существует: Matplotlib frame/PNG/freehand adapters
-├── cli/                        # существует: diagnostic, freehand, image, edges и contours
+├── render/                     # существует: Matplotlib frame/PNG/freehand/image-MVP adapters
+├── cli/                        # существует: diagnostic, freehand, image, edges, contours, image_mvp
 ├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
 ├── routing/                    # существует: FS-012 dominant policy; FS-015..FS-017 planned
 └── ui/                         # planned FS-021
@@ -84,6 +90,7 @@ flow и planned continuations:
 canonical Curve → FFT → `EpicycleTimeline` → immutable `EpicycleFrame` → Matplotlib/PNG
 Matplotlib pointer events → bounded capture → cleanup/index resample → Curve → тот же timeline
 image → decode/transforms → explicit edge mode → dominant contour → closed Curve → same Fourier use case
+      → generation-safe MVP snapshot → four-panel Matplotlib surface/headless PNG
 chain timeline → future animation exporter
 raster → separate FFT2 use case
 ```
@@ -193,9 +200,10 @@ Selection использует value provenance: sample count, signed frequency 
 
 ## Concurrency и lifecycle
 
-До PySide6 stages операции могут быть синхронными diagnostic commands. В GUI CPU/I/O operations
-выполняются worker-ами с progress/cancellation; view получает immutable snapshots/signals. Window
-shutdown отменяет work, дожидается bounded cleanup и не оставляет export ошибочно complete.
+FS-013 interactive Matplotlib surface уже выполняет image/CV operation в одном worker; immutable
+generation snapshots и cooperative cancellation предотвращают stale publication. Headless CLI
+остаётся синхронным. Полный progress contract, guaranteed join и Qt worker lifecycle относятся к
+PySide6 stages; window shutdown отменяет current generation и не помечает partial result complete.
 
 ## i18n/l10n boundary
 

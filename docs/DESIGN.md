@@ -94,7 +94,24 @@ FS-008 расширяет этот же workflow controls и live evidence, не
   вводит отдельную декоративную contour preview математику;
 - existing output сохраняется без `--overwrite`; backend/resource/parameter failure локализован и
   не показывает raw native detail;
-- cohesive interactive image controls, side-by-side intermediates и recovery UI остаются FS-013.
+- этот отдельный diagnostic остаётся доступным; cohesive surface реализована в FS-013.
+
+## Image-to-Fourier FS-013 — фактический cohesive MVP
+
+- один launch/action flow принимает выбранный локальный image path и начинает operation через
+  `Process`/Enter; Esc отменяет, Space переключает play/pause;
+- layout `2×2`: grayscale, binary, edge map + orange dominant contour, затем actual
+  epicycle/endpoint trace; нижняя строка постоянно показывает форматы, budgets и deferred scope;
+- controls включают threshold, median/autocontrast/invert, explicit edge selector, samples,
+  harmonics, speed и Play/Pause/Restart; algorithm-specific Canny/connectivity options также
+  доступны в documented CLI invocation;
+- `processing` отключает конфликтующие controls и включает Cancel; ready включает timeline
+  controls; empty/error/cancelled показывают resource-based recovery message и снова разрешают
+  explicit Process;
+- background generation не публикует stale/partial result после Cancel; headless mode отображает
+  ту же причинную цепочку в atomic four-panel PNG;
+- `en` является production/fallback locale, algorithmic pseudo-locale проверяет expansion. Полный
+  PySide6 navigation/accessibility/DPI shell остаётся FS-021.
 
 ## Принцип продукта
 

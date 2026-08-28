@@ -76,6 +76,19 @@ FS-011 edge export переиспользует тот же FS-010 publication b
 output basename, dimensions, selected algorithm/backend и aggregate edge count; raw pixels,
 source path и backend exception detail не выводятся.
 
+FS-013 не расширяет decoder/CV trust surface и сохраняет все FS-010–FS-012 budgets. Application
+snapshot хранит config/result/frame, но не source path; presentation преобразует typed и unexpected
+failures в стабильные resource keys без raw exception/native detail. Каждая operation получает
+монотонную generation и отдельный cancel token: отменённый либо устаревший worker не может
+опубликовать ready/empty/error поверх нового состояния. Headless output полностью кодируется во
+temporary sibling, existing destination без `--overwrite` сохраняется, а отображаемый basename
+экранирует control/format/surrogate/bidi code points.
+
+Local-path guard является lexical defense-in-depth и не доказывает, что mapped drive либо
+reparse/symlink target физически local. Для explicit user-selected desktop path это принятo как
+residual risk FS-013; строгий no-network I/O contract, если он потребуется, должен получить
+platform-aware resolution и negative evidence в FS-023.
+
 ## Dependencies and supply chain
 
 Canonical manager/lockfile определены в `docs/DEPENDENCIES.md`. Новые CV/UI/codec dependencies

@@ -582,7 +582,10 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-013 — Image-to-Fourier MVP
 
-- Lifecycle: `in_progress`; second live product milestone.
+- Lifecycle: `completed`; second live product milestone.
+- Evidence: generation-safe application state, four-panel Matplotlib UI/headless CLI, 29 targeted
+  tests after review hardening, terminal regression, static/frozen/overlay/diff gates, visual QA
+  and independent security review PASS/GO.
 - Goal: deliver cohesive user-selected image → dominant contour → rotating endpoint trace workflow.
 
 ### Dependency DAG & entry preconditions
@@ -590,7 +593,7 @@ completion claim. Evidence records environment/branch and caveats.
 - DAG: `FS-012 → FS-013`; FS-012 synthetic/live pipeline must be completed.
 - Entry evidence: safe input, contour integration and diagnostic renderer E2E data.
 - Current gate: satisfied by completed FS-012, synchronized `main`/`origin/main@c13f74d` and explicit
-  user authorization on 2026-08-28; implementation is active on `feature/fs-013-image-mvp`.
+  user authorization on 2026-08-28; implementation is complete on `feature/fs-013-image-mvp`.
 
 ### Scope / non-goals / invariants
 
@@ -629,7 +632,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-013 → FS-014`; image MVP and safe preprocessing must be completed.
 - Entry evidence: binary image contract and reviewed skeleton algorithm/dependency.
-- Current gate: unsatisfied while FS-013 is planned.
+- Current gate: prerequisite satisfied by completed FS-013; implementation remains planned and is
+  not authorized or started.
 
 ### Scope / non-goals / invariants
 

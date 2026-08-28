@@ -155,6 +155,34 @@ aggregate candidate/point/sample/trace counts. Пустая edge map или то
 limit дают controlled exit `2`; другой contour algorithm не подставляется. Stage выбирает ровно
 один внешний contour: holes, disconnected components, skeleton и forced routing остаются deferred.
 
+## Image-to-Fourier MVP
+
+FS-013 объединяет безопасный импорт, промежуточные изображения, dominant contour и фактический
+endpoint trace на одной четырёхпанельной Matplotlib surface. Интерактивный запуск принимает явно
+выбранный локальный PNG/JPEG; обработка начинается кнопкой `Process` или клавишей Enter:
+
+```powershell
+uv run python -m fourier_sketch.cli.image_mvp input.png
+```
+
+Surface показывает grayscale, binary threshold, edge map с выбранным dominant contour и тот же
+`EpicycleTimeline`, который рисует circles/vectors/endpoint/trace. Доступны threshold,
+median/autocontrast/invert, explicit threshold-boundary/Canny selector, sample/harmonic/speed,
+Play/Pause/Restart; Esc отменяет обработку, Space переключает play/pause. Canny thresholds,
+aperture/gradient и boundary connectivity задаются CLI options при запуске.
+
+Для автоматизации живой путь работает headless через тот же application controller:
+
+```powershell
+uv run python -m fourier_sketch.cli.image_mvp input.jpg --headless --output image-mvp.png --algorithm canny --canny-low 50 --canny-high 150 --samples 256 --harmonics 25 --frames 60
+```
+
+`no contour` сохраняет явный recovery PNG без Curve/timeline; corrupt/unsupported input завершает
+команду с кодом `2` и не публикует partial artifact. Существующий output сохраняется без
+`--overwrite`. Limits остаются прежними: PNG/JPEG, 25 MiB encoded, 40 MP decoded, 250 000 edge
+pixels, 25 000 candidates и 100 000 aggregate contour points. MVP выбирает только крупнейший
+внешний contour; skeleton, multiple components и arbitrary-photo cleanup отложены.
+
 ## Проверки
 
 ```powershell
@@ -178,6 +206,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
-Cohesive product image flow, multi-component routing, product GUI и animation export остаются planned.
+Cohesive image MVP реализован; multi-component routing, PySide6 product GUI и animation export
+остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
