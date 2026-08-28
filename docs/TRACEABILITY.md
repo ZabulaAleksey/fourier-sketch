@@ -14,8 +14,8 @@
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
-| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | partial — endpoint verified |
-| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | planned |
+| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic; freehand E2E deferred FS-008 |
+| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | verified for diagnostic; product UI deferred FS-021 |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
 
@@ -24,15 +24,15 @@
 ```text
 FR-EPICYCLE-001
 → BH-EPICYCLE-001
-→ planned src/fourier_sketch/math/epicycles.py
-→ planned tests/unit + tests/property/test_epicycle_chain.py
+→ src/fourier_sketch/math/epicycles.py
+→ tests/unit/math/test_epicycles.py + tests/property/test_epicycle_properties.py
 ```
 
 ```text
 FR-EPICYCLE-TRACE-001
 → BH-EPICYCLE-TRACE-001
-→ planned math/epicycles.py → render/trace.py
-→ planned property endpoint/trace tests
+→ math/epicycles.py → application/diagnostic_epicycles.py → render/matplotlib_epicycles.py
+→ property endpoint + component timeline + live diagnostic E2E
 → planned tests/e2e/test_draw_to_trace.py
 ```
 
@@ -114,13 +114,26 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | independent review | FS-005 diff and fixes | reviewer + re-review | PASS |
 | commit evidence | FS-005 implementation | Git commit | PASS — `419b60c` |
 
+## Stage FS-006 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| endpoint-only transactional trace | `application/diagnostic_epicycles.py` | component state/failure tests | PASS |
+| immutable fail-closed render input | `EpicycleFrame`, Matplotlib boundary | component + integration negatives | PASS |
+| actual chain geometry | `render/matplotlib_epicycles.py` | circle/vector/endpoint integration | PASS |
+| explicit headless output safety | diagnostic CLI + Agg PNG | live E2E, existing-file negative | PASS |
+| locale default/fallback/pseudo | packaged JSON + `Translator` | unit + negative/live E2E | PASS |
+| packaged resource | built and installed wheel | `site-packages` resource load | PASS |
+| independent review | FS-006 diff and fixes | reviewer + re-reviews | GO |
+| commit evidence | FS-006 implementation | Git commit | PASS — `1abc0be` |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |
 |---|---|---|
 | AC-SYS-001/002 | analytical + property | FS-002 |
 | AC-SYS-003/005 | unit + property | FS-005 |
-| AC-SYS-004 | integration + E2E | FS-006 + FS-008 |
+| AC-SYS-004 | integration + E2E | FS-006 diagnostic + FS-008 freehand |
 | AC-SYS-006/007 | integration + E2E | FS-013 + FS-016 |
 | AC-SYS-008 | architecture + integration | FS-020 |
 | AC-SYS-009 | integration + E2E | FS-022 |

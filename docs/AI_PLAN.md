@@ -2,9 +2,9 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-006`: первый user-facing diagnostic Matplotlib renderer с реальным
+Stage `FS-006` завершён: первый user-facing diagnostic Matplotlib renderer использует реальный
 timeline/controller, endpoint-only trace, headless CLI и resource-key locale boundary.
-Lifecycle: `in_progress`.
+Lifecycle: `completed`; implementation commit `1abc0be`.
 
 ## Связанные требования
 
@@ -44,21 +44,21 @@ Lifecycle: `in_progress`.
 | № | Задача | Статус |
 |---|---|---|
 | 1 | Verify FS-005 terminal evidence and renderer dependency/license review | completed |
-| 2 | Add Matplotlib through uv and implement locale resources | in_progress |
-| 3 | Implement frame/timeline/controller contracts | pending |
-| 4 | Implement Matplotlib headless/manual adapters and CLI | pending |
-| 5 | Add unit/integration/component/live E2E contracts | pending |
-| 6 | Run full/static/overlay/reviewer/security/i18n gates | pending |
-| 7 | Synchronize docs and commit FS-006 | pending |
+| 2 | Add Matplotlib through uv and implement locale resources | completed |
+| 3 | Implement frame/timeline/controller contracts | completed |
+| 4 | Implement Matplotlib headless/manual adapters and CLI | completed |
+| 5 | Add unit/integration/component/live E2E contracts | completed |
+| 6 | Run full/static/overlay/reviewer/security/i18n gates | completed |
+| 7 | Synchronize docs and commit FS-006 | completed |
 
 ## Acceptance / PASS
 
-- [ ] Trace is derived exclusively from chain endpoints across advance/restart/count changes.
-- [ ] Controls and visibility have explicit validated state transitions without math mutation.
-- [ ] Circle/vector/endpoint geometry is consumed directly from `EpicycleChainState`.
-- [ ] Default/fallback/pseudo-locale resource checks pass with no hardcoded app labels.
-- [ ] Headless live CLI creates a sane PNG and rejects an existing destination.
-- [ ] Matplotlib, unit/property/integration/component/E2E/full/static/overlay/review gates pass.
+- [x] Trace is derived exclusively from chain endpoints across advance/restart/count changes.
+- [x] Controls and visibility have explicit validated state transitions without math mutation.
+- [x] Circle/vector/endpoint geometry is consumed directly from `EpicycleChainState`.
+- [x] Default/fallback/pseudo-locale resource checks pass with no hardcoded app labels.
+- [x] Headless live CLI creates a sane PNG and rejects an existing destination.
+- [x] Matplotlib, unit/property/integration/component/E2E/full/static/overlay/review gates pass.
 
 ## Deferred
 
@@ -66,5 +66,5 @@ Lifecycle: `in_progress`.
 
 ## Условие завершения
 
-После terminal evidence FS-006 остановиться до FS-007; merge/push/PR выполняются только по
-отдельному разрешению пользователя.
+Terminal evidence FS-006 зафиксирован. Активного implementation stage нет; FS-007 остаётся
+`planned` до отдельной авторизации. Merge/push/PR не выполнялись.

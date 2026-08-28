@@ -283,7 +283,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-006 — Diagnostic Epicycle Renderer
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; implementation commit `1abc0be`.
 - Goal: render actual chain states with circles/vectors/endpoint/persistent endpoint trace.
 
 ### Dependency DAG & entry preconditions
@@ -311,6 +311,10 @@ completion claim. Evidence records environment/branch and caveats.
 - Integration verifies renderer adapter receives/records endpoint states; component smoke covers
   controls/toggles/restart and locale fallback; headless artifact sanity + documented manual check.
 - Unit/integration/component/full pytest, Ruff, mypy, frozen sync and overlay PASS.
+- Evidence: unit 110, property 9, integration 11, component 18, E2E 4 and full 153 tests PASS;
+  Ruff/mypy/overlay/diff/build PASS; built wheel resource loaded from installed `site-packages`;
+  independent reviewer GO after transactional-state, immutable-frame, localized-error and
+  fail-closed renderer-boundary fixes.
 
 ### Temporary / deferred / failure
 
@@ -319,7 +323,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: freehand FS-007 and full GUI FS-021.
 - Failure: headless limitation reported separately; screenshot is not math evidence.
 - Docs: DESIGN/i18n/test/trace/status/README commands updated.
-- Handoff: commit and stop before FS-007.
+- Handoff: implementation committed as `1abc0be`; stop before FS-007.
 
 ## FS-007 — Freehand Input
 
@@ -330,7 +334,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-006 → FS-007`; diagnostic renderer must be completed.
 - Entry evidence: working renderer controls and curve/Fourier application contracts.
-- Current gate: unsatisfied while FS-006 is planned.
+- Current gate: dependency satisfied by FS-006 commit `1abc0be`; stage remains `planned` until
+  explicit authorization.
 
 ### Scope / non-goals / invariants
 

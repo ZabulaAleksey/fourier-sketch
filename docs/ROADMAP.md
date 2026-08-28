@@ -13,12 +13,12 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-003` | Fourier Spectrum energy and deterministic ordering views | `completed` |
 | `FS-004` | Partial Reconstruction and metrics | `completed` |
 | `FS-005` | Epicycle Mathematics and endpoint equivalence | `completed` |
+| `FS-006` | Diagnostic Matplotlib Epicycle Renderer | `completed` |
 
-## Ближайшая математическая основа (planned)
+## Ближайшие этапы (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-006` | Diagnostic matplotlib Epicycle Renderer (`in_progress`) |
 | `FS-007` | Freehand Input |
 | `FS-008` | First live freehand-to-trace MVP |
 | `FS-009` | Arc-Length Parameterization |
