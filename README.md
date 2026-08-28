@@ -23,8 +23,9 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 принимает реальные pointer events, строит `Curve` через uniform-by-index resampling и передаёт её в
 тот же Fourier/timeline/renderer path.
 
-Текущий stage — `FS-009`: selectable arc-length resampling и измеримое сравнение с текущим
-uniform-by-index baseline. Image input начинается отдельно с FS-010.
+Этап `FS-009` завершён: selectable arc-length resampling и измеримое сравнение с текущим
+uniform-by-index baseline доступны в одном MVP. Текущий stage — `FS-010`: безопасный локальный
+PNG/JPEG input, grayscale и threshold intermediate; edge detection остаётся отдельным FS-011.
 
 ## Целевой pipeline
 

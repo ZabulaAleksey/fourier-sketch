@@ -16,18 +16,18 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-006` | Diagnostic Matplotlib Epicycle Renderer | `completed` |
 | `FS-007` | Freehand Input | `completed` |
 | `FS-008` | First live freehand-to-trace MVP | `completed` |
+| `FS-009` | Arc-Length Parameterization | `completed` |
 
 ## Ближайшие этапы (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-009` | Arc-Length Parameterization (`in_progress`) |
+| `FS-010` | Validated image input, grayscale, threshold (`in_progress`) |
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-010` | Validated image input, grayscale, threshold |
 | `FS-011` | Edge Detection |
 | `FS-012` | Dominant contour to curve |
 | `FS-013` | Live image-to-epicycle-trace MVP |

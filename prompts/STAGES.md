@@ -408,7 +408,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-009 — Arc-Length Parameterization
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; implementation commit `74f1008`.
 - Goal: introduce uniform arc-length resampling and measurable comparison with prior sampling.
 
 ### Dependency DAG & entry preconditions
@@ -442,18 +442,22 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: curvature-adaptive and simplification algorithms.
 - Performance: bound N; no unbounded dense intermediates.
 - Docs: MATHEMATICS, SPEC only if behavior changed, trace/status/plan.
-- Handoff: commit and stop before FS-010.
+- Evidence: full suite 215 PASS; targeted unit/property/integration/component/live E2E, Ruff,
+  mypy, overlay, diff and manual visual QA PASS; measured index CV `0.917196816392` versus
+  arc-length CV `0.0` on the same fixture; reviewer and compatibility re-review GO.
+- Handoff: implementation committed as `74f1008`; FS-010 activated by existing user authorization.
 
 ## FS-010 — Validated Image Input, Grayscale and Threshold
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: safely decode local PNG/JPEG and expose grayscale/denoise/contrast/threshold intermediates.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-009 → FS-010`; core application baseline must be completed before image branch begins.
 - Entry evidence: security limits accepted; Pillow/backend capability/license review; clean lockfile.
-- Current gate: unsatisfied while FS-009 is incomplete.
+- Current gate: satisfied by FS-009 commit `74f1008`, existing 25 MiB/40 MP security policy,
+  official Pillow 12.3.0 capability/security/API/license review and clean current lockfile.
 
 ### Scope / non-goals / invariants
 
@@ -492,7 +496,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-010 → FS-011`; FS-010 safe decode/transforms must be completed.
 - Entry evidence: typed grayscale/binary contract and reviewed Canny backend/dependency choice.
-- Current gate: unsatisfied while FS-010 is planned.
+- Current gate: unsatisfied while FS-010 is incomplete.
 
 ### Scope / non-goals / invariants
 

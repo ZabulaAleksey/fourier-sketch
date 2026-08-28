@@ -152,6 +152,20 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | independent review | FS-008 diff and fixes | reviewer + re-review | GO |
 | commit evidence | FS-008 implementation | Git commit | PASS — `0c4bfb2` |
 
+## Stage FS-009 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| open endpoints and closed seam | `math/resampling.py` | unit + property | PASS |
+| explicit index/arc-length choice | freehand application and Matplotlib selector | integration + component | PASS |
+| same-source spacing diagnostics | immutable metrics + CLI fixture | measured comparison | PASS |
+| actual trace vertical slice | selected method → FFT/timeline/endpoint trace | live E2E | PASS |
+| degenerate/subnormal compatibility | typed math boundary + optional diagnostics | unit + integration | PASS |
+| regression and static gates | repository | 215 tests + Ruff + mypy + overlay + diff | PASS |
+| manual visual evidence | actual stroke, selector, metrics and controls | Agg visual QA | PASS |
+| independent review | FS-009 diff and compatibility fix | reviewer + re-review | GO |
+| commit evidence | FS-009 implementation | Git commit | PASS — `74f1008` |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

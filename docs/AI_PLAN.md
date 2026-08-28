@@ -2,68 +2,69 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-009`: добавить uniform arc-length resampling, измеримые spacing diagnostics
-и selectable comparison с принятым `uniform_index` в существующем freehand MVP. Lifecycle:
-`in_progress`.
+Реализовать Stage `FS-010`: безопасно принять локальный PNG/JPEG, применить EXIF orientation,
+получить bounded grayscale/threshold intermediate и показать либо экспортировать диагностический
+результат. Lifecycle: `in_progress`.
 
 ## Связанные требования
 
-- SPEC: `specs/system.spec.md`, `specs/features/fourier-core.spec.md`,
-  `specs/features/epicycle-animation.spec.md`.
-- IDs: FR-CURVE-001, FR-DRAW-001, FC-FR-002, FR-EPICYCLE-TRACE-001, AC-SYS-003,
-  AC-SYS-004, AC-SYS-010.
-- Stage contract: `prompts/STAGES.md`, heading `FS-009`.
+- SPEC: `specs/system.spec.md`.
+- IDs: FR-IMPORT-001, SEC-INPUT-001, AC-SYS-006, AC-SYS-010, AC-SYS-012.
+- Stage contract: `prompts/STAGES.md`, heading `FS-010`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: `FS-009`.
-- Completed prerequisite: FS-008 implementation `0c4bfb2`, 192 tests and reviewer GO.
-- DAG: `FS-008 → FS-009`; no cycle/forward dependency.
-- Entry gate: satisfied; representative freehand workflow and index-resampling baseline committed.
+- Stage ID: `FS-010`.
+- Completed prerequisite: FS-009 implementation `74f1008`, 215 tests and reviewer GO.
+- DAG: `FS-009 → FS-010`; no cycle/forward dependency.
+- Entry gate: satisfied; 25 MiB/40 MP policy exists in `docs/SECURITY.md`, Pillow 12.3.0
+  format/security/API/license contracts reviewed from official sources, current lockfile is clean.
 
 ## Runnable vertical slice и live product scenario
 
-- Entry: user draws or supplies a non-uniform polyline and selects resampling method/sample count.
-- Path: cleaned source Curve → selected index/arc-length method → spacing metrics → existing
-  FFT/timeline/controls → endpoint trace.
-- Observable result: both methods run through the same MVP; diagnostics report actual segment
-  spacing, while zero-total-length arc-length input produces a typed controlled failure.
+- Entry: user supplies a local PNG/JPEG and explicit preprocessing options.
+- Path: encoded-size check → allowlisted header decode → pixel-budget check → EXIF transpose →
+  grayscale → optional bounded denoise/contrast → threshold/invert → preview/export.
+- Observable result: typed raster intermediate with dimensions, format, transform provenance and
+  pixel counts, or a controlled validation failure without payload logging.
 
 ## Scope / non-goals / invariants
 
-- Scope: cumulative polyline length; open/closed interpolation; explicit method value; spacing
-  metrics/comparison; MVP method selector; unit/property/integration/component/live E2E evidence.
-- Non-goals: adaptive/curvature sampling FS-028, simplification FS-027, image input FS-010+.
-- Open endpoints remain exact; closed seam is included in length and output has no repeated first
-  endpoint; order is preserved.
-- `uniform_index` semantics remain unchanged and one-point DC remains available through it.
-- Arc-length zero-total-length input fails typed; no silent switch to index resampling.
-- Output sample budget remains `1..4096`; no unbounded dense intermediate.
+- Scope: safe local PNG/JPEG decode, first-frame policy, EXIF orientation, grayscale, optional
+  denoise/autocontrast, threshold/invert, typed result, diagnostic CLI/view and export safety.
+- Non-goals: Canny/edge detection FS-011, contours FS-012, remote URLs, skeleton/routing.
+- Encoded payload is capped at 25 MiB before decoder work; decoded dimensions are capped at 40 MP
+  before `load()` and rechecked after orientation.
+- Actual decoder format, not extension, must be PNG or JPEG; animated/multiframe input is rejected.
+- Truncated/corrupt/spoofed input and invalid options fail explicitly; no decoder/algorithm retry or
+  silent fallback; source bytes and payload are never logged.
+- Existing output is never overwritten without an explicit flag.
 
 ## Рабочие задачи
 
 | № | Задача | Статус |
 |---|---|---|
-| 1 | Confirm FS-008 prerequisite and exact FS-009 contract | completed |
-| 2 | Implement arc-length resampling and spacing metrics | in_progress |
-| 3 | Add explicit method through capture and existing MVP selector | pending |
-| 4 | Add unit/property/integration/component/live comparison evidence | pending |
-| 5 | Run full/static/overlay/reviewer and measured diagnostics | pending |
-| 6 | Synchronize docs and commit FS-009 | pending |
+| 1 | Confirm FS-009 prerequisite and review Pillow/security/license contracts | completed |
+| 2 | Add pinned Pillow dependency and typed raster/application boundaries | in_progress |
+| 3 | Implement safe decode and deterministic preprocessing pipeline | pending |
+| 4 | Add diagnostic CLI/preview and safe export | pending |
+| 5 | Add unit/integration/component/E2E negative and success evidence | pending |
+| 6 | Run full/static/frozen/overlay/security-review gates and synchronize docs | pending |
 
 ## Acceptance / PASS
 
-- [ ] Open order/endpoints and closed seam/topology are preserved for bounded N.
-- [ ] Zero total length is a typed failure; index baseline does not change silently.
-- [ ] Spacing diagnostics measure both methods on the same representative source.
-- [ ] Existing MVP selector runs arc-length Curve through the same timeline/endpoint trace.
-- [ ] Unit/property/integration/component/E2E, full/static/overlay and reviewer gates pass.
+- [ ] PNG/JPEG valid fixtures preserve oriented dimensions and deterministic grayscale/threshold.
+- [ ] Encoded-size and decoded-pixel limits reject before unsafe work; actual format allowlist wins
+  over extension and corrupt/truncated/multiframe inputs fail typed.
+- [ ] Optional denoise, contrast, threshold and invert are independent and recorded in provenance.
+- [ ] CLI preview/export completes a real local-file vertical slice without implicit overwrite.
+- [ ] Unit/integration/component/E2E, full/static/frozen/overlay and security review gates pass.
 
 ## Deferred
 
-- Adaptive sampling (`FS-028`), simplification (`FS-027`) and image input (`FS-010+`).
+- Threshold boundary/Canny (`FS-011`), contours (`FS-012`) and remote input.
 
 ## Условие завершения
 
-После terminal evidence FS-009 активировать только FS-010 и не начинать FS-011 до отдельного
-completion gate. Merge/push/PR выполняются только по отдельному разрешению пользователя.
+После terminal evidence FS-010 активировать только FS-011 и не начинать FS-012. Merge/push/PR
+выполняются только по отдельному разрешению пользователя.
