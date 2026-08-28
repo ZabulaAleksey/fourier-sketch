@@ -2,8 +2,8 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-004` создали package scaffold, immutable domain layer и независимый numerical
-math layer для transforms, spectrum views, explicit selection, reconstruction и metrics.
+Stages `FS-000`–`FS-005` создали package scaffold, immutable domain layer и независимый numerical
+math layer для transforms, spectrum views, selection, reconstruction, metrics и epicycle chains.
 Остальные product modules являются целевой архитектурой и появляются строго в соответствующих
 stages.
 
@@ -45,7 +45,7 @@ domain, math           → Python stdlib + NumPy only when introduced
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
-├── math/                       # существует: FS-002..FS-004 Fourier numerical core
+├── math/                       # существует: FS-002..FS-005 Fourier/epicycle core
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
 ├── render/                     # planned FS-006, FS-018, FS-022
@@ -92,6 +92,10 @@ drawing_point = chain.endpoint
 ```
 
 Visibility flags живут в view state и не меняют chain state.
+
+FS-005 `build_epicycle_chain` является единственной factory геометрии: она сохраняет selection
+order, вычисляет rotating local value и последовательно переиспользует предыдущий `end` как
+следующий `start`. Renderer FS-006 получает готовый state и не повторяет reconstruction.
 
 ## Data flow и provenance
 

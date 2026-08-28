@@ -6,6 +6,7 @@ from .conversion import (
     curve_to_complex_samples,
     point_to_complex,
 )
+from .epicycles import build_epicycle_chain, rotating_value
 from .errors import FourierBackendError
 from .frequencies import signed_frequencies, signed_frequency
 from .metrics import reconstruction_metrics, retained_energy_ratio
@@ -25,6 +26,7 @@ __all__ = [
     "MAX_RECONSTRUCTION_TERMS",
     "MAX_REFERENCE_SAMPLES",
     "FourierBackendError",
+    "build_epicycle_chain",
     "complex_samples_to_curve",
     "complex_to_point",
     "curve_to_complex_samples",
@@ -37,6 +39,7 @@ __all__ = [
     "reconstruction_metrics",
     "reference_dft",
     "retained_energy_ratio",
+    "rotating_value",
     "select_first",
     "select_frequencies",
     "signed_frequencies",

@@ -8,7 +8,7 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 ## Текущее состояние
 
 Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002`, spectrum analysis
-`FS-003` и partial reconstruction/metrics `FS-004`.
+`FS-003`, partial reconstruction/metrics `FS-004` и epicycle mathematics `FS-005`.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
@@ -16,10 +16,11 @@ Fourier coefficient/spectrum values, epicycle geometry и typed validation error
 reference DFT, explicit NumPy FFT, IDFT, total spectrum energy и deterministic complete-spectrum
 views: signed, absolute-frequency, amplitude, interleaved и explicit. Отдельный immutable
 `CoefficientSelection` поддерживает first-K и explicit subset, continuous/sample-grid
-reconstruction, retained energy и typed error metrics.
+reconstruction, retained energy и typed error metrics. `build_epicycle_chain` превращает selection
+в renderer-ready head-to-tail state, чей endpoint равен reconstruction с учётом origin.
 
-Следующий этап одобренной последовательности — `FS-005` (epicycle mathematics); он начинается
-только после terminal evidence FS-004.
+Следующий этап одобренной последовательности — `FS-006` (diagnostic Matplotlib renderer); он
+начинается только после terminal evidence FS-005.
 
 ## Целевой pipeline
 
@@ -73,7 +74,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 
 ## Ограничения
 
-Проект пока не имеет пользовательского entry point. Epicycle math, rendering, mouse/image input,
-GUI и export остаются planned.
+Проект пока не имеет пользовательского entry point. Diagnostic rendering, mouse/image input, GUI
+и export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

@@ -39,10 +39,10 @@ Hypothesis добавлен в FS-002. Реализованы:
 - reference DFT/FFT parity;
 - deterministic complete-spectrum ordering/permutation, включая even-N Nyquist;
 - full/partial reconstruction, retained-energy bounds и explicit normalized-error states;
+- epicycle connectivity, permutation-invariant endpoint и endpoint/reconstruction parity;
 
 Planned для соответствующих stages:
 
-- epicycle endpoint/reconstruction parity across time/orderings;
 - trace samples equal chain endpoint samples;
 - resampling order/endpoints/closed semantics.
 
