@@ -9,8 +9,7 @@ Fourier Sketch — поэтапно создаваемое desktop-прилож�
 
 Реализованы каркас `FS-000`, domain model `FS-001`, transform slice `FS-002`, spectrum analysis
 `FS-003`, partial reconstruction/metrics `FS-004`, epicycle mathematics `FS-005`, diagnostic
-renderer `FS-006` и bounded freehand input `FS-007`. Stage `FS-008` сейчас расширяет этот slice до
-cohesive freehand-to-trace MVP.
+renderer `FS-006`, bounded freehand input `FS-007` и cohesive freehand-to-trace MVP `FS-008`.
 Публичный пакет
 `fourier_sketch.domain` предоставляет immutable `Point2D`, `Curve`, `PiecewiseCurve`,
 Fourier coefficient/spectrum values, epicycle geometry и typed validation errors. Публичный
@@ -24,8 +23,8 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 принимает реальные pointer events, строит `Curve` через uniform-by-index resampling и передаёт её в
 тот же Fourier/timeline/renderer path.
 
-После terminal gate FS-008 следующий stage — `FS-009`: selectable arc-length resampling и
-измеримое сравнение с текущим uniform-by-index baseline. Image input начинается отдельно с FS-010.
+Текущий stage — `FS-009`: selectable arc-length resampling и измеримое сравнение с текущим
+uniform-by-index baseline. Image input начинается отдельно с FS-010.
 
 ## Целевой pipeline
 
@@ -115,7 +114,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 ## Ограничения
 
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
-Freehand input реализован; единый Matplotlib MVP workflow проходит terminal verification FS-008.
+Freehand input и единый Matplotlib MVP workflow реализованы как проверяемый vertical slice.
 Arc-length parameterization, image input, product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

@@ -15,13 +15,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-005` | Epicycle Mathematics and endpoint equivalence | `completed` |
 | `FS-006` | Diagnostic Matplotlib Epicycle Renderer | `completed` |
 | `FS-007` | Freehand Input | `completed` |
+| `FS-008` | First live freehand-to-trace MVP | `completed` |
 
 ## Ближайшие этапы (planned)
 
 | Stage | Результат |
 |---|---|
-| `FS-008` | First live freehand-to-trace MVP (`in_progress`) |
-| `FS-009` | Arc-Length Parameterization |
+| `FS-009` | Arc-Length Parameterization (`in_progress`) |
 
 ## Image-to-curve pipeline
 

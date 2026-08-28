@@ -2,10 +2,10 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-007` создали immutable domain/numerical core, application timeline, bounded
-freehand capture, resource locale boundary и diagnostic Matplotlib/CLI adapter. Текущий FS-008
-расширяет тот же adapter cohesive control surface. Остальные product modules являются целевой
-архитектурой и появляются строго в соответствующих stages.
+Stages `FS-000`–`FS-008` создали immutable domain/numerical core, application timeline, bounded
+freehand capture, cohesive control surface, resource locale boundary и diagnostic Matplotlib/CLI
+adapter. Остальные product modules являются целевой архитектурой и появляются строго в
+соответствующих stages.
 
 ## Архитектурные цели
 

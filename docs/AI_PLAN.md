@@ -2,65 +2,68 @@
 
 ## Текущая цель
 
-Реализовать Stage `FS-008`: превратить подтверждённый freehand input slice в один cohesive
-freehand-to-trace MVP с controls, restart/error flow и live E2E evidence. Lifecycle: `in_progress`.
+Реализовать Stage `FS-009`: добавить uniform arc-length resampling, измеримые spacing diagnostics
+и selectable comparison с принятым `uniform_index` в существующем freehand MVP. Lifecycle:
+`in_progress`.
 
 ## Связанные требования
 
-- SPEC: `specs/system.spec.md`, `specs/features/epicycle-animation.spec.md`,
-  `specs/features/desktop-export.spec.md`.
-- IDs: FR-DRAW-001, FR-FOURIER-001, FR-EPICYCLE-001, FR-EPICYCLE-TRACE-001, EP-FR-006,
-  EP-AC-006, UI-AC-001, AC-SYS-004, AC-SYS-010, AC-SYS-011.
-- Stage contract: `prompts/STAGES.md`, heading `FS-008`.
+- SPEC: `specs/system.spec.md`, `specs/features/fourier-core.spec.md`,
+  `specs/features/epicycle-animation.spec.md`.
+- IDs: FR-CURVE-001, FR-DRAW-001, FC-FR-002, FR-EPICYCLE-TRACE-001, AC-SYS-003,
+  AC-SYS-004, AC-SYS-010.
+- Stage contract: `prompts/STAGES.md`, heading `FS-009`.
 
 ## Stage identity и dependency DAG
 
-- Stage ID: `FS-008`.
-- Completed prerequisite: FS-007 implementation `2eae8bc`, 186 tests and reviewer GO.
-- DAG: `FS-007 → FS-008`; no cycle/forward dependency.
-- Entry gate: satisfied; actual pointer capture, provenance and endpoint renderer path committed.
+- Stage ID: `FS-009`.
+- Completed prerequisite: FS-008 implementation `0c4bfb2`, 192 tests and reviewer GO.
+- DAG: `FS-008 → FS-009`; no cycle/forward dependency.
+- Entry gate: satisfied; representative freehand workflow and index-resampling baseline committed.
 
 ## Runnable vertical slice и live product scenario
 
-- Entry: user launches one documented freehand command and draws a non-degenerate curve.
-- Path: actual UI events → `FreehandCapture` → Curve → FFT → selection → chain timeline →
-  endpoint trace, with parameter controls and restart/error handling on the same surface.
-- Observable result: trace history equals recorded chain endpoint history; controls change the same
-  timeline, and reset/error states never expose a fabricated or stale result.
+- Entry: user draws or supplies a non-uniform polyline and selects resampling method/sample count.
+- Path: cleaned source Curve → selected index/arc-length method → spacing metrics → existing
+  FFT/timeline/controls → endpoint trace.
+- Observable result: both methods run through the same MVP; diagnostics report actual segment
+  spacing, while zero-total-length arc-length input produces a typed controlled failure.
 
 ## Scope / non-goals / invariants
 
-- Scope: cohesive runnable entry point; harmonic/speed/play/pause/restart controls; explicit
-  validation/recovery; automated actual-event E2E plus diagnostic artifact/data evidence.
-- Non-goals: arc-length algorithm FS-009, image processing FS-010+, final PySide6 shell FS-021.
-- Existing `FreehandCapture`, FFT, `EpicycleTimeline` and `draw_frame` stay the only computation
-  path; FS-008 does not introduce a parallel MVP pipeline.
-- Persistent trace contains only `EpicycleChainState.endpoint` values.
+- Scope: cumulative polyline length; open/closed interpolation; explicit method value; spacing
+  metrics/comparison; MVP method selector; unit/property/integration/component/live E2E evidence.
+- Non-goals: adaptive/curvature sampling FS-028, simplification FS-027, image input FS-010+.
+- Open endpoints remain exact; closed seam is included in length and output has no repeated first
+  endpoint; order is preserved.
+- `uniform_index` semantics remain unchanged and one-point DC remains available through it.
+- Arc-length zero-total-length input fails typed; no silent switch to index resampling.
+- Output sample budget remains `1..4096`; no unbounded dense intermediate.
 
 ## Рабочие задачи
 
 | № | Задача | Статус |
 |---|---|---|
-| 1 | Confirm FS-007 prerequisite and exact FS-008 contract | completed |
-| 2 | Add cohesive controls and restart/error lifecycle to the same surface | in_progress |
-| 3 | Add documented diagnostic execution/artifact path without duplicating math | pending |
-| 4 | Add unit/integration/component/live E2E endpoint-history evidence | pending |
-| 5 | Run full/static/overlay/reviewer and manual visual gates | pending |
-| 6 | Synchronize docs and commit FS-008 | pending |
+| 1 | Confirm FS-008 prerequisite and exact FS-009 contract | completed |
+| 2 | Implement arc-length resampling and spacing metrics | in_progress |
+| 3 | Add explicit method through capture and existing MVP selector | pending |
+| 4 | Add unit/property/integration/component/live comparison evidence | pending |
+| 5 | Run full/static/overlay/reviewer and measured diagnostics | pending |
+| 6 | Synchronize docs and commit FS-009 | pending |
 
 ## Acceptance / PASS
 
-- [ ] One documented command exposes actual drawing, controls and recovery.
-- [ ] Play/pause/speed/harmonic/restart operate on the timeline built from the captured stroke.
-- [ ] Actual event E2E asserts trace values against recorded chain endpoints.
-- [ ] Invalid/reset flows leave no stale or decorative trace.
-- [ ] Component/live E2E, full suite, Ruff, mypy, overlay, visual and reviewer gates pass.
+- [ ] Open order/endpoints and closed seam/topology are preserved for bounded N.
+- [ ] Zero total length is a typed failure; index baseline does not change silently.
+- [ ] Spacing diagnostics measure both methods on the same representative source.
+- [ ] Existing MVP selector runs arc-length Curve through the same timeline/endpoint trace.
+- [ ] Unit/property/integration/component/E2E, full/static/overlay and reviewer gates pass.
 
 ## Deferred
 
-- Arc-length (`FS-009`), images (`FS-010+`) and final PySide6 shell (`FS-021`).
+- Adaptive sampling (`FS-028`), simplification (`FS-027`) and image input (`FS-010+`).
 
 ## Условие завершения
 
-После terminal evidence FS-008 активировать только FS-009 и не начинать FS-010 до отдельного
+После terminal evidence FS-009 активировать только FS-010 и не начинать FS-011 до отдельного
 completion gate. Merge/push/PR выполняются только по отдельному разрешению пользователя.

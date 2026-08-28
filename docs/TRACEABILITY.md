@@ -9,13 +9,13 @@
 
 | Behavior | Requirements | Stage(s) | Planned implementation boundary | Planned evidence | Текущий статус |
 |---|---|---|---|---|---|
-| `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | verified input slice; cohesive MVP in progress |
+| `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | verified cohesive MVP |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
-| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic and freehand input; cohesive controls in FS-008 |
-| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | verified for diagnostic; product UI deferred FS-021 |
+| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic and cohesive freehand MVP |
+| `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | verified in Matplotlib MVP; product UI deferred FS-021 |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
 
@@ -138,6 +138,19 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | regression and static gates | repository | 186 tests + Ruff + mypy + overlay + diff | PASS |
 | independent review | FS-007 diff and fixes | reviewer + re-review | GO |
 | commit evidence | FS-007 implementation | Git commit | PASS — `2eae8bc` |
+
+## Stage FS-008 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| one cohesive control surface | `render/matplotlib_freehand.py` | actual widget component | PASS |
+| exact endpoint-history ledger | same captured timeline | live event/control E2E | PASS |
+| restart and pre-input safety | Play/Pause/Restart/sliders | component + negative states | PASS |
+| release and widget truthfulness | event adapter/control sync | component regressions | PASS |
+| regression and static gates | repository | 192 tests + Ruff + mypy + overlay + diff | PASS |
+| manual visual evidence | actual stroke and controls | Agg visual QA | PASS |
+| independent review | FS-008 diff and fixes | reviewer + re-review | GO |
+| commit evidence | FS-008 implementation | Git commit | PASS — `0c4bfb2` |
 
 ## Acceptance coverage targets
 

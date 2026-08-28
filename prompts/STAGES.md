@@ -367,14 +367,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-008 — First Freehand-to-Trace MVP
 
-- Lifecycle: `in_progress`; first live product milestone.
+- Lifecycle: `completed`; first live product milestone; implementation commit `0c4bfb2`.
 - Goal: prove complete user drawing → actual endpoint trace behavior.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-007 → FS-008`; FS-007 live input and FS-006 renderer completed.
 - Entry evidence: component/manual input path plus endpoint provenance integration.
-- Current gate: satisfied by FS-007 commit `2eae8bc` and reviewer GO.
+- Current gate: satisfied by FS-007 commit `2eae8bc`; implementation committed as `0c4bfb2`.
 
 ### Scope / non-goals / invariants
 
@@ -402,18 +402,20 @@ completion claim. Evidence records environment/branch and caveats.
 - Failure: if live event automation unavailable, stage remains `implemented_unverified` until real
   E2E/manual+data evidence meets approved gate; do not mark DONE from mocks.
 - Docs: README first runnable workflow, DESIGN, testing, traceability, status/plan.
-- Handoff: commit milestone and stop before FS-009.
+- Evidence: unit 130, property 10, integration 12, component 31, E2E 8 and full 192 PASS;
+  Ruff/mypy/overlay/diff PASS; manual visual QA PASS; reviewer GO after speed/DC widget fixes.
+- Handoff: implementation committed as `0c4bfb2`; FS-009 activated by existing user authorization.
 
 ## FS-009 — Arc-Length Parameterization
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: introduce uniform arc-length resampling and measurable comparison with prior sampling.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-008 → FS-009`; freehand MVP must be completed.
 - Entry evidence: current resampling baseline and representative fixtures/metrics.
-- Current gate: unsatisfied while FS-008 is incomplete.
+- Current gate: satisfied by FS-008 commit `0c4bfb2` and reviewer GO.
 
 ### Scope / non-goals / invariants
 
@@ -451,7 +453,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-009 → FS-010`; core application baseline must be completed before image branch begins.
 - Entry evidence: security limits accepted; Pillow/backend capability/license review; clean lockfile.
-- Current gate: unsatisfied while FS-009 is planned.
+- Current gate: unsatisfied while FS-009 is incomplete.
 
 ### Scope / non-goals / invariants
 
