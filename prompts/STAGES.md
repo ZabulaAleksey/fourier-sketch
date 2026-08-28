@@ -449,7 +449,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-010 — Validated Image Input, Grayscale and Threshold
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; implementation commit `d63b1b0`.
 - Goal: safely decode local PNG/JPEG and expose grayscale/denoise/contrast/threshold intermediates.
 
 ### Dependency DAG & entry preconditions
@@ -485,18 +485,22 @@ completion claim. Evidence records environment/branch and caveats.
 - Fallback: no silent decoder/algorithm switch; missing optional operation is unavailable with
   provenance; validation failures never retry.
 - Docs: dependencies/security/README/architecture/trace/status/plan.
-- Handoff: commit and stop before FS-011.
+- Evidence: FS-010 targeted 39 and full 254 tests PASS; Ruff, mypy, lock/frozen sync, overlay,
+  diff, live CLI, visual QA and security review PASS. Real fixtures cover PNG/JPEG/TIFF spoof,
+  APNG, corrupt/truncated, 25 MiB/40 MP, EXIF, transforms, overwrite and privacy-safe failure.
+- Handoff: implementation committed as `d63b1b0`; FS-011 activated by existing user authorization.
 
 ## FS-011 — Edge Detection
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: produce diagnostic threshold-boundary and Canny edge maps from validated preprocessing.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-010 → FS-011`; FS-010 safe decode/transforms must be completed.
 - Entry evidence: typed grayscale/binary contract and reviewed Canny backend/dependency choice.
-- Current gate: unsatisfied while FS-010 is incomplete.
+- Current gate: satisfied by FS-010 commit `d63b1b0`, typed grayscale/binary contracts and official
+  OpenCV 5.0 Canny plus `opencv-python-headless` 5.0.0.93 capability/platform/license review.
 
 ### Scope / non-goals / invariants
 
@@ -536,7 +540,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-011 + FS-009 + FS-008 → FS-012`; all three must be completed at start.
 - Entry evidence: edge map contract, arc-length resampling and freehand endpoint-trace application.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: unsatisfied while FS-011 is incomplete.
 
 ### Scope / non-goals / invariants
 

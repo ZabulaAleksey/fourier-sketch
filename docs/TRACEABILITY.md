@@ -166,6 +166,21 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | independent review | FS-009 diff and compatibility fix | reviewer + re-review | GO |
 | commit evidence | FS-009 implementation | Git commit | PASS — `74f1008` |
 
+## Stage FS-010 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| encoded/decoded budgets | Pillow adapter | sparse file + real oversized PNG | PASS |
+| actual PNG/JPEG allowlist | verify/decode passes | PNG/JPEG/TIFF spoof/APNG/corrupt fixtures | PASS |
+| EXIF and typed intermediates | raster/provenance values | integration + integrity regressions | PASS |
+| independent transforms | median/autocontrast/threshold/invert | unit + application integration | PASS |
+| diagnostic publication | image CLI + temporary/hard-link/replace | component + live E2E | PASS |
+| privacy/fallback boundary | stable codes, no full path/payload, no retry | negative E2E + review | PASS |
+| dependency/reproducibility | Pillow 12.3.0 direct | official review + lock/frozen sync | PASS |
+| regression and static gates | repository | 254 tests + Ruff + mypy + overlay + diff | PASS |
+| independent security review | FS-010 diff and typed-integrity fix | reviewer + re-review | GO |
+| commit evidence | FS-010 implementation | Git commit | PASS — `d63b1b0` |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

@@ -25,8 +25,9 @@ reconstruction, retained energy и typed error metrics. `build_epicycle_chain` �
 тот же Fourier/timeline/renderer path.
 
 Этап `FS-009` завершён: selectable arc-length resampling и измеримое сравнение с текущим
-uniform-by-index baseline доступны в одном MVP. Текущий stage — `FS-010`: безопасный локальный
-PNG/JPEG input, grayscale и threshold intermediate; edge detection остаётся отдельным FS-011.
+uniform-by-index baseline доступны в одном MVP. Этап `FS-010` завершил безопасный локальный
+PNG/JPEG input, grayscale и threshold intermediate. Текущий stage — `FS-011`: два явных edge
+mode без contour interpretation.
 
 ## Целевой pipeline
 
