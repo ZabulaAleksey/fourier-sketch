@@ -153,8 +153,18 @@ E(S) = Σ(k∈S) |C_k|²
 retained = E(S) / E(K_N)
 ```
 
-Для zero-energy signal retained ratio определяется как `1` при full zero reconstruction и не
-вычисляется как `0/0`.
+Для zero-energy signal retained ratio определяется как `1` при full zero reconstruction и `0`
+при partial selection; `0/0` не вычисляется. До full/zero fast-path total energy всё равно проходит
+finite validation. При непредставимом finite результате возвращается typed error.
+
+При проверке retained energy selection принадлежит spectrum по value semantics: совпадают
+`sample_count`, signed frequency и exact immutable coefficient value. Python object identity не
+является частью математического provenance. Caller order хранится в `CoefficientSelection` и
+используется reconstruction напрямую, хотя commutativity сохраняет итоговую сумму.
+
+Sample-grid reconstruction допускает не более `262144` output points и `16777216` вычисляемых
+coefficient terms за один вызов. Эти limits проверяются до output allocation; увеличение требует
+отдельного non-interactive budget/evidence.
 
 ## Error metrics
 

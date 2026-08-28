@@ -12,8 +12,10 @@ from .fourier import (
 )
 from .piecewise_curve import PiecewiseCurve
 from .point import Point2D
+from .selection import CoefficientSelection, NormalizedErrorStatus, ReconstructionMetrics
 
 __all__ = [
+    "CoefficientSelection",
     "Curve",
     "DomainValidationError",
     "EpicycleChainState",
@@ -22,7 +24,9 @@ __all__ = [
     "FourierNormalization",
     "FourierSpectrum",
     "FrequencyConvention",
+    "NormalizedErrorStatus",
     "PiecewiseCurve",
     "Point2D",
+    "ReconstructionMetrics",
     "SpectrumOrdering",
 ]

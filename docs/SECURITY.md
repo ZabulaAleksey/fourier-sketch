@@ -21,6 +21,7 @@
 - corrupt, truncated, decompression-bomb и unsupported input fail closed;
 - numeric input проверяет finite values, ranges и allocation estimate;
 - interactive harmonics: `1..min(N, 4096)`; larger batch mode требует explicit command и budget;
+- FS-004 batch reconstruction: максимум `262144` output samples и `16777216` evaluated terms;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion

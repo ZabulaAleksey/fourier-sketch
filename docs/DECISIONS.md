@@ -104,3 +104,25 @@ Caller выбирает operation явно; future performance policy может
 
 **Миграция / откат:** До persisted Fourier data миграции нет. Dependency rollback удаляет только
 FS-002 implementation и generated lockfile delta после восстановления FS-001 checks.
+
+## 2026-08-28 — ADR-007: Partial selection как value object и typed metric degeneracy
+
+**Контекст:** FS-004 не может представлять partial set через `FourierSpectrum`, потому что complete
+spectrum гарантирует ровно N canonical bins. Normalized error имеет zero centered-reference norm,
+а retained energy — zero-total-energy случай.
+
+**Решение:** Введён отдельный immutable `CoefficientSelection`. При связи со spectrum provenance
+проверяется по immutable values (`sample_count`, frequency, coefficient value), не object identity.
+Normalized error хранит status `defined`, `zero_reference_exact` или
+`undefined_zero_reference`; silent `NaN` запрещён. Full zero-energy ratio равен `1`, partial — `0`,
+но finite total energy валидируется до fast-path. Sample reconstruction bounded до 262144 points и
+16777216 evaluated terms.
+
+**Рассмотренные альтернативы:** Ослабить invariant `FourierSpectrum`; хранить reference identity;
+возвращать `NaN`/`Inf`; считать любой zero-denominator error нулём; не ограничивать O(N×K) work.
+
+**Последствия:** Selection безопасно переупорядочивается и передаётся в FS-005; equivalent immutable
+data interoperable. Caller обязан обработать typed undefined normalized state и budget failure.
+
+**Миграция / откат:** Persisted selection пока отсутствует. Изменение value provenance или limits
+требует SPEC/ADR/test migration до появления session/export formats.

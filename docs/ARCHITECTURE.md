@@ -2,9 +2,10 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-003` создали package scaffold, immutable domain layer и независимый numerical
-math layer для conversion/DFT/FFT/IDFT, spectrum energy и deterministic ordering views. Остальные
-product modules являются целевой архитектурой и появляются строго в соответствующих stages.
+Stages `FS-000`–`FS-004` создали package scaffold, immutable domain layer и независимый numerical
+math layer для transforms, spectrum views, explicit selection, reconstruction и metrics.
+Остальные product modules являются целевой архитектурой и появляются строго в соответствующих
+stages.
 
 ## Архитектурные цели
 
@@ -44,7 +45,7 @@ domain, math           → Python stdlib + NumPy only when introduced
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
-├── math/                       # существует: FS-002 transforms + FS-003 spectrum analysis
+├── math/                       # существует: FS-002..FS-004 Fourier numerical core
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
 ├── render/                     # planned FS-006, FS-018, FS-022
@@ -103,7 +104,9 @@ FS-002 сохраняет complete coefficients в FFT storage order с canonica
 DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим
 fallback. Public boundary возвращает built-in complex/tuple/domain values, а не NumPy arrays.
 FS-003 добавляет только immutable views над complete spectrum; partial coefficient set появляется
-отдельным domain contract в FS-004 и не маскируется под `FourierSpectrum`.
+отдельным `CoefficientSelection` contract в FS-004 и не маскируется под `FourierSpectrum`.
+Selection использует value provenance: sample count, signed frequency и exact coefficient value;
+это позволяет воспроизводимо сравнивать immutable эквивалентные данные без object identity.
 
 ## Concurrency и lifecycle
 

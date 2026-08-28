@@ -38,6 +38,7 @@ Hypothesis добавлен в FS-002. Реализованы:
 - translation/DC и complex scaling;
 - reference DFT/FFT parity;
 - deterministic complete-spectrum ordering/permutation, включая even-N Nyquist;
+- full/partial reconstruction, retained-energy bounds и explicit normalized-error states;
 
 Planned для соответствующих stages:
 
