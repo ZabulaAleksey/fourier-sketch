@@ -8,6 +8,13 @@ from .diagnostic_epicycles import (
     RenderVisibility,
     TimelineState,
 )
+from .dominant_contour import (
+    DEFAULT_CONTOUR_HARMONICS,
+    DEFAULT_CONTOUR_SAMPLES,
+    ImageContourTimelineResult,
+    ImageNoContourResult,
+    build_dominant_contour_timeline,
+)
 from .edge_detection import detect_preprocessed_edges, export_edge_result
 from .freehand import (
     DEFAULT_FREEHAND_HARMONICS,
@@ -26,6 +33,8 @@ from .image_preprocessing import (
 )
 
 __all__ = [
+    "DEFAULT_CONTOUR_HARMONICS",
+    "DEFAULT_CONTOUR_SAMPLES",
     "DEFAULT_FREEHAND_HARMONICS",
     "DEFAULT_FREEHAND_SAMPLES",
     "MAX_CAPTURE_POINTS",
@@ -35,9 +44,12 @@ __all__ = [
     "FreehandCapture",
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
+    "ImageContourTimelineResult",
+    "ImageNoContourResult",
     "RenderVisibility",
     "ResamplingMethod",
     "TimelineState",
+    "build_dominant_contour_timeline",
     "build_freehand_timeline",
     "detect_preprocessed_edges",
     "export_edge_result",

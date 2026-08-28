@@ -1,5 +1,19 @@
 """Typed raster contracts and explicit image backend adapters."""
 
+from .contour_model import (
+    CONTOUR_APPROXIMATION_MODE,
+    CONTOUR_RETRIEVAL_MODE,
+    MAX_CONTOUR_CANDIDATES,
+    MAX_CONTOUR_EDGE_PIXELS,
+    MAX_TOTAL_CONTOUR_POINTS,
+    ContourCandidate,
+    ContourExtractionError,
+    ContourExtractionResult,
+    ContourFailureCode,
+    PixelPoint,
+    contour_bounding_box,
+    signed_shoelace_area2,
+)
 from .edge_detection import detect_canny_edges, detect_threshold_boundary
 from .edge_model import (
     BoundaryConnectivity,
@@ -26,6 +40,7 @@ from .model import (
     RasterImage,
     RasterStage,
 )
+from .opencv_contours import extract_external_contours
 from .pillow_backend import (
     autocontrast_grayscale,
     decode_image_bytes,
@@ -36,10 +51,19 @@ from .pillow_backend import (
 )
 
 __all__ = [
+    "CONTOUR_APPROXIMATION_MODE",
+    "CONTOUR_RETRIEVAL_MODE",
+    "MAX_CONTOUR_CANDIDATES",
+    "MAX_CONTOUR_EDGE_PIXELS",
     "MAX_DECODED_IMAGE_PIXELS",
     "MAX_ENCODED_IMAGE_BYTES",
+    "MAX_TOTAL_CONTOUR_POINTS",
     "BoundaryConnectivity",
     "CannyParameters",
+    "ContourCandidate",
+    "ContourExtractionError",
+    "ContourExtractionResult",
+    "ContourFailureCode",
     "DecodedImage",
     "DenoiseMode",
     "EdgeAlgorithm",
@@ -54,15 +78,19 @@ __all__ = [
     "ImagePreprocessingOptions",
     "ImagePreprocessingProvenance",
     "ImagePreprocessingResult",
+    "PixelPoint",
     "RasterImage",
     "RasterStage",
     "ThresholdBoundaryParameters",
     "autocontrast_grayscale",
+    "contour_bounding_box",
     "decode_image_bytes",
     "decode_local_image",
     "detect_canny_edges",
     "detect_threshold_boundary",
     "export_raster_png",
+    "extract_external_contours",
     "median_denoise",
+    "signed_shoelace_area2",
     "threshold_grayscale",
 ]
