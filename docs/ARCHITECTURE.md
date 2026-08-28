@@ -2,9 +2,9 @@
 
 ## Статус документа
 
-Stages `FS-000`–`FS-006` создали immutable domain/numerical core, application timeline, resource
-locale boundary и diagnostic Matplotlib/CLI adapter. Остальные product modules являются целевой
-архитектурой и появляются строго в соответствующих stages.
+Stages `FS-000`–`FS-007` создали immutable domain/numerical core, application timeline, bounded
+freehand capture, resource locale boundary и diagnostic Matplotlib/CLI adapter. Остальные product
+modules являются целевой архитектурой и появляются строго в соответствующих stages.
 
 ## Архитектурные цели
 
@@ -44,11 +44,11 @@ domain, math           → Python stdlib + NumPy only when introduced
 src/fourier_sketch/
 ├── __init__.py                 # существует: Stage FS-000 scaffold
 ├── domain/                     # существует: Stage FS-001 values и invariants
-├── math/                       # существует: FS-002..FS-005 Fourier/epicycle core
-├── application/                # существует: FS-006 timeline/frame/control state
+├── math/                       # существует: FS-002..FS-005 core + FS-007 index resampling
+├── application/                # существует: FS-006 timeline + FS-007 freehand use case
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
-├── render/                     # существует: Matplotlib frame/PNG/manual adapter
-├── cli/                        # существует: diagnostic live entry point
+├── render/                     # существует: Matplotlib frame/PNG/freehand adapters
+├── cli/                        # существует: diagnostic и freehand live entry points
 ├── imaging/                    # planned FS-010..FS-014, FS-020
 ├── routing/                    # planned FS-012, FS-015..FS-017
 └── ui/                         # planned FS-021
@@ -76,7 +76,7 @@ flow и planned continuations:
 
 ```text
 canonical Curve → FFT → `EpicycleTimeline` → immutable `EpicycleFrame` → Matplotlib/PNG
-freehand → cleanup/resample → spectrum → selection → chain timeline
+Matplotlib pointer events → bounded capture → cleanup/index resample → Curve → тот же timeline
 image → decode/transforms → contour/route → curve → same Fourier use case
 chain timeline → future animation exporter
 raster → separate FFT2 use case
@@ -103,6 +103,14 @@ FS-006 `EpicycleTimeline` — единственная mutable boundary теку
 `EpicycleFrame` immutable; trace append получает только `chain.endpoint`. Matplotlib adapter рисует
 circle/vector/endpoint/overlays из frame, не импортируется domain/math слоями и не вычисляет
 Fourier state. CLI создаёт canonical Curve и проходит тот же application boundary.
+
+FS-007 добавляет `FreehandCapture` как отдельную bounded application boundary: она принимает
+только finite `Point2D`, игнорирует соседние дубликаты, fail-closed завершает capture после 10 000
+points и создаёт `FreehandCurveResult` с source/sample provenance. `FreehandSurface` соединяет
+реальные Matplotlib press/motion/release/key callbacks с capture и не вычисляет Fourier logic в
+event handlers: завершённый stroke проходит через `build_freehand_timeline` и существующий
+`draw_frame`. Drawing axes имеют стабильную coordinate system на время capture; events вне них
+игнорируются.
 
 ## Data flow и provenance
 

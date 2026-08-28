@@ -2,9 +2,9 @@
 
 ## Статус
 
-FS-006 реализовал временную diagnostic Matplotlib surface и headless PNG. Раздел «Diagnostic
-FS-006» ниже фиксирует фактический UI; остальная information architecture остаётся approved target
-для полного PySide6 shell `FS-021`.
+FS-006 реализовал временную diagnostic Matplotlib surface и headless PNG, а FS-007 — фактический
+freehand canvas на том же renderer path. Разделы ниже фиксируют реализованный UI; остальная
+information architecture остаётся approved target для полного PySide6 shell `FS-021`.
 
 ## Diagnostic FS-006 — фактический baseline
 
@@ -22,6 +22,21 @@ FS-006» ниже фиксирует фактический UI; остальна
 Ограничения diagnostic UI: нет workflow navigation, labels toggle, keyboard/accessibility layer,
 reduced-motion integration, saved locale и production-grade inline errors. Они не объявляются
 готовыми до FS-021; controlled CLI failures доступны уже сейчас.
+
+## Freehand FS-007 — фактический baseline
+
+- layout из двух panels: слева drawing axes со стабильными limits, справа существующая epicycle
+  visualization;
+- drag левой кнопкой начинает, продолжает и завершает один stroke; events вне drawing axes и
+  другие кнопки не меняют capture;
+- consecutive duplicate samples не накапливаются; one-point stroke остаётся валидной DC curve;
+- open/closed semantics задаются явно до capture, output samples задаются в диапазоне `1..4096`;
+- успешный pointer release сразу показывает фактический Fourier timeline frame и endpoint trace;
+- `R` очищает source/result/trace для повторного ввода, `Esc` переводит незавершённый capture в
+  controlled cancelled state;
+- status/error/help strings берутся из locale resources; production/fallback locale — `en`.
+
+FS-008 расширяет этот же workflow controls и live evidence, не создавая второй input/Fourier path.
 
 ## Принцип продукта
 

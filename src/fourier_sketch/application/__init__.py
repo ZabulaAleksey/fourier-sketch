@@ -6,5 +6,28 @@ from .diagnostic_epicycles import (
     RenderVisibility,
     TimelineState,
 )
+from .freehand import (
+    DEFAULT_FREEHAND_HARMONICS,
+    DEFAULT_FREEHAND_SAMPLES,
+    MAX_CAPTURE_POINTS,
+    CaptureState,
+    FreehandCapture,
+    FreehandCaptureSnapshot,
+    FreehandCurveResult,
+    build_freehand_timeline,
+)
 
-__all__ = ["EpicycleFrame", "EpicycleTimeline", "RenderVisibility", "TimelineState"]
+__all__ = [
+    "DEFAULT_FREEHAND_HARMONICS",
+    "DEFAULT_FREEHAND_SAMPLES",
+    "MAX_CAPTURE_POINTS",
+    "CaptureState",
+    "EpicycleFrame",
+    "EpicycleTimeline",
+    "FreehandCapture",
+    "FreehandCaptureSnapshot",
+    "FreehandCurveResult",
+    "RenderVisibility",
+    "TimelineState",
+    "build_freehand_timeline",
+]

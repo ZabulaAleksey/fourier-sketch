@@ -40,10 +40,11 @@ Hypothesis добавлен в FS-002. Реализованы:
 - deterministic complete-spectrum ordering/permutation, включая even-N Nyquist;
 - full/partial reconstruction, retained-energy bounds и explicit normalized-error states;
 - epicycle connectivity, permutation-invariant endpoint и endpoint/reconstruction parity;
+- index-resampling order, exact open endpoints, closed seam и bounded output;
 
 Planned для соответствующих stages:
 
-- resampling order/endpoints/closed semantics.
+- arc-length spacing/zero-length semantics (`FS-009`).
 
 ### Integration
 
@@ -54,6 +55,9 @@ FS-006 реализовал integration boundary `EpicycleFrame → Matplotlib a
 center/radius и arrow geometry сравниваются с chain state, visibility не мутирует math, existing
 destination сохраняется.
 
+FS-007 реализовал boundary `pointer capture → cleaned/index-resampled Curve → FFT → timeline →
+Matplotlib frame`; tests проверяют source/sample provenance, one-point DC и open/closed topology.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -63,12 +67,16 @@ mode допустим только если он выполняет actual compo
 FS-006 component evidence покрывает play/pause/restart, speed/K, six visibility toggles, trace
 budget и locale fallback/pseudo. Полный PySide state/accessibility matrix остаётся FS-021.
 
+FS-007 component evidence вызывает фактические Matplotlib callbacks для press/motion/release/key,
+проверяет stable drawing coordinates, ignore-outside behavior, reset/cancel и controlled limits.
+
 ### E2E
 
 Критические live paths:
 
 1. canonical fixture → Fourier → timeline/endpoints → Agg PNG (`FS-006`, реализован);
-2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-008`);
+2. freehand input → Curve → Fourier → chain → endpoint trace (`FS-007`, input slice реализован;
+   cohesive controlled workflow завершается в `FS-008`);
 3. image file → decode/contour → same Fourier/chain → trace (`FS-013`);
 4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 

@@ -23,6 +23,8 @@
 - interactive harmonics: `1..min(N, 4096)`; larger batch mode требует explicit command и budget;
 - FS-004 batch reconstruction: максимум `262144` output samples и `16777216` evaluated terms;
 - FS-006 timeline: maximum speed `100`, trace `10000` points, headless frames `1..9999`;
+- FS-007 freehand: максимум `10000` принятых pointer points и `4096` resampled points; budget
+  проверяется до дальнейшего накопления/FFT, а consecutive duplicates игнорируются;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -46,6 +48,10 @@ FS-006 diagnostic PNG принимает только explicit `.png` path с с
 temporary sibling, затем destination резервируется через exclusive create и публикуется atomic
 replace; existing destination без отдельного overwrite decision не меняется. CLI не предоставляет
 overwrite flag и сообщает только basename, не полный path.
+
+FS-007 Matplotlib adapter принимает только finite data coordinates из своих drawing axes и только
+left-button stroke. Events вне axes, invalid collaborators/options и превышение capture budget
+завершаются без создания timeline; raw pointer samples не выводятся в status/CLI errors.
 
 ## Dependencies and supply chain
 

@@ -16,6 +16,11 @@ from .reconstruction import (
     reconstruct_at,
     reconstruct_samples,
 )
+from .resampling import (
+    MAX_RESAMPLED_POINTS,
+    cleanup_consecutive_duplicates,
+    resample_curve_by_index,
+)
 from .selection import select_first, select_frequencies
 from .spectrum import ordered_coefficients, spectrum_energy
 from .transforms import MAX_FFT_SAMPLES, MAX_REFERENCE_SAMPLES, fft_dft, idft, reference_dft
@@ -25,8 +30,10 @@ __all__ = [
     "MAX_RECONSTRUCTION_SAMPLES",
     "MAX_RECONSTRUCTION_TERMS",
     "MAX_REFERENCE_SAMPLES",
+    "MAX_RESAMPLED_POINTS",
     "FourierBackendError",
     "build_epicycle_chain",
+    "cleanup_consecutive_duplicates",
     "complex_samples_to_curve",
     "complex_to_point",
     "curve_to_complex_samples",
@@ -38,6 +45,7 @@ __all__ = [
     "reconstruct_samples",
     "reconstruction_metrics",
     "reference_dft",
+    "resample_curve_by_index",
     "retained_energy_ratio",
     "rotating_value",
     "select_first",

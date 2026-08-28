@@ -182,6 +182,19 @@ typed undefined/degenerate metric state; silent `NaN` запрещён.
 
 ## Arc-length parameterization
 
+До FS-009 freehand slice использует явно названный baseline `uniform_index`. После удаления
+consecutive duplicates для `M` source points строятся `N` samples:
+
+```text
+open:   q_j = j(M-1)/(N-1),  j = 0..N-1
+closed: q_j = jM/N,          j = 0..N-1
+```
+
+В open случае endpoints присваиваются точно из source, а между соседними индексами применяется
+linear interpolation. В closed случае индекс циклически переходит с последней точки на первую;
+первый output sample не повторяется в конце. One-point input остаётся одним point независимо от
+requested count и даёт DC-only signal. Это не arc-length parameterization и не объявляется ею.
+
 Для ordered points `p_j` cumulative length:
 
 ```text

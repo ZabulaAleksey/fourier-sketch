@@ -148,3 +148,25 @@ acceptance evidence, screenshot — только visual QA.
 
 **Миграция / откат:** Удаление Matplotlib adapter не меняет domain/math. Новый renderer обязан
 потреблять `EpicycleFrame` и пройти те же endpoint/visibility/locale contracts.
+
+## 2026-08-28 — ADR-009: Bounded freehand boundary и явный index-resampling baseline
+
+**Контекст:** FS-007 должен принять реальные pointer events и построить runnable Fourier slice,
+не смешивая mutable UI state с math и не выдавая index spacing за arc-length parameterization.
+
+**Решение:** `FreehandCapture` живёт в application и хранит bounded state/provenance. Matplotlib
+adapter только переводит actual callbacks в capture, а завершённый result передаёт в существующие
+FFT, selection, timeline и renderer. Consecutive duplicates удаляются; baseline
+`uniform_index` явно сохраняет open endpoints/closed seam, one-point input остаётся DC. Drawing
+axes фиксируют data-coordinate limits на время capture. Limits: 10 000 input и 4096 output points.
+
+**Рассмотренные альтернативы:** Вычислять FFT в event handler; хранить nullable/частичный timeline
+в renderer; использовать autoscale во время stroke; молча downsample-ить input; назвать index
+interpolation arc-length resampling.
+
+**Последствия:** FS-008 расширяет тот же workflow, а FS-009 добавляет selectable arc-length method,
+не меняя смысл существующего baseline. Capture/result можно тестировать без Matplotlib, тогда как
+component/E2E evidence проходит через фактические callbacks.
+
+**Миграция / откат:** Adapter можно заменить без изменения `FreehandCapture` и math contracts.
+Изменение limits или значения `uniform_index` требует SPEC/ADR/test migration.
