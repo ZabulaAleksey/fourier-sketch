@@ -592,8 +592,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-012 → FS-013`; FS-012 synthetic/live pipeline must be completed.
 - Entry evidence: safe input, contour integration and diagnostic renderer E2E data.
-- Current gate: satisfied by completed FS-012, synchronized `main`/`origin/main@c13f74d` and explicit
-  user authorization on 2026-08-28; implementation is complete on `feature/fs-013-image-mvp`.
+- Current gate: satisfied; implementation is complete and included in local `main@eb71ec6` through
+  the chained FS-014 fast-forward merge. Remote push has not been performed.
 
 ### Scope / non-goals / invariants
 
@@ -625,15 +625,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-014 — Skeletonization
 
-- Lifecycle: `completed`; validated locally 2026-08-29, not merged/pushed.
+- Lifecycle: `completed`; validated, committed and merged into local `main` 2026-08-29; not pushed.
 - Goal: convert validated line art/binary images to a diagnosable one-pixel skeleton.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-013 → FS-014`; image MVP and safe preprocessing must be completed.
 - Entry evidence: binary image contract and reviewed skeleton algorithm/dependency.
-- Current gate: completed on `feature/fs-014-skeletonization`; prerequisite, implementation,
-  runnable slice, documentation and verification gates satisfied locally 2026-08-29.
+- Current gate: completed and included in local `main@eb71ec6`; prerequisite, implementation,
+  runnable slice, documentation, verification and local integration gates satisfied 2026-08-29.
 
 ### Scope / non-goals / invariants
 
@@ -661,7 +661,8 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: graph FS-015.
 - Fallback: no silent algorithm substitution; capability/provenance explicit.
 - Docs: dependencies/architecture/security/trace/status/plan.
-- Handoff: atomic commit and stop before FS-015; merge/push/PR require separate authorization.
+- Handoff: atomic commit and local fast-forward merge completed; stopped before FS-015.
+  Push/PR remain separate external actions.
 
 ## FS-015 — Skeleton Graph
 

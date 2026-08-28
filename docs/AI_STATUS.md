@@ -2,14 +2,12 @@
 
 ## Текущий этап
 
-- Active Stage ID: `FS-014`.
-- Lifecycle: `completed`; validated locally, not merged/pushed.
-- Branch: `feature/fs-014-skeletonization`.
-- Goal: validated binary image → explicit Lee thinning → typed skeleton → preview/export.
-- Baseline: локальный `main` и `origin/main` совпадают на `c13f74d`.
-- Chained baseline: `FS-013` completed/validated/committed в `e918761`, но ещё не merged/pushed;
-  текущая ветка создана поверх этого commit.
-- Authorization: пользователь явно разрешил продолжение 2026-08-29.
+- Last completed Stage ID: `FS-014`.
+- Lifecycle: `completed`; validated, committed и fast-forward merged в локальный `main`.
+- Local target: `main@eb71ec6`, содержит chained FS-013/FS-014 history.
+- Remote state: `origin/main@c13f74d`; локальный `main` ahead на 4 commits.
+- Next Stage ID: `FS-015`, lifecycle `planned`; implementation не авторизована.
+- Push/PR/release/deployment не выполнялись.
 
 ## Подтверждённо реализовано
 
@@ -66,15 +64,15 @@
 
 ## Следующее разумное действие
 
-Проверить локальную FS-014 feature. По отдельному явному разрешению можно слить chained ветку в
-`main`; FS-015 остаётся planned и не активирован. Push/PR/release не выполнялись.
+По отдельному разрешению отправить локальный `main` в `origin/main`. FS-015 остаётся planned и не
+активирован; его implementation начинается только по новой явной команде.
 
 ## Синхронизация документации
 
 - README, AI plan/status/roadmap/stage registry, architecture/decisions/design, security/testing,
   traceability/dependencies/fallbacks синхронизированы с validated FS-014.
-- Completion Documentation Synchronization Gate для локального completion выполнен; post-merge
-  gate не применим, поскольку merge не разрешён и не выполнялся.
+- Post-merge Completion Documentation Synchronization Gate выполнен для локального `main`;
+  integration evidence отражает fast-forward merge FS-013/FS-014 и отсутствие push.
 - Стабильные system/image-to-curve/desktop-export SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.
