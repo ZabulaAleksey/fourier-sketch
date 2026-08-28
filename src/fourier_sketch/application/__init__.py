@@ -40,6 +40,15 @@ from .image_preprocessing import (
     select_preprocessing_raster,
 )
 from .local_paths import LocalPathError, validate_local_path
+from .skeletonization import (
+    LocalSkeletonResult,
+    SkeletonConfig,
+    SkeletonController,
+    SkeletonSnapshot,
+    SkeletonState,
+    build_local_skeleton,
+    export_local_skeleton,
+)
 
 __all__ = [
     "DEFAULT_CONTOUR_HARMONICS",
@@ -61,13 +70,20 @@ __all__ = [
     "ImageMvpState",
     "ImageNoContourResult",
     "LocalPathError",
+    "LocalSkeletonResult",
     "RenderVisibility",
     "ResamplingMethod",
+    "SkeletonConfig",
+    "SkeletonController",
+    "SkeletonSnapshot",
+    "SkeletonState",
     "TimelineState",
     "build_dominant_contour_timeline",
     "build_freehand_timeline",
+    "build_local_skeleton",
     "detect_preprocessed_edges",
     "export_edge_result",
+    "export_local_skeleton",
     "export_preprocessing_result",
     "preprocess_local_image",
     "select_preprocessing_raster",

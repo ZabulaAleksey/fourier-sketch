@@ -292,3 +292,25 @@ Worker ограничен одним потоком; progress и guaranteed shut
 
 **Миграция / откат:** Matplotlib image surface и CLI можно удалить без изменения FS-010–FS-012 или
 math contracts. Изменение state/publication semantics требует SPEC/ADR/accepted-test migration.
+
+## 2026-08-29 — ADR-015: Explicit scikit-image Lee skeleton без fallback
+
+**Контекст:** FS-014 нужен реальный same-sized one-pixel skeleton из validated binary raster.
+Project-owned thinning потребовал бы отдельной algorithm validation, OpenCV не предоставляет
+эквивалентный core contract, а default 2D Zhang в scikit-image 0.26.0 имеет открытый upstream
+дефект на некоторых dense masks.
+
+**Решение:** добавить direct `scikit-image>=0.26.0,<0.27`, lazy-import backend и всегда вызывать
+`skimage.morphology.skeletonize(..., method="lee")`. Adapter принимает только FS-010 binary
+`RasterImage`, ограничивает foreground 4 000 000 pixels, сохраняет dimensions/source immutability,
+валидирует bool shape и output-subset semantics и записывает `scikit-image/<version>` provenance.
+Unavailable, несовместимый, failed или malformed backend возвращает typed failure; automatic
+Zhang/OpenCV/project-owned fallback запрещён.
+
+**Последствия:** graph topology не выводится из skeleton pixels до FS-015; cancellation остаётся
+cooperative вокруг native call. Empty foreground является complete empty result. Patch-level
+upgrade внутри 0.26.x требует frozen-lock regression suite; minor upgrade требует повторного API,
+fixture, platform и license review.
+
+**Миграция / откат:** persisted data отсутствует. Откат удаляет FS-014 adapter/controller/CLI,
+direct dependency и lock graph; FS-010–FS-013 остаются рабочими. Пользовательские PNG не удаляются.

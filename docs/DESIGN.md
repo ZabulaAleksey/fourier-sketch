@@ -113,6 +113,18 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - `en` является production/fallback locale, algorithmic pseudo-locale проверяет expansion. Полный
   PySide6 navigation/accessibility/DPI shell остаётся FS-021.
 
+## Skeletonization FS-014 — фактический diagnostic baseline
+
+- CLI принимает локальный PNG/JPEG и явно выбирает один output mode: same-sized `skeleton` PNG
+  либо two-panel `preview` PNG;
+- preview показывает исходный binary raster и фактический Lee result рядом, а title/summary —
+  algorithm, bounded backend provenance и source/result foreground counts;
+- состояния `READY`, `EMPTY`, `ERROR`, `CANCELLED` различаются: empty не маскирует backend failure,
+  cancelled не показывает partial result;
+- сообщения локализованы через `en`/fallback/pseudo resources, success summary показывает только
+  безопасный basename;
+- graph endpoints/junctions, components и route overlay намеренно отсутствуют до следующих stages.
+
 ## Принцип продукта
 
 Главный визуальный объект — причинная цепочка:

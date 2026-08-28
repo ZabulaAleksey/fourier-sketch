@@ -49,6 +49,14 @@ from .pillow_backend import (
     median_denoise,
     threshold_grayscale,
 )
+from .skeleton_model import (
+    MAX_SKELETON_FOREGROUND_PIXELS,
+    SkeletonAlgorithm,
+    SkeletonFailureCode,
+    SkeletonizationError,
+    SkeletonizationResult,
+)
+from .skimage_skeleton import skeletonize_binary
 
 __all__ = [
     "CONTOUR_APPROXIMATION_MODE",
@@ -57,6 +65,7 @@ __all__ = [
     "MAX_CONTOUR_EDGE_PIXELS",
     "MAX_DECODED_IMAGE_PIXELS",
     "MAX_ENCODED_IMAGE_BYTES",
+    "MAX_SKELETON_FOREGROUND_PIXELS",
     "MAX_TOTAL_CONTOUR_POINTS",
     "BoundaryConnectivity",
     "CannyParameters",
@@ -81,6 +90,10 @@ __all__ = [
     "PixelPoint",
     "RasterImage",
     "RasterStage",
+    "SkeletonAlgorithm",
+    "SkeletonFailureCode",
+    "SkeletonizationError",
+    "SkeletonizationResult",
     "ThresholdBoundaryParameters",
     "autocontrast_grayscale",
     "contour_bounding_box",
@@ -92,5 +105,6 @@ __all__ = [
     "extract_external_contours",
     "median_denoise",
     "signed_shoelace_area2",
+    "skeletonize_binary",
     "threshold_grayscale",
 ]

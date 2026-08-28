@@ -103,3 +103,20 @@ degraded contour.
 `Cancel` не останавливает native/Pillow/OpenCV call принудительно: проверка token происходит между
 bounded pipeline steps и перед publication. Это cooperative cancellation, а не false-complete
 fallback; FS-023 отвечает за measured cancellation latency и hardening representative large input.
+
+## Skeletonization (FS-014)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | FS-010 binary raster → explicit scikit-image 0.26.x Lee → typed skeleton |
+| Budget | decoded `≤40 MP`; foreground `≤4,000,000` pixels |
+| Failure signal | stable `SkeletonizationError.code`; localized controller/CLI error, exit `2` |
+| Cancellation | cooperative token до imports, до/после backend; late result не публикуется |
+| Automatic fallback | Lee → Zhang/OpenCV/project-owned transform запрещён |
+| Empty result | same-sized empty binary skeleton; complete success, exit `0` |
+| Malformed result | wrong type/dtype/shape, foreground вне source или solid `2×2` fail closed |
+| Provenance | explicit `lee`, bounded `scikit-image/<version>`, dimensions и pixel counts |
+| Recovery | исправить input/dependency и явно повторить invocation; partial artifact отсутствует |
+
+Skeleton и preview являются двумя explicit output modes, а не fallback друг для друга. Один CLI
+invocation публикует ровно один artifact; существующий destination сохраняется без `--overwrite`.

@@ -3,7 +3,7 @@
 ## Текущий этап
 
 - Active Stage ID: `FS-014`.
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; validated locally, not merged/pushed.
 - Branch: `feature/fs-014-skeletonization`.
 - Goal: validated binary image → explicit Lee thinning → typed skeleton → preview/export.
 - Baseline: локальный `main` и `origin/main` совпадают на `c13f74d`.
@@ -25,6 +25,8 @@
 - `FS-013`: generation-safe `ImageMvpController`, background Matplotlib surface, четыре панели
   intermediates/contour/epicycles, preprocessing/edge/sample/harmonic/speed controls, явные
   initial/processing/ready/empty/error/cancelled states и единый interactive/headless live path.
+- `FS-014`: explicit scikit-image 0.26.x Lee adapter, immutable skeleton/provenance contracts,
+  4 000 000 foreground budget, generation-safe controller, atomic skeleton/preview PNG и local CLI.
 - Пустой либо непригодный contour возвращает явный no-contour result без выдуманного outline или
   скрытого fallback.
 
@@ -42,31 +44,37 @@
 
 - Нет.
 
+## Evidence FS-014
+
+- Activation commit: `b4c8c27`.
+- Targeted unit/integration/component/live E2E suite: 40 tests PASS.
+- Full terminal repository suite: 427 tests PASS.
+- `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
+- Synthetic line/T/cross/loop/noise, real PNG/JPEG, empty/cancel/stale, corrupt/private-path,
+  no-overwrite и malformed backend scenarios: PASS.
+- Независимые correctness/security re-reviews: GO после local-path/import-time/solid-`2×2`
+  hardening; обязательных findings не осталось.
+
 ## Ограничения / deferred
 
 - Выбирается один внешний контур; multi-component semantics отложена до `FS-016`.
 - Open/dangling edge fragments не преобразуются в замкнутую кривую.
-- Skeleton, graph и forced routing не входят в `FS-013`.
+- Skeleton graph, component semantics и forced routing остаются FS-015–FS-017.
 - Диагностическая поверхность остаётся Matplotlib/CLI, а не финальным PySide6 shell.
 - OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
   число кандидатов, но native crash нельзя преобразовать в typed Python error.
 
-## В процессе
-
-- `FS-014` активирован; выбран explicit `scikit-image 0.26.x` Lee backend без automatic fallback.
-- До terminal status требуются code/tests, live CLI E2E, component cancel/preview, full gates и review.
-
 ## Следующее разумное действие
 
-Реализовать и проверить только `FS-014`, затем остановиться перед `FS-015`. Merge/push/PR остаются
-неразрешёнными внешними действиями.
+Проверить локальную FS-014 feature. По отдельному явному разрешению можно слить chained ветку в
+`main`; FS-015 остаётся planned и не активирован. Push/PR/release не выполнялись.
 
 ## Синхронизация документации
 
-- `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md` и `prompts/STAGES.md` синхронизированы с
-  активацией `FS-014`; остальные state-bearing документы пока отражают завершённый `FS-013`.
-- Completion Documentation Synchronization Gate для `FS-014` ещё не выполнен; post-merge gate не
-  применим, поскольку merge не разрешён и не выполнялся.
+- README, AI plan/status/roadmap/stage registry, architecture/decisions/design, security/testing,
+  traceability/dependencies/fallbacks синхронизированы с validated FS-014.
+- Completion Documentation Synchronization Gate для локального completion выполнен; post-merge
+  gate не применим, поскольку merge не разрешён и не выполнялся.
 - Стабильные system/image-to-curve/desktop-export SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.

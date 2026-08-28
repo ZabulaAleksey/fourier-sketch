@@ -17,12 +17,13 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-012)
+## Текущая dependency surface (FS-014)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
   interactive/Agg adapters; Pillow `>=12.3.0` для allowlisted PNG/JPEG decode и bounded image
   transforms; `opencv-python-headless>=5.0.0.93,<6` только для explicit Canny adapter;
+  `scikit-image>=0.26.0,<0.27` только для explicit Lee skeleton adapter;
 - development: pytest, Ruff, mypy, Hypothesis `>=6.165.10` для property contracts.
 
 Lockfile exact versions являются воспроизводимым evidence. FS-002 review подтвердил Python 3.12,
@@ -65,8 +66,19 @@ Review sources: [OpenCV 5.0 Canny documentation](https://docs.opencv.org/5.0/py_
 [OpenCV Apache-2.0 license](https://github.com/opencv/opencv/blob/4.x/LICENSE),
 [opencv-python MIT license](https://github.com/opencv/opencv-python/blob/4.x/LICENSE.txt).
 
-Direct scikit-image, PySide6 и animation codec dependencies добавляются только в первом stage
-реального использования с tests и license/platform review.
+FS-014 добавил direct scikit-image и зафиксировал `0.26.0`. Official API подтверждает bool
+same-sized skeleton output и explicit `method="lee"`; PyPI metadata подтверждает Python `>=3.11`,
+Windows CPython 3.12 wheel и BSD license. Locked transitive delta: SciPy, NetworkX, imageio,
+lazy-loader и tifffile; NumPy, Pillow и packaging уже были в graph. Default Zhang не используется:
+для 0.26.0 открыт upstream defect на некоторых dense masks, поэтому algorithm закреплён как Lee и
+не меняется молча.
+
+Review sources: [scikit-image skeletonize API](https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.skeletonize),
+[PyPI scikit-image](https://pypi.org/project/scikit-image/),
+[upstream issue #8180](https://github.com/scikit-image/scikit-image/issues/8180).
+
+Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
+использования с tests и license/platform review.
 
 ## Cleanup classification
 

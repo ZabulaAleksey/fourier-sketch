@@ -39,6 +39,9 @@
 - contour backend output проверяется как integer `(N,1,2)`/`(N,2)`, внутри source bounds и с
   `CHAIN_APPROX_NONE` adjacency; points обязаны ссылаться на foreground source edge, а usable
   candidate — быть simple cycle без повторных pixels; malformed output не становится Curve;
+- FS-014 принимает только typed binary raster, ограничивает foreground 4 000 000 pixels и
+  проверяет bool dtype, same shape, output foreground subset и отсутствие solid `2×2` blocks до
+  публикации skeleton;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -89,6 +92,11 @@ reparse/symlink target физически local. Для explicit user-selected d
 residual risk FS-013; строгий no-network I/O contract, если он потребуется, должен получить
 platform-aware resolution и negative evidence в FS-023.
 
+FS-014 переиспользует тот же local-path и atomic PNG boundary. Controller не хранит source path,
+late/cancelled result не публикуется, а CLI показывает только escaped basename и aggregate counts.
+Preview и skeleton mode создают ровно один user-selected artifact за invocation; resource/backend
+failure не оставляет partial output и не изменяет существующий destination без `--overwrite`.
+
 ## Dependencies and supply chain
 
 Canonical manager/lockfile определены в `docs/DEPENDENCIES.md`. Новые CV/UI/codec dependencies
@@ -100,6 +108,11 @@ Canonical manager/lockfile определены в `docs/DEPENDENCIES.md`. Но�
 backend output становится typed `BACKEND_FAILURE` без partial result или fallback. Любой обычный
 import-time exception становится privacy-safe `BACKEND_UNAVAILABLE`; version допускается только
 как bounded ASCII identifier и сверяется с algorithm-specific provenance contract до CLI output.
+
+`scikit-image` 0.26.0 выбран для explicit Lee thinning и загружается лениво. Adapter не принимает
+backend/method name из input, допускает только bounded `0.26.x` version и валидирует native output;
+unavailable/incompatible/malformed backend не переключается на Zhang/OpenCV и не раскрывает raw
+exception. Frozen lock и фактический Windows wheel входят в dependency evidence FS-014.
 
 ## Privacy and logging
 
@@ -133,8 +146,10 @@ Fallback Policy наследуется и здесь не копируется.
   overwrite проходят unit/component/live E2E checks без algorithm substitution;
 - FS-012: dense input, excessive candidate count, unavailable/malformed contour backend,
   degenerate/no-contour, privacy, inactive options и existing output проходят negative tests;
+- FS-014: foreground budget, cancellation/stale suppression, unavailable/malformed Lee backend,
+  empty result, preview/export race, corrupt input и existing output проходят unit/component/E2E;
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stages `FS-010`–`FS-012` have live decode/limit/edge/contour/overwrite/privacy evidence; Stage `FS-022`
+Stages `FS-010`–`FS-014` have live decode/CV/skeleton/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.

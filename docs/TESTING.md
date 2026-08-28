@@ -73,6 +73,11 @@ arc-length samples → FFT/timeline → Agg PNG`: unit/property tests прове
 backend-order/cyclic/reversal invariance, coordinate/orientation/start policies, malformed output и
 budgets; real threshold/Canny integration проверяет endpoint equality.
 
+FS-014 реализовал boundary `FS-010 binary → scikit-image Lee → typed same-sized skeleton →
+binary/preview PNG`: synthetic line/T/cross/loop/noise и real JPEG fixtures проверяют thinning,
+source immutability, output subset, explicit provenance, empty result и отсутствие solid 2×2 block
+как robust property вместо brittle full-image golden.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -113,6 +118,11 @@ cancelled late-result suppression. Integration проходит обе explicit 
 timeline endpoint; live subprocess E2E создаёт четырёхпанельный PNG, recovery PNG для no-contour,
 privacy-safe corrupt failure и existing-output preservation.
 
+FS-014 component evidence рисует actual two-panel Agg preview с source/result/provenance, проверяет
+pseudo expansion и no-overwrite race. Application tests подтверждают complete/empty/error states,
+cooperative cancellation и stale-generation suppression; live subprocess E2E повторно открывает
+binary skeleton/preview PNG и проверяет corrupt/existing-output/privacy paths.
+
 ### E2E
 
 Критические live paths:
@@ -122,7 +132,9 @@ privacy-safe corrupt failure и existing-output preservation.
    `FS-008` подтверждает cohesive controls и exact endpoint-history ledger);
 3. image file → controls/decode/edges → dominant contour/Curve → same Fourier/chain → trace
    (`FS-013`, cohesive Matplotlib/headless product flow реализован);
-4. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+4. image file → binary preprocessing → explicit Lee skeleton → readable skeleton/preview PNG
+   (`FS-014`, самостоятельный local diagnostic реализован);
+5. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.

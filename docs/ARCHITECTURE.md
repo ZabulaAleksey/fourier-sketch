@@ -190,6 +190,11 @@ FS-012 provenance добавляет extraction backend, exact external/none mod
 selected area/bounds/point count, selection policy, source dimensions, coordinate transform, scale,
 orientation и start-point policy. Source path, raster payload и raw native error в него не входят.
 
+FS-014 provenance содержит explicit `lee`, bounded `scikit-image/<version>`, source dimensions и
+source/skeleton foreground counts. Adapter принимает только binary raster, сохраняет dimensions,
+не мутирует source и fail closed отклоняет wrong dtype/shape, output foreground вне source либо
+solid `2×2` block, несовместимый с one-pixel skeleton contract.
+
 FS-002 сохраняет complete coefficients в FFT storage order с canonical signed labels. Reference
 DFT и NumPy FFT выбираются явными public functions; reference path не является автоматическим
 fallback. Public boundary возвращает built-in complex/tuple/domain values, а не NumPy arrays.
@@ -204,6 +209,22 @@ FS-013 interactive Matplotlib surface уже выполняет image/CV operati
 generation snapshots и cooperative cancellation предотвращают stale publication. Headless CLI
 остаётся синхронным. Полный progress contract, guaranteed join и Qt worker lifecycle относятся к
 PySide6 stages; window shutdown отменяет current generation и не помечает partial result complete.
+
+FS-014 использует тот же generation-safe application pattern в `SkeletonController`. Cooperative
+token проверяется до dependency import, до и после native Lee call; cancelled/stale operation не
+публикует `LocalSkeletonResult`. CLI остаётся синхронным и публикует ровно один atomic artifact.
+
+## Skeletonization boundary (FS-014)
+
+`imaging.skeleton_model` владеет immutable result/error/algorithm contracts и
+same-dimension/subset/count invariants. `imaging.skimage_skeleton` lazy-imports pinned
+`scikit-image 0.26.x`, вызывает только `skeletonize(binary_bool, method="lee")` и ограничивает
+foreground 4 000 000 pixels.
+
+`application.skeletonization` связывает существующий FS-010 preprocessing с adapter и PNG export.
+`render.matplotlib_skeleton` строит actual source/result preview, а `cli.skeleton` явно выбирает
+`skeleton` либо `preview`. Graph endpoints/junctions/components и routing не выводятся до
+FS-015–FS-017.
 
 ## i18n/l10n boundary
 

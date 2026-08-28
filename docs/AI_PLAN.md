@@ -9,7 +9,7 @@ skeleton с provenance и доступен через preview/export без grap
 ## Активный stage
 
 - Stage ID: `FS-014`
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; validated locally, not merged/pushed.
 - Branch: `feature/fs-014-skeletonization`.
 - Authorization: пользователь явно разрешил продолжение 2026-08-29.
 - DAG: `FS-013 → FS-014`; prerequisite `FS-013` completed, validated и committed в `e918761`.
@@ -45,6 +45,8 @@ skeleton с provenance и доступен через preview/export без grap
 - Cancellation cooperative: проверяется до/после backend call; cancelled/stale result не
   публикуется как complete, retry только explicit.
 - Existing image limits сохраняются; новый backend не получает unchecked dimensions.
+- Skeleton foreground дополнительно ограничен 4 000 000 pixels; malformed backend output с wrong
+  dtype/shape/subset либо solid `2×2` block отклоняется до publication.
 
 ## Non-goals / deferred
 
@@ -64,7 +66,10 @@ skeleton с provenance и доступен через preview/export без grap
 - Full pytest, Ruff, strict mypy, frozen clean restore, dependency/overlay/diff gates PASS.
 - Completion Documentation Synchronization Gate и independent reviewer выполнены до terminal claim.
 
+Фактическое evidence: 40 targeted unit/integration/component/live E2E tests и 427 repository tests
+PASS; frozen sync, Ruff, strict mypy, overlay и diff gates PASS; correctness/security re-reviews GO.
+
 ## Handoff
 
-После проверенного atomic commit остановиться перед `FS-015`. Merge/push/PR/release не выполнять
-без отдельного разрешения пользователя.
+FS-014 завершён локально. После atomic commit остановиться перед `FS-015`: этот следующий stage
+planned, но не активирован. Merge/push/PR/release не выполнять без отдельного разрешения пользователя.

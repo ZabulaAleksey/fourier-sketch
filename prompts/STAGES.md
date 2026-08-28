@@ -625,15 +625,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-014 — Skeletonization
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`; validated locally 2026-08-29, not merged/pushed.
 - Goal: convert validated line art/binary images to a diagnosable one-pixel skeleton.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-013 → FS-014`; image MVP and safe preprocessing must be completed.
 - Entry evidence: binary image contract and reviewed skeleton algorithm/dependency.
-- Current gate: prerequisite satisfied by completed FS-013; implementation authorized and started
-  on `feature/fs-014-skeletonization` 2026-08-29.
+- Current gate: completed on `feature/fs-014-skeletonization`; prerequisite, implementation,
+  runnable slice, documentation and verification gates satisfied locally 2026-08-29.
 
 ### Scope / non-goals / invariants
 
@@ -652,14 +652,16 @@ completion claim. Evidence records environment/branch and caveats.
 
 - Fixture unit/golden properties (not brittle full-image snapshot alone), real integration,
   component preview/cancel and full/static/dependency/overlay gates.
+- Evidence: 40 targeted and 427 repository tests PASS; frozen sync, Ruff, strict mypy, overlay and
+  diff checks PASS; correctness/security re-reviews GO after path/import/one-pixel hardening.
 
 ### Temporary / deferred / failure
 
-- Allowed: reviewed scikit-image/OpenCV algorithm adapter; fully serves skeleton output.
+- Implemented: reviewed scikit-image 0.26.x explicit Lee adapter; fully serves skeleton output.
 - Deferred: graph FS-015.
 - Fallback: no silent algorithm substitution; capability/provenance explicit.
 - Docs: dependencies/architecture/security/trace/status/plan.
-- Handoff: commit and stop before FS-015.
+- Handoff: atomic commit and stop before FS-015; merge/push/PR require separate authorization.
 
 ## FS-015 — Skeleton Graph
 
@@ -670,7 +672,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-014 → FS-015`; skeleton contract/fixtures completed.
 - Entry evidence: binary skeleton output and graph domain decision.
-- Current gate: unsatisfied while FS-014 is planned.
+- Current gate: prerequisite satisfied by completed FS-014; implementation remains planned and
+  is not authorized.
 
 ### Scope / non-goals / invariants
 

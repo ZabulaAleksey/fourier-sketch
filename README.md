@@ -30,6 +30,8 @@ PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` заверш
 разных edge mode: project-owned binary boundary и OpenCV Canny. `FS-012` завершает следующий
 самостоятельный slice: детерминированно выбирает один внешний dominant contour, нормализует его в
 closed `Curve`, применяет arc-length resampling и передаёт в существующий Fourier/timeline/renderer.
+`FS-013` завершил cohesive image-to-Fourier MVP, а `FS-014` добавил отдельный диагностический
+binary-to-skeleton path через explicit scikit-image Lee backend.
 
 ## Целевой pipeline
 
@@ -183,6 +185,26 @@ uv run python -m fourier_sketch.cli.image_mvp input.jpg --headless --output imag
 pixels, 25 000 candidates и 100 000 aggregate contour points. MVP выбирает только крупнейший
 внешний contour; skeleton, multiple components и arbitrary-photo cleanup отложены.
 
+## Skeletonization diagnostic
+
+FS-014 принимает тот же безопасно декодированный локальный PNG/JPEG, строит FS-010 binary raster
+и применяет только explicit `scikit-image 0.26.x` Lee skeletonization:
+
+```powershell
+uv run python -m fourier_sketch.cli.skeleton input.png --output skeleton.png
+uv run python -m fourier_sketch.cli.skeleton input.png --mode preview --output skeleton-preview.png
+```
+
+Первый режим атомарно экспортирует same-sized binary skeleton, второй — actual two-panel
+source/skeleton preview. Summary содержит basename, algorithm/backend provenance, dimensions и
+source/skeleton pixel counts; full path и pixel payload не выводятся. Empty foreground является
+успешным пустым skeleton. Существующий destination не перезаписывается без `--overwrite`.
+
+Сохраняются лимиты FS-010: 25 MiB encoded и 40 MP decoded. Дополнительно skeletonization допускает
+не более 4 000 000 foreground pixels. Недоступный, несовместимый или malformed backend завершает
+команду с кодом `2`; Zhang/OpenCV или другой algorithm не подставляется. Graph topology, component
+ordering и routing остаются scope FS-015–FS-017.
+
 ## Проверки
 
 ```powershell
@@ -206,7 +228,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
-Cohesive image MVP реализован; multi-component routing, PySide6 product GUI и animation export
-остаются planned.
+Cohesive image MVP и отдельный Lee skeleton diagnostic реализованы; skeleton graph,
+multi-component routing, PySide6 product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
