@@ -9,12 +9,12 @@
 
 | Behavior | Requirements | Stage(s) | Planned implementation boundary | Planned evidence | Текущий статус |
 |---|---|---|---|---|---|
-| `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | planned |
+| `BH-DRAW-001` | FR-DRAW-001 | FS-007, FS-008 | application freehand use case | component + live E2E | verified input slice; cohesive MVP in progress |
 | `BH-IMPORT-001` | FR-IMPORT-001, SEC-INPUT-001 | FS-010..FS-013 | imaging adapters + application | unit + integration + E2E | planned |
 | `BH-FOURIER-001` | FR-FOURIER-001, FC-FR-003 | FS-002 | `math` transforms | analytical + property | verified |
 | `BH-HARMONICS-001` | FR-HARMONICS-001, FC-FR-005 | FS-003, FS-004 | spectrum selection/metrics | unit + property | verified |
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
-| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005, FS-006, FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic; freehand E2E deferred FS-008 |
+| `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-008 | chain state → trace adapter | property + integration + E2E | verified for diagnostic and freehand input; cohesive controls in FS-008 |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-021 | renderer timeline/view state | component + E2E | verified for diagnostic; product UI deferred FS-021 |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
@@ -31,9 +31,9 @@ FR-EPICYCLE-001
 ```text
 FR-EPICYCLE-TRACE-001
 → BH-EPICYCLE-TRACE-001
-→ math/epicycles.py → application/diagnostic_epicycles.py → render/matplotlib_epicycles.py
-→ property endpoint + component timeline + live diagnostic E2E
-→ planned tests/e2e/test_draw_to_trace.py
+→ math/epicycles.py → application/freehand.py → render/matplotlib_freehand.py
+→ property endpoint + actual callback component/live freehand E2E
+→ tests/e2e/test_freehand_surface_e2e.py
 ```
 
 Required equality:
@@ -126,6 +126,18 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | packaged resource | built and installed wheel | `site-packages` resource load | PASS |
 | independent review | FS-006 diff and fixes | reviewer + re-reviews | GO |
 | commit evidence | FS-006 implementation | Git commit | PASS — `1abc0be` |
+
+## Stage FS-007 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| bounded pointer lifecycle | `application/freehand.py` | unit + component callbacks | PASS |
+| index resampling topology | `math/resampling.py` | unit + Hypothesis property | PASS |
+| actual freehand vertical slice | `render/matplotlib_freehand.py` | integration + live E2E + visual QA | PASS |
+| localized CLI failure boundary | `cli/freehand.py`, resources | component + subprocess E2E | PASS |
+| regression and static gates | repository | 186 tests + Ruff + mypy + overlay + diff | PASS |
+| independent review | FS-007 diff and fixes | reviewer + re-review | GO |
+| commit evidence | FS-007 implementation | Git commit | PASS — `2eae8bc` |
 
 ## Acceptance coverage targets
 

@@ -2,9 +2,10 @@
 
 ## Текущий этап
 
-- Stage ID: `FS-007`.
+- Stage ID: `FS-008`.
 - Lifecycle: `in_progress`.
-- Evidence level: FS-006 committed and verified; FS-007 baseline gate PASS.
+- Evidence level: FS-007 committed, fully verified and independently reviewed; FS-008 entry gate
+  PASS.
 - Branch: `feature/fs-007-fs-011-input-imaging`.
 
 ## Подтверждённо реализовано
@@ -14,22 +15,23 @@
 - FS-005 renderer-independent epicycle chain mathematics and endpoint equivalence.
 - FS-006 application timeline, immutable renderer frame, Matplotlib interactive/Agg adapters,
   diagnostic CLI and `en`/pseudo/fallback locale boundary.
-- FS-006 implementation commit: `1abc0be`.
+- FS-007 bounded freehand capture, consecutive-duplicate cleanup, explicit uniform-by-index
+  resampling, actual Matplotlib callbacks and real Curve→FFT→timeline→trace path.
+- Latest implementation commit: `2eae8bc`.
 
-## FS-006 evidence
+## FS-007 evidence
 
-- Frozen restore: PASS, 26 packages; Matplotlib `3.11.1` locked.
-- Unit 110, property 9, integration 11, component 18, E2E 4; full suite 153 tests PASS.
-- Ruff, mypy, overlay, diff and build from sdist: PASS.
-- Built wheel installed in an isolated environment; packaged `resources/en.json` loaded from
-  `site-packages` and formatted through `Translator`.
-- Manual Agg PNG visual QA: circles/vectors/endpoint/trace/overlays visible and consistent.
-- Independent reviewer: GO after transactional-state, immutable-frame, localized-error and
-  fail-closed renderer-boundary fixes.
+- Unit 130, property 10, integration 12, component 26, E2E 7; full suite 186 tests PASS.
+- Ruff, mypy, overlay and diff checks: PASS.
+- Actual callback E2E and manual Agg visual QA: drawing, epicycle chain and endpoint trace visible.
+- Independent reviewer: GO after CLI localization, collaborator validation, provenance/limit and
+  pre-allocation fixes.
+- One transient accepted diagnostic PNG filesystem failure occurred in an isolated repeated run;
+  immediate targeted retry and full E2E class both passed. No product/test change was required.
 
 ## В процессе
 
-- FS-007 bounded freehand capture, index resampling and actual Matplotlib event path.
+- FS-008 cohesive freehand-to-trace controls, recovery and milestone E2E.
 
 ## Известные блокеры
 
@@ -37,12 +39,13 @@
 
 ## Ограничения / deferred
 
-- First surface is diagnostic Matplotlib, not the final PySide6 shell.
-- No freehand/image input or animation codec/export framework yet.
+- Current surface is diagnostic Matplotlib, not the final PySide6 shell.
+- Uniform-by-index remains the explicit baseline until FS-009.
+- No image input or animation codec/export framework yet.
 
 ## Следующая задача
 
-Finish FS-007 live pointer-to-trace evidence and stop at its terminal gate before FS-008.
+Complete FS-008 on the existing freehand surface and stop at its terminal gate before FS-009.
 
 ## Интеграция
 
@@ -50,8 +53,10 @@ Finish FS-007 live pointer-to-trace evidence and stop at its terminal gate befor
 
 ## Синхронизация документации
 
-- README, architecture, decisions, dependencies, design, fallbacks, learning, security, testing,
-  traceability, roadmap, plan/status and selected stage record synchronized with FS-006 evidence.
-- `prompts/STAGES.md` remains canonical; it was not moved into `docs/` because the project context
-  selector and global staged-overlay contract address that path explicitly.
-- User authorized sequential implementation of FS-007 through FS-011; exact selector is FS-007.
+- README, architecture, decisions, design, mathematics, security, testing and learning log were
+  synchronized with FS-007; dependencies, fallbacks and relevant SPEC were checked unchanged.
+- Traceability, roadmap, plan/status and selected stage record carry FS-007 completion evidence and
+  select FS-008.
+- `prompts/STAGES.md` remains canonical; it was not moved into `docs/` because project/global
+  context selectors address that path explicitly.
+- User authorized sequential implementation of FS-007 through FS-011; exact selector is FS-008.

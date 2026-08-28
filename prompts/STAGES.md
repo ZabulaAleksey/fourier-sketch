@@ -327,15 +327,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-007 — Freehand Input
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `completed`.
 - Goal: capture mouse path and feed a valid curve through the existing Fourier/renderer path.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-006 → FS-007`; diagnostic renderer must be completed.
 - Entry evidence: working renderer controls and curve/Fourier application contracts.
-- Current gate: dependency satisfied by FS-006 commit `1abc0be`; user authorized sequential
-  implementation through FS-011.
+- Current gate: satisfied by FS-006 commit `1abc0be`; implementation committed as `2eae8bc`.
 
 ### Scope / non-goals / invariants
 
@@ -362,18 +361,20 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: consolidated MVP polish FS-008 and arc-length FS-009.
 - Security/resource: bounded point capture/downsampling policy and cancellation/reset.
 - Docs: user command, design states, traceability/status/plan.
-- Handoff: commit and stop before FS-008.
+- Evidence: unit 130, property 10, integration 12, component 26, E2E 7 and full 186 PASS;
+  Ruff/mypy/overlay/diff PASS; actual callback E2E and manual visual QA PASS; reviewer GO.
+- Handoff: implementation committed as `2eae8bc`; FS-008 activated by existing user authorization.
 
 ## FS-008 — First Freehand-to-Trace MVP
 
-- Lifecycle: `planned`; first live product milestone.
+- Lifecycle: `in_progress`; first live product milestone.
 - Goal: prove complete user drawing → actual endpoint trace behavior.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-007 → FS-008`; FS-007 live input and FS-006 renderer completed.
 - Entry evidence: component/manual input path plus endpoint provenance integration.
-- Current gate: unsatisfied while FS-007 is planned.
+- Current gate: satisfied by FS-007 commit `2eae8bc` and reviewer GO.
 
 ### Scope / non-goals / invariants
 
@@ -412,7 +413,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-008 → FS-009`; freehand MVP must be completed.
 - Entry evidence: current resampling baseline and representative fixtures/metrics.
-- Current gate: unsatisfied while FS-008 is planned.
+- Current gate: unsatisfied while FS-008 is incomplete.
 
 ### Scope / non-goals / invariants
 
