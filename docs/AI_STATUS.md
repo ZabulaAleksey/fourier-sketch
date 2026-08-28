@@ -4,9 +4,9 @@
 
 - Последний завершённый Stage ID: `FS-012`.
 - Lifecycle: `completed`.
-- Рабочая ветка: `feature/fs-012-dominant-contour`.
 - Следующий этап: `FS-013` (`planned`, не начат).
-- Локальный `main`: `8a15a9e`; текущая ветка ещё не слита и не отправлена в remote.
+- Integration: FS-012 feature tip `ad93921` fast-forward merged в локальный `main`.
+- Remote `origin/main` не обновлялся; push/PR/release не выполнялись.
 
 ## Подтверждённо реализовано
 
@@ -28,6 +28,7 @@
 - Targeted unit/integration/component/E2E/property suite: 59 tests PASS.
 - Full repository suite: 358 tests PASS.
 - `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
+- Post-merge full regression на target history: 358 tests PASS.
 - Визуальная проверка диагностического PNG с выбранным ellipse contour и endpoint trace: PASS.
 - Независимые correctness и security re-review: GO; новых P0/P1/P2 замечаний нет.
 
@@ -47,14 +48,15 @@
 
 ## Следующее разумное действие
 
-После явного разрешения слить `feature/fs-012-dominant-contour` в `main`, выполнить post-merge
-documentation gate и только затем отдельно активировать `FS-013`.
+После отдельной явной авторизации активировать `FS-013`; до неё implementation-задача отсутствует.
 
 ## Синхронизация документации
 
 - `README.md`, `docs/AI_PLAN.md`, `docs/AI_STATUS.md`, `docs/ROADMAP.md`, `prompts/STAGES.md`,
   архитектурные, design, security, testing, traceability, dependency, fallback и learning
   документы синхронизированы с проверенным состоянием `FS-012`.
+- Post-merge Documentation Synchronization Gate на локальном `main` выполнен; selector следующего
+  этапа переведён на planned `FS-013` без его активации.
 - Стабильные system/image-to-curve SPEC и математический контракт проверены: требования не
   изменились, поэтому обновление не потребовалось.
 - `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.

@@ -2,12 +2,12 @@
 
 ## Текущая цель
 
-Этап `FS-012` завершён и подтверждён. Активной implementation-задачи нет; repository остановлен
-перед `FS-013` согласно handoff текущего stage.
+Этап `FS-012` завершён, подтверждён и слит в локальный `main`. Активной implementation-задачи нет;
+repository остановлен перед `FS-013` согласно stage handoff.
 
 ## Последний завершённый stage
 
-- Stage ID: `FS-012`
+- Completed Stage: `FS-012`.
 - Lifecycle: `completed`.
 - DAG: `FS-011 + FS-009 + FS-008 → FS-012`; prerequisites и entry evidence подтверждены.
 - Implementation commits: `418192a`, hardening `a1c211c`.
@@ -50,9 +50,9 @@
 - [x] Resource, malformed backend, privacy, overwrite и localization boundaries проверены.
 - [x] Unit/property/integration/component/live E2E, full/static/security/overlay gates прошли.
 
-## Следующий кандидат — не запущен
+## Следующий этап — не запущен
 
-- Next candidate: `FS-013`.
+- Stage ID: `FS-013`
 - Lifecycle: `planned`; технический prerequisite `FS-012` завершён.
 - Intended slice: cohesive user-selected image → diagnostics/controls → dominant contour → rotating
   endpoint trace product MVP.
@@ -60,6 +60,6 @@
 
 ## Integration boundary
 
-Локальный `main` остаётся на `8a15a9e`; FS-012 находится только в
-`feature/fs-012-dominant-contour`. Remote `origin/main` не обновлялся; push, merge, PR и release для
-FS-012 не выполнялись.
+Feature tip FS-012 `ad93921` fast-forward merged в локальный `main`; post-merge full regression,
+static checks, frozen sync, overlay и documentation gate прошли. Remote `origin/main` не
+обновлялся; push, PR и release не выполнялись.

@@ -211,6 +211,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | manual visual evidence | selected ellipse contour, K=12, endpoint trace | rendered PNG inspection | PASS |
 | independent review | correctness + security | read-only reviewers | GO — no remaining/new P0/P1/P2 |
 | commit evidence | FS-012 implementation and hardening | Git commits | PASS — `418192a`, `a1c211c` |
+| integration evidence | local `main` contains FS-012 feature tip | fast-forward `ad93921` + post-merge gates | PASS |
 
 ## Acceptance coverage targets
 
