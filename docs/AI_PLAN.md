@@ -15,17 +15,18 @@
 ## Stage identity и dependency DAG
 
 - Stage ID: FS-001
-- Completed / verified prerequisites required: `FS-000`.
+- Completed / verified prerequisites: `FS-000` (`878f724`, validated locally and committed).
 - DAG: `FS-000 → FS-001`.
 - Self-reference/cycle/forward dependency: none.
-- Entry gate сейчас: ожидает terminal evidence Stage `FS-000`.
+- Entry gate: technical prerequisite satisfied; product stage всё равно начинается только по явной
+  команде пользователя.
 
 ## Входные предпосылки
 
 | Предпосылка | Evidence доступности до старта |
 |---|---|
-| Frozen Python environment | `uv sync --all-groups --frozen` PASS после bootstrap |
-| Package scaffold | smoke import PASS |
+| Frozen Python environment | `uv sync --all-groups --frozen` PASS, Python 3.12.5 |
+| Package scaffold | `uv run pytest` PASS, 1 smoke test, commit `878f724` |
 | Stable domain requirement | accepted Fourier Core SPEC |
 | No existing accepted domain tests | repository test inventory before FS-001 |
 

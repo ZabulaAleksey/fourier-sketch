@@ -51,6 +51,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | staged overlay | specs/docs/prompts | global overlay validator | PASS |
 | stage context selector | `AI_PLAN` → `STAGES` | unique-ID audit | PASS — 31 IDs, FS-001 unique |
 | portable context | repository source/docs | machine-path audit | PASS |
+| commit evidence | bootstrap implementation | Git commit | PASS — `878f724` |
 
 ## Acceptance coverage targets
 

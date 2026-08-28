@@ -16,7 +16,9 @@ evidence получен. Primary/E2E blocker оставляет non-terminal sta
 
 ## FS-000 — Project Bootstrap
 
-- Lifecycle at catalog creation: `implemented_unverified`.
+- Lifecycle: `completed`.
+- Evidence: implementation commit `878f724`; frozen restore, smoke, Ruff, mypy, overlay, selector,
+  portability and diff checks PASS on Windows / Python 3.12.5.
 - Goal: создать clone-restorable repository overlay и minimal importable Python scaffold без
   Fourier/product implementation.
 - Context: approved system/feature SPECs, architecture/mathematics contracts и future stages

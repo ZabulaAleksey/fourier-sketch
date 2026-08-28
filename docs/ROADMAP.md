@@ -3,13 +3,13 @@
 Roadmap — краткий индекс. Полный scope/PASS contract каждого этапа находится только в
 `prompts/STAGES.md`. Status подтверждается `docs/AI_STATUS.md`, а не этим списком.
 
-## Выполняется
+## Выполнено
 
 | Stage | Результат | Статус bootstrap |
 |---|---|---|
-| `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `in_progress` |
+| `FS-000` | Repository, project overlay, Python/tooling scaffold, smoke evidence | `completed` |
 
-## Ближайшая математическая основа
+## Ближайшая математическая основа (planned)
 
 | Stage | Результат |
 |---|---|

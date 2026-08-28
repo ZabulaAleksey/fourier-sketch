@@ -3,8 +3,8 @@
 ## Текущий этап
 
 - Stage ID: `FS-000`
-- Lifecycle: `implemented_unverified`
-- Evidence level: `validated locally`
+- Lifecycle: `completed`
+- Evidence level: `committed`
 - Branch: `feature/project-bootstrap`
 
 ## Prerequisites и runnable path
@@ -13,7 +13,7 @@
 - Primary vertical slice: clean checkout → frozen dependency restore → package import smoke →
   overlay validator.
 - Concrete end-to-end PASS evidence: frozen restore, package smoke and overlay validator PASS on
-  Windows / Python 3.12.5; commit gate remains pending.
+  Windows / Python 3.12.5; implementation commit `878f724`.
 - Future-stage dependency: none.
 
 ## Реализовано локально
@@ -30,7 +30,7 @@ image processing, routing, FFT2 и exports.
 
 ## Известные блокеры
 
-- Terminal `FS-000` status ожидает local commit и повторный documentation/diff gate.
+- None for FS-000. Stage FS-001 has not been authorized or started.
 
 ## Scaffold / temporary / deferred
 
@@ -40,8 +40,8 @@ image processing, routing, FFT2 и exports.
 
 ## Следующая рекомендуемая задача
 
-Выполнить local commit Stage `FS-000`, повторить documentation/diff gate, затем только по явной
-команде начать `FS-001`.
+По явной команде пользователя начать `FS-001` (Domain Model) по exact record в
+`prompts/STAGES.md`.
 
 ## Последние проверенные команды
 
@@ -53,7 +53,7 @@ uv sync --all-groups --frozen
 result: PASS; Python 3.12.5, project-local .venv
 
 uv run pytest
-result: PASS; 1 smoke test
+result: PASS; 1 smoke test; Stage FS-000 has no product unit/integration/component surface
 
 uv run ruff check .
 result: PASS
@@ -74,15 +74,17 @@ result: PASS; no machine-specific paths in project source/context
 ## Последняя проверенная интеграция
 
 - Initial empty main commit: `a2bda62`.
-- Bootstrap content: validated but uncommitted at this snapshot.
+- Bootstrap implementation commit: `878f724` on `feature/project-bootstrap`.
+- Merge/push/release: NOT PERFORMED.
 
 ## Синхронизация документации
 
-- Updated: all initial canonical project sources.
-- Checked without changes: none (new GREENFIELD overlay).
+- Updated: AI_PLAN, AI_STATUS, ROADMAP, STAGES and TRACEABILITY after validation/commit evidence.
+- Checked without changes: README, SPECs, ARCHITECTURE, DECISIONS, DESIGN, MATHEMATICS, SECURITY,
+  TESTING, DEPENDENCIES, project-context and CONTEXT_COMPATIBILITY — still accurate.
 - Not created by design: ERROR_LOG/DEV_LOG and local agents/hooks/MCP/Skills.
 
 ## Заметки для следующей сессии Codex
 
 Не доверять planned paths как implementation evidence. `docs/AI_PLAN.md` выбирает exact record
-`FS-001`, но Stage не запускался.
+`FS-001`, но Stage не запускался. Рабочая ветка не merged.
