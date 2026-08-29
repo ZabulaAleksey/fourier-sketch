@@ -2,32 +2,30 @@
 
 ## Текущая цель
 
-FS-013 и FS-014 завершены, проверены и fast-forward merged в локальный `main`. Работа остановлена
-перед `FS-015`; новый product stage не активирован без отдельного разрешения пользователя.
+Реализовать FS-015 как bounded transform `SkeletonizationResult → SkeletonGraphResult`, включая
+детерминированный topology summary и diagnostic overlay, не переходя к FS-016/FS-017 routing.
 
-## Следующий planned stage
+## Активный stage
 
 - Stage ID: `FS-015`
-- Lifecycle: `planned`; implementation не авторизована.
-- Target branch: новая `feature/fs-015-skeleton-graph` только после явного продолжения.
+- Lifecycle: `in_progress`; пользователь явно продолжил работу 2026-08-29.
+- Branch: `feature/fs-015-skeleton-graph`.
 - DAG: `FS-014 → FS-015`; skeleton implementation/evidence prerequisite выполнена.
-- Entry evidence: binary skeleton output подтверждён; graph domain/adjacency decision ещё требуется
-  спланировать и проверить до implementation.
+- Contract: `corner-suppressed-8-v1`, compressed junction regions/chains, explicit components,
+  canonical traversal-neutral serialization и bounded typed failures.
 
 ## Integration state
 
-- Локальный `main` содержит feature tip `eb71ec6` и post-merge status synchronization.
-- `origin/main` остаётся на `c13f74d`; локальные commits ещё не опубликованы.
+- `main` и `origin/main` синхронизированы на `aba291d` перед созданием feature branch.
 - Push/PR/release/deployment не выполнялись и требуют отдельного разрешения.
 
-## Перед активацией FS-015
+## План выполнения
 
-1. Получить явную команду продолжать разработку после merge/push handoff.
-2. Прочитать только record `FS-015` в `prompts/STAGES.md`, затронутые SPEC и graph contracts.
-3. Зафиксировать pixel adjacency, node/junction/loop/component semantics и bounded failure policy.
-4. Создать feature branch и активировать stage selector/status до code changes.
+1. Реализовать immutable graph model и linear-time builder с resource/cancellation limits.
+2. Добавить application composition, canonical JSON и topology overlay/CLI.
+3. Закрыть analytical, property, real-skeletonizer, component и live E2E evidence.
+4. Выполнить review, full/static/overlay gates и completion documentation synchronization.
 
 ## Handoff
 
-Первое ещё не выполненное внешнее действие — push локального `main`, если пользователь его
-разрешит. FS-015 остаётся planned и не должен начинаться автоматически.
+Завершить атомарным feature commit и остановиться перед merge и FS-016.

@@ -25,13 +25,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-015` — Skeleton Graph (`planned`); prerequisite FS-014 satisfied, implementation not authorized.
+`FS-015` — Skeleton Graph (`in_progress`); prerequisite FS-014 satisfied, implementation authorized.
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-015` | Skeleton Graph (`planned`) |
+| `FS-015` | Skeleton Graph (`in_progress`) |
 | `FS-016` | Multiple Components / PiecewiseCurve |
 | `FS-017` | Forced Continuous Routing |
 | `FS-018` | Discontinuous Fourier Mode |

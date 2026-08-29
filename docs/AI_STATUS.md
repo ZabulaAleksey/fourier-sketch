@@ -3,10 +3,10 @@
 ## Текущий этап
 
 - Last completed Stage ID: `FS-014`.
-- Lifecycle: `completed`; validated, committed и fast-forward merged в локальный `main`.
-- Local target: `main` содержит chained FS-013/FS-014 feature tip `eb71ec6` и post-merge sync.
-- Remote state: `origin/main@c13f74d`; локальные commits ещё не опубликованы.
-- Next Stage ID: `FS-015`, lifecycle `planned`; implementation не авторизована.
+- Active Stage ID: `FS-015`, lifecycle `in_progress`.
+- Branch: `feature/fs-015-skeleton-graph`, создана от `main@aba291d`.
+- Integration state: `main` и `origin/main` синхронизированы на `aba291d` до активации stage.
+- Scope: raster skeleton topology graph; FS-016 PiecewiseCurve и FS-017 routing не активированы.
 - Push/PR/release/deployment не выполнялись.
 
 ## Подтверждённо реализовано
@@ -62,10 +62,9 @@
 - OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
   число кандидатов, но native crash нельзя преобразовать в typed Python error.
 
-## Следующее разумное действие
+## Текущее действие
 
-По отдельному разрешению отправить локальный `main` в `origin/main`. FS-015 остаётся planned и не
-активирован; его implementation начинается только по новой явной команде.
+Реализовать и проверить FS-015 по active plan; merge/push не выполнять без отдельного разрешения.
 
 ## Синхронизация документации
 

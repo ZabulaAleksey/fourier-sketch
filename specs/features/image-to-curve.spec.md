@@ -31,8 +31,15 @@ Grayscale, optional denoise/contrast, threshold, edge detection и skeletonizati
 
 ### IM-FR-005 — Skeleton graph
 
-Graph различает endpoints, degree-2 continuation, junctions, loops и components; raster pixels и
-graph nodes не смешиваются в одном неявном type.
+Graph строится только из validated binary skeleton по policy `corner-suppressed-8-v1`: orthogonal
+foreground pixels смежны всегда, а diagonal pixels — только когда оба общих orthogonal bridge
+pixels являются background. Raw pixel degree различает isolated (`0`), endpoint (`1`),
+continuation (`2`) и junction (`>=3`). Смежные junction pixels образуют один `JUNCTION_REGION`,
+degree-2 chains — graph edges, а pure degree-2 loop получает deterministic `LOOP_ANCHOR` и
+self-loop. Результат является immutable undirected pseudomultigraph с explicit components,
+parallel/self edges и exact disjoint partition foreground между node-owned pixels и edge-owned
+interior pixels. Canonical serialization детерминирована, но не задаёт traversal/routing order;
+raster pixels и graph nodes не смешиваются в одном неявном type.
 
 ### IM-FR-006 — Routing policies
 
@@ -63,6 +70,8 @@ algorithm switch: capability проверяется, provenance отобража
 - IM-AC-004: disconnected fixture остаётся piecewise без bridge в соответствующем mode.
 - IM-AC-005: forced route сообщает added cost и deterministic result для fixture.
 - IM-AC-006: FFT2 types/API не смешаны с 1D curve Fourier.
+- IM-AC-007: line/T/cross/loop/multi-component fixtures подтверждают raw degree roles, exact
+  foreground partition, отсутствие implicit bridges и byte-stable canonical graph serialization.
 
 ## Планируемая трассировка
 

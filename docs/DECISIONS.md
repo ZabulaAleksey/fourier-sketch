@@ -314,3 +314,31 @@ fixture, platform и license review.
 
 **Миграция / откат:** persisted data отсутствует. Откат удаляет FS-014 adapter/controller/CLI,
 direct dependency и lock graph; FS-010–FS-013 остаются рабочими. Пользовательские PNG не удаляются.
+
+## 2026-08-29 — ADR-016: Corner-suppressed raster graph и traversal-neutral schema
+
+**Контекст:** FS-015 должен сохранить topology Lee skeleton без ложных diagonal triangles,
+неявного routing order и потери pure loops. Generic mutable graph или смешение raw pixels с
+compressed nodes сделало бы будущие FS-016/FS-017 неоднозначными.
+
+**Решение:** project-owned builder использует policy `corner-suppressed-8-v1`: orthogonal
+foreground смежны всегда, diagonal — только когда оба общих orthogonal bridge pixels background.
+Raw degree `0/1/2/>=3` означает isolated/endpoint/continuation/junction. Смежные junction pixels
+объединяются в `JUNCTION_REGION`, maximal degree-2 chains становятся edges, pure degree-2 component
+получает row-major `LOOP_ANCHOR` и canonical self-loop. Immutable undirected pseudomultigraph
+сохраняет parallel/self edges, explicit components и exact disjoint foreground partition между
+node-owned pixels и edge interiors. Schema `fourier-sketch/skeleton-graph-v1` сортирует данные
+canonical, но serialization order не является route. Builder ограничен 250 000 foreground pixels
+и 500 000 node+edge records; cancellation/failure typed, fallback отсутствует.
+
+**Рассмотренные альтернативы:** 4-neighborhood с потерей diagonal strokes; обычная 8-neighborhood
+с corner triangles; отдельный node на каждый junction pixel; NetworkX как accidental transitive
+dependency; выбор loop start как route; автоматическое соединение components.
+
+**Последствия:** topology и provenance воспроизводимы, все skeleton pixels traceable ровно один раз,
+а FS-016/FS-017 получают явную component boundary без преждевременного traversal. Builder остаётся
+линейным по raster/foreground adjacency и fail-closed при budget/cancellation/malformed topology.
+
+**Миграция / откат:** persisted graph data до FS-015 отсутствует. Изменение connectivity policy,
+compression, schema ID или budgets требует SPEC/ADR/accepted-test migration; откат удаляет только
+FS-015 graph/application/diagnostic surface и не меняет FS-014 skeletonization.

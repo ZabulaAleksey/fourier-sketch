@@ -666,15 +666,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-015 — Skeleton Graph
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-015-skeleton-graph`.
 - Goal: transform skeleton pixels into explicit graph topology with endpoints/junctions/loops/components.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-014 → FS-015`; skeleton contract/fixtures completed.
 - Entry evidence: binary skeleton output and graph domain decision.
-- Current gate: prerequisite satisfied by completed FS-014; implementation remains planned and
-  is not authorized.
+- Current gate: prerequisite satisfied by completed FS-014; graph contract fixed in ADR-016 and
+  implementation authorized.
 
 ### Scope / non-goals / invariants
 
