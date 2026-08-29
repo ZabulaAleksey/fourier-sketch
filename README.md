@@ -278,6 +278,17 @@ uv run python -m fourier_sketch.cli.spectrum_analysis --output spectrum-analysis
 Каждая точка хранит sample count, ordering, K и controlled log floor; PNG является только view над
 immutable result. Continuous/forced comparison использует те же параметры и sample budget.
 
+## Separate 2D Fourier image mode
+
+FS-020 выполняет bounded grayscale `FFT2 → view/filter → IFFT2` отдельными raster/spectrum types:
+
+```powershell
+uv run python -m fourier_sketch.cli.fft2_image input.png --output fft2.png
+```
+
+Canonical coefficients unshifted; magnitude/log/phase views centered. Low/high-pass и selected
+frequency policies записываются в result. Этот mode не создаёт 1D coefficients или epicycles.
+
 ## Проверки
 
 ```powershell

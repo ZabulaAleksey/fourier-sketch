@@ -26,6 +26,7 @@ from .dominant_contour import (
     build_dominant_contour_timeline,
 )
 from .edge_detection import detect_preprocessed_edges, export_edge_result
+from .fft2_image import build_fft2_image
 from .forced_route import (
     DEFAULT_ROUTE_HARMONICS,
     DEFAULT_ROUTE_SAMPLES,
@@ -54,7 +55,7 @@ from .image_preprocessing import (
     preprocess_local_image,
     select_preprocessing_raster,
 )
-from .local_paths import LocalPathError, validate_local_path
+from .local_paths import LocalPathError, safe_display_basename, validate_local_path
 from .piecewise_skeleton import LocalPiecewiseResult, build_local_piecewise
 from .skeleton_graph import (
     LocalSkeletonGraphResult,
@@ -111,6 +112,7 @@ __all__ = [
     "analyze_discontinuity_vs_continuous",
     "build_discontinuous_fourier",
     "build_dominant_contour_timeline",
+    "build_fft2_image",
     "build_freehand_timeline",
     "build_local_forced_route",
     "build_local_piecewise",
@@ -123,6 +125,7 @@ __all__ = [
     "export_preprocessing_result",
     "export_skeleton_graph_json",
     "preprocess_local_image",
+    "safe_display_basename",
     "select_preprocessing_raster",
     "validate_local_path",
     "validate_timeline_speed",

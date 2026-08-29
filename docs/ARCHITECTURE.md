@@ -272,6 +272,12 @@ FS-019 keeps `SpectrumAnalysis` as immutable numeric source of truth. Applicatio
 same-parameter discontinuous/forced comparison; Matplotlib and CLI only render/export that result.
 Predictable reconstruction budget exhaustion returns explicit partial analysis with retained points.
 
+## Separate FFT2 boundary (FS-020)
+
+`math.fft2_image` owns dedicated `FFT2Raster`, `FFT2Spectrum` and composite diagnostic result;
+1D `FourierSpectrum`/epicycle modules не импортируются. Application rejects raster budget before
+float conversion, renderer consumes readonly shifted views, CLI enters through FS-010 safe decode.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

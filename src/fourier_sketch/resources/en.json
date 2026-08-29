@@ -37,6 +37,7 @@
   "cli.invalid_parameters": "Invalid diagnostic parameters. Check frames, harmonics, speed, locale, and destination.",
   "cli.io_failed": "Could not write the diagnostic PNG.",
   "cli.image_description": "Safely preprocess a local PNG or JPEG into diagnostic grayscale or binary output.",
+  "cli.fft2_description": "Compute a bounded 2D Fourier diagnostic from a local grayscale image.",
   "cli.image_failed": "Image preprocessing failed: {reason}",
   "cli.image_output_exists": "The output already exists; use --overwrite to replace it.",
   "cli.image_success": "Image diagnostic written: {name} ({format}, {width}x{height}, {stage}).",
@@ -217,5 +218,8 @@
   "forced_route.status.empty": "The skeleton is empty.",
   "forced_route.status.cancelled": "Routing was cancelled.",
   "forced_route.status.resource_limit": "The route exceeds its bounded budget.",
-  "forced_route.status.malformed_topology": "The graph cannot satisfy the route contract."
+  "forced_route.status.malformed_topology": "The graph cannot satisfy the route contract.",
+  "fft2.panel.input": "Grayscale input",
+  "fft2.panel.log_magnitude": "Centered log magnitude",
+  "fft2.panel.phase": "Centered phase"
 }

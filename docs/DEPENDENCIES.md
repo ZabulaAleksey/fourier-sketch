@@ -91,6 +91,9 @@ FFT и diagnostic rendering переиспользуют уже pinned NumPy и 
 
 FS-019 не добавляет dependency: K sweep/metrics/chart переиспользуют existing math и Matplotlib.
 
+FS-020 не добавляет dependency: CPU FFT2/IFFT2 uses already pinned NumPy; diagnostics reuse Pillow
+safe decode и Matplotlib.
+
 Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
 использования с tests и license/platform review.
 

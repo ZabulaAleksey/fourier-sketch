@@ -216,6 +216,10 @@ FS-019 acceptance проверяет zero-safe finite logarithm, invalid/duplica
 retained energy и full-K reconstruction, real FS-018 comparison с одинаковыми parameters,
 chart series/atomic no-overwrite и live measured explicit-jump PNG.
 
+FS-020 acceptance проверяет constant/impulse/sinusoid bins, generated real round-trip, readonly
+types/convention metadata, low/high/selected masks, asymmetric complex rejection, pre-allocation
+resource failure, safe local-image integration, atomic component PNG и live/bidi-safe CLI.
+
 ## Manual diagnostics
 
 Visual stages сохраняют command, fixture/inputs, expected geometry/state и observed result. Manual

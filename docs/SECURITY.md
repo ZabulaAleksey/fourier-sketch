@@ -53,6 +53,8 @@
 - FS-018 ограничивает discontinuous allocation диапазоном `2..4096`, проверяет finite derived
   arc lengths до allocation и не публикует partial spectrum; diagnostic PNG сохраняет тот же
   local-path/explicit-overwrite contract, а curves/samples не выводятся в logs.
+- FS-020 prechecks `≤4,000,000` pixels до float allocation, keeps arrays readonly, validates local
+  paths before decode, escapes terminal-control basenames and exposes backend failure without retry.
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion

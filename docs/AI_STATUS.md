@@ -2,8 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-019`; validated and committed locally at `7f8680b`.
-- Active Stage ID: `FS-020`, lifecycle `in_progress`.
+- Last completed Stage ID: `FS-020`; validated locally, implementation commit pending.
+- Active Stage ID: `FS-020`, lifecycle `completed`.
 - Branch: `feature/fs-020-fft2-image-mode`, chained from unmerged FS-019.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
@@ -31,16 +31,18 @@
   forced-route comparison.
 - `FS-019`: immutable finite amplitude/log-amplitude analysis, explicit K sweep with retained
   energy/RMSE, partial resource status и live discontinuous-vs-continuous chart.
+- `FS-020`: dedicated readonly FFT2 raster/spectrum types, recorded convention, low/high/selected
+  filters, controlled real IFFT, safe local-image diagnostic и atomic export.
 
-## Evidence FS-019
+## Evidence FS-020
 
-- Activation/SPEC/ADR commit: `f4d6473`.
-- Targeted unit/property/integration/component/live E2E suite: 10 tests PASS.
-- Full terminal repository suite: 512 tests PASS.
+- Activation/SPEC/ADR commit: `855be2a`.
+- Targeted unit/property/integration/component/live E2E suite: 12 tests PASS.
+- Full terminal repository suite: 524 tests PASS.
 - Ruff, strict mypy и project-overlay validator: PASS.
-- Визуальная проверка measured comparison amplitude/log/K-sweep chart: PASS.
-- Independent review findings по comparison/result validation/partial budget/typed input исправлены;
-  final re-review `GO`.
+- Визуальная проверка grayscale/centered log magnitude/phase diagnostic: PASS.
+- Independent review findings по type separation/convention/resource/IFFT/path/backend/bidi
+  исправлены; final re-review `GO`.
 
 ## Limits / deferred
 
@@ -53,7 +55,7 @@
 
 ## Следующее разумное действие
 
-Реализовать и проверить FS-020; merge/push не выполнять.
+Создать atomic FS-020 commit и остановиться до FS-021; merge/push не выполнять.
 
 ## Синхронизация документации
 

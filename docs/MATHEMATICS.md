@@ -254,6 +254,11 @@ f[x,y] ↔ F[k_x,k_y]
 Её normalization, axes и filters документируются в Stage `FS-020`; она не создаёт epicycle
 coefficients `C_k` и не использует 1D chain equality.
 
+FS-020 использует NumPy backward normalization, axes `(row,column)`, unshifted canonical
+coefficients и `fftshift` только для magnitude/log-magnitude/phase views. `FFT2Raster` и
+`FFT2Spectrum` immutable/readonly и separate; IFFT real reconstruction отклоняет asymmetric mask,
+если imaginary residual превышает explicit tolerance.
+
 ## Numerical evidence policy
 
 - finite input проверяется до transform;

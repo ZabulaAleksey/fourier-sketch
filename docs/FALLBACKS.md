@@ -176,3 +176,6 @@ Tree T-join и greedy linking являются deterministic baseline, не opti
 
 FS-019 не меняет ordering/log floor автоматически. Predictable reconstruction budget returns
 `partial` с stable reason; invalid K/input fail typed без fabricated remaining points.
+
+FS-020 не переключается на GPU/alternate backend. Oversized/malformed/non-finite raster, invalid
+mask, complex real-reconstruction residual и NumPy backend failure завершаются typed failure.

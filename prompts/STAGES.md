@@ -864,7 +864,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-020 — Separate 2D Fourier Image Mode
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-020-fft2-image-mode`.
+- Lifecycle: `completed`; verified 2026-08-29 on `feature/fs-020-fft2-image-mode`.
 - Goal: implement raster `f(x,y) ↔ F(kx,ky)` without reusing 1D epicycle types.
 
 ### Dependency DAG & entry preconditions
@@ -898,7 +898,9 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: acceleration and advanced filters.
 - Fallback: no GPU/alternate backend; NumPy failure explicit. Oversized input fail closed.
 - Docs: dedicated math section/ADR, architecture/security/trace/status/plan.
-- Handoff: commit and stop before FS-021.
+- Evidence: 524 repository tests, Ruff, strict mypy, overlay validation, visual diagnostic review
+  and independent final review GO.
+- Handoff: atomic feature commit; stop before FS-021 and await user direction.
 
 ## FS-021 — PySide6 Desktop GUI
 

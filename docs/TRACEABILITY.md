@@ -303,6 +303,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | live explicit-jump export | spectrum-analysis CLI | subprocess E2E | PASS |
 | regression/static/overlay gates | repository | full pytest + Ruff + mypy + overlay | PASS |
 
+## Stage FS-020 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| dedicated 2D convention/types | FFT2 raster/spectrum | analytical unit + review | PASS |
+| FFT2/IFFT2 and filters | NumPy adapter | unit + generated round-trip | PASS |
+| safe local image path | FS-010 grayscale → FFT2 | integration + resource negative | PASS |
+| shifted diagnostic views | Matplotlib adapter | component + visual inspection | PASS |
+| live local client | FFT2 CLI | subprocess E2E + bidi/path safety | PASS |
+| regression/static/overlay gates | repository | full pytest + Ruff + mypy + overlay | PASS |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

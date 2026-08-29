@@ -1,5 +1,6 @@
 """Lexical local-filesystem path policy for user-selected desktop operations."""
 
+import unicodedata
 from pathlib import Path, PureWindowsPath
 
 from fourier_sketch.domain import DomainValidationError
@@ -49,3 +50,24 @@ def validate_local_path(path: Path, *, field_name: str) -> Path:
         if normalized_component in _WINDOWS_RESERVED_NAMES:
             raise LocalPathError(f"{field_name} path must not use a device name")
     return path
+
+
+def safe_display_basename(path: Path) -> str:
+    """Escape terminal-control and bidi characters in a user-owned basename."""
+    if not isinstance(path, Path):
+        raise DomainValidationError("display basename requires a pathlib.Path")
+    dangerous_bidi = frozenset({"BN", "LRE", "LRI", "LRO", "PDF", "PDI", "RLE", "RLI", "RLO"})
+    escaped: list[str] = []
+    for character in path.name:
+        if (
+            not character.isprintable()
+            or unicodedata.category(character) in {"Cc", "Cf", "Cs"}
+            or unicodedata.bidirectional(character) in dangerous_bidi
+        ):
+            codepoint = ord(character)
+            escaped.append(
+                f"\\u{codepoint:04x}" if codepoint <= 0xFFFF else f"\\U{codepoint:08x}"
+            )
+        else:
+            escaped.append(character)
+    return "".join(escaped)

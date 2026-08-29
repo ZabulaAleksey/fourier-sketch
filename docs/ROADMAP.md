@@ -27,16 +27,16 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-017` | Forced Continuous Routing | `completed` |
 | `FS-018` | Discontinuous Fourier Mode | `completed` |
 | `FS-019` | Discontinuity Spectrum Analysis | `completed` |
+| `FS-020` | Separate 2D Fourier Image Mode | `completed` |
 
 ## Текущий этап
 
-`FS-020` — Separate 2D Fourier Image Mode (`in_progress`).
+`FS-021` — PySide6 GUI (`planned`; not authorized in this five-stage run).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-020` | Separate 2D Fourier Image Mode (`in_progress`) |
 
 ## Product shell, export and hardening
 

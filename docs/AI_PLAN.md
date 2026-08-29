@@ -7,7 +7,7 @@
 ## Активный stage
 
 - Stage ID: `FS-020`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Lifecycle: `completed`; пользователь авторизовал продолжение пяти stages 2026-08-29.
 - Branch: `feature/fs-020-fft2-image-mode`, создана от validated FS-019 tip `7f8680b`.
 - DAG: `FS-010 + FS-002 → FS-020`; safe raster input and transform discipline completed.
 - Contract: dedicated FFT2 types/API; axes/shift/normalization explicit; no epicycle reuse.
@@ -19,10 +19,10 @@
 
 ## План выполнения
 
-1. Зафиксировать dedicated raster/spectrum/result types и FFT2 convention.
-2. Реализовать bounded FFT2/IFFT2, magnitude/log/phase и explicit filters.
-3. Добавить safe local image → diagnostic/filtered preview live path.
-4. Закрыть analytical/round-trip/resource/review/full/docs gates.
+1. [completed] Зафиксировать dedicated raster/spectrum/result types и FFT2 convention.
+2. [completed] Реализовать bounded FFT2/IFFT2, magnitude/log/phase и explicit filters.
+3. [completed] Добавить safe local image → diagnostic/filtered preview live path.
+4. [completed] Закрыть analytical/round-trip/resource/review/full/docs gates.
 
 ## Handoff
 

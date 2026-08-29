@@ -2,6 +2,7 @@
 
 from .matplotlib_discontinuous import draw_discontinuous_source, render_discontinuous_png
 from .matplotlib_epicycles import draw_frame, render_frame_png, run_interactive
+from .matplotlib_fft2 import render_fft2_png
 from .matplotlib_forced_route import (
     draw_forced_route_overlay,
     render_forced_route_overlay_png,
@@ -42,6 +43,7 @@ __all__ = [
     "draw_skeleton_preview",
     "draw_spectrum_analysis",
     "render_discontinuous_png",
+    "render_fft2_png",
     "render_forced_route_overlay_png",
     "render_frame_png",
     "render_image_mvp_png",
