@@ -8,14 +8,14 @@
 
 - Stage ID: `FS-020`
 - Lifecycle: `completed`; пользователь авторизовал продолжение пяти stages 2026-08-29.
-- Branch: `feature/fs-020-fft2-image-mode`, создана от validated FS-019 tip `7f8680b`.
+- Branch: `main`; FS-020 fast-forward merged locally at `5895315`.
 - DAG: `FS-010 + FS-002 → FS-020`; safe raster input and transform discipline completed.
 - Contract: dedicated FFT2 types/API; axes/shift/normalization explicit; no epicycle reuse.
 
 ## Integration state
 
-- FS-015..FS-019 form an unmerged branch chain above `main`/`origin/main@aba291d`.
-- Merge/push/PR/release/deployment не выполнялись.
+- FS-015..FS-020 fast-forward merged into local `main@5895315`.
+- Push/PR/release/deployment не выполнялись; `origin/main@aba291d` remains unchanged.
 
 ## План выполнения
 
@@ -26,4 +26,4 @@
 
 ## Handoff
 
-Создать atomic FS-020 commit и остановиться до FS-021 без merge/push.
+Остановиться до FS-021; для продолжения нужен явный запрос пользователя. Push не выполнялся.

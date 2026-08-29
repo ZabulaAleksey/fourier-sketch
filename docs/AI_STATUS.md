@@ -2,10 +2,10 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-020`; validated locally, implementation commit pending.
+- Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-020`, lifecycle `completed`.
-- Branch: `feature/fs-020-fft2-image-mode`, chained from unmerged FS-019.
-- Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
+- Branch: `main`; fast-forward merge from `feature/fs-020-fft2-image-mode` completed locally.
+- Base/integration target: local `main@5895315`; `origin/main@aba291d` remains unpushed.
 - Blockers: нет.
 
 ## Подтверждённо реализовано
@@ -55,7 +55,7 @@
 
 ## Следующее разумное действие
 
-Создать atomic FS-020 commit и остановиться до FS-021; merge/push не выполнять.
+Остановиться до FS-021 и дождаться явной авторизации продолжения; push не выполнялся.
 
 ## Синхронизация документации
 
