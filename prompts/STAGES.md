@@ -705,14 +705,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-016 — Multiple Components and PiecewiseCurve
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-016-piecewise-components`.
 - Goal: preserve multiple disconnected components as explicit `PiecewiseCurve` without bridge.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-015 + FS-001 → FS-016`; graph and piecewise domain must be completed.
 - Entry evidence: component graph IDs, PiecewiseCurve invariants and contour pipeline.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: FS-015 graph and FS-001 `PiecewiseCurve` prerequisites are completed; bounded
+  simple-component conversion contract fixed in ADR-017 and implementation authorized.
 
 ### Scope / non-goals / invariants
 

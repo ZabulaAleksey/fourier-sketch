@@ -2,30 +2,30 @@
 
 ## Текущая цель
 
-FS-015 завершён и локально проверен на `feature/fs-015-skeleton-graph`. Работа остановлена перед
-merge и активацией следующего product stage.
+Реализовать FS-016 как bounded graph-component → `PiecewiseCurve` conversion с explicit pen-up
+boundaries, не переходя к FS-017 routing или FS-018 Fourier.
 
-## Следующий planned stage
+## Активный stage
 
 - Stage ID: `FS-016`
-- Lifecycle: `planned`; implementation не авторизована.
+- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Branch: `feature/fs-016-piecewise-components`, создана от validated FS-015 tip `da13e4f`.
 - DAG: `FS-015 + FS-001 → FS-016`; graph/component и PiecewiseCurve prerequisites выполнены.
-- Scope при отдельном продолжении: explicit graph components → `PiecewiseCurve` segments без
-  artificial bridge; deterministic component order не становится forced route.
+- Contract: simple path/loop/isolated components convert one-to-one; branched topology returns
+  typed unsupported without partial curve; shared raster transform and pen-up overlay are explicit.
 
 ## Integration state
 
-- Feature branch создана от синхронизированных `main`/`origin/main@aba291d`.
-- FS-015 activation и implementation commits находятся только в feature branch до разрешённого
-  merge; push/PR/release/deployment не выполнялись.
+- FS-015 and FS-016 form an unmerged branch chain above `main`/`origin/main@aba291d`.
+- Merge/push/PR/release/deployment не выполнялись.
 
-## Перед активацией FS-016
+## План выполнения
 
-1. Проверить FS-015 handoff и получить отдельное разрешение на merge.
-2. После merge выполнить Completion Documentation Synchronization Gate.
-3. Получить явную команду продолжать и прочитать только record `FS-016` с затронутой SPEC.
-4. Активировать новый stage в отдельной feature branch до product code changes.
+1. Вынести общий raster→domain transform без изменения FS-012 output.
+2. Реализовать typed ready/empty/unsupported conversion и discontinuity metadata.
+3. Добавить pen-up renderer/CLI и live two-component E2E.
+4. Закрыть review/full/static/overlay gates и синхронизировать documentation evidence.
 
 ## Handoff
 
-Текущий terminal action — передать FS-015 пользователю для проверки и остановиться перед merge.
+Завершить atomic FS-016 commit и перейти к отдельной активации FS-017 без merge/push.

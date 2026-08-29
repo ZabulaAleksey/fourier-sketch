@@ -26,13 +26,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-016` — Multiple Components / PiecewiseCurve (`planned`); implementation not authorized.
+`FS-016` — Multiple Components / PiecewiseCurve (`in_progress`).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-016` | Multiple Components / PiecewiseCurve |
+| `FS-016` | Multiple Components / PiecewiseCurve (`in_progress`) |
 | `FS-017` | Forced Continuous Routing |
 | `FS-018` | Discontinuous Fourier Mode |
 | `FS-019` | Discontinuity Spectrum Analysis |

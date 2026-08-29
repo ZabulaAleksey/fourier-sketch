@@ -48,8 +48,13 @@ Forced bridges имеют source/target и added path cost; piecewise mode не 
 
 ### IM-FR-007 — Discontinuous signal
 
-Piecewise conversion хранит jump metadata. Fourier analysis может включать jumps, а
-`PEN_UP_RENDERING` остаётся presentation policy.
+Piecewise conversion создаёт один independent `Curve` на graph component только для однозначной
+simple-path, pure-loop или isolated topology. Segments canonical ordered по component storage key,
+сохраняют component/edge/node provenance и используют общий
+`pixel-center-centered-aspect-v1` transform. Между соседними segments хранится explicit boundary
+metadata; `PEN_UP_RENDERING` не рисует connector. Branched/ambiguous component возвращает typed
+unsupported result без partial `PiecewiseCurve`; traversal, duplication и bridge относятся к
+explicit routing policy. Fourier analysis может включать jumps только на следующем stage.
 
 ### IM-FR-008 — 2D FFT separation
 
@@ -72,6 +77,8 @@ algorithm switch: capability проверяется, provenance отобража
 - IM-AC-006: FFT2 types/API не смешаны с 1D curve Fourier.
 - IM-AC-007: line/T/cross/loop/multi-component fixtures подтверждают raw degree roles, exact
   foreground partition, отсутствие implicit bridges и byte-stable canonical graph serialization.
+- IM-AC-008: two-component path/loop fixture даёт deterministic `PiecewiseCurve` с exact pixel
+  coverage и explicit pen-up boundary; branched fixture не создаёт partial curve или hidden route.
 
 ## Планируемая трассировка
 

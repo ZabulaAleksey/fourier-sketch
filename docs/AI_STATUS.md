@@ -2,10 +2,10 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-015`.
-- Lifecycle: `completed`; validated locally on `feature/fs-015-skeleton-graph`.
-- Base/integration target: `main` и `origin/main@aba291d`; FS-015 ещё не merged/pushed.
-- Next Stage ID: `FS-016`, lifecycle `planned`; implementation не авторизована.
+- Last completed Stage ID: `FS-015`; validated and committed locally at `da13e4f`.
+- Active Stage ID: `FS-016`, lifecycle `in_progress`.
+- Branch: `feature/fs-016-piecewise-components`, chained from unmerged FS-015.
+- Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
 
 ## Подтверждённо реализовано
@@ -44,7 +44,8 @@
 
 ## Следующее разумное действие
 
-Проверить FS-015 handoff. Merge в `main`, push и активация FS-016 требуют отдельных команд.
+Реализовать и проверить FS-016; merge/push не выполнять. После terminal commit активировать FS-017
+в следующей chained feature branch по текущему пользовательскому разрешению.
 
 ## Синхронизация документации
 

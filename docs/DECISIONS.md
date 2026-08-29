@@ -342,3 +342,29 @@ dependency; выбор loop start как route; автоматическое с�
 **Миграция / откат:** persisted graph data до FS-015 отсутствует. Изменение connectivity policy,
 compression, schema ID или budgets требует SPEC/ADR/accepted-test migration; откат удаляет только
 FS-015 graph/application/diagnostic surface и не меняет FS-014 skeletonization.
+
+## 2026-08-29 — ADR-017: One component — one segment без implicit routing
+
+**Контекст:** `PiecewiseCurve` хранит независимые ordered `Curve`, но branched skeleton component
+не имеет единственного порядка без выбора/дублирования graph edges. FS-016 должен показать
+disconnected components с pen-up, не реализуя заранее forced routing FS-017.
+
+**Решение:** graph component преобразуется в один segment только для simple open path, pure loop
+или isolated pixel. Pure loop остаётся closed, path/isolated — open. Все components должны быть
+представимы; иначе typed `UNSUPPORTED_TOPOLOGY` сохраняет graph provenance и не публикует partial
+`PiecewiseCurve`. Segment ordering следует canonical component storage order, но не является
+global route. Explicit boundary metadata хранит соседние component IDs и left/right endpoints;
+renderer создаёт отдельный artist на segment без connector. FS-012 и FS-016 переиспользуют один
+`pixel-center-centered-aspect-v1` transform; `1×1` raster получает scale `1.0` и origin.
+
+**Рассмотренные альтернативы:** разрезать branch на несколько strokes; DFS/Euler traversal;
+дублировать edges; соединять nearest endpoints; возвращать partial curve; использовать raw pixel
+coordinates без aspect/y convention.
+
+**Последствия:** two-circle/path input получает честный `PiecewiseCurve`, exact component/pixel
+provenance и pen-up display. Branched input остаётся диагностируемым unsupported result до FS-017;
+discontinuous Fourier не запускается до FS-018. Новая dependency не требуется.
+
+**Миграция / откат:** persisted piecewise artifacts отсутствуют. Изменение representability,
+ordering, coordinate transform или boundary schema требует SPEC/ADR/test migration; откат удаляет
+FS-016 conversion/diagnostic surface и shared helper возвращается внутрь contour adapter.
