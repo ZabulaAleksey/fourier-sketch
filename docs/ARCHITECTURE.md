@@ -266,6 +266,12 @@ complex periodic sequence и переиспользует существующи
 Отдельный comparison adapter resamples explicit closed forced route к тому же N, не конвертируя
 PiecewiseCurve в route и не смешивая provenance двух policies.
 
+## Spectrum analysis boundary (FS-019)
+
+FS-019 keeps `SpectrumAnalysis` as immutable numeric source of truth. Application builds a
+same-parameter discontinuous/forced comparison; Matplotlib and CLI only render/export that result.
+Predictable reconstruction budget exhaustion returns explicit partial analysis with retained points.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

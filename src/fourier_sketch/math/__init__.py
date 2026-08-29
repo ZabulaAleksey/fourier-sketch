@@ -34,6 +34,13 @@ from .resampling import (
 )
 from .selection import select_first, select_frequencies
 from .spectrum import ordered_coefficients, spectrum_energy
+from .spectrum_analysis import (
+    KSweepPoint,
+    SpectrumAnalysis,
+    SpectrumAnalysisStatus,
+    SpectrumPoint,
+    analyze_spectrum,
+)
 from .transforms import MAX_FFT_SAMPLES, MAX_REFERENCE_SAMPLES, fft_dft, idft, reference_dft
 
 __all__ = [
@@ -45,10 +52,15 @@ __all__ = [
     "MAX_RESAMPLED_POINTS",
     "CurveSpacingMetrics",
     "FourierBackendError",
+    "KSweepPoint",
     "PiecewiseAllocation",
     "PiecewiseBoundary",
     "PiecewiseSampled",
     "ResamplingMethod",
+    "SpectrumAnalysis",
+    "SpectrumAnalysisStatus",
+    "SpectrumPoint",
+    "analyze_spectrum",
     "build_epicycle_chain",
     "cleanup_consecutive_duplicates",
     "complex_samples_to_curve",

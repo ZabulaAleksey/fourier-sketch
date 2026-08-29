@@ -89,6 +89,8 @@ FS-017 не добавляет dependency: adjacency, T-join, Hierholzer, bridge
 FS-018 не добавляет dependency: allocation/boundary ledger и comparison adapter project-owned;
 FFT и diagnostic rendering переиспользуют уже pinned NumPy и Matplotlib.
 
+FS-019 не добавляет dependency: K sweep/metrics/chart переиспользуют existing math и Matplotlib.
+
 Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
 использования с tests и license/platform review.
 

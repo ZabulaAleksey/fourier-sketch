@@ -292,6 +292,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | live two-circle path | discontinuous CLI/Agg PNG | subprocess E2E + visual inspection | PASS |
 | regression/static/overlay gates | repository | full pytest + Ruff + mypy + overlay | PASS |
 
+## Stage FS-019 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| finite amplitude/log view | spectrum analysis | unit + property | PASS |
+| explicit measured K sweep | retained energy/RMSE result | unit + property | PASS |
+| same-parameter comparison | FS-018 vs closed forced route | integration | PASS |
+| numeric chart view | Matplotlib adapter | component + visual inspection | PASS |
+| live explicit-jump export | spectrum-analysis CLI | subprocess E2E | PASS |
+| regression/static/overlay gates | repository | full pytest + Ruff + mypy + overlay | PASS |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

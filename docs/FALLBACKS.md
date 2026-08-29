@@ -173,3 +173,6 @@ Tree T-join и greedy linking являются deterministic baseline, не opti
 | Recovery | увеличить budget либо явно выбрать valid allocation/routing policy |
 
 `PEN_UP_RENDERING` — presentation policy, а не fallback и не изменение mathematical signal.
+
+FS-019 не меняет ordering/log floor автоматически. Predictable reconstruction budget returns
+`partial` с stable reason; invalid K/input fail typed без fabricated remaining points.

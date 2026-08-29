@@ -824,7 +824,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-019 — Discontinuity Spectrum Analysis
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-019-discontinuity-spectrum`.
+- Lifecycle: `completed`; verified 2026-08-29 on `feature/fs-019-discontinuity-spectrum`.
 - Goal: measure amplitude/log amplitude, retained energy and reconstruction error vs K for jumps.
 
 ### Dependency DAG & entry preconditions
@@ -858,7 +858,9 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: advanced research/benchmark conclusions.
 - Failure: invalid range/budget returns typed error; partial sweep marked partial.
 - Docs: math/test/trace/status/plan and learning only for real reusable finding.
-- Handoff: commit and stop before FS-020.
+- Evidence: 512 repository tests, Ruff, strict mypy, overlay validation, comparison visual review
+  and independent final review GO.
+- Handoff: atomic feature commit; continue only through a separate FS-020 activation.
 
 ## FS-020 — Separate 2D Fourier Image Mode
 

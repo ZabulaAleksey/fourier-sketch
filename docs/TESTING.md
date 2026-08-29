@@ -212,6 +212,10 @@ segment seam, flattened boundary indices и periodic last→first boundary; prop
 одинаковые spectra/endpoint history двух render policies, same-budget forced-route comparison,
 разное число source artists и live two-circle PNG в обоих modes.
 
+FS-019 acceptance проверяет zero-safe finite logarithm, invalid/duplicate/unordered K, monotonic
+retained energy и full-K reconstruction, real FS-018 comparison с одинаковыми parameters,
+chart series/atomic no-overwrite и live measured explicit-jump PNG.
+
 ## Manual diagnostics
 
 Visual stages сохраняют command, fixture/inputs, expected geometry/state и observed result. Manual

@@ -7,7 +7,7 @@
 ## Активный stage
 
 - Stage ID: `FS-019`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Lifecycle: `completed`; пользователь авторизовал продолжение пяти stages 2026-08-29.
 - Branch: `feature/fs-019-discontinuity-spectrum`, создана от validated FS-018 tip `b976950`.
 - DAG: `FS-018 + FS-004 → FS-019`; discontinuous pipeline and metrics completed.
 - Contract: measured amplitude/log amplitude/energy/error only; no unproved decay/Gibbs claims.
@@ -19,10 +19,10 @@
 
 ## План выполнения
 
-1. Зафиксировать bounded K sweep, ordering, log-zero и provenance contract.
-2. Реализовать immutable numeric result: amplitudes, log amplitudes, retained energy и error vs K.
-3. Добавить continuous/discontinuous comparison chart и deterministic export/CLI.
-4. Закрыть numerical review/full/static/overlay gates и синхронизировать documentation evidence.
+1. [completed] Зафиксировать bounded K sweep, ordering, log-zero и provenance contract.
+2. [completed] Реализовать immutable numeric result и explicit partial budget status.
+3. [completed] Добавить continuous/discontinuous comparison chart и deterministic export/CLI.
+4. [completed] Закрыть numerical review/full/static/overlay gates и синхронизировать docs.
 
 ## Handoff
 

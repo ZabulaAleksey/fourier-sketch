@@ -266,6 +266,18 @@ uv run python -m fourier_sketch.cli.discontinuous --mode strict_trajectory --out
 с jump transitions. Same-budget comparison с explicit closed forced route доступен через
 `compare_discontinuous_with_forced_route`; spectrum decay analysis относится к FS-019.
 
+## Measured discontinuity spectrum
+
+FS-019 публикует numeric amplitude/log-amplitude и measured retained-energy/RMSE sweep по explicit
+K без asymptotic/Gibbs claims:
+
+```powershell
+uv run python -m fourier_sketch.cli.spectrum_analysis --output spectrum-analysis.png
+```
+
+Каждая точка хранит sample count, ordering, K и controlled log floor; PNG является только view над
+immutable result. Continuous/forced comparison использует те же параметры и sample budget.
+
 ## Проверки
 
 ```powershell

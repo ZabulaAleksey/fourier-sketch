@@ -25,6 +25,7 @@ from .matplotlib_skeleton_graph import (
     draw_skeleton_graph_overlay,
     render_skeleton_graph_overlay_png,
 )
+from .matplotlib_spectrum_analysis import draw_spectrum_analysis, render_spectrum_analysis_png
 
 __all__ = [
     "FreehandControlPanel",
@@ -39,6 +40,7 @@ __all__ = [
     "draw_piecewise_overlay",
     "draw_skeleton_graph_overlay",
     "draw_skeleton_preview",
+    "draw_spectrum_analysis",
     "render_discontinuous_png",
     "render_forced_route_overlay_png",
     "render_frame_png",
@@ -46,6 +48,7 @@ __all__ = [
     "render_piecewise_overlay_png",
     "render_skeleton_graph_overlay_png",
     "render_skeleton_preview_png",
+    "render_spectrum_analysis_png",
     "run_freehand_interactive",
     "run_image_mvp_interactive",
     "run_interactive",

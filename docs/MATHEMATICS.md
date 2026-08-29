@@ -238,6 +238,11 @@ FS-018 выделяет каждому segment минимум один sample п
 distance и флаг cyclic last→first. Оба render modes получают один и тот же concatenated sequence,
 DFT, reconstruction и endpoint history; различается только grouping source-stroke artists.
 
+FS-019 определяет `log_amplitude = log10(max(amplitude, log_floor))`, где positive finite floor
+записан в result. Explicit ascending unique K sweep применяет один `SpectrumOrdering`; retained
+energy и reconstruction RMSE переиспользуют FS-004 APIs. Эти значения описывают только recorded
+finite fixture и не являются доказательством общего decay law или Gibbs theorem.
+
 ## 2D image Fourier
 
 Отдельная модель:

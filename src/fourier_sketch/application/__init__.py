@@ -10,9 +10,11 @@ from .diagnostic_epicycles import (
     validate_timeline_speed,
 )
 from .discontinuous_fourier import (
+    DiscontinuitySpectrumComparison,
     DiscontinuousFourierResult,
     DiscontinuousMode,
     ForcedRouteFourierComparison,
+    analyze_discontinuity_vs_continuous,
     build_discontinuous_fourier,
     compare_discontinuous_with_forced_route,
 )
@@ -78,6 +80,7 @@ __all__ = [
     "DEFAULT_ROUTE_SAMPLES",
     "MAX_CAPTURE_POINTS",
     "CaptureState",
+    "DiscontinuitySpectrumComparison",
     "DiscontinuousFourierResult",
     "DiscontinuousMode",
     "EpicycleFrame",
@@ -105,6 +108,7 @@ __all__ = [
     "SkeletonSnapshot",
     "SkeletonState",
     "TimelineState",
+    "analyze_discontinuity_vs_continuous",
     "build_discontinuous_fourier",
     "build_dominant_contour_timeline",
     "build_freehand_timeline",

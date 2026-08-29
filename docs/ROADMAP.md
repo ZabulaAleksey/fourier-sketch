@@ -26,16 +26,16 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-016` | Multiple Components / PiecewiseCurve | `completed` |
 | `FS-017` | Forced Continuous Routing | `completed` |
 | `FS-018` | Discontinuous Fourier Mode | `completed` |
+| `FS-019` | Discontinuity Spectrum Analysis | `completed` |
 
 ## Текущий этап
 
-`FS-019` — Discontinuity Spectrum Analysis (`in_progress`).
+`FS-020` — Separate 2D Fourier Image Mode (`planned`; activation follows FS-019 commit).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-019` | Discontinuity Spectrum Analysis (`in_progress`) |
 | `FS-020` | Separate 2D Fourier Image Mode |
 
 ## Product shell, export and hardening

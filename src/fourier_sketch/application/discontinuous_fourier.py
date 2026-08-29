@@ -14,6 +14,8 @@ from fourier_sketch.math import (
     PiecewiseAllocation,
     PiecewiseBoundary,
     PiecewiseSampled,
+    SpectrumAnalysis,
+    analyze_spectrum,
     curve_to_complex_samples,
     fft_dft,
     resample_curve_by_arc_length,
@@ -49,6 +51,53 @@ class ForcedRouteFourierComparison:
     forced_curve: Curve
     forced_spectrum: FourierSpectrum
     forced_timeline: EpicycleTimeline
+
+
+@dataclass(frozen=True, slots=True)
+class DiscontinuitySpectrumComparison:
+    discontinuous: SpectrumAnalysis
+    continuous: SpectrumAnalysis
+
+
+def analyze_discontinuity_vs_continuous(
+    discontinuous: DiscontinuousFourierResult,
+    forced: ForcedRouteFourierComparison,
+    k_values: tuple[int, ...],
+    *,
+    ordering: SpectrumOrdering = SpectrumOrdering.AMPLITUDE_DESCENDING,
+    log_floor: float = 1e-12,
+) -> DiscontinuitySpectrumComparison:
+    """Measure both policies with identical K, ordering, samples and log floor."""
+    if not isinstance(discontinuous, DiscontinuousFourierResult):
+        raise DomainValidationError("discontinuous result must be typed")
+    if not isinstance(forced, ForcedRouteFourierComparison):
+        raise DomainValidationError("forced comparison must be typed")
+    if forced.discontinuous != discontinuous:
+        raise DomainValidationError("forced comparison must retain the discontinuous result")
+    return DiscontinuitySpectrumComparison(
+        analyze_spectrum(
+            discontinuous.spectrum,
+            curve_to_complex_samples(
+                Curve(
+                    tuple(
+                        point
+                        for segment in discontinuous.curve.segments
+                        for point in segment.points
+                    )
+                )
+            ),
+            k_values,
+            ordering=ordering,
+            log_floor=log_floor,
+        ),
+        analyze_spectrum(
+            forced.forced_spectrum,
+            curve_to_complex_samples(forced.forced_curve),
+            k_values,
+            ordering=ordering,
+            log_floor=log_floor,
+        ),
+    )
 
 
 def build_discontinuous_fourier(

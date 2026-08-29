@@ -2,8 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-018`; validated and committed locally at `b976950`.
-- Active Stage ID: `FS-019`, lifecycle `in_progress`.
+- Last completed Stage ID: `FS-019`; validated locally, implementation commit pending.
+- Active Stage ID: `FS-019`, lifecycle `completed`.
 - Branch: `feature/fs-019-discontinuity-spectrum`, chained from unmerged FS-018.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
@@ -29,15 +29,17 @@
 - `FS-018`: exact equal/proportional PiecewiseCurve sampling, materialized closed seams, indexed
   jump ledger, shared discontinuous FFT/timeline, distinct strict/pen-up rendering и same-budget
   forced-route comparison.
+- `FS-019`: immutable finite amplitude/log-amplitude analysis, explicit K sweep with retained
+  energy/RMSE, partial resource status и live discontinuous-vs-continuous chart.
 
-## Evidence FS-018
+## Evidence FS-019
 
-- Activation commit: `ef8aa37`; SPEC/ADR commit: `7d2393c`.
-- Targeted unit/property/integration/component/live E2E suite: 15 tests PASS.
-- Full terminal repository suite: 502 tests PASS.
+- Activation/SPEC/ADR commit: `f4d6473`.
+- Targeted unit/property/integration/component/live E2E suite: 10 tests PASS.
+- Full terminal repository suite: 512 tests PASS.
 - Ruff, strict mypy и project-overlay validator: PASS.
-- Визуальная проверка strict two-circle periodic signal и mode-specific labels: PASS.
-- Independent review findings по seams/indices/comparison/overflow/isolated segments исправлены;
+- Визуальная проверка measured comparison amplitude/log/K-sweep chart: PASS.
+- Independent review findings по comparison/result validation/partial budget/typed input исправлены;
   final re-review `GO`.
 
 ## Limits / deferred
@@ -51,7 +53,7 @@
 
 ## Следующее разумное действие
 
-Реализовать и проверить FS-019; после commit активировать FS-020; merge/push не выполнять.
+Создать atomic FS-019 commit, затем активировать FS-020; merge/push не выполнять.
 
 ## Синхронизация документации
 
