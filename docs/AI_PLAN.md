@@ -9,15 +9,14 @@
 
 - Stage ID: `FS-021`
 - Lifecycle: `partial`; пользователь явно остановил дальнейшее выполнение 2026-08-29.
-- Branch: `feature/fs-021-pyside6-desktop-gui`, основана на local `main@eee5334`.
+- Branch: local `main@7166318`; partial FS-021 feature fast-forward merged by user authorization.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
 
 ## Integration state
 
-- FS-015..FS-020 fast-forward merged into local `main@5895315`; merge-status documentation is
-  `main@eee5334`.
+- FS-015..FS-021 partial slice and revised future stages are in local `main@7166318`.
 - Push/PR/release/deployment не выполнялись; `origin/main@aba291d` remains unchanged.
 
 ## План выполнения
@@ -32,6 +31,6 @@
 
 ## Handoff
 
-Пользователь разрешил локальный merge текущего partial slice в `main` и остановил дальнейшее
+Текущий partial slice fast-forward merged в local `main`; пользователь остановил дальнейшее
 выполнение до восстановления лимита. После resume первым остаётся performance step FS-021;
 FS-022 и FS-031 не начинать без новой явной команды.

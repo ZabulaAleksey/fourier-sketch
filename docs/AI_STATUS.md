@@ -4,14 +4,14 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `feature/fs-021-pyside6-desktop-gui` from local `main@eee5334`.
-- Base/integration target: local `main@eee5334`; `origin/main@aba291d` remains unpushed.
+- Branch/integration state: local `main@7166318`; partial FS-021 feature fast-forward merged.
+- Remote state: `origin/main@aba291d` remains unpushed.
 - Blockers: нет.
 
 ## FS-021 progress
 
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
-  offscreen component checks are implemented and committed locally; merge is authorized, push is not.
+  offscreen component checks are implemented, committed and merged locally; push is not performed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
 - Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile separates fast core (`≈0.31 ms/frame`) from QPainter work (`≈3.66 ms/frame` at
