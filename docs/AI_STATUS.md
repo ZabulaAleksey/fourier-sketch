@@ -2,8 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-015`; validated and committed locally at `da13e4f`.
-- Active Stage ID: `FS-016`, lifecycle `in_progress`.
+- Last completed Stage ID: `FS-016`; validated locally, atomic commit формируется.
+- Active Stage ID: `FS-016`, lifecycle `completed`.
 - Branch: `feature/fs-016-piecewise-components`, chained from unmerged FS-015.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
@@ -21,37 +21,39 @@
   exact pixel ownership, raw cycle provenance и canonical traversal-neutral JSON.
 - Local graph diagnostic проходит реальный `PNG/JPEG → FS-010 → Lee → graph → JSON/overlay` path;
   CLI не создаёт PiecewiseCurve, component bridge или forced route.
+- `FS-016`: all-or-nothing graph→PiecewiseCurve conversion для path/loop/isolated components,
+  shared raster transform, exact provenance, explicit pen-up boundaries и отдельный diagnostic CLI;
+  branched/complex topology не создаёт partial route.
 
-## Evidence FS-015
+## Evidence FS-016
 
-- Activation commit: `f56c487`.
-- Targeted analytical/property/integration/component/live E2E suite: 23 tests PASS, включая
-  raw-cycle/public-budget, non-quadratic component scan и in-chain cancellation regressions.
-- Full terminal repository suite после всех review fixes: 450 tests PASS.
-- `uv sync --all-groups --frozen --no-cache`, Ruff, strict mypy и project-overlay validator: PASS.
-- Визуальная проверка actual cross topology overlay и pseudo-locale layout: PASS.
-- Correctness/security review обнаружил raw-cycle, constructor-budget, quadratic scan и
-  cancellation-evidence gaps; все исправлены и final re-review завершён с verdict `GO`.
+- Activation commit: `1af0de4`.
+- Targeted unit/property/integration/component/live E2E suite: 26 tests PASS.
+- Full terminal repository suite: 476 tests PASS.
+- Ruff, strict mypy и project-overlay validator: PASS.
+- Визуальная проверка two-ring pen-up overlay: PASS; два отдельных artists, connector отсутствует.
+- Bounded cancellation, atomic no-overwrite и privacy-safe corrupt-input regressions: PASS.
+- Correctness review P2 по non-finite/overflow scale, untyped result/provenance, forged exact
+  coverage и non-canonical traversal order исправлены; final re-review: `GO`.
 
 ## Limits / deferred
 
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
-- Multi-component `PiecewiseCurve` conversion отложена до FS-016, forced route — до FS-017.
+- Forced continuous route отложен до FS-017, Piecewise Fourier — до FS-018.
 - Matplotlib/CLI остаются diagnostic surface; PySide6 shell относится к FS-021.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-Реализовать и проверить FS-016; merge/push не выполнять. После terminal commit активировать FS-017
-в следующей chained feature branch по текущему пользовательскому разрешению.
+После atomic commit активировать FS-017 в следующей chained feature branch; merge/push не выполнять.
 
 ## Синхронизация документации
 
 - Обновлены README, SPEC/ADR, architecture/design/security/testing/traceability/dependencies/
   fallbacks и AI plan/status/roadmap/stage registry.
-- Математический, API/export и data-model contracts проверены: FS-015 не меняет curve/Fourier,
-  public export format FS-022 или persistence, поэтому отдельные изменения не потребовались.
+- Математический/API/export contract проверен: FS-016 публикует PiecewiseCurve, но не меняет
+  Fourier/public export/persistence contracts; они остаются FS-018/FS-022.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
   диагностику сверх принятых graph contracts и regression evidence.

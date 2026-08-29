@@ -14,6 +14,14 @@ from .dominant_contour import (
     normalize_selected_contour,
     select_dominant_contour,
 )
+from .piecewise_components import (
+    PiecewiseBuildStatus,
+    PiecewiseComponentResult,
+    PiecewiseSegment,
+    PiecewiseSegmentProvenance,
+    build_piecewise_components,
+)
+from .raster_coordinates import RasterCoordinateTransform
 
 __all__ = [
     "COORDINATE_TRANSFORM_ID",
@@ -25,6 +33,12 @@ __all__ = [
     "NoContourResult",
     "NormalizedContourCurve",
     "NormalizedContourProvenance",
+    "PiecewiseBuildStatus",
+    "PiecewiseComponentResult",
+    "PiecewiseSegment",
+    "PiecewiseSegmentProvenance",
+    "RasterCoordinateTransform",
+    "build_piecewise_components",
     "canonical_pixel_signature",
     "normalize_selected_contour",
     "select_dominant_contour",

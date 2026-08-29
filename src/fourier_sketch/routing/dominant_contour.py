@@ -11,6 +11,8 @@ from fourier_sketch.imaging.contour_model import (
     PixelPoint,
 )
 
+from .raster_coordinates import RasterCoordinateTransform
+
 DOMINANT_SELECTION_POLICY = "area2-bbox-points-canonical-v1"
 COORDINATE_TRANSFORM_ID = "pixel-center-centered-aspect-v1"
 ORIENTATION_POLICY = "counter-clockwise-domain"
@@ -247,16 +249,8 @@ def _domain_points(
     source_dimensions: tuple[int, int],
     scale: float,
 ) -> tuple[Point2D, ...]:
-    width, height = source_dimensions
-    center_column = (width - 1) / 2.0
-    center_row = (height - 1) / 2.0
-    return tuple(
-        Point2D(
-            (point.column - center_column) * scale,
-            (center_row - point.row) * scale,
-        )
-        for point in raster_points
-    )
+    transform = RasterCoordinateTransform(source_dimensions, float(scale))
+    return transform.points(raster_points)
 
 
 def _rotate_to_minimum(points: tuple[PixelPoint, ...]) -> tuple[PixelPoint, ...]:

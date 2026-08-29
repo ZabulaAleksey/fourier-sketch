@@ -14,6 +14,7 @@ from .matplotlib_image_mvp import (
     render_image_mvp_png,
     run_image_mvp_interactive,
 )
+from .matplotlib_piecewise import draw_piecewise_overlay, render_piecewise_overlay_png
 from .matplotlib_skeleton import draw_skeleton_preview, render_skeleton_preview_png
 from .matplotlib_skeleton_graph import (
     draw_skeleton_graph_overlay,
@@ -28,10 +29,12 @@ __all__ = [
     "create_freehand_surface",
     "create_image_mvp_surface",
     "draw_frame",
+    "draw_piecewise_overlay",
     "draw_skeleton_graph_overlay",
     "draw_skeleton_preview",
     "render_frame_png",
     "render_image_mvp_png",
+    "render_piecewise_overlay_png",
     "render_skeleton_graph_overlay_png",
     "render_skeleton_preview_png",
     "run_freehand_interactive",

@@ -177,5 +177,21 @@
   "skeleton_graph.node.loop_anchor": "Loop anchor",
   "skeleton_graph.node.isolated": "Isolated pixel",
   "skeleton_graph.preview.title": "Skeleton graph - {policy}",
-  "skeleton_graph.preview.summary": "Components: {components} · nodes: {nodes} · edges: {edges} · endpoints: {endpoints} · junctions: {junctions} · loops: {loops}"
+  "skeleton_graph.preview.summary": "Components: {components} · nodes: {nodes} · edges: {edges} · endpoints: {endpoints} · junctions: {junctions} · loops: {loops}",
+  "cli.piecewise_description": "Convert independently representable Lee-skeleton components into explicit curve segments.",
+  "cli.piecewise_failed": "Piecewise diagnostic failed: {reason}",
+  "cli.piecewise_output_exists": "The output already exists; use --overwrite to replace it.",
+  "cli.piecewise_success": "Piecewise diagnostic written: {name} ({status}, {segments} segments, {boundaries} pen-up boundaries).",
+  "cli.help.piecewise_output": "Destination two-panel pen-up diagnostic PNG.",
+  "piecewise.error.image_input": "The selected image could not be safely decoded. Use a valid local PNG or JPEG within the documented limits.",
+  "piecewise.error.local_path": "Unsafe or network path forms are rejected: UNC, device, drive-relative, and alternate-stream paths are not accepted.",
+  "piecewise.error.validation": "The piecewise preprocessing or output options are invalid.",
+  "piecewise.panel.skeleton": "Lee skeleton components",
+  "piecewise.panel.curves": "Independent curve segments (pen-up)",
+  "piecewise.preview.title": "Piecewise skeleton conversion",
+  "piecewise.preview.summary": "Status: {status} · segments: {segments} · explicit pen-up boundaries: {boundaries}",
+  "piecewise.segment.label": "Component {component}",
+  "piecewise.status.empty": "The skeleton is empty; no curve was fabricated.",
+  "piecewise.status.unsupported": "This topology needs an explicit routing policy; no partial curve was fabricated.",
+  "piecewise.status.cancelled": "Conversion was cancelled; no partial curve was published."
 }

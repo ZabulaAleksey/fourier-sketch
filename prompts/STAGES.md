@@ -705,7 +705,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-016 — Multiple Components and PiecewiseCurve
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-016-piecewise-components`.
+- Lifecycle: `completed`; verified 2026-08-29 on `feature/fs-016-piecewise-components`.
 - Goal: preserve multiple disconnected components as explicit `PiecewiseCurve` without bridge.
 
 ### Dependency DAG & entry preconditions
@@ -739,7 +739,8 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: forced routing FS-017 and piecewise Fourier FS-018.
 - Failure: ambiguous/empty component becomes diagnostic result, not fabricated segment.
 - Docs: math discontinuity references, design/trace/status/plan.
-- Handoff: commit and stop before FS-017.
+- Evidence: 476 repository tests, Ruff, strict mypy, overlay validation and visual pen-up review PASS.
+- Handoff: atomic feature commit; continue only through a separate FS-017 activation.
 
 ## FS-017 — Forced Continuous Routing
 

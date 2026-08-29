@@ -136,6 +136,14 @@ FS-008 расширяет этот же workflow controls и live evidence, не
 - summary показывает только aggregate counts и policy, а не source path/pixels;
 - empty graph остаётся честным empty state; PiecewiseCurve и forced bridges не имитируются.
 
+## Piecewise diagnostic FS-016
+
+- слева показывается actual Lee skeleton, справа — domain-space segments;
+- каждый segment имеет собственный color/artist, поэтому renderer не может нарисовать скрытый
+  connector между components;
+- footer показывает terminal status, segment count и число explicit pen-up boundaries;
+- unsupported/empty/cancelled states объясняются на curve panel без fabricated partial curve.
+
 ## Принцип продукта
 
 Главный визуальный объект — причинная цепочка:

@@ -137,3 +137,15 @@ invocation публикует ровно один artifact; существующ
 Canonical serialization и loop anchor не выбирают маршрут. Disconnected components сохраняются
 раздельно; отсутствие PiecewiseCurve/forced route в FS-015 является scope boundary, а не degraded
 implementation.
+
+## Piecewise conversion (FS-016)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | graph components → one path/loop/isolated `Curve` each → `PiecewiseCurve` |
+| Failure signal | `EMPTY`, `UNSUPPORTED` или `CANCELLED`, stable reason, no partial curve |
+| Automatic fallback | forced traversal, duplicated edge, bridge и dominant-only selection запрещены |
+| Recovery | изменить preprocessing/input либо явно выбрать будущую FS-017 routing policy |
+
+Component order — deterministic storage/display order, не pen-down route. Renderer сохраняет
+boundary отдельными artists и не соединяет соседние segments.

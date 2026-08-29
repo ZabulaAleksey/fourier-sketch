@@ -40,6 +40,7 @@ from .image_preprocessing import (
     select_preprocessing_raster,
 )
 from .local_paths import LocalPathError, validate_local_path
+from .piecewise_skeleton import LocalPiecewiseResult, build_local_piecewise
 from .skeleton_graph import (
     LocalSkeletonGraphResult,
     build_local_skeleton_graph,
@@ -75,6 +76,7 @@ __all__ = [
     "ImageMvpState",
     "ImageNoContourResult",
     "LocalPathError",
+    "LocalPiecewiseResult",
     "LocalSkeletonGraphResult",
     "LocalSkeletonResult",
     "RenderVisibility",
@@ -86,6 +88,7 @@ __all__ = [
     "TimelineState",
     "build_dominant_contour_timeline",
     "build_freehand_timeline",
+    "build_local_piecewise",
     "build_local_skeleton",
     "build_local_skeleton_graph",
     "detect_preprocessed_edges",

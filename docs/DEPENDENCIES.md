@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-015)
+## Текущая dependency surface (FS-016)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
@@ -80,6 +80,9 @@ Review sources: [scikit-image skeletonize API](https://scikit-image.org/docs/sta
 FS-015 не добавляет dependency: graph builder/schema project-owned и не использует транзитивный
 NetworkX из dependency graph. Это исключает accidental runtime dependency на generic mutable graph
 API и сохраняет bounded immutable topology contract.
+
+FS-016 также не добавляет dependency: conversion и raster transform project-owned, а application,
+renderer и CLI переиспользуют уже pinned Pillow, scikit-image, NumPy и Matplotlib surfaces.
 
 Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
 использования с tests и license/platform review.

@@ -8,7 +8,7 @@ boundaries, не переходя к FS-017 routing или FS-018 Fourier.
 ## Активный stage
 
 - Stage ID: `FS-016`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Lifecycle: `completed`; terminal evidence собрано 2026-08-29.
 - Branch: `feature/fs-016-piecewise-components`, создана от validated FS-015 tip `da13e4f`.
 - DAG: `FS-015 + FS-001 → FS-016`; graph/component и PiecewiseCurve prerequisites выполнены.
 - Contract: simple path/loop/isolated components convert one-to-one; branched topology returns
@@ -28,4 +28,4 @@ boundaries, не переходя к FS-017 routing или FS-018 Fourier.
 
 ## Handoff
 
-Завершить atomic FS-016 commit и перейти к отдельной активации FS-017 без merge/push.
+Создать atomic FS-016 commit и перейти к отдельной активации FS-017 без merge/push.

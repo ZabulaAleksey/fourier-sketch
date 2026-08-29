@@ -45,6 +45,9 @@
 - FS-015 принимает только typed `SkeletonizationResult`, снижает graph foreground budget до
   250 000 pixels, ограничивает node+edge records 500 000 и canonical JSON 32 MiB; adjacency matrix,
   all-pairs search, alternate graph backend и silent component bridge отсутствуют;
+- FS-016 принимает только validated FS-015 graph, наследует его budgets/local-path boundary,
+  публикует conversion all-or-nothing и пишет PNG через atomic sibling temporary file без
+  implicit overwrite;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -158,8 +161,10 @@ Fallback Policy наследуется и здесь не копируется.
   empty result, preview/export race, corrupt input и existing output проходят unit/component/E2E;
 - FS-015: reduced graph/record/JSON budgets, exact ownership validation, cancellation, corrupt/path
   privacy, atomic JSON/PNG no-overwrite и отсутствие cross-component edge;
+- FS-016: unsupported/empty/cancelled no-partial states, separate-artists pen-up rendering,
+  corrupt/path privacy и atomic PNG no-overwrite наследуются живым pipeline;
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stages `FS-010`–`FS-015` have live decode/CV/graph/overwrite/privacy evidence; Stage `FS-022`
+Stages `FS-010`–`FS-016` have live decode/CV/graph/piecewise/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.

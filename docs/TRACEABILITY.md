@@ -18,7 +18,7 @@
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-013 | chain state → trace adapter | property + integration + E2E | verified for freehand and image MVPs |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-013, FS-021 | renderer timeline/view state | component + E2E | verified in both Matplotlib MVPs; PySide6 UI deferred FS-021 |
-| `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise domain + render policy | property + integration | planned |
+| `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise conversion + render policy | unit + property + integration + component + E2E | FS-016 verified; Fourier deferred FS-018 |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
 
 ## Critical epicycle chain
@@ -258,6 +258,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | regression/static/overlay gates | repository | 450 tests + Ruff + mypy + overlay + diff | PASS |
 | independent review | correctness + security/resource | findings fixed; final re-review GO | PASS |
 | integration evidence | feature branch, not merged | atomic feature commit; merge pending | PASS |
+
+## Stage FS-016 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| one simple component → one segment | routing conversion | path/loop/isolated analytical unit | PASS |
+| no fabricated partial route | typed terminal results | branched/empty/cancelled unit | PASS |
+| exact deterministic coverage | raster provenance | generated path property | PASS |
+| real multi-component pipeline | two-ring PNG | integration + live subprocess | PASS |
+| explicit pen-up display | separate Matplotlib artists | component + visual inspection | PASS |
+| regression/static/overlay gates | repository | 476 tests + Ruff + mypy + overlay | PASS |
 
 ## Acceptance coverage targets
 

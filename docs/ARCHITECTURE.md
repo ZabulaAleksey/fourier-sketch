@@ -62,7 +62,7 @@ src/fourier_sketch/
 ├── render/                     # существует: Matplotlib frame/PNG/freehand/image-MVP adapters
 ├── cli/                        # diagnostic, freehand, image/CV, skeleton и skeleton_graph
 ├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
-├── routing/                    # существует: FS-012 dominant policy; FS-016..FS-017 planned
+├── routing/                    # FS-012 dominant + FS-016 piecewise; FS-017 route planned
 └── ui/                         # planned FS-021
 ```
 
@@ -237,8 +237,16 @@ order являются storage semantics, но не traversal.
 `application.skeleton_graph` связывает real FS-010/FS-014 path с graph builder и atomic canonical
 JSON. `render.matplotlib_skeleton_graph` рисует component-colored adjacency overlay, а отдельный
 `cli.skeleton_graph` выбирает ровно один `json|overlay` artifact. Raster `PixelPoint`, compressed
-node incidence и будущий route остаются разными types/semantics. PiecewiseCurve и forced bridges
-не создаются до FS-016/FS-017.
+node incidence и будущий route остаются разными types/semantics.
+
+## Piecewise component boundary (FS-016)
+
+`routing.piecewise_components` выполняет all-or-nothing conversion: simple path, pure self-loop и
+isolated component дают ровно один segment каждый; branched/complex component не превращается в
+скрытый traversal. `RasterCoordinateTransform` является общим владельцем
+`pixel-center-centered-aspect-v1` для dominant contour и piecewise pipelines. Application хранит
+source graph provenance, renderer рисует segments раздельно, а boundary metadata существует между
+соседними segments. Forced traversal/edge duplication/bridge принадлежат FS-017.
 
 ## i18n/l10n boundary
 

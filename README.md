@@ -222,7 +222,20 @@ edges по компонентам и отдельные markers endpoint/junctio
 single-stroke route. Empty skeleton даёт валидный empty graph. Ограничения FS-015: не более
 250 000 skeleton foreground pixels, 500 000 node+edge records и 32 MiB canonical JSON. Existing
 output не перезаписывается без `--overwrite`; fallback adjacency/backend или implicit component
-bridge отсутствуют. PiecewiseCurve conversion и forced routing остаются FS-016/FS-017.
+bridge отсутствуют.
+
+## Piecewise component diagnostic
+
+FS-016 преобразует каждый однозначно представимый graph component в отдельный `Curve`: simple
+path, pure loop или isolated pixel. Компоненты не соединяются, а pen-up boundary хранится явно:
+
+```powershell
+uv run python -m fourier_sketch.cli.piecewise input.png --output piecewise.png
+```
+
+Diagnostic PNG рисует каждый segment отдельным artist. Branched/complex topology возвращает
+`unsupported`, empty input — `empty`, cancellation — `cancelled`; partial `PiecewiseCurve` ни в
+одном из этих состояний не публикуется. Forced routing и Piecewise Fourier остаются FS-017/FS-018.
 
 ## Проверки
 
@@ -247,7 +260,8 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
-Cohesive image MVP, Lee skeleton diagnostic и traversal-neutral skeleton graph реализованы;
-PiecewiseCurve conversion, forced routing, PySide6 product GUI и animation export остаются planned.
+Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral skeleton graph и explicit
+PiecewiseCurve conversion реализованы; forced routing, PySide6 product GUI и animation export
+остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

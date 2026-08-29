@@ -86,6 +86,11 @@ pixel ownership и byte-stable serialization на generated accepted skeletons. 
 внутри junction region, public 250k budget, non-quadratic many-component scan и cancellation
 внутри длинной compressed chain.
 
+FS-016 добавляет analytical path/loop/isolated/branched/empty/cancelled fixtures, generative exact
+path coverage, real two-ring integration, separate-artist component assertions и live subprocess
+`PNG → Lee → graph → PiecewiseCurve → pen-up PNG`. Общий raster transform повторно используется
+FS-012 без изменения accepted contour normalization tests.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -136,6 +141,10 @@ endpoint/junction/loop/isolated markers, повторно открывает PNG
 no-overwrite. Live subprocess E2E проходит local PNG → Lee → graph → canonical JSON/overlay и
 privacy-safe corrupt failure.
 
+FS-016 component evidence проверяет отдельный Matplotlib artist на каждый curve segment, explicit
+boundary count, pseudo-locale и повторно открываемый atomic PNG. Live subprocess E2E подтверждает
+два segments и одну pen-up boundary для двух disconnected strokes.
+
 ### E2E
 
 Критические live paths:
@@ -149,7 +158,8 @@ privacy-safe corrupt failure.
    (`FS-014`, самостоятельный local diagnostic реализован);
 5. image file → Lee skeleton → explicit components/nodes/edges → readable JSON/topology overlay
    (`FS-015`, traversal-neutral diagnostic реализован);
-6. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+6. image file → graph components → explicit PiecewiseCurve → pen-up overlay (`FS-016`, реализован);
+7. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.
