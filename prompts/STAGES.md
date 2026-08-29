@@ -783,14 +783,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-018 — Discontinuous Fourier Mode
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-018-discontinuous-fourier`.
 - Goal: analyze/render a true piecewise/discontinuous complex periodic signal with endpoint trace.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-016 + FS-005 + FS-006 → FS-018`; piecewise model, chain math and renderer completed.
 - Entry evidence: explicit segment metadata and endpoint provenance property.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: FS-016, FS-005 and FS-006 completed; implementation authorized.
 
 ### Scope / non-goals / invariants
 

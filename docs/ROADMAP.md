@@ -28,13 +28,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-018` — Discontinuous Fourier Mode (`planned`).
+`FS-018` — Discontinuous Fourier Mode (`in_progress`).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-018` | Discontinuous Fourier Mode |
+| `FS-018` | Discontinuous Fourier Mode (`in_progress`) |
 | `FS-019` | Discontinuity Spectrum Analysis |
 | `FS-020` | Separate 2D Fourier Image Mode |
 

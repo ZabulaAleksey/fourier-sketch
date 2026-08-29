@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-017`; validated locally, atomic commit формируется.
-- Active Stage ID: `FS-017`, lifecycle `completed`.
-- Branch: `feature/fs-017-forced-routing`, chained from unmerged FS-016.
+- Last completed Stage ID: `FS-017`; validated and committed locally at `4eb81cc`.
+- Active Stage ID: `FS-018`, lifecycle `in_progress`.
+- Branch: `feature/fs-018-discontinuous-fourier`, chained from unmerged FS-017.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
 
@@ -47,7 +47,7 @@
 
 ## Следующее разумное действие
 
-После atomic commit активировать FS-018; merge/push не выполнять.
+Реализовать и проверить FS-018; после commit активировать FS-019; merge/push не выполнять.
 
 ## Синхронизация документации
 
