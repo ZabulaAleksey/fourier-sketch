@@ -368,3 +368,33 @@ discontinuous Fourier не запускается до FS-018. Новая depend
 **Миграция / откат:** persisted piecewise artifacts отсутствуют. Изменение representability,
 ordering, coordinate transform или boundary schema требует SPEC/ADR/test migration; откат удаляет
 FS-016 conversion/diagnostic surface и shared helper возвращается внутрь contour adapter.
+
+## 2026-08-29 — ADR-018: Raw-pixel Euler route с bounded tree T-join
+
+**Контекст:** compressed FS-015 graph сохраняет component topology, но переход между разными edge
+contacts внутри multi-pixel `JUNCTION_REGION` нельзя восстановить непрерывно без raw adjacency.
+FS-017 должен дать opt-in cyclic route для Fourier, показать duplication/bridge cost и не обещать
+глобально оптимальный Postman/TSP result.
+
+**Решение:** `corner-suppressed-8-v1` adjacency выносится в shared imaging helper и используется
+FS-015 builder и FS-017 без расхождения policy. Component с 0 odd vertices проходит exact
+Hierholzer circuit, с 2 — exact trail. Для `>2` odd vertices deterministic row-major spanning tree
+образует linear T-join: parent edge дублируется тогда и только тогда, когда subtree содержит
+нечётное число odd vertices; augmented multigraph затем проходит Hierholzer. Original и duplicate
+edge instances имеют разную provenance. Disconnected components выбираются bounded greedy
+nearest-entry policy с canonical ties; bridges, включая final seam, являются отдельными operations.
+Route всегда `Curve(closed=True)`, а added cost равен сумме duplicated и bridge Euclidean lengths.
+
+**Рассмотренные альтернативы:** traversal только compressed edges скрывает движение внутри
+junction region; полный minimum Chinese Postman/TSP сложнее и не нужен baseline; удвоение всех
+edges линейно, но создаёт заведомо больший cost даже когда T-join короче; open route оставляет
+неизмеренный periodic Fourier seam.
+
+**Последствия:** algorithm deterministic и `O(V+E+C²)` при component cap `1024`, route samples
+ограничены FFT budget `262144`, cancellation проверяется bounded batches. Оптимальность не
+заявляется; улучшение route относится к FS-029. Empty/cancelled/resource/malformed result не
+публикует partial Curve.
+
+**Миграция / откат:** новый route является opt-in и не меняет FS-015 graph или FS-016 Piecewise
+semantics. Изменение adjacency, T-join, component tie-break, step provenance/cost или cyclic seam
+требует SPEC/ADR/accepted-test migration.

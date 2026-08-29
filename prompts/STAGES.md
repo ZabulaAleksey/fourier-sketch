@@ -744,14 +744,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-017 — Forced Continuous Routing
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-017-forced-routing`.
 - Goal: offer an explicit `STRICT_SINGLE_CURVE` route with measurable duplicated/bridge cost.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-016 → FS-017`; disconnected component representation completed.
 - Entry evidence: graph/components and cost metric definition accepted.
-- Current gate: unsatisfied while FS-016 is planned.
+- Current gate: FS-016 completed and committed locally at `721694d`; implementation authorized.
 
 ### Scope / non-goals / invariants
 

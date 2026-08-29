@@ -44,7 +44,17 @@ raster pixels и graph nodes не смешиваются в одном неяв�
 ### IM-FR-006 — Routing policies
 
 Режимы: `MAIN_CONTOUR`, `ALL_COMPONENTS`, `STRICT_SINGLE_CURVE`, `PIECEWISE_DISCONNECTED`.
-Forced bridges имеют source/target и added path cost; piecewise mode не создаёт bridge.
+`STRICT_SINGLE_CURVE` является только explicit opt-in и строится по тому же raw
+`corner-suppressed-8-v1` adjacency, что FS-015. Для component с 0/2 odd pixel vertices
+используется exact deterministic Hierholzer circuit/trail; для `>2` odd vertices — bounded
+row-major spanning-tree T-join, который bottom-up дублирует parent link только для odd subtree,
+после чего выполняется Hierholzer. Это deterministic linear heuristic, а не optimal Chinese
+Postman claim. Disconnected components соединяются deterministic nearest-entry policy и итоговый
+route всегда cyclic: межкомпонентные и closing bridges имеют explicit endpoints/type/length.
+Original, duplicated и bridge steps различимы; metrics содержат их counts/lengths и
+`added_length = duplicated_length + bridge_length`. Component count `≤1024`, итоговый route
+`≤262144` samples, cancellation проверяется bounded batches; empty/cancelled/resource/malformed
+result не публикует partial `Curve`. Piecewise mode не создаёт bridge и не меняется этой policy.
 
 ### IM-FR-007 — Discontinuous signal
 
@@ -73,7 +83,9 @@ algorithm switch: capability проверяется, provenance отобража
 - IM-AC-002: каждый transform проверяется synthetic fixture и сохраняет diagnostic provenance.
 - IM-AC-003: dominant contour pipeline заканчивается epicycle endpoint trace.
 - IM-AC-004: disconnected fixture остаётся piecewise без bridge в соответствующем mode.
-- IM-AC-005: forced route сообщает added cost и deterministic result для fixture.
+- IM-AC-005: forced route для Euler/non-Euler/disconnected fixtures byte-for-byte deterministic,
+  покрывает каждый original raw link, остаётся cyclic/continuous, сообщает original/duplicated/
+  bridge counts и lengths; Fourier trace использует именно опубликованный route без hidden seam.
 - IM-AC-006: FFT2 types/API не смешаны с 1D curve Fourier.
 - IM-AC-007: line/T/cross/loop/multi-component fixtures подтверждают raw degree roles, exact
   foreground partition, отсутствие implicit bridges и byte-stable canonical graph serialization.

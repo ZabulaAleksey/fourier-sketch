@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-016`; validated locally, atomic commit формируется.
-- Active Stage ID: `FS-016`, lifecycle `completed`.
-- Branch: `feature/fs-016-piecewise-components`, chained from unmerged FS-015.
+- Last completed Stage ID: `FS-016`; validated and committed locally at `721694d`.
+- Active Stage ID: `FS-017`, lifecycle `in_progress`.
+- Branch: `feature/fs-017-forced-routing`, chained from unmerged FS-016.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
 
@@ -47,7 +47,7 @@
 
 ## Следующее разумное действие
 
-После atomic commit активировать FS-017 в следующей chained feature branch; merge/push не выполнять.
+Реализовать и проверить FS-017; merge/push не выполнять. После terminal commit активировать FS-018.
 
 ## Синхронизация документации
 
