@@ -7,7 +7,7 @@ from pathlib import Path
 from time import monotonic
 
 from PySide6.QtCore import QPointF, Qt, QThread, QTimer, Signal
-from PySide6.QtGui import QCloseEvent, QColor, QMouseEvent, QPainter, QPainterPath, QPen
+from PySide6.QtGui import QCloseEvent, QColor, QKeyEvent, QMouseEvent, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -427,6 +427,25 @@ class DesktopWindow(QMainWindow):
         delta = now - self._last_tick
         self._last_tick = now
         self._timeline_action("advance", delta)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Escape:
+            self._cancel_current_job()
+            event.accept()
+            return
+        if event.key() == Qt.Key.Key_R:
+            self._source.reset()
+            self._timeline_action("restart")
+            event.accept()
+            return
+        if event.key() == Qt.Key.Key_Space:
+            timeline = self._timeline
+            if timeline is not None:
+                action = "pause" if timeline.state.value == "running" else "play"
+                self._timeline_action(action)
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self._timer.stop()

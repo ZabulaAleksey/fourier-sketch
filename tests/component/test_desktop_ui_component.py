@@ -5,6 +5,8 @@ from typing import cast
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import QApplication
 
 from fourier_sketch.application import build_freehand_timeline
@@ -42,5 +44,10 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     window._set_visibility("trace", False)
     assert window._canvas._frame is not None
     assert not window._canvas._frame.visibility.trace
+
+    window.keyPressEvent(
+        QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_Space, Qt.KeyboardModifier.NoModifier)
+    )
+    assert window._canvas._frame.timeline_state.value == "running"
 
     window.close()
