@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-018`; validated locally, implementation commit pending.
-- Active Stage ID: `FS-018`, lifecycle `completed`.
-- Branch: `feature/fs-018-discontinuous-fourier`, chained from unmerged FS-017.
+- Last completed Stage ID: `FS-018`; validated and committed locally at `b976950`.
+- Active Stage ID: `FS-019`, lifecycle `in_progress`.
+- Branch: `feature/fs-019-discontinuity-spectrum`, chained from unmerged FS-018.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
 
@@ -51,7 +51,7 @@
 
 ## Следующее разумное действие
 
-Создать atomic FS-018 commit, затем активировать FS-019; merge/push не выполнять.
+Реализовать и проверить FS-019; после commit активировать FS-020; merge/push не выполнять.
 
 ## Синхронизация документации
 

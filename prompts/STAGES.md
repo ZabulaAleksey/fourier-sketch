@@ -824,14 +824,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-019 — Discontinuity Spectrum Analysis
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-019-discontinuity-spectrum`.
 - Goal: measure amplitude/log amplitude, retained energy and reconstruction error vs K for jumps.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-018 + FS-004 → FS-019`; discontinuous pipeline and metrics completed.
 - Entry evidence: accepted jump fixtures and measured coefficient/error APIs.
-- Current gate: unsatisfied while FS-018 is planned.
+- Current gate: FS-018 and FS-004 completed; implementation authorized.
 
 ### Scope / non-goals / invariants
 

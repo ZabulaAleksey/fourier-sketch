@@ -29,13 +29,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-019` — Discontinuity Spectrum Analysis (`planned`; activation follows FS-018 commit).
+`FS-019` — Discontinuity Spectrum Analysis (`in_progress`).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-019` | Discontinuity Spectrum Analysis |
+| `FS-019` | Discontinuity Spectrum Analysis (`in_progress`) |
 | `FS-020` | Separate 2D Fourier Image Mode |
 
 ## Product shell, export and hardening

@@ -412,3 +412,16 @@ coefficients, reconstruction и endpoint ledger общие.
 
 **Последствия:** jumps являются математическим input, не artificial bridge. Allocation меньше числа
 segments fail closed; spectrum-decay interpretation отложена до FS-019. Dependency не добавляется.
+
+## 2026-08-29 — ADR-020: Recorded K sweep без asymptotic claims
+
+**Контекст:** discontinuities дают измеряемое high-frequency content, но один bounded fixture не
+доказывает общий закон decay или Gibbs theorem. Нужен reproducible analysis source of truth.
+
+**Решение:** analysis хранит signed frequency, amplitude и `log10(max(amplitude, floor))`; floor
+является recorded parameter. K sweep принимает explicit unique ascending values и одно explicit
+ordering, затем переиспользует accepted selection, retained-energy и reconstruction metrics APIs.
+Continuous comparison вычисляется тем же algorithm/parameters. Renderer только отображает result.
+
+**Последствия:** zero amplitudes finite, каждая chart point traceable к K/order/floor/sample count.
+Complexity bounded числом K и N; advanced asymptotic conclusions остаются deferred.

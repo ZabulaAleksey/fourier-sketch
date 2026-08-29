@@ -83,6 +83,13 @@ endpoint последнего vector. Независимый decorative reconstr
 Система должна поддерживать strict Fourier trajectory discontinuous signal и отдельную
 `PEN_UP_RENDERING` policy, которая не изменяет coefficients.
 
+### FR-DISCONTINUITY-ANALYSIS-001 — Измеряемый spectrum sweep
+
+Для recorded discontinuous spectrum система должна публиковать amplitude и controlled log
+amplitude, а для каждого explicit K — retained energy и reconstruction error с зафиксированным
+ordering. K values уникальны, bounded и deterministic; zero amplitude не создаёт NaN/Inf. Chart и
+continuous comparison являются views над immutable numeric result и не вводят theorem claims.
+
 ### FR-FFT2-001 — 2D image Fourier
 
 Система должна реализовать FFT2 как отдельный mode с magnitude, phase, filters и reconstruction,
