@@ -4,9 +4,9 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `feature/fs-021-render-controls` from synchronized `main@cb36885`.
-- Remote state: `origin/main@cb36885`; renderer-control delta is committed locally at `0faf8fc`
-  and remains unmerged/unpushed.
+- Branch: `main`; renderer-control delta integrated locally by fast-forward.
+- Integration: implementation `0faf8fc` and evidence update `2c552a7` are present in `main`;
+  PR/release/deployment were not performed.
 - Blockers: нет.
 
 ## FS-021 progress
@@ -75,8 +75,8 @@
 
 ## Следующее разумное действие
 
-Остановиться для merge decision по committed FS-021 no-trail/smooth-speed delta; остальные
-renderer optimizations, FS-022 и planned Android FS-031 не начинать.
+После отдельной команды продолжить FS-021 с cache static paths/bounds и повторным stress profile;
+FS-022 и planned Android FS-031 не начинать заодно.
 
 ## Синхронизация документации
 

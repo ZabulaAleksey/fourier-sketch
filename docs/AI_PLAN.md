@@ -2,23 +2,23 @@
 
 ## Текущая цель
 
-Продолжить bounded FS-021 renderer control slice: не рисовать дублирующий trace-шлейф и сделать
-desktop speed control плавным и безопасно ограниченным, не начиная FS-022.
+Подготовить следующий bounded FS-021 renderer optimization slice: cache static paths/bounds и
+повторный stress profile, не начиная работу без отдельной команды пользователя.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; пользователь явно авторизовал bounded UI change 2026-08-29.
-- Branch: `feature/fs-021-render-controls` from synchronized `main@cb36885`.
+- Lifecycle: `partial`; renderer-control slice завершён и локально интегрирован в `main`.
+- Branch: `main` после fast-forward integration renderer-control delta.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
 
 ## Integration state
 
-- Existing partial FS-021 and revised future stages are in `main@cb36885` and `origin/main@cb36885`.
-- Renderer-control delta is committed locally at `0faf8fc`; it is not merged/pushed and no
-  PR/release/deployment was performed.
+- `main` содержит renderer-control implementation `0faf8fc` и evidence update `2c552a7`.
+- PR/release/deployment не выполнялись; remote synchronization проверяется отдельно как внешнее
+  integration evidence.
 
 ## План выполнения
 
@@ -34,5 +34,5 @@ desktop speed control плавным и безопасно ограниченн�
 
 ## Handoff
 
-Bounded renderer-control delta reviewed and committed locally. Остановиться для отдельного решения
-о merge; остальные performance steps FS-021, FS-022 и FS-031 не начинать заодно.
+После synchronization commit отправить `main` в `origin` и остановиться. Остальные performance
+steps FS-021, FS-022 и FS-031 не начинать без отдельной команды пользователя.
