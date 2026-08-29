@@ -1,6 +1,10 @@
 """Rendering adapters for immutable application frames."""
 
 from .matplotlib_epicycles import draw_frame, render_frame_png, run_interactive
+from .matplotlib_forced_route import (
+    draw_forced_route_overlay,
+    render_forced_route_overlay_png,
+)
 from .matplotlib_freehand import (
     FreehandControlPanel,
     FreehandSurface,
@@ -28,10 +32,12 @@ __all__ = [
     "ImageMvpSurface",
     "create_freehand_surface",
     "create_image_mvp_surface",
+    "draw_forced_route_overlay",
     "draw_frame",
     "draw_piecewise_overlay",
     "draw_skeleton_graph_overlay",
     "draw_skeleton_preview",
+    "render_forced_route_overlay_png",
     "render_frame_png",
     "render_image_mvp_png",
     "render_piecewise_overlay_png",

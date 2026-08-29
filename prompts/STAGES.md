@@ -744,7 +744,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-017 — Forced Continuous Routing
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-017-forced-routing`.
+- Lifecycle: `completed`; verified 2026-08-29 on `feature/fs-017-forced-routing`.
 - Goal: offer an explicit `STRICT_SINGLE_CURVE` route with measurable duplicated/bridge cost.
 
 ### Dependency DAG & entry preconditions
@@ -778,7 +778,8 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: improved optimization FS-029.
 - Failure: impossible/budget-exceeded route remains explicit; no silent switch to piecewise.
 - Docs: algorithm limitations, architecture/trace/status/plan and ADR for chosen heuristic.
-- Handoff: commit and stop before FS-018.
+- Evidence: 487 repository tests, Ruff, strict mypy, overlay validation and visual route review PASS.
+- Handoff: atomic feature commit; continue only through a separate FS-018 activation.
 
 ## FS-018 — Discontinuous Fourier Mode
 

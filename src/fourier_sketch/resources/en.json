@@ -193,5 +193,22 @@
   "piecewise.segment.label": "Component {component}",
   "piecewise.status.empty": "The skeleton is empty; no curve was fabricated.",
   "piecewise.status.unsupported": "This topology needs an explicit routing policy; no partial curve was fabricated.",
-  "piecewise.status.cancelled": "Conversion was cancelled; no partial curve was published."
+  "piecewise.status.cancelled": "Conversion was cancelled; no partial curve was published.",
+  "cli.forced_route_description": "Build an explicit cyclic single-curve route with measured duplication and bridge cost.",
+  "cli.forced_route_failed": "Forced route diagnostic failed: {reason}",
+  "cli.forced_route_output_exists": "The output already exists; use --overwrite to replace it.",
+  "cli.forced_route_empty": "Forced route was not created ({status}: {reason}); no partial curve was published.",
+  "cli.forced_route_success": "Forced route written: {name} ({original} original, {duplicated} duplicated, {bridges} bridges, added length {added:.4f}).",
+  "cli.help.forced_route_output": "Destination route and Fourier diagnostic PNG.",
+  "forced_route.error.validation": "The image, route, Fourier, or output options are invalid.",
+  "forced_route.panel.route": "STRICT_SINGLE_CURVE route provenance",
+  "forced_route.preview.title": "Forced cyclic route and Fourier trace",
+  "forced_route.preview.summary": "Original: {original} · duplicated: {duplicated} · bridges: {bridges} · added length: {added:.4f}",
+  "forced_route.kind.original": "Original skeleton links",
+  "forced_route.kind.duplicated": "Duplicated links",
+  "forced_route.kind.bridge": "Explicit bridges",
+  "forced_route.status.empty": "The skeleton is empty.",
+  "forced_route.status.cancelled": "Routing was cancelled.",
+  "forced_route.status.resource_limit": "The route exceeds its bounded budget.",
+  "forced_route.status.malformed_topology": "The graph cannot satisfy the route contract."
 }

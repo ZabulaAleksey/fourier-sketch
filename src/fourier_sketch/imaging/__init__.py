@@ -49,6 +49,7 @@ from .pillow_backend import (
     median_denoise,
     threshold_grayscale,
 )
+from .skeleton_adjacency import raw_adjacency
 from .skeleton_graph import build_skeleton_graph
 from .skeleton_graph_model import (
     MAX_SKELETON_GRAPH_FOREGROUND_PIXELS,
@@ -134,6 +135,7 @@ __all__ = [
     "export_raster_png",
     "extract_external_contours",
     "median_denoise",
+    "raw_adjacency",
     "signed_shoelace_area2",
     "skeletonize_binary",
     "threshold_grayscale",

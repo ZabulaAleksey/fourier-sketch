@@ -270,6 +270,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | explicit pen-up display | separate Matplotlib artists | component + visual inspection | PASS |
 | regression/static/overlay gates | repository | 476 tests + Ruff + mypy + overlay | PASS |
 
+## Stage FS-017 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| shared raw adjacency | FS-015 builder + routing helper | graph regression/parity | PASS |
+| Euler/tree T-join coverage | forced route core | analytical + property | PASS |
+| explicit cyclic seam/cost | step provenance + metrics | disconnected fixtures | PASS |
+| Fourier consumer path | resampled closed route | integration + live subprocess | PASS |
+| visible provenance | LineCollection overlay | component + visual inspection | PASS |
+| regression/static/overlay gates | repository | 487 tests + Ruff + mypy + overlay | PASS |
+
 ## Acceptance coverage targets
 
 | Acceptance | Required level | First proving stage |

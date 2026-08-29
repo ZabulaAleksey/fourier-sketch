@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from fourier_sketch.domain import DomainValidationError
 
 from .contour_model import PixelPoint
+from .skeleton_adjacency import raw_adjacency
 from .skeleton_graph_model import (
     MAX_SKELETON_GRAPH_FOREGROUND_PIXELS,
     MAX_SKELETON_GRAPH_RECORDS,
@@ -64,9 +65,7 @@ def build_skeleton_graph(
     for component_id, component_points in enumerate(components):
         drafts = _node_drafts(component_points, adjacency, cancellation_check)
         owner_by_point = {
-            point: draft_index
-            for draft_index, draft in enumerate(drafts)
-            for point in draft.pixels
+            point: draft_index for draft_index, draft in enumerate(drafts) for point in draft.pixels
         }
         edge_drafts = _edge_drafts(
             component_points, drafts, owner_by_point, adjacency, cancellation_check
@@ -173,12 +172,15 @@ def _build_adjacency(
     points: set[PixelPoint],
     cancellation_check: CancellationCheck | None,
 ) -> dict[PixelPoint, tuple[PixelPoint, ...]]:
-    adjacency: dict[PixelPoint, tuple[PixelPoint, ...]] = {}
-    for index, point in enumerate(sorted(points, key=_row_major_key)):
-        if index % _CANCELLATION_BATCH == 0:
-            _check_cancelled(cancellation_check)
-        adjacency[point] = _adjacent_points(point, points)
-    return adjacency
+    return raw_adjacency(points, cancellation_check=lambda: _is_cancelled(cancellation_check))
+
+
+def _is_cancelled(check: CancellationCheck | None) -> bool:
+    if check is not None and check():
+        raise SkeletonGraphError(
+            SkeletonGraphFailureCode.CANCELLED, "skeleton graph build cancelled"
+        )
+    return False
 
 
 def _connected_components(
@@ -295,9 +297,7 @@ def _edge_drafts(
                 current = neighbor
                 while current not in owner_by_point:
                     choices = [
-                        candidate
-                        for candidate in adjacency[current]
-                        if candidate != previous
+                        candidate for candidate in adjacency[current] if candidate != previous
                     ]
                     if len(choices) != 1:
                         raise SkeletonGraphError(

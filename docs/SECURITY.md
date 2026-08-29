@@ -48,6 +48,8 @@
 - FS-016 принимает только validated FS-015 graph, наследует его budgets/local-path boundary,
   публикует conversion all-or-nothing и пишет PNG через atomic sibling temporary file без
   implicit overwrite;
+- FS-017 наследует validated graph/path boundary, ограничивает components/route samples, проверяет
+  cancellation и публикует closed route/provenance/metrics только целиком; renderer пишет atomic PNG.
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -166,5 +168,5 @@ Fallback Policy наследуется и здесь не копируется.
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stages `FS-010`–`FS-016` have live decode/CV/graph/piecewise/overwrite/privacy evidence; Stage `FS-022`
+Stages `FS-010`–`FS-017` have live decode/CV/graph/routing/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.

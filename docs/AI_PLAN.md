@@ -8,7 +8,7 @@ costs, не изменяя честную FS-016 PiecewiseCurve semantics и н�
 ## Активный stage
 
 - Stage ID: `FS-017`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Lifecycle: `completed`; terminal evidence собрано 2026-08-29.
 - Branch: `feature/fs-017-forced-routing`, создана от validated FS-016 tip `721694d`.
 - DAG: `FS-016 → FS-017`; explicit disconnected segment representation completed.
 - Contract: forced route opt-in only; shared raw adjacency, exact Euler where valid, linear

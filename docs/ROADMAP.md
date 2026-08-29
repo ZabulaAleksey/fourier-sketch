@@ -24,16 +24,16 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-014` | Explicit Lee skeletonization diagnostic | `completed` |
 | `FS-015` | Deterministic traversal-neutral skeleton graph | `completed` |
 | `FS-016` | Multiple Components / PiecewiseCurve | `completed` |
+| `FS-017` | Forced Continuous Routing | `completed` |
 
 ## Текущий этап
 
-`FS-017` — Forced Continuous Routing (`in_progress`).
+`FS-018` — Discontinuous Fourier Mode (`planned`).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-017` | Forced Continuous Routing (`in_progress`) |
 | `FS-018` | Discontinuous Fourier Mode |
 | `FS-019` | Discontinuity Spectrum Analysis |
 | `FS-020` | Separate 2D Fourier Image Mode |

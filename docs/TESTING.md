@@ -91,6 +91,10 @@ path coverage, real two-ring integration, separate-artist component assertions �
 `PNG → Lee → graph → PiecewiseCurve → pen-up PNG`. Общий raster transform повторно используется
 FS-012 без изменения accepted contour normalization tests.
 
+FS-017 проверяет shared adjacency parity, Euler loop/open trail, non-Euler tree T-join,
+disconnected cyclic bridges, exact original-link coverage, deterministic generated paths и live
+`image → Lee → graph → route → resampling → Fourier timeline → PNG`.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -159,7 +163,8 @@ boundary count, pseudo-locale и повторно открываемый atomic 
 5. image file → Lee skeleton → explicit components/nodes/edges → readable JSON/topology overlay
    (`FS-015`, traversal-neutral diagnostic реализован);
 6. image file → graph components → explicit PiecewiseCurve → pen-up overlay (`FS-016`, реализован);
-7. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+7. image file → explicit forced cyclic route → Fourier trace (`FS-017`, реализован);
+8. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.

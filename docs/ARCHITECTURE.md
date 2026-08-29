@@ -62,7 +62,7 @@ src/fourier_sketch/
 ├── render/                     # существует: Matplotlib frame/PNG/freehand/image-MVP adapters
 ├── cli/                        # diagnostic, freehand, image/CV, skeleton и skeleton_graph
 ├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
-├── routing/                    # FS-012 dominant + FS-016 piecewise; FS-017 route planned
+├── routing/                    # dominant, piecewise и explicit forced-route policies
 └── ui/                         # planned FS-021
 ```
 
@@ -247,6 +247,15 @@ isolated component дают ровно один segment каждый; branched/c
 `pixel-center-centered-aspect-v1` для dominant contour и piecewise pipelines. Application хранит
 source graph provenance, renderer рисует segments раздельно, а boundary metadata существует между
 соседними segments. Forced traversal/edge duplication/bridge принадлежат FS-017.
+
+## Forced route boundary (FS-017)
+
+Shared `imaging.skeleton_adjacency` гарантирует одинаковый `corner-suppressed-8-v1` raw graph для
+FS-015 и routing. `routing.forced_route` применяет exact Hierholzer для 0/2 odd vertices и linear
+spanning-tree T-join для остальных, затем объединяет components explicit cyclic bridges. Каждый
+step aligned с closed `Curve` и имеет original/duplicated/bridge provenance; metrics пересчитывают
+added cost. Application resamples именно этот route в существующий Fourier timeline. Policy opt-in,
+не меняет FS-016 PiecewiseCurve и не обещает optimal Postman/TSP.
 
 ## i18n/l10n boundary
 

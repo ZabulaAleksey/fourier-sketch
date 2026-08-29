@@ -2,8 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-016`; validated and committed locally at `721694d`.
-- Active Stage ID: `FS-017`, lifecycle `in_progress`.
+- Last completed Stage ID: `FS-017`; validated locally, atomic commit формируется.
+- Active Stage ID: `FS-017`, lifecycle `completed`.
 - Branch: `feature/fs-017-forced-routing`, chained from unmerged FS-016.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
@@ -24,30 +24,30 @@
 - `FS-016`: all-or-nothing graph→PiecewiseCurve conversion для path/loop/isolated components,
   shared raster transform, exact provenance, explicit pen-up boundaries и отдельный diagnostic CLI;
   branched/complex topology не создаёт partial route.
+- `FS-017`: shared raw adjacency, exact Euler/tree T-join traversal, cyclic explicit bridges,
+  aligned original/duplicated/bridge provenance, metrics и real route→Fourier diagnostic.
 
-## Evidence FS-016
+## Evidence FS-017
 
-- Activation commit: `1af0de4`.
-- Targeted unit/property/integration/component/live E2E suite: 26 tests PASS.
-- Full terminal repository suite: 476 tests PASS.
+- Activation commit: `19d1de4`.
+- Targeted unit/property/integration/component/live E2E suite: 10 tests PASS.
+- Full terminal repository suite: 487 tests PASS.
 - Ruff, strict mypy и project-overlay validator: PASS.
-- Визуальная проверка two-ring pen-up overlay: PASS; два отдельных artists, connector отсутствует.
-- Bounded cancellation, atomic no-overwrite и privacy-safe corrupt-input regressions: PASS.
-- Correctness review P2 по non-finite/overflow scale, untyped result/provenance, forged exact
-  coverage и non-canonical traversal order исправлены; final re-review: `GO`.
+- Визуальная проверка branched/disconnected route overlay и explicit closing seam: PASS.
+- Independent review P2 по singleton cancellation и stale README исправлены; final re-review `GO`.
 
 ## Limits / deferred
 
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
-- Forced continuous route отложен до FS-017, Piecewise Fourier — до FS-018.
+- Discontinuous Piecewise Fourier отложен до FS-018; spectrum analysis — до FS-019.
 - Matplotlib/CLI остаются diagnostic surface; PySide6 shell относится к FS-021.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-Реализовать и проверить FS-017; merge/push не выполнять. После terminal commit активировать FS-018.
+После atomic commit активировать FS-018; merge/push не выполнять.
 
 ## Синхронизация документации
 

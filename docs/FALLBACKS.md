@@ -149,3 +149,15 @@ implementation.
 
 Component order — deterministic storage/display order, не pen-down route. Renderer сохраняет
 boundary отдельными artists и не соединяет соседние segments.
+
+## Forced routing (FS-017)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | shared raw adjacency → Euler/tree T-join → cyclic bridges → closed Curve |
+| Budgets | components `≤1024`; route samples `≤262144`; bounded cancellation |
+| Failure signal | typed empty/cancelled/resource/malformed result, no partial Curve |
+| Automatic fallback | piecewise/dominant route или alternate adjacency запрещены |
+| Recovery | изменить input/preprocessing либо явно выбрать другой routing mode |
+
+Tree T-join и greedy linking являются deterministic baseline, не optimality claim.

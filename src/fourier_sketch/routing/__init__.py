@@ -14,6 +14,14 @@ from .dominant_contour import (
     normalize_selected_contour,
     select_dominant_contour,
 )
+from .forced_route import (
+    ForcedRouteMetrics,
+    ForcedRouteResult,
+    ForcedRouteStatus,
+    ForcedRouteStep,
+    RouteStepKind,
+    build_forced_route,
+)
 from .piecewise_components import (
     PiecewiseBuildStatus,
     PiecewiseComponentResult,
@@ -29,6 +37,10 @@ __all__ = [
     "ORIENTATION_POLICY",
     "START_POINT_POLICY",
     "DominantContourSelection",
+    "ForcedRouteMetrics",
+    "ForcedRouteResult",
+    "ForcedRouteStatus",
+    "ForcedRouteStep",
     "NoContourReason",
     "NoContourResult",
     "NormalizedContourCurve",
@@ -38,6 +50,8 @@ __all__ = [
     "PiecewiseSegment",
     "PiecewiseSegmentProvenance",
     "RasterCoordinateTransform",
+    "RouteStepKind",
+    "build_forced_route",
     "build_piecewise_components",
     "canonical_pixel_signature",
     "normalize_selected_contour",
