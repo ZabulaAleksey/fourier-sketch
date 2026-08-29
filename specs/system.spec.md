@@ -93,6 +93,10 @@ continuous comparison являются views над immutable numeric result и 
 ### FR-FFT2-001 — 2D image Fourier
 
 Система должна реализовать FFT2 как отдельный mode с magnitude, phase, filters и reconstruction,
+используя dedicated immutable raster/spectrum types. Convention: NumPy backward normalization,
+axes `(row, column)`, centered `fftshift` visualization и unshifted coefficients for IFFT2.
+Constant/impulse/sinusoid и real-image round trip должны иметь explicit tolerance; low/high-pass и
+selected-frequency masks записывают policy/parameters и не используют 1D `FourierSpectrum`.
 не используя epicycle domain types как 2D frequency model.
 
 ### FR-DIAGNOSTICS-001 — Наблюдаемость результата

@@ -2,28 +2,28 @@
 
 ## Текущая цель
 
-Реализовать FS-019 как измеряемый spectrum/K-sweep analysis для discontinuous signal.
+Реализовать FS-020 как отдельный bounded 2D Fourier image mode без 1D epicycle types.
 
 ## Активный stage
 
-- Stage ID: `FS-019`
-- Lifecycle: `completed`; пользователь авторизовал продолжение пяти stages 2026-08-29.
-- Branch: `feature/fs-019-discontinuity-spectrum`, создана от validated FS-018 tip `b976950`.
-- DAG: `FS-018 + FS-004 → FS-019`; discontinuous pipeline and metrics completed.
-- Contract: measured amplitude/log amplitude/energy/error only; no unproved decay/Gibbs claims.
+- Stage ID: `FS-020`
+- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Branch: `feature/fs-020-fft2-image-mode`, создана от validated FS-019 tip `7f8680b`.
+- DAG: `FS-010 + FS-002 → FS-020`; safe raster input and transform discipline completed.
+- Contract: dedicated FFT2 types/API; axes/shift/normalization explicit; no epicycle reuse.
 
 ## Integration state
 
-- FS-015..FS-018 form an unmerged branch chain above `main`/`origin/main@aba291d`.
+- FS-015..FS-019 form an unmerged branch chain above `main`/`origin/main@aba291d`.
 - Merge/push/PR/release/deployment не выполнялись.
 
 ## План выполнения
 
-1. [completed] Зафиксировать bounded K sweep, ordering, log-zero и provenance contract.
-2. [completed] Реализовать immutable numeric result и explicit partial budget status.
-3. [completed] Добавить continuous/discontinuous comparison chart и deterministic export/CLI.
-4. [completed] Закрыть numerical review/full/static/overlay gates и синхронизировать docs.
+1. Зафиксировать dedicated raster/spectrum/result types и FFT2 convention.
+2. Реализовать bounded FFT2/IFFT2, magnitude/log/phase и explicit filters.
+3. Добавить safe local image → diagnostic/filtered preview live path.
+4. Закрыть analytical/round-trip/resource/review/full/docs gates.
 
 ## Handoff
 
-Создать atomic FS-019 commit и перейти к отдельной активации FS-020 без merge/push.
+Создать atomic FS-020 commit и остановиться до FS-021 без merge/push.

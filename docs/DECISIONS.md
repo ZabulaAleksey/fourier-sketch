@@ -425,3 +425,14 @@ Continuous comparison вычисляется тем же algorithm/parameters. R
 
 **Последствия:** zero amplitudes finite, каждая chart point traceable к K/order/floor/sample count.
 Complexity bounded числом K и N; advanced asymptotic conclusions остаются deferred.
+
+## 2026-08-29 — ADR-021: Dedicated shifted-view FFT2 model
+
+**Решение:** 2D image mode использует separate immutable raster and spectrum values. NumPy `fft2`
+и `ifft2` сохраняют default backward normalization; canonical coefficients unshifted, а centered
+shift применяется только к magnitude/log/phase view и filter-mask coordinates. Axes всегда
+`(row,column)`. Filters создают новый spectrum with recorded policy; 1D curve/epicycle types не
+импортируются.
+
+**Последствия:** CPU baseline bounded active decoded image limits; GPU/alternate backend fallback
+отсутствует. Изменение normalization/shift/axis convention требует SPEC/ADR/test migration.

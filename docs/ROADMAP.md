@@ -30,13 +30,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-020` — Separate 2D Fourier Image Mode (`planned`; activation follows FS-019 commit).
+`FS-020` — Separate 2D Fourier Image Mode (`in_progress`).
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-020` | Separate 2D Fourier Image Mode |
+| `FS-020` | Separate 2D Fourier Image Mode (`in_progress`) |
 
 ## Product shell, export and hardening
 

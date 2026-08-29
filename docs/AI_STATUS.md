@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-019`; validated locally, implementation commit pending.
-- Active Stage ID: `FS-019`, lifecycle `completed`.
-- Branch: `feature/fs-019-discontinuity-spectrum`, chained from unmerged FS-018.
+- Last completed Stage ID: `FS-019`; validated and committed locally at `7f8680b`.
+- Active Stage ID: `FS-020`, lifecycle `in_progress`.
+- Branch: `feature/fs-020-fft2-image-mode`, chained from unmerged FS-019.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
 
@@ -53,7 +53,7 @@
 
 ## Следующее разумное действие
 
-Создать atomic FS-019 commit, затем активировать FS-020; merge/push не выполнять.
+Реализовать и проверить FS-020; merge/push не выполнять.
 
 ## Синхронизация документации
 

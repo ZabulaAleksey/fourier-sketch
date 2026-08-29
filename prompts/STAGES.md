@@ -864,14 +864,14 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-020 — Separate 2D Fourier Image Mode
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-020-fft2-image-mode`.
 - Goal: implement raster `f(x,y) ↔ F(kx,ky)` without reusing 1D epicycle types.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-010 + FS-002 → FS-020`; safe raster input and established transform discipline completed.
 - Entry evidence: dedicated 2D data/API design accepted via architecture/ADR; image limits active.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: FS-010 and FS-002 completed; implementation authorized.
 
 ### Scope / non-goals / invariants
 
