@@ -17,7 +17,8 @@ desktop speed control плавным и безопасно ограниченн�
 ## Integration state
 
 - Existing partial FS-021 and revised future stages are in `main@cb36885` and `origin/main@cb36885`.
-- Current renderer-control delta is not merged/pushed; PR/release/deployment are not performed.
+- Renderer-control delta is committed locally at `0faf8fc`; it is not merged/pushed and no
+  PR/release/deployment was performed.
 
 ## План выполнения
 
@@ -33,5 +34,5 @@ desktop speed control плавным и безопасно ограниченн�
 
 ## Handoff
 
-После review закоммитить bounded renderer-control delta и остановиться для отдельного решения о
-merge. Остальные performance steps FS-021, FS-022 и FS-031 не начинать заодно.
+Bounded renderer-control delta reviewed and committed locally. Остановиться для отдельного решения
+о merge; остальные performance steps FS-021, FS-022 и FS-031 не начинать заодно.

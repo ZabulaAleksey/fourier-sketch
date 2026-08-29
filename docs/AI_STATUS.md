@@ -5,7 +5,8 @@
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
 - Branch: `feature/fs-021-render-controls` from synchronized `main@cb36885`.
-- Remote state: `origin/main@cb36885`; current renderer-control delta remains unmerged/unpushed.
+- Remote state: `origin/main@cb36885`; renderer-control delta is committed locally at `0faf8fc`
+  and remains unmerged/unpushed.
 - Blockers: нет.
 
 ## FS-021 progress
@@ -24,6 +25,7 @@
   timeline, starts on Play and stops on Pause/Restart. Targeted desktop suite is 3 PASS; final full
   repository suite after the fix is `527 passed in 161.13s`.
 - Independent re-review: `GO`; no remaining P0/P1/P2 findings for this bounded delta.
+- Bounded renderer-control delta committed locally: `0faf8fc`.
 
 ## Подтверждённо реализовано
 
@@ -73,8 +75,8 @@
 
 ## Следующее разумное действие
 
-Закончить review/commit authorized FS-021 no-trail/smooth-speed delta и остановиться для merge
-decision; остальные renderer optimizations, FS-022 и planned Android FS-031 не начинать.
+Остановиться для merge decision по committed FS-021 no-trail/smooth-speed delta; остальные
+renderer optimizations, FS-022 и planned Android FS-031 не начинать.
 
 ## Синхронизация документации
 
