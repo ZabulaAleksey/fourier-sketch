@@ -917,6 +917,10 @@ completion claim. Evidence records environment/branch and caveats.
   `526 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
   core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
   from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
+- Current no-trail/speed delta evidence: desktop paint no longer scans/renders trace or exposes its
+  toggle; application ledger remains intact. Comparable K=25/600-frame paint improved
+  ≈`3.66→2.00 ms/frame`. Reviewer P1 fixed: timer is inactive while paused and runs only after
+  Play; final full suite `527 passed`; independent re-review `GO`. Remaining terminal gates stay open.
 
 ### Scope / non-goals / invariants
 
@@ -925,8 +929,9 @@ completion claim. Evidence records environment/branch and caveats.
   `en`/fallback/pseudo resources; measured renderer optimization.
 - Non-goals: new math/CV algorithms, animation codecs, installer packaging.
 - Invariants: UI dispatches existing use cases; no math/CV in handlers/paint; worker lifecycle bounded;
-  actual chain endpoint history; visibility affects view only; optimization cannot change chain/
-  trace semantics or weaken accepted tests.
+  actual chain endpoint history remains in application state/export evidence; desktop paints the
+  existing contour and moving endpoint without a duplicate trace trail; visibility affects view only;
+  optimization cannot change chain/trace semantics or weaken accepted tests.
 
 ### Ordered performance work
 
@@ -934,19 +939,21 @@ completion claim. Evidence records environment/branch and caveats.
    OS/GPU/CPU and commit.
 2. Stop timer/repaint while paused or unchanged; resume only on state/input/animation changes.
 3. Cache source/reconstruction paths and scene bounds until curve/K/visibility/resize invalidates them.
-4. Maintain trace rendering incrementally with an explicit bounded visual/history policy; avoid
-   rebuilding/scanning the complete history on every frame.
+4. Remove persistent trace from the desktop paint path and its toggle while retaining the bounded
+   application ledger for parity/export; bounds and paint work must not scan `frame.trace`.
 5. Batch dynamic geometry and avoid one Python/Qt object allocation per circle/vector where possible.
-6. Re-profile and prove endpoint/frame parity. Only if declared target remains unmet, run a bounded
+6. Map desktop speed slider exactly to `0.10..2.00×` in `0.05×` increments and test endpoints/steps.
+7. Re-profile and prove endpoint/frame parity. Only if declared target remains unmet, run a bounded
    Qt Quick/QML scene-graph spike; adopt it only with measured gain, compatibility and rollback.
-7. Do not migrate to React Native as a performance shortcut. A mobile technology decision belongs
+8. Do not migrate to React Native as a performance shortcut. A mobile technology decision belongs
    to FS-031 and requires Windows/Android renderer, bridge, packaging and dependency evidence.
 
 ### Runnable vertical slice & concrete E2E
 
 - Entry: documented desktop launch command.
 - Path: user selects freehand or supported image → existing application pipeline in worker →
-  Epicycles view/control interactions → visible endpoint trace and diagnostics.
+  Epicycles view/control interactions → moving endpoint over the visible contour and diagnostics;
+  the non-painted endpoint ledger remains available for parity/export.
 - Observable result: responsive full workflow through real core, including error/cancel/restart.
   Default animation target and stress/degraded budget are documented from measured hardware rather
   than assumed; paused mode has zero continuous frame production.
@@ -957,6 +964,7 @@ completion claim. Evidence records environment/branch and caveats.
   expansion; live freehand+image E2E; shutdown/cancel/thread leak checks; full/static/dependency/
   Windows smoke/overlay PASS and manual DPI/resize diagnostic. Performance evidence includes
   before/after frame-time buckets, long-trace behavior, parity and paused-redraw assertion.
+  Component evidence asserts no desktop trace paint/toggle and exact smooth speed range/step.
 
 ### Temporary / deferred / failure
 

@@ -317,7 +317,9 @@ uv run python -m fourier_sketch.cli.desktop
 
 В окне можно нарисовать freehand stroke либо выбрать локальный PNG/JPEG. Image path использует
 существующий validated image-to-contour application flow в background worker; epicycle canvas
-показывает actual endpoint history. Export pages и installer пока disabled/deferred.
+показывает готовый contour, rotating vectors и moving endpoint без дублирующего trace-шлейфа.
+Desktop speed slider ограничен `0.10..2.00×` и меняется шагом `0.05×`. Application endpoint ledger
+сохраняется для parity/export. Export pages и installer пока disabled/deferred.
 
 ## Ограничения
 

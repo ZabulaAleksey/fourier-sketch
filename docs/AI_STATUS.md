@@ -4,8 +4,8 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch/integration state: local `main@7166318`; partial FS-021 feature fast-forward merged.
-- Remote state: `origin/main@aba291d` remains unpushed.
+- Branch: `feature/fs-021-render-controls` from synchronized `main@cb36885`.
+- Remote state: `origin/main@cb36885`; current renderer-control delta remains unmerged/unpushed.
 - Blockers: нет.
 
 ## FS-021 progress
@@ -16,6 +16,14 @@
 - Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile separates fast core (`≈0.31 ms/frame`) from QPainter work (`≈3.66 ms/frame` at
   K=25; stress K=256 grows `≈10.4→13.5 ms/frame` through trace length 1001). Optimization remains.
+- Authorized renderer-control delta removes persistent trace from desktop bounds/paint/toggle while
+  retaining the application ledger; desktop speed maps exactly to `0.10..2.00×` in `0.05×` steps.
+- Comparable K=25/600-frame offscreen paint improved `≈3.66→2.00 ms/frame`; retained ledger ended
+  at 601 points. Targeted component/Ruff/mypy/overlay PASS.
+- Reviewer P1 continuous paused redraw fixed: animation timer is inactive without/running-off
+  timeline, starts on Play and stops on Pause/Restart. Targeted desktop suite is 3 PASS; final full
+  repository suite after the fix is `527 passed in 161.13s`.
+- Independent re-review: `GO`; no remaining P0/P1/P2 findings for this bounded delta.
 
 ## Подтверждённо реализовано
 
@@ -65,8 +73,8 @@
 
 ## Следующее разумное действие
 
-После восстановления пользовательского лимита продолжить FS-021 с renderer optimization из
-canonical stage prompt. FS-022 и planned Android FS-031 не начинать без новой команды.
+Закончить review/commit authorized FS-021 no-trail/smooth-speed delta и остановиться для merge
+decision; остальные renderer optimizations, FS-022 и planned Android FS-031 не начинать.
 
 ## Синхронизация документации
 

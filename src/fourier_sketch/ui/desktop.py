@@ -32,6 +32,7 @@ from fourier_sketch.application import (
     ImageMvpController,
     ImageMvpSnapshot,
     ImageMvpState,
+    TimelineState,
     build_freehand_timeline,
 )
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D
@@ -81,7 +82,9 @@ class EpicycleCanvas(QWidget):
                 self._translator.text("desktop.canvas.empty"),
             )
             return
-        points = [*frame.original.points, *frame.reconstruction.points, *frame.trace]
+        # The desktop view does not render or scan the accumulated trace. Static
+        # contours plus current chain geometry are sufficient to fit the scene.
+        points = [*frame.original.points, *frame.reconstruction.points]
         for vector in frame.chain.vectors:
             points.extend((vector.start, vector.end))
         minimum_x = min(point.x for point in points)
@@ -122,8 +125,8 @@ class EpicycleCanvas(QWidget):
                 "#14b8a6",
                 1.4,
             )
-        if visibility.trace:
-            draw_polyline(frame.trace, "#ef4444", 2.0)
+        # Desktop intentionally shows the source and moving endpoint only; the
+        # application trace remains available for export and other renderers.
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
             painter.setPen(QPen(QColor("#3b82f6"), 1.0))
@@ -213,7 +216,6 @@ class DesktopWindow(QMainWindow):
         self._timer.setInterval(33)
         self._timer.timeout.connect(self._tick)
         self._build()
-        self._timer.start()
 
     def _build(self) -> None:
         self.setWindowTitle(self._translator.text("app.title"))
@@ -266,15 +268,16 @@ class DesktopWindow(QMainWindow):
         options = QFormLayout()
         self._harmonics = QSlider(Qt.Orientation.Horizontal)
         self._speed = QSlider(Qt.Orientation.Horizontal)
-        self._speed.setRange(1, 100)
-        self._speed.setValue(10)
+        self._speed.setRange(2, 40)
+        self._speed.setSingleStep(1)
+        self._speed.setValue(2)
         self._harmonics.valueChanged.connect(
             lambda value: self._timeline_action("harmonics", value)
         )
-        self._speed.valueChanged.connect(lambda value: self._timeline_action("speed", value / 10.0))
+        self._speed.valueChanged.connect(lambda value: self._timeline_action("speed", value / 20.0))
         options.addRow(self._translator.text("control.harmonics"), self._harmonics)
         options.addRow(self._translator.text("control.speed"), self._speed)
-        for field in ("circles", "vectors", "endpoint", "trace", "original", "reconstruction"):
+        for field in ("circles", "vectors", "endpoint", "original", "reconstruction"):
             toggle = QCheckBox(self._translator.text(f"control.{field}"))
             toggle.setChecked(True)
             toggle.toggled.connect(
@@ -373,7 +376,8 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._timeline = timeline
-        self._apply_frame(timeline.snapshot())
+        speed = self._speed.value() / 20.0
+        self._apply_frame(timeline.set_speed(speed))
 
     def _apply_frame(self, frame: object) -> None:
         if not isinstance(frame, EpicycleFrame):
@@ -404,6 +408,11 @@ class DesktopWindow(QMainWindow):
             }.get(action)
             if result is not None:
                 next_frame = result()
+                if action == "play":
+                    self._last_tick = monotonic()
+                    self._timer.start()
+                else:
+                    self._timer.stop()
             elif action == "harmonics":
                 if value is None:
                     return
@@ -423,6 +432,10 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.invalid_control"))
 
     def _tick(self) -> None:
+        timeline = self._timeline
+        if timeline is None or timeline.state is TimelineState.PAUSED:
+            self._timer.stop()
+            return
         now = monotonic()
         delta = now - self._last_tick
         self._last_tick = now
