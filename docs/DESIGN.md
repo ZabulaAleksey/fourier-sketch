@@ -170,6 +170,11 @@ Planned workflow pages:
 
 Page доступна только если её prerequisites существуют; disabled state объясняет требуемый input.
 
+FS-018 diagnostic сохраняет это разделение уже в Matplotlib surface: заголовок явно называет
+`strict_trajectory` или `pen_up_rendering`, source panel показывает соответственно один periodic
+artist либо отдельный artist на segment, а spectrum panel остаётся общим. Переключение display
+policy не пересчитывает samples, coefficients или endpoint history.
+
 ## Epicycles view
 
 Обязательные controls:

@@ -161,3 +161,15 @@ boundary отдельными artists и не соединяет соседни�
 | Recovery | изменить input/preprocessing либо явно выбрать другой routing mode |
 
 Tree T-join и greedy linking являются deterministic baseline, не optimality claim.
+
+## Discontinuous Fourier (FS-018)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | PiecewiseCurve → explicit allocation/boundaries → one FFT/timeline |
+| Budgets | total samples `2..4096`, минимум один на segment |
+| Failure signal | typed invalid allocation/non-finite geometry; no partial spectrum |
+| Automatic fallback | forced route, segment merge или alternate allocation запрещены |
+| Recovery | увеличить budget либо явно выбрать valid allocation/routing policy |
+
+`PEN_UP_RENDERING` — presentation policy, а не fallback и не изменение mathematical signal.

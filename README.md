@@ -236,7 +236,7 @@ uv run python -m fourier_sketch.cli.piecewise input.png --output piecewise.png
 Diagnostic PNG рисует каждый segment отдельным artist. Branched/complex topology возвращает
 `unsupported`, empty input — `empty`, cancellation — `cancelled`; partial `PiecewiseCurve` ни в
 одном из этих состояний не публикуется. Forced routing реализован отдельно в FS-017, а Piecewise
-Fourier остаётся FS-018.
+Fourier реализован отдельно в FS-018.
 
 ## Forced cyclic route diagnostic
 
@@ -250,6 +250,21 @@ uv run python -m fourier_sketch.cli.forced_route input.png --output forced-route
 
 Overlay различает original/duplicated/bridge steps и показывает Fourier diagnostic того же closed
 route. Baseline deterministic и bounded, но не заявляет global Postman/TSP optimality.
+
+## Discontinuous Fourier diagnostic
+
+FS-018 распределяет ровно заданный sample budget между independent segments, материализует
+замыкание closed segments и хранит индексы/длину каждого межсегментного jump, включая periodic
+last→first seam. Обе stroke policies используют один spectrum и timeline:
+
+```powershell
+uv run python -m fourier_sketch.cli.discontinuous --mode pen_up_rendering --output discontinuous.png
+uv run python -m fourier_sketch.cli.discontinuous --mode strict_trajectory --output strict.png
+```
+
+`PEN_UP_RENDERING` рисует segments раздельно; `STRICT_TRAJECTORY` показывает весь periodic signal
+с jump transitions. Same-budget comparison с explicit closed forced route доступен через
+`compare_discontinuous_with_forced_route`; spectrum decay analysis относится к FS-019.
 
 ## Проверки
 
@@ -274,8 +289,8 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
-Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion и
-explicit forced route реализованы; discontinuous Fourier, PySide6 product GUI и animation export
+Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,
+explicit forced route и discontinuous Fourier реализованы; PySide6 product GUI и animation export
 остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

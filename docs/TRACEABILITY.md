@@ -18,7 +18,7 @@
 | `BH-EPICYCLE-001` | FR-EPICYCLE-001, EP-FR-001..003 | FS-005 | `math/epicycles` | unit + property | verified |
 | `BH-EPICYCLE-TRACE-001` | FR-EPICYCLE-TRACE-001, EP-FR-004 | FS-005..FS-013 | chain state → trace adapter | property + integration + E2E | verified for freehand and image MVPs |
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002 | FS-006, FS-008, FS-013, FS-021 | renderer timeline/view state | component + E2E | verified in both Matplotlib MVPs; PySide6 UI deferred FS-021 |
-| `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise conversion + render policy | unit + property + integration + component + E2E | FS-016 verified; Fourier deferred FS-018 |
+| `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise conversion + discontinuous Fourier/render policy | unit + property + integration + component + E2E | verified locally through FS-018 |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | planned |
 
 ## Critical epicycle chain
@@ -280,6 +280,17 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | Fourier consumer path | resampled closed route | integration + live subprocess | PASS |
 | visible provenance | LineCollection overlay | component + visual inspection | PASS |
 | regression/static/overlay gates | repository | 487 tests + Ruff + mypy + overlay | PASS |
+
+## Stage FS-018 evidence
+
+| Contract | Artifact | Check | Status |
+|---|---|---|---|
+| exact allocation and closed seams | piecewise sampler | analytical unit + property | PASS |
+| indexed explicit/cyclic jumps | immutable boundary ledger | unit + integration | PASS |
+| shared math, distinct stroke policy | discontinuous application/renderer | integration + component | PASS |
+| forced-route comparison | same-budget comparison adapter | integration | PASS |
+| live two-circle path | discontinuous CLI/Agg PNG | subprocess E2E + visual inspection | PASS |
+| regression/static/overlay gates | repository | full pytest + Ruff + mypy + overlay | PASS |
 
 ## Acceptance coverage targets
 

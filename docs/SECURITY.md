@@ -50,6 +50,9 @@
   implicit overwrite;
 - FS-017 наследует validated graph/path boundary, ограничивает components/route samples, проверяет
   cancellation и публикует closed route/provenance/metrics только целиком; renderer пишет atomic PNG.
+- FS-018 ограничивает discontinuous allocation диапазоном `2..4096`, проверяет finite derived
+  arc lengths до allocation и не публикует partial spectrum; diagnostic PNG сохраняет тот же
+  local-path/explicit-overwrite contract, а curves/samples не выводятся в logs.
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion

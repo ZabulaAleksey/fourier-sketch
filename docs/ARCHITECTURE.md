@@ -257,6 +257,15 @@ step aligned с closed `Curve` и имеет original/duplicated/bridge provenan
 added cost. Application resamples именно этот route в существующий Fourier timeline. Policy opt-in,
 не меняет FS-016 PiecewiseCurve и не обещает optimal Postman/TSP.
 
+## Discontinuous Fourier boundary (FS-018)
+
+`math.piecewise_sampling` владеет bounded exact-budget allocation и immutable boundary ledger.
+`application.discontinuous_fourier` единожды превращает sampled `PiecewiseCurve` в concatenated
+complex periodic sequence и переиспользует существующие FFT/epicycle APIs. Render mode не входит в
+математическое состояние: strict mode рисует один periodic path, pen-up mode — independent artists.
+Отдельный comparison adapter resamples explicit closed forced route к тому же N, не конвертируя
+PiecewiseCurve в route и не смешивая provenance двух policies.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

@@ -783,7 +783,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-018 — Discontinuous Fourier Mode
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-018-discontinuous-fourier`.
+- Lifecycle: `completed`; verified 2026-08-29 on `feature/fs-018-discontinuous-fourier`.
 - Goal: analyze/render a true piecewise/discontinuous complex periodic signal with endpoint trace.
 
 ### Dependency DAG & entry preconditions
@@ -818,7 +818,9 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: spectrum analysis FS-019.
 - Failure: allocation with insufficient samples rejected; no implicit segment merge.
 - Docs: MATHEMATICS, DESIGN, trace/status/plan.
-- Handoff: commit and stop before FS-019.
+- Evidence: 502 repository tests, Ruff, strict mypy, overlay validation, visual inspection and
+  independent final review GO.
+- Handoff: atomic feature commit; continue only through a separate FS-019 activation.
 
 ## FS-019 — Discontinuity Spectrum Analysis
 

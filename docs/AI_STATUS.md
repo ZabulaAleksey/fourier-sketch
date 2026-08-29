@@ -2,8 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-017`; validated and committed locally at `4eb81cc`.
-- Active Stage ID: `FS-018`, lifecycle `in_progress`.
+- Last completed Stage ID: `FS-018`; validated locally, implementation commit pending.
+- Active Stage ID: `FS-018`, lifecycle `completed`.
 - Branch: `feature/fs-018-discontinuous-fourier`, chained from unmerged FS-017.
 - Base/integration target: `main` и `origin/main@aba291d`; branch chain не merged/pushed.
 - Blockers: нет.
@@ -26,34 +26,38 @@
   branched/complex topology не создаёт partial route.
 - `FS-017`: shared raw adjacency, exact Euler/tree T-join traversal, cyclic explicit bridges,
   aligned original/duplicated/bridge provenance, metrics и real route→Fourier diagnostic.
+- `FS-018`: exact equal/proportional PiecewiseCurve sampling, materialized closed seams, indexed
+  jump ledger, shared discontinuous FFT/timeline, distinct strict/pen-up rendering и same-budget
+  forced-route comparison.
 
-## Evidence FS-017
+## Evidence FS-018
 
-- Activation commit: `19d1de4`.
-- Targeted unit/property/integration/component/live E2E suite: 10 tests PASS.
-- Full terminal repository suite: 487 tests PASS.
+- Activation commit: `ef8aa37`; SPEC/ADR commit: `7d2393c`.
+- Targeted unit/property/integration/component/live E2E suite: 15 tests PASS.
+- Full terminal repository suite: 502 tests PASS.
 - Ruff, strict mypy и project-overlay validator: PASS.
-- Визуальная проверка branched/disconnected route overlay и explicit closing seam: PASS.
-- Independent review P2 по singleton cancellation и stale README исправлены; final re-review `GO`.
+- Визуальная проверка strict two-circle periodic signal и mode-specific labels: PASS.
+- Independent review findings по seams/indices/comparison/overflow/isolated segments исправлены;
+  final re-review `GO`.
 
 ## Limits / deferred
 
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
-- Discontinuous Piecewise Fourier отложен до FS-018; spectrum analysis — до FS-019.
+- Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
 - Matplotlib/CLI остаются diagnostic surface; PySide6 shell относится к FS-021.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-Реализовать и проверить FS-018; после commit активировать FS-019; merge/push не выполнять.
+Создать atomic FS-018 commit, затем активировать FS-019; merge/push не выполнять.
 
 ## Синхронизация документации
 
 - Обновлены README, SPEC/ADR, architecture/design/security/testing/traceability/dependencies/
   fallbacks и AI plan/status/roadmap/stage registry.
-- Математический/API/export contract проверен: FS-016 публикует PiecewiseCurve, но не меняет
-  Fourier/public export/persistence contracts; они остаются FS-018/FS-022.
+- Математический/API/export contract проверен: FS-018 добавляет discontinuous application API,
+  но не меняет persistence/export contracts FS-022.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
   диагностику сверх принятых graph contracts и regression evidence.

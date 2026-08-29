@@ -7,7 +7,7 @@
 ## Активный stage
 
 - Stage ID: `FS-018`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение пяти stages 2026-08-29.
+- Lifecycle: `completed`; пользователь авторизовал продолжение пяти stages 2026-08-29.
 - Branch: `feature/fs-018-discontinuous-fourier`, создана от validated FS-017 tip `4eb81cc`.
 - DAG: `FS-016 + FS-005 + FS-006 → FS-018`; piecewise/math/renderer prerequisites completed.
 - Contract: explicit jumps remain signal samples with boundary provenance; no forced bridge reuse.
@@ -19,10 +19,10 @@
 
 ## План выполнения
 
-1. Зафиксировать piecewise sampling/jump/period contract.
-2. Реализовать discontinuous samples, Fourier spectrum и aligned timeline provenance.
-3. Добавить explicit-jump/two-circle renderer/CLI/live E2E.
-4. Закрыть review/full/static/overlay gates и синхронизировать documentation evidence.
+1. [completed] Зафиксировать piecewise sampling/jump/period contract.
+2. [completed] Реализовать discontinuous samples, Fourier spectrum и aligned timeline provenance.
+3. [completed] Добавить explicit-jump/two-circle renderer/CLI/live E2E.
+4. [completed] Закрыть review/full/static/overlay gates и синхронизировать documentation evidence.
 
 ## Handoff
 

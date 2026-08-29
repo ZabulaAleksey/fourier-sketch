@@ -231,6 +231,13 @@ Fourier representation периодического piecewise signal включ�
 `PEN_UP_RENDERING` запрещает stroke через semantic jump, но не удаляет trajectory из math state.
 Никаких asymptotic decay/Gibbs claims не делать без измерения и ссылки на условия fixture.
 
+FS-018 выделяет каждому segment минимум один sample по explicit equal/proportional policy и
+сохраняет exact total budget. Closed segment при allocation больше одного получает materialized
+`start == end`, поэтому его closing seam принадлежит segment trajectory, а следующий sample уже
+образует explicit jump. Boundary ledger хранит flattened left/right sample indices, endpoints,
+distance и флаг cyclic last→first. Оба render modes получают один и тот же concatenated sequence,
+DFT, reconstruction и endpoint history; различается только grouping source-stroke artists.
+
 ## 2D image Fourier
 
 Отдельная модель:

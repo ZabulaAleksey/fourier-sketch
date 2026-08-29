@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-017)
+## Текущая dependency surface (FS-018)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
@@ -85,6 +85,9 @@ FS-016 также не добавляет dependency: conversion и raster trans
 renderer и CLI переиспользуют уже pinned Pillow, scikit-image, NumPy и Matplotlib surfaces.
 
 FS-017 не добавляет dependency: adjacency, T-join, Hierholzer, bridges и metrics project-owned.
+
+FS-018 не добавляет dependency: allocation/boundary ledger и comparison adapter project-owned;
+FFT и diagnostic rendering переиспользуют уже pinned NumPy и Matplotlib.
 
 Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
 использования с tests и license/platform review.

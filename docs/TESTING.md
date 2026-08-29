@@ -207,6 +207,11 @@ caveat
 Full `uv run pytest` остаётся regression suite. Test count не фиксируется в docs, чтобы не создавать
 stale claims.
 
+FS-018 acceptance дополнительно проверяет exact equal/proportional allocation, materialized closed
+segment seam, flattened boundary indices и periodic last→first boundary; property determinism,
+одинаковые spectra/endpoint history двух render policies, same-budget forced-route comparison,
+разное число source artists и live two-circle PNG в обоих modes.
+
 ## Manual diagnostics
 
 Visual stages сохраняют command, fixture/inputs, expected geometry/state и observed result. Manual
