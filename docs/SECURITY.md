@@ -42,6 +42,9 @@
 - FS-014 принимает только typed binary raster, ограничивает foreground 4 000 000 pixels и
   проверяет bool dtype, same shape, output foreground subset и отсутствие solid `2×2` blocks до
   публикации skeleton;
+- FS-015 принимает только typed `SkeletonizationResult`, снижает graph foreground budget до
+  250 000 pixels, ограничивает node+edge records 500 000 и canonical JSON 32 MiB; adjacency matrix,
+  all-pairs search, alternate graph backend и silent component bridge отсутствуют;
 - filenames/metadata не интерпретируются как code, format string или shell fragment.
 
 ## Resource exhaustion
@@ -97,6 +100,11 @@ late/cancelled result не публикуется, а CLI показывает �
 Preview и skeleton mode создают ровно один user-selected artifact за invocation; resource/backend
 failure не оставляет partial output и не изменяет существующий destination без `--overwrite`.
 
+FS-015 JSON и overlay используют тот же lexical local-path boundary и sibling temporary file.
+No-overwrite publication выполняется atomic hard-link, overwrite — explicit `os.replace`; JSON
+сериализуется только после topology validation и до publication. CLI сообщает только escaped
+basename и aggregate topology counts, не source path, raster payload или raw exception.
+
 ## Dependencies and supply chain
 
 Canonical manager/lockfile определены в `docs/DEPENDENCIES.md`. Новые CV/UI/codec dependencies
@@ -148,8 +156,10 @@ Fallback Policy наследуется и здесь не копируется.
   degenerate/no-contour, privacy, inactive options и existing output проходят negative tests;
 - FS-014: foreground budget, cancellation/stale suppression, unavailable/malformed Lee backend,
   empty result, preview/export race, corrupt input и existing output проходят unit/component/E2E;
+- FS-015: reduced graph/record/JSON budgets, exact ownership validation, cancellation, corrupt/path
+  privacy, atomic JSON/PNG no-overwrite и отсутствие cross-component edge;
 - dependency: frozen clean restore and lockfile review;
 - logging review: no sample/image/full-path leakage in failure fixtures.
 
-Stages `FS-010`–`FS-014` have live decode/CV/skeleton/overwrite/privacy evidence; Stage `FS-022`
+Stages `FS-010`–`FS-015` have live decode/CV/graph/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.

@@ -30,8 +30,9 @@ PNG/JPEG input, grayscale и threshold intermediate. Stage `FS-011` заверш
 разных edge mode: project-owned binary boundary и OpenCV Canny. `FS-012` завершает следующий
 самостоятельный slice: детерминированно выбирает один внешний dominant contour, нормализует его в
 closed `Curve`, применяет arc-length resampling и передаёт в существующий Fourier/timeline/renderer.
-`FS-013` завершил cohesive image-to-Fourier MVP, а `FS-014` добавил отдельный диагностический
-binary-to-skeleton path через explicit scikit-image Lee backend.
+`FS-013` завершил cohesive image-to-Fourier MVP, `FS-014` добавил отдельный диагностический
+binary-to-skeleton path через explicit scikit-image Lee backend, а `FS-015` преобразует этот
+skeleton в детерминированный graph topology без преждевременного routing.
 
 ## Целевой pipeline
 
@@ -202,8 +203,26 @@ source/skeleton pixel counts; full path и pixel payload не выводятся
 
 Сохраняются лимиты FS-010: 25 MiB encoded и 40 MP decoded. Дополнительно skeletonization допускает
 не более 4 000 000 foreground pixels. Недоступный, несовместимый или malformed backend завершает
-команду с кодом `2`; Zhang/OpenCV или другой algorithm не подставляется. Graph topology, component
-ordering и routing остаются scope FS-015–FS-017.
+команду с кодом `2`; Zhang/OpenCV или другой algorithm не подставляется.
+
+## Skeleton graph diagnostic
+
+FS-015 строит explicit components, endpoints, compressed junction regions, degree-2 chain edges и
+pure-loop anchors по fixed `corner-suppressed-8-v1` adjacency. Canonical JSON является storage и
+diagnostic format, но не задаёт traversal order:
+
+```powershell
+uv run python -m fourier_sketch.cli.skeleton_graph input.png --output skeleton-graph.json
+uv run python -m fourier_sketch.cli.skeleton_graph input.png --mode overlay --output skeleton-graph.png
+```
+
+JSON содержит именованные raster coordinates `column`/`row`, FS-014 algorithm/backend provenance,
+explicit component membership и exact node/edge pixel ownership. Overlay показывает compressed
+edges по компонентам и отдельные markers endpoint/junction/loop/isolated; линии не являются
+single-stroke route. Empty skeleton даёт валидный empty graph. Ограничения FS-015: не более
+250 000 skeleton foreground pixels, 500 000 node+edge records и 32 MiB canonical JSON. Existing
+output не перезаписывается без `--overwrite`; fallback adjacency/backend или implicit component
+bridge отсутствуют. PiecewiseCurve conversion и forced routing остаются FS-016/FS-017.
 
 ## Проверки
 
@@ -228,7 +247,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
-Cohesive image MVP и отдельный Lee skeleton diagnostic реализованы; skeleton graph,
-multi-component routing, PySide6 product GUI и animation export остаются planned.
+Cohesive image MVP, Lee skeleton diagnostic и traversal-neutral skeleton graph реализованы;
+PiecewiseCurve conversion, forced routing, PySide6 product GUI и animation export остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

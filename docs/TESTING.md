@@ -78,6 +78,14 @@ binary/preview PNG`: synthetic line/T/cross/loop/noise и real JPEG fixtures п�
 source immutability, output subset, explicit provenance, empty result и отсутствие solid 2×2 block
 как robust property вместо brittle full-image golden.
 
+FS-015 реализовал boundary `typed Lee skeleton → corner-suppressed adjacency → compressed graph →
+canonical JSON/overlay`: analytical line/T/cross/loop/multi-component fixtures проверяют degree
+roles, junction regions, self-loop и отсутствие bridge; property test проверяет exact disjoint
+pixel ownership и byte-stable serialization на generated accepted skeletons. Real integration
+проходит FS-010/FS-014 backend до topology. Regression fixtures дополнительно фиксируют raw cycle
+внутри junction region, public 250k budget, non-quadratic many-component scan и cancellation
+внутри длинной compressed chain.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility
@@ -123,6 +131,11 @@ pseudo expansion и no-overwrite race. Application tests подтверждаю�
 cooperative cancellation и stale-generation suppression; live subprocess E2E повторно открывает
 binary skeleton/preview PNG и проверяет corrupt/existing-output/privacy paths.
 
+FS-015 component evidence рисует actual skeleton/topology overlay с component-colored edges и
+endpoint/junction/loop/isolated markers, повторно открывает PNG/JSON и проверяет atomic
+no-overwrite. Live subprocess E2E проходит local PNG → Lee → graph → canonical JSON/overlay и
+privacy-safe corrupt failure.
+
 ### E2E
 
 Критические live paths:
@@ -134,7 +147,9 @@ binary skeleton/preview PNG и проверяет corrupt/existing-output/privac
    (`FS-013`, cohesive Matplotlib/headless product flow реализован);
 4. image file → binary preprocessing → explicit Lee skeleton → readable skeleton/preview PNG
    (`FS-014`, самостоятельный local diagnostic реализован);
-5. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+5. image file → Lee skeleton → explicit components/nodes/edges → readable JSON/topology overlay
+   (`FS-015`, traversal-neutral diagnostic реализован);
+6. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.

@@ -120,3 +120,20 @@ fallback; FS-023 отвечает за measured cancellation latency и hardenin
 
 Skeleton и preview являются двумя explicit output modes, а не fallback друг для друга. Один CLI
 invocation публикует ровно один artifact; существующий destination сохраняется без `--overwrite`.
+
+## Skeleton graph (FS-015)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | typed Lee result → `corner-suppressed-8-v1` → compressed topology |
+| Budgets | foreground `≤250,000`; node+edge records `≤500,000`; canonical JSON `≤32 MiB` |
+| Failure signal | stable `SkeletonGraphError.code`; localized CLI exit `2` |
+| Cancellation | cooperative checks по bounded batches; partial graph/artifact не публикуется |
+| Automatic fallback | другая adjacency, generic graph backend, bridge или route запрещены |
+| Empty result | explicit empty components/nodes/edges; successful JSON/overlay diagnostic |
+| Malformed result | broken chain/partition/component/contact contract fail closed |
+| Recovery | изменить input/preprocessing и явно повторить invocation |
+
+Canonical serialization и loop anchor не выбирают маршрут. Disconnected components сохраняются
+раздельно; отсутствие PiecewiseCurve/forced route в FS-015 является scope boundary, а не degraded
+implementation.

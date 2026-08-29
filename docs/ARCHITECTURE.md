@@ -60,9 +60,9 @@ src/fourier_sketch/
 ├── application/                # существует: timeline, freehand, image/edge/contour use cases
 ├── presentation/ + resources/ # существует: en fallback и algorithmic pseudo locale
 ├── render/                     # существует: Matplotlib frame/PNG/freehand/image-MVP adapters
-├── cli/                        # существует: diagnostic, freehand, image, edges, contours, image_mvp
+├── cli/                        # diagnostic, freehand, image/CV, skeleton и skeleton_graph
 ├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
-├── routing/                    # существует: FS-012 dominant policy; FS-015..FS-017 planned
+├── routing/                    # существует: FS-012 dominant policy; FS-016..FS-017 planned
 └── ui/                         # planned FS-021
 ```
 
@@ -223,8 +223,22 @@ foreground 4 000 000 pixels.
 
 `application.skeletonization` связывает существующий FS-010 preprocessing с adapter и PNG export.
 `render.matplotlib_skeleton` строит actual source/result preview, а `cli.skeleton` явно выбирает
-`skeleton` либо `preview`. Graph endpoints/junctions/components и routing не выводятся до
-FS-015–FS-017.
+`skeleton` либо `preview`.
+
+## Skeleton graph boundary (FS-015)
+
+`imaging.skeleton_graph_model` владеет immutable undirected pseudomultigraph schema, typed failure,
+component/node/edge contracts и exact foreground partition validation. `imaging.skeleton_graph`
+применяет `corner-suppressed-8-v1`, вычисляет raw pixel degree, объединяет смежные junction pixels,
+сжимает maximal degree-2 chains и представляет pure degree-2 component через deterministic
+`LOOP_ANCHOR` + self-loop. Components, nodes и undirected edges canonical sorted; их IDs и JSON
+order являются storage semantics, но не traversal.
+
+`application.skeleton_graph` связывает real FS-010/FS-014 path с graph builder и atomic canonical
+JSON. `render.matplotlib_skeleton_graph` рисует component-colored adjacency overlay, а отдельный
+`cli.skeleton_graph` выбирает ровно один `json|overlay` artifact. Raster `PixelPoint`, compressed
+node incidence и будущий route остаются разными types/semantics. PiecewiseCurve и forced bridges
+не создаются до FS-016/FS-017.
 
 ## i18n/l10n boundary
 

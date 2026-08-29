@@ -123,7 +123,18 @@ FS-008 расширяет этот же workflow controls и live evidence, не
   cancelled не показывает partial result;
 - сообщения локализованы через `en`/fallback/pseudo resources, success summary показывает только
   безопасный basename;
-- graph endpoints/junctions, components и route overlay намеренно отсутствуют до следующих stages.
+- graph endpoints/junctions и components добавлены отдельной FS-015 surface; route намеренно
+  отсутствует до следующих stages.
+
+## Skeleton graph FS-015 — фактический diagnostic baseline
+
+- отдельный CLI выбирает ровно один `json|overlay` output, не меняя FS-014 skeleton command;
+- overlay показывает Lee skeleton рядом с component-colored compressed topology; endpoint,
+  junction region, loop anchor и isolated pixel имеют разные markers;
+- canonical порядок component/node/edge и loop anchor являются диагностикой/storage, а не выбранным
+  single-stroke traversal;
+- summary показывает только aggregate counts и policy, а не source path/pixels;
+- empty graph остаётся честным empty state; PiecewiseCurve и forced bridges не имитируются.
 
 ## Принцип продукта
 

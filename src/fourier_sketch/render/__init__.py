@@ -15,6 +15,10 @@ from .matplotlib_image_mvp import (
     run_image_mvp_interactive,
 )
 from .matplotlib_skeleton import draw_skeleton_preview, render_skeleton_preview_png
+from .matplotlib_skeleton_graph import (
+    draw_skeleton_graph_overlay,
+    render_skeleton_graph_overlay_png,
+)
 
 __all__ = [
     "FreehandControlPanel",
@@ -24,9 +28,11 @@ __all__ = [
     "create_freehand_surface",
     "create_image_mvp_surface",
     "draw_frame",
+    "draw_skeleton_graph_overlay",
     "draw_skeleton_preview",
     "render_frame_png",
     "render_image_mvp_png",
+    "render_skeleton_graph_overlay_png",
     "render_skeleton_preview_png",
     "run_freehand_interactive",
     "run_image_mvp_interactive",

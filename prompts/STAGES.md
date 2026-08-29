@@ -666,15 +666,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-015 — Skeleton Graph
 
-- Lifecycle: `in_progress`; authorized 2026-08-29 on `feature/fs-015-skeleton-graph`.
+- Lifecycle: `completed`; validated locally on `feature/fs-015-skeleton-graph`.
 - Goal: transform skeleton pixels into explicit graph topology with endpoints/junctions/loops/components.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-014 → FS-015`; skeleton contract/fixtures completed.
 - Entry evidence: binary skeleton output and graph domain decision.
-- Current gate: prerequisite satisfied by completed FS-014; graph contract fixed in ADR-016 and
-  implementation authorized.
+- Completion evidence: analytical/property/real integration, component JSON/overlay and live CLI
+  E2E PASS; full/static/overlay gates PASS; independent review findings resolved.
 
 ### Scope / non-goals / invariants
 
@@ -701,7 +701,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: PiecewiseCurve FS-016 and forced route FS-017.
 - Performance: bounds from image limits; avoid quadratic all-pairs adjacency.
 - Docs: architecture/data contracts within architecture, trace/status/plan; ADR if graph model major.
-- Handoff: commit and stop before FS-016.
+- Handoff: atomic feature commit and stop before merge/FS-016.
 
 ## FS-016 — Multiple Components and PiecewiseCurve
 

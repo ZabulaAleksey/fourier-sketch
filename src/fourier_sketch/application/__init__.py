@@ -40,6 +40,11 @@ from .image_preprocessing import (
     select_preprocessing_raster,
 )
 from .local_paths import LocalPathError, validate_local_path
+from .skeleton_graph import (
+    LocalSkeletonGraphResult,
+    build_local_skeleton_graph,
+    export_skeleton_graph_json,
+)
 from .skeletonization import (
     LocalSkeletonResult,
     SkeletonConfig,
@@ -70,6 +75,7 @@ __all__ = [
     "ImageMvpState",
     "ImageNoContourResult",
     "LocalPathError",
+    "LocalSkeletonGraphResult",
     "LocalSkeletonResult",
     "RenderVisibility",
     "ResamplingMethod",
@@ -81,10 +87,12 @@ __all__ = [
     "build_dominant_contour_timeline",
     "build_freehand_timeline",
     "build_local_skeleton",
+    "build_local_skeleton_graph",
     "detect_preprocessed_edges",
     "export_edge_result",
     "export_local_skeleton",
     "export_preprocessing_result",
+    "export_skeleton_graph_json",
     "preprocess_local_image",
     "select_preprocessing_raster",
     "validate_local_path",

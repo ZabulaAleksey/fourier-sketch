@@ -2,76 +2,55 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-014`.
-- Active Stage ID: `FS-015`, lifecycle `in_progress`.
-- Branch: `feature/fs-015-skeleton-graph`, создана от `main@aba291d`.
-- Integration state: `main` и `origin/main` синхронизированы на `aba291d` до активации stage.
-- Scope: raster skeleton topology graph; FS-016 PiecewiseCurve и FS-017 routing не активированы.
-- Push/PR/release/deployment не выполнялись.
+- Last completed Stage ID: `FS-015`.
+- Lifecycle: `completed`; validated locally on `feature/fs-015-skeleton-graph`.
+- Base/integration target: `main` и `origin/main@aba291d`; FS-015 ещё не merged/pushed.
+- Next Stage ID: `FS-016`, lifecycle `planned`; implementation не авторизована.
+- Blockers: нет.
 
 ## Подтверждённо реализовано
 
-- `FS-000`–`FS-006`: scaffold, immutable domain model, Fourier pipeline, metrics, epicycle math,
-  timeline и диагностический Matplotlib/Agg renderer.
-- `FS-007`–`FS-009`: bounded freehand input, live freehand-to-trace MVP и arc-length
-  parameterization.
-- `FS-010`–`FS-011`: безопасный локальный PNG/JPEG preprocessing и typed threshold/Canny edge
-  diagnostics.
-- `FS-012`: bounded external-contour extraction, project-owned deterministic dominant selection,
-  canonical orientation/start point, normalized `Curve`, resampling и реальный
-  image → contour → Fourier → epicycle endpoint-trace CLI/E2E путь.
-- `FS-013`: generation-safe `ImageMvpController`, background Matplotlib surface, четыре панели
-  intermediates/contour/epicycles, preprocessing/edge/sample/harmonic/speed controls, явные
-  initial/processing/ready/empty/error/cancelled states и единый interactive/headless live path.
-- `FS-014`: explicit scikit-image 0.26.x Lee adapter, immutable skeleton/provenance contracts,
-  4 000 000 foreground budget, generation-safe controller, atomic skeleton/preview PNG и local CLI.
-- Пустой либо непригодный contour возвращает явный no-contour result без выдуманного outline или
-  скрытого fallback.
+- `FS-000`–`FS-009`: scaffold, immutable domain/Fourier/epicycle model, diagnostic renderer,
+  bounded freehand MVP и arc-length parameterization.
+- `FS-010`–`FS-013`: safe local PNG/JPEG preprocessing, explicit edge modes, deterministic dominant
+  contour и cohesive image-to-epicycle Matplotlib MVP.
+- `FS-014`: explicit scikit-image 0.26.x Lee skeletonization, typed provenance, generation-safe
+  controller и atomic skeleton/preview PNG.
+- `FS-015`: project-owned `corner-suppressed-8-v1` skeleton graph, raw degree roles, compressed
+  junction regions/degree-2 chains, explicit components, pure-loop anchors, parallel/self edges,
+  exact pixel ownership, raw cycle provenance и canonical traversal-neutral JSON.
+- Local graph diagnostic проходит реальный `PNG/JPEG → FS-010 → Lee → graph → JSON/overlay` path;
+  CLI не создаёт PiecewiseCurve, component bridge или forced route.
 
-## Evidence FS-013
+## Evidence FS-015
 
-- Activation commit: `92660de`.
-- Targeted unit/integration/component/live E2E suite: 29 tests PASS после security/correctness fixes.
-- Full terminal repository suite: 387 tests PASS.
-- `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
-- Визуальная проверка четырёхпанельного PNG с ellipse, выбранным contour и endpoint trace: PASS.
-- Независимые correctness/security reviews: GO после atomic no-overwrite, unsafe-path и Unicode
-  hardening; обязательных P0/P1/P2 findings не осталось.
+- Activation commit: `f56c487`.
+- Targeted analytical/property/integration/component/live E2E suite: 23 tests PASS, включая
+  raw-cycle/public-budget, non-quadratic component scan и in-chain cancellation regressions.
+- Full terminal repository suite после всех review fixes: 450 tests PASS.
+- `uv sync --all-groups --frozen --no-cache`, Ruff, strict mypy и project-overlay validator: PASS.
+- Визуальная проверка actual cross topology overlay и pseudo-locale layout: PASS.
+- Correctness/security review обнаружил raw-cycle, constructor-budget, quadratic scan и
+  cancellation-evidence gaps; все исправлены и final re-review завершён с verdict `GO`.
 
-## Известные блокеры
+## Limits / deferred
 
-- Нет.
+- Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
+- Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
+- Multi-component `PiecewiseCurve` conversion отложена до FS-016, forced route — до FS-017.
+- Matplotlib/CLI остаются diagnostic surface; PySide6 shell относится к FS-021.
+- Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
+  FS-023 residual risk.
 
-## Evidence FS-014
+## Следующее разумное действие
 
-- Activation commit: `b4c8c27`.
-- Targeted unit/integration/component/live E2E suite: 40 tests PASS.
-- Full terminal repository suite: 427 tests PASS.
-- `uv sync --all-groups --frozen`, Ruff, strict mypy, project-overlay validator и diff check: PASS.
-- Synthetic line/T/cross/loop/noise, real PNG/JPEG, empty/cancel/stale, corrupt/private-path,
-  no-overwrite и malformed backend scenarios: PASS.
-- Независимые correctness/security re-reviews: GO после local-path/import-time/solid-`2×2`
-  hardening; обязательных findings не осталось.
-
-## Ограничения / deferred
-
-- Выбирается один внешний контур; multi-component semantics отложена до `FS-016`.
-- Open/dangling edge fragments не преобразуются в замкнутую кривую.
-- Skeleton graph, component semantics и forced routing остаются FS-015–FS-017.
-- Диагностическая поверхность остаётся Matplotlib/CLI, а не финальным PySide6 shell.
-- OpenCV работает как in-process native dependency: Python-код ограничивает размер входа и
-  число кандидатов, но native crash нельзя преобразовать в typed Python error.
-
-## Текущее действие
-
-Реализовать и проверить FS-015 по active plan; merge/push не выполнять без отдельного разрешения.
+Проверить FS-015 handoff. Merge в `main`, push и активация FS-016 требуют отдельных команд.
 
 ## Синхронизация документации
 
-- README, AI plan/status/roadmap/stage registry, architecture/decisions/design, security/testing,
-  traceability/dependencies/fallbacks синхронизированы с validated FS-014.
-- Post-merge Completion Documentation Synchronization Gate выполнен для локального `main`;
-  integration evidence отражает fast-forward merge FS-013/FS-014 и отсутствие push.
-- Стабильные system/image-to-curve/desktop-export SPEC и математический контракт проверены: требования не
-  изменились, поэтому обновление не потребовалось.
-- `prompts/STAGES.md` остаётся каноническим stage registry вне `docs/`.
+- Обновлены README, SPEC/ADR, architecture/design/security/testing/traceability/dependencies/
+  fallbacks и AI plan/status/roadmap/stage registry.
+- Математический, API/export и data-model contracts проверены: FS-015 не меняет curve/Fourier,
+  public export format FS-022 или persistence, поэтому отдельные изменения не потребовались.
+- `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
+  диагностику сверх принятых graph contracts и regression evidence.

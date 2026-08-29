@@ -22,16 +22,16 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-012` | Dominant contour to normalized curve and diagnostic endpoint trace | `completed` |
 | `FS-013` | Live image-to-epicycle-trace MVP | `completed` |
 | `FS-014` | Explicit Lee skeletonization diagnostic | `completed` |
+| `FS-015` | Deterministic traversal-neutral skeleton graph | `completed` |
 
 ## Текущий этап
 
-`FS-015` — Skeleton Graph (`in_progress`); prerequisite FS-014 satisfied, implementation authorized.
+`FS-016` — Multiple Components / PiecewiseCurve (`planned`); implementation not authorized.
 
 ## Image-to-curve pipeline
 
 | Stage | Результат |
 |---|---|
-| `FS-015` | Skeleton Graph (`in_progress`) |
 | `FS-016` | Multiple Components / PiecewiseCurve |
 | `FS-017` | Forced Continuous Routing |
 | `FS-018` | Discontinuous Fourier Mode |
