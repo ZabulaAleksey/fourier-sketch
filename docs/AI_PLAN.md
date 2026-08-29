@@ -2,16 +2,17 @@
 
 ## Текущая цель
 
-Реализовать FS-021: source-run PySide6 desktop workflow с центральным Epicycles view.
+После восстановления пользовательского лимита продолжить FS-021 с measured renderer optimization;
+до этого сохранить проверенный source-run PySide6 slice в `main` без запуска FS-022.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `in_progress`; пользователь авторизовал продолжение 2026-08-29.
+- Lifecycle: `partial`; пользователь явно остановил дальнейшее выполнение 2026-08-29.
 - Branch: `feature/fs-021-pyside6-desktop-gui`, основана на local `main@eee5334`.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
-- Contract: UI dispatches existing use cases; long work stays outside the GUI thread; the visible trace
-  is the actual chain endpoint history.
+- Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
+  begins with measured QPainter improvements before any QML/GPU decision.
 
 ## Integration state
 
@@ -21,14 +22,16 @@
 
 ## План выполнения
 
-1. [in_progress] Проверить PySide6 platform/license contract, зафиксировать UI architecture и
-   добавить source-run dependency through `uv`.
-2. [pending] Реализовать immutable desktop state, bounded background jobs и central Epicycles view.
-3. [pending] Подключить freehand и supported image к existing application paths и локализованным
-   pages/states.
-4. [pending] Закрыть offscreen component, live desktop, cancellation/shutdown, full/static/docs gates.
+1. [completed] Добавить PySide6 source-run shell, worker dispatch, central canvas, freehand/image,
+   keyboard/visibility controls и offscreen evidence.
+2. [pending] Убрать paused/unchanged redraw, cache static paths/bounds и сделать trace incremental/
+   bounded; повторить default/stress frame profiles и parity.
+3. [pending] Только при недостигнутом budget выполнить bounded Qt Quick/QML scene-graph spike.
+4. [pending] Закрыть live freehand+image GUI, cancellation/shutdown/persistence, DPI/resize и final
+   review/docs gates; затем остановиться до FS-022.
 
 ## Handoff
 
-Работа идёт только в feature branch. После terminal evidence требуется отдельное разрешение на merge;
-push не выполняется без отдельного запроса.
+Пользователь разрешил локальный merge текущего partial slice в `main` и остановил дальнейшее
+выполнение до восстановления лимита. После resume первым остаётся performance step FS-021;
+FS-022 и FS-031 не начинать без новой явной команды.

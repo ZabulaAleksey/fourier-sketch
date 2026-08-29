@@ -165,6 +165,8 @@ boundary count, pseudo-locale и повторно открываемый atomic 
 6. image file → graph components → explicit PiecewiseCurve → pen-up overlay (`FS-016`, реализован);
 7. image file → explicit forced cyclic route → Fourier trace (`FS-017`, реализован);
 8. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
+9. Android finger/stylus stroke → parity-proven Fourier chain → animated endpoint trace on a named
+   emulator/device (`FS-031`, planned).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.
@@ -219,6 +221,11 @@ chart series/atomic no-overwrite и live measured explicit-jump PNG.
 FS-020 acceptance проверяет constant/impulse/sinusoid bins, generated real round-trip, readonly
 types/convention metadata, low/high/selected masks, asymmetric complex rejection, pre-allocation
 resource failure, safe local-image integration, atomic component PNG и live/bidi-safe CLI.
+
+FS-021 remaining performance evidence records default/stress K, trace length, DPI/window and
+hardware; asserts no continuous paused redraw, before/after frame buckets and exact endpoint parity.
+FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
+installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
 ## Manual diagnostics
 

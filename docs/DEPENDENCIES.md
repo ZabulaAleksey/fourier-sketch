@@ -100,6 +100,10 @@ packages. Qt is isolated to `fourier_sketch.ui`; domain, math and application re
 PySide6 has LGPL/commercial dual licensing; installer and redistribution compliance remain FS-023.
 Animation codec dependencies remain deferred to FS-022.
 
+FS-031 Android dependencies/toolchain are not selected or added during desktop work. The stage must
+record a capability/license/maintenance/build-size comparison and keep one reproducible mobile
+manager/lock contract without changing Python `uv` ownership of the current core repository.
+
 ## Cleanup classification
 
 - `.venv/`, `__pycache__/`, `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/`, build/dist/coverage —

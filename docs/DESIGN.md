@@ -243,6 +243,14 @@ Export overwrite требует явного выбора.
   locale, а layout остаётся построенным на framework layouts без ручного pixel positioning;
 - formatted numbers presentation-aware, domain values остаются canonical floats/integers.
 
+## Planned Android touch surface (FS-031)
+
+- primary canvas accepts a bounded finger/stylus stroke and exposes an explicit cancel state;
+- completed stroke transitions to the same circles/vectors/endpoint/trace semantics as desktop;
+- Play/Pause/Restart and harmonic/speed controls remain reachable in portrait and landscape;
+- touch targets/content descriptions and interruption/background recovery are acceptance surfaces;
+- image import, account/cloud sync and store-release UX are outside the MVP.
+
 ## Responsive/performance behavior
 
 Window resize не пересчитывает Fourier state. Rendering может downsample только display geometry

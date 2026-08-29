@@ -329,3 +329,7 @@ Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseC
 explicit forced route и discontinuous Fourier реализованы; animation export остаётся planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
+
+После desktop hardening roadmap содержит planned `FS-031`: offline Android MVP, где finger/stylus
+stroke проходит тот же Fourier/epicycle contract и анимирует фактический endpoint trace. Mobile
+framework пока намеренно не выбран до capability/performance/packaging evidence.

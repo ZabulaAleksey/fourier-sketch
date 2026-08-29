@@ -13,6 +13,10 @@
 Сетевой upload, remote URL import и telemetry отсутствуют в текущем scope. Их появление требует
 отдельной SPEC/security review.
 
+Planned Android FS-031 keeps the primary touch-to-animation path offline: no required network,
+account, upload or telemetry permission; raw touch samples stay device-local and out of logs.
+Manifest, lifecycle/background work and dependency/bridge boundaries require device evidence.
+
 ## Input validation
 
 - encoded image: максимум 25 MiB;

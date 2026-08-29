@@ -29,6 +29,12 @@ file parsing и export encoding не выполняются в event handlers/pa
 Long operations выполняются вне GUI thread, публикуют progress/error/cancel states и корректно
 завершают workers при закрытии окна.
 
+### UI-FR-007 — Bounded renderer work
+
+Paused/unmodified view не перерисовывается непрерывно. Static layers/bounds допускают cache,
+persistent trace обновляется инкрементально либо bounded policy, а optimization сохраняет exact
+endpoint/state parity. GPU/QML adapter вводится только после measured QPainter baseline и parity.
+
 ### UI-FR-005 — Localization
 
 Все user-facing strings находятся в resources. Начальные production language/locale — `en`,
@@ -66,6 +72,8 @@ error и completed state. Missing translation показывает fallback stri
 - UI-AC-002: component tests покрывают controls, empty/error/disabled/cancel и keyboard path.
 - UI-AC-003: default/fallback/pseudo-locale tests не требуют изменения business logic.
 - UI-AC-004: GUI thread остаётся responsive на representative long operation.
+- UI-AC-005: frame-time profile на named Windows environment подтверждает declared interactive
+  budget для default и stress K/trace; paused view не выполняет continuous redraw.
 - EX-AC-001: exported animation endpoint history эквивалентна interactive history.
 - EX-AC-002: codec unavailable даёт явный degraded/unavailable result без ложного MP4 success.
 - EX-AC-003: existing file и cancellation не приводят к silent data loss.

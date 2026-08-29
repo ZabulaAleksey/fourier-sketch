@@ -904,7 +904,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-021 — PySide6 Desktop GUI
 
-- Lifecycle: `in_progress`.
+- Lifecycle: `partial`; source-run shell is implemented/validated locally, renderer optimization,
+  live GUI and shutdown/persistence gates remain open.
 - Goal: replace diagnostic shell with a responsive desktop workflow centered on Epicycles view.
 
 ### Dependency DAG & entry preconditions
@@ -912,17 +913,34 @@ completion claim. Evidence records environment/branch and caveats.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; both MVPs, discontinuity and FFT2 modes completed.
 - Entry evidence: stable application use cases/view states, i18n resources, PySide6 platform/license
   review and offscreen component-test feasibility.
-- Current gate: prerequisites completed locally; activation is authorized, while terminal evidence
-  remains pending.
+- Current evidence: PySide6 dependency and source-run shell committed; full repository suite
+  `526 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
+  core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
+  from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
 
 ### Scope / non-goals / invariants
 
 - Scope: SOURCE→EXPORT page shell, application state, background jobs/progress/cancellation,
   central Epicycles canvas/controls, keyboard/accessibility, persisted non-sensitive preferences,
-  `en`/fallback/pseudo resources.
+  `en`/fallback/pseudo resources; measured renderer optimization.
 - Non-goals: new math/CV algorithms, animation codecs, installer packaging.
 - Invariants: UI dispatches existing use cases; no math/CV in handlers/paint; worker lifecycle bounded;
-  actual chain endpoint history; visibility affects view only.
+  actual chain endpoint history; visibility affects view only; optimization cannot change chain/
+  trace semantics or weaken accepted tests.
+
+### Ordered performance work
+
+1. Record reproducible default/stress frame-time profiles with K, trace length, DPI, window size,
+   OS/GPU/CPU and commit.
+2. Stop timer/repaint while paused or unchanged; resume only on state/input/animation changes.
+3. Cache source/reconstruction paths and scene bounds until curve/K/visibility/resize invalidates them.
+4. Maintain trace rendering incrementally with an explicit bounded visual/history policy; avoid
+   rebuilding/scanning the complete history on every frame.
+5. Batch dynamic geometry and avoid one Python/Qt object allocation per circle/vector where possible.
+6. Re-profile and prove endpoint/frame parity. Only if declared target remains unmet, run a bounded
+   Qt Quick/QML scene-graph spike; adopt it only with measured gain, compatibility and rollback.
+7. Do not migrate to React Native as a performance shortcut. A mobile technology decision belongs
+   to FS-031 and requires Windows/Android renderer, bridge, packaging and dependency evidence.
 
 ### Runnable vertical slice & concrete E2E
 
@@ -930,16 +948,21 @@ completion claim. Evidence records environment/branch and caveats.
 - Path: user selects freehand or supported image → existing application pipeline in worker →
   Epicycles view/control interactions → visible endpoint trace and diagnostics.
 - Observable result: responsive full workflow through real core, including error/cancel/restart.
+  Default animation target and stress/degraded budget are documented from measured hardware rather
+  than assumed; paused mode has zero continuous frame production.
 
 ### PASS evidence
 
 - Unit view-state/reducer; integration worker/application; component pages/states/keyboard/i18n/text
   expansion; live freehand+image E2E; shutdown/cancel/thread leak checks; full/static/dependency/
-  Windows smoke/overlay PASS and manual DPI/resize diagnostic.
+  Windows smoke/overlay PASS and manual DPI/resize diagnostic. Performance evidence includes
+  before/after frame-time buckets, long-trace behavior, parity and paused-redraw assertion.
 
 ### Temporary / deferred / failure
 
 - Allowed: direct PySide6 desktop launch without installer; fully working source-run product.
+- Allowed renderer path: optimized QWidget/QPainter when it meets the recorded budget; otherwise a
+  Qt Quick/QML scene-graph adapter to the same immutable frame contract.
 - Deferred: export implementation FS-022 and packaging hardening FS-023.
 - Failure: background exception becomes localized stable error state; no UI-thread fallback.
 - Docs: README run workflow, DESIGN, architecture, security/testing/dependencies, trace/status/plan.
@@ -954,7 +977,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-021 → FS-022`; desktop/application timeline must be completed.
 - Entry evidence: stable Curve/spectrum/state contracts, safe path policy and codec capability review.
-- Current gate: unsatisfied while FS-021 is planned.
+- Current gate: unsatisfied while FS-021 remains partial.
 
 ### Scope / non-goals / invariants
 
@@ -1300,3 +1323,58 @@ completion claim. Evidence records environment/branch and caveats.
 - Failure: unavailable state disables step with explanation; no fabricated values.
 - Docs: DESIGN/user guide in README only if launch behavior changes, trace/status/plan.
 - Handoff: commit optional stage, synchronize evidence and stop.
+
+## FS-031 — Android Touch-to-Epicycles MVP
+
+- Lifecycle: `planned`, optional mobile expansion.
+- Goal: deliver an installable offline Android MVP where a finger/stylus stroke is decomposed into
+  the same Fourier vectors and animated as an actual endpoint trace.
+
+### Dependency DAG & entry preconditions
+
+- DAG: `FS-023 + FS-008 + FS-005 → FS-031`; hardened shared contracts, live freehand capture
+  semantics and epicycle mathematics must be completed before mobile implementation starts.
+- Entry evidence: accepted `specs/features/android-touch.spec.md`, canonical fixture parity corpus,
+  Android SDK/emulator or named physical device, and a reviewed technology decision.
+- Technology decision gate: compare at least Qt/QML Android with Python deployment and a native
+  Android adapter around a portable core; React Native/Skia is eligible only if current Android and
+  required desktop/toolchain support are proven. Record build size, offline capability, bridge cost,
+  renderer frame time, maintenance/license and packaging implications. No framework is preselected.
+- Current gate: unsatisfied while FS-023 is planned.
+
+### Scope / non-goals / invariants
+
+- Scope: debug-installable Android app, single-touch/stylus canvas, bounded sampling/resampling,
+  Play/Pause/Restart, harmonic/speed controls, circles/vectors/endpoint/trace, portrait/landscape,
+  lifecycle cancellation, content descriptions, local-only state and measured frame/memory budget.
+- Non-goals: image import, cloud sync/account, Play Store publication, advertisements, telemetry,
+  desktop replacement or new Fourier/CV algorithms.
+- Invariants: same DFT convention, selection and endpoint equality as shared reference; mobile UI
+  never becomes a second math source; raw touch data remains local; no required network permission.
+
+### Runnable vertical slice & concrete E2E
+
+- Entry: documented build/install command for declared Android emulator/device.
+- Path: user draws one stroke with finger/stylus → bounded capture → Curve/resampling → shared or
+  parity-proven Fourier use case → epicycle chain → animated circles/vectors/endpoint/trace.
+- Observable result: installed app supports play/pause/restart and harmonic change, survives
+  cancel/background/foreground/rotation coherently and produces no stale or fabricated trace.
+
+### PASS evidence
+
+- Unit touch lifecycle/coordinate transform/budgets; property/reference coefficient and endpoint
+  parity; integration actual mobile adapter; component gestures/controls/accessibility/layout;
+  live emulator or physical-device E2E; lifecycle interruption tests; recorded frame-time/memory/
+  package-size evidence; manifest/privacy/dependency/license review; reproducible build and full
+  unaffected Python core/static/overlay gates.
+
+### Temporary / deferred / failure
+
+- Allowed: debug APK on one declared Android architecture/device profile; it must provide the full
+  offline touch-to-animation slice. Release signing/store distribution are not implied.
+- Deferred: image import, cross-device sync, iOS, store release and additional mobile locales.
+- Failure: unsupported device/backend shows a stable unavailable state; no silent renderer/math
+  substitution, upload or partial stale animation. Technology spike failure leaves desktop/core intact.
+- Docs: mobile SPEC, architecture/decision/design/security/testing/dependencies, README build/run,
+  traceability/roadmap/status/plan and exact toolchain/version evidence.
+- Handoff: commit the Android MVP, do not claim store release, and stop for explicit direction.

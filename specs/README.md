@@ -7,6 +7,7 @@
 | `features/epicycle-animation.spec.md` | Принята, v0.1 | Head-to-tail vectors, endpoint equivalence и trace |
 | `features/image-to-curve.spec.md` | Принята, v0.1 | Недоверенные изображения, contours, routing и discontinuities |
 | `features/desktop-export.spec.md` | Принята, v0.1 | Desktop UI, i18n boundary и exports |
+| `features/android-touch.spec.md` | Принята, v0.1 | Offline Android touch input и epicycle animation |
 
 Требования имеют устойчивые IDs. `prompts/STAGES.md` определяет порядок реализации, но не
 переопределяет SPEC. Planned path или test name в traceability не является evidence реализации.

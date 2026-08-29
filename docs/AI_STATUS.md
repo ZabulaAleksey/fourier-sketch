@@ -3,7 +3,7 @@
 ## Текущий этап
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
-- Active Stage ID: `FS-021`, lifecycle `in_progress`.
+- Active Stage ID: `FS-021`, lifecycle `partial`.
 - Branch: `feature/fs-021-pyside6-desktop-gui` from local `main@eee5334`.
 - Base/integration target: local `main@eee5334`; `origin/main@aba291d` remains unpushed.
 - Blockers: нет.
@@ -11,10 +11,11 @@
 ## FS-021 progress
 
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
-  offscreen component checks are implemented locally; merge/push are not performed.
+  offscreen component checks are implemented and committed locally; merge is authorized, push is not.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
-- Full regression needs a repeatable final summary: the current host ended the run without it after
-  initial progress, so it is not recorded as PASS evidence.
+- Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
+- Renderer profile separates fast core (`≈0.31 ms/frame`) from QPainter work (`≈3.66 ms/frame` at
+  K=25; stress K=256 grows `≈10.4→13.5 ms/frame` through trace length 1001). Optimization remains.
 
 ## Подтверждённо реализовано
 
@@ -57,13 +58,15 @@
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
 - Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
-- Matplotlib/CLI остаются diagnostic surface; PySide6 shell относится к FS-021.
+- PySide6 shell exists as a partial FS-021 source-run slice; live GUI/shutdown/persistence and
+  measured renderer optimization remain before terminal completion.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-Выполнить FS-021 source-run PySide6 vertical slice; push и merge не авторизованы.
+После восстановления пользовательского лимита продолжить FS-021 с renderer optimization из
+canonical stage prompt. FS-022 и planned Android FS-031 не начинать без новой команды.
 
 ## Синхронизация документации
 

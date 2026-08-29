@@ -436,3 +436,23 @@ shift применяется только к magnitude/log/phase view и filter-
 
 **Последствия:** CPU baseline bounded active decoded image limits; GPU/alternate backend fallback
 отсутствует. Изменение normalization/shift/axis convention требует SPEC/ADR/test migration.
+
+## 2026-08-29 — ADR-022: Optimize measured Qt renderer before framework migration
+
+**Контекст:** FS-021 source-run PySide6 shell proves the desktop path, but animation smoothness is
+limited by per-frame Python/QPainter work, complete trace redraw and a fixed 33 ms timer. Local
+profile separates the fast numerical timeline from the presentation cost. A React Native rewrite
+would also require a Windows/mobile graphics backend and a bridge or port of NumPy/CV/core.
+
+**Решение:** сохранить Python domain/application source of truth. Сначала убрать redraw paused/
+unchanged state, cache static paths/bounds, update trace incrementally with a bounded policy and
+batch dynamic geometry. После before/after parity profile Qt Quick/QML scene graph допускается как
+renderer adapter, если QWidget/QPainter не достигает declared budget. React Native не выбран как
+desktop optimization; mobile framework FS-031 выбирается отдельным capability decision.
+
+**Рассмотренные альтернативы:** немедленный полный React Native rewrite; повышение timer rate без
+уменьшения frame work; перенос Fourier/CV logic в paint layer; преждевременный native/Rust rewrite.
+
+**Последствия:** существующие math/application tests и source-run rollback сохраняются. Любой GPU/
+QML/mobile adapter обязан доказать endpoint/frame parity и measured gain; framework migration не
+может маскировать regression или переносить обязательную инфраструктуру в будущий stage.

@@ -31,7 +31,8 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-021` — PySide6 GUI (`in_progress`; source-run desktop vertical slice).
+`FS-021` — PySide6 GUI (`partial`; source-run slice committed, measured renderer optimization and
+terminal GUI gates remain for the next session).
 
 ## Image-to-curve pipeline
 
@@ -60,6 +61,12 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-029` | Better Single-Stroke Optimization |
 | `FS-030` | Educational Mode |
 
+## Mobile expansion
+
+| Stage | Результат | Статус |
+|---|---|---|
+| `FS-031` | Offline Android finger/stylus drawing → Fourier vectors → epicycle animation | `planned` |
+
 ## Milestones
 
 - M1: `FS-005` — mathematics proves endpoint equivalence.
@@ -67,3 +74,4 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 - M3: `FS-013` — image live E2E.
 - M4: `FS-022` — desktop/export live E2E.
 - M5: `FS-023` — hardened core product.
+- M6: `FS-031` — installable offline Android touch-to-epicycles MVP.

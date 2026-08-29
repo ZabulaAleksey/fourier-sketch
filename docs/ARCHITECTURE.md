@@ -47,6 +47,10 @@ imaging, routing       → domain contracts; application composes them
 domain, math           → Python stdlib + NumPy only when introduced
 ```
 
+Planned Android `FS-031` follows the same direction: mobile touch/presentation adapter → portable
+application/domain/math contract. Technology selection remains open until capability evidence;
+mobile UI or bridge cannot become a second Fourier implementation.
+
 `domain`/`math` не импортируют PySide6, matplotlib, Pillow, OpenCV или scikit-image. Renderer не
 вычисляет coefficients. UI handlers не выполняют Fourier/CV logic.
 
@@ -302,4 +306,6 @@ installer не выбраны; решение откладывается до ha
 - NumPy, CV, renderer и GUI dependencies добавляются just-in-time, не на bootstrap.
 - Performance acceleration не является источником истины: reference implementation и parity
   tests появляются раньше optimization.
+- Desktop renderer optimization follows ADR-022: measured QPainter work first, optional QML scene
+  graph only after parity; Android framework selection is isolated to FS-031.
 - Future stage не может впервые сделать предыдущий runnable slice проверяемым.

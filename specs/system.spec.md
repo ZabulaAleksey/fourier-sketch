@@ -13,7 +13,7 @@ head-to-tail цепочка вращающихся vectors воспроизво�
 
 - single и piecewise planar curves;
 - reference DFT, NumPy FFT, IDFT, spectrum и partial reconstruction;
-- epicycle math, diagnostic renderer и desktop UI;
+- epicycle math, diagnostic renderer, desktop UI и planned offline Android touch client;
 - freehand и локальные PNG/JPEG inputs;
 - preprocessing, contours, skeleton graph и routing policies;
 - discontinuity analysis и отдельный 2D image FFT mode;
@@ -47,6 +47,12 @@ segments как `PiecewiseCurve`, не создавая скрытый bridge м
 
 Система должна преобразовать mouse path в валидированную curve, resampling, Fourier spectrum,
 epicycle chain и endpoint trace.
+
+### FR-MOBILE-001 — Android touch client
+
+Будущий Android client должен преобразовать bounded finger/stylus stroke в тот же Curve/Fourier/
+epicycle contract и локально анимировать фактический endpoint trace. Mobile renderer является
+adapter; альтернативная Fourier convention или обязательный cloud/backend запрещены.
 
 ### FR-IMPORT-001 — Image input
 
@@ -139,8 +145,9 @@ cancellation и понятный failure state.
 
 ### NFR-PORT-001 — Переносимость
 
-Paths строятся через `pathlib`; Windows является первым проверяемым desktop environment, но
-архитектура не содержит machine-specific абсолютных путей.
+Paths строятся через `pathlib`; Windows является первым проверяемым desktop environment, а Android
+— отдельным planned client environment. Shared domain/application contracts не содержат
+machine-specific абсолютных путей или UI-framework imports.
 
 ## 7. Требования безопасности
 
@@ -173,6 +180,8 @@ complex samples или full user paths без диагностической н�
 3. User меняет harmonic count/order/display toggles → math selection или rendering меняются в
    своих границах → endpoint equivalence сохраняется.
 4. User экспортирует animation → экспорт использует те же chain states и endpoint history.
+5. Android user рисует пальцем → bounded touch capture → shared Fourier semantics → animated
+   vectors и фактический endpoint trace локально на device.
 
 ## 9. Ошибки и граничные случаи
 
@@ -207,6 +216,7 @@ complex samples или full user paths без диагностической н�
 | FR-EPICYCLE/TRACE | `features/epicycle-animation.spec.md` | property + component + E2E |
 | FR-IMPORT/ROUTING/DISCONTINUITY | `features/image-to-curve.spec.md` | unit + integration + E2E |
 | FR-I18N/EXPORT | `features/desktop-export.spec.md` | component + integration + E2E |
+| FR-MOBILE-001 | `features/android-touch.spec.md` | parity + component + device E2E |
 
 ## 12. Открытые вопросы
 
