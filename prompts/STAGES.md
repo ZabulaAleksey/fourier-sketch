@@ -904,7 +904,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-021 — PySide6 Desktop GUI
 
-- Lifecycle: `planned`.
+- Lifecycle: `in_progress`.
 - Goal: replace diagnostic shell with a responsive desktop workflow centered on Epicycles view.
 
 ### Dependency DAG & entry preconditions
@@ -912,7 +912,8 @@ completion claim. Evidence records environment/branch and caveats.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; both MVPs, discontinuity and FFT2 modes completed.
 - Entry evidence: stable application use cases/view states, i18n resources, PySide6 platform/license
   review and offscreen component-test feasibility.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: prerequisites completed locally; activation is authorized, while terminal evidence
+  remains pending.
 
 ### Scope / non-goals / invariants
 

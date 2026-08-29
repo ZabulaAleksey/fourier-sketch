@@ -31,7 +31,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-`FS-021` — PySide6 GUI (`planned`; not authorized in this five-stage run).
+`FS-021` — PySide6 GUI (`in_progress`; source-run desktop vertical slice).
 
 ## Image-to-curve pipeline
 

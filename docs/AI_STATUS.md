@@ -3,10 +3,18 @@
 ## Текущий этап
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
-- Active Stage ID: `FS-020`, lifecycle `completed`.
-- Branch: `main`; fast-forward merge from `feature/fs-020-fft2-image-mode` completed locally.
-- Base/integration target: local `main@5895315`; `origin/main@aba291d` remains unpushed.
+- Active Stage ID: `FS-021`, lifecycle `in_progress`.
+- Branch: `feature/fs-021-pyside6-desktop-gui` from local `main@eee5334`.
+- Base/integration target: local `main@eee5334`; `origin/main@aba291d` remains unpushed.
 - Blockers: нет.
+
+## FS-021 progress
+
+- PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
+  offscreen component checks are implemented locally; merge/push are not performed.
+- Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
+- Full regression needs a repeatable final summary: the current host ended the run without it after
+  initial progress, so it is not recorded as PASS evidence.
 
 ## Подтверждённо реализовано
 
@@ -55,7 +63,7 @@
 
 ## Следующее разумное действие
 
-Остановиться до FS-021 и дождаться явной авторизации продолжения; push не выполнялся.
+Выполнить FS-021 source-run PySide6 vertical slice; push и merge не авторизованы.
 
 ## Синхронизация документации
 

@@ -307,13 +307,25 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
   routing policy, application use cases, presentation resources, renderer/CLI;
 - `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.
 
+## Desktop GUI (FS-021)
+
+Запуск source-run desktop workflow:
+
+```powershell
+uv run python -m fourier_sketch.cli.desktop
+```
+
+В окне можно нарисовать freehand stroke либо выбрать локальный PNG/JPEG. Image path использует
+существующий validated image-to-contour application flow в background worker; epicycle canvas
+показывает actual endpoint history. Export pages и installer пока disabled/deferred.
+
 ## Ограничения
 
-Diagnostic Matplotlib surface является временным рабочим UI, а не финальным PySide6 shell.
+Matplotlib diagnostics остаются поддерживаемыми diagnostic adapters. FS-021 добавляет source-run
+PySide6 shell, но animation/data export и packaging ещё не реализованы.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
 Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,
-explicit forced route и discontinuous Fourier реализованы; PySide6 product GUI и animation export
-остаются planned.
+explicit forced route и discontinuous Fourier реализованы; animation export остаётся planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.

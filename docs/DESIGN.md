@@ -3,8 +3,10 @@
 ## Статус
 
 FS-006 реализовал временную diagnostic Matplotlib surface и headless PNG, а FS-007 — фактический
-freehand canvas на том же renderer path. Разделы ниже фиксируют реализованный UI; остальная
-information architecture остаётся approved target для полного PySide6 shell `FS-021`.
+freehand canvas на том же renderer path. FS-021 добавляет source-run PySide6 shell: SOURCE page,
+disabled future workflow pages, mouse freehand/image selection, central resizable Epicycles canvas,
+keyboard-focusable controls, visibility checkboxes and `en`/pseudo resources. Image work runs in a
+single worker; cancel publishes a stable state and no partial frame. Export remains deferred.
 
 ## Diagnostic FS-006 — фактический baseline
 

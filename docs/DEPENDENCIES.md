@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-018)
+## Текущая dependency surface (FS-021)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
@@ -94,8 +94,11 @@ FS-019 не добавляет dependency: K sweep/metrics/chart переисп�
 FS-020 не добавляет dependency: CPU FFT2/IFFT2 uses already pinned NumPy; diagnostics reuse Pillow
 safe decode и Matplotlib.
 
-Direct PySide6 и animation codec dependencies добавляются только в первом stage реального
-использования с tests и license/platform review.
+FS-021 добавляет `PySide6>=6.8,<7` как direct dependency для source-run Windows desktop adapter.
+`uv.lock` resolves PySide6 6.11.2 together with matching Addons, Essentials and shiboken6 runtime
+packages. Qt is isolated to `fourier_sketch.ui`; domain, math and application remain framework-free.
+PySide6 has LGPL/commercial dual licensing; installer and redistribution compliance remain FS-023.
+Animation codec dependencies remain deferred to FS-022.
 
 ## Cleanup classification
 
