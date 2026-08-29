@@ -398,3 +398,17 @@ edges линейно, но создаёт заведомо больший cost �
 **Миграция / откат:** новый route является opt-in и не меняет FS-015 graph или FS-016 Piecewise
 semantics. Изменение adjacency, T-join, component tie-break, step provenance/cost или cyclic seam
 требует SPEC/ADR/accepted-test migration.
+
+## 2026-08-29 — ADR-019: Один discontinuous signal, две stroke policies
+
+**Контекст:** PiecewiseCurve не содержит bridges, но DFT требует один periodic sample sequence.
+Renderer не должен скрытно менять signal при переключении pen-up/strict display.
+
+**Решение:** equal/proportional allocator детерминированно распределяет total samples с минимум
+одним на segment и canonical remainder ties. Concatenated samples сохраняют boundary jump metadata,
+включая last→first seam, и единожды поступают в существующие FFT/selection/chain APIs.
+`STRICT_TRAJECTORY` рисует весь periodic signal, `PEN_UP_RENDERING` рисует segments отдельно;
+coefficients, reconstruction и endpoint ledger общие.
+
+**Последствия:** jumps являются математическим input, не artificial bridge. Allocation меньше числа
+segments fail closed; spectrum-decay interpretation отложена до FS-019. Dependency не добавляется.

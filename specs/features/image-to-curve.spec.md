@@ -64,7 +64,12 @@ simple-path, pure-loop или isolated topology. Segments canonical ordered по
 `pixel-center-centered-aspect-v1` transform. Между соседними segments хранится explicit boundary
 metadata; `PEN_UP_RENDERING` не рисует connector. Branched/ambiguous component возвращает typed
 unsupported result без partial `PiecewiseCurve`; traversal, duplication и bridge относятся к
-explicit routing policy. Fourier analysis может включать jumps только на следующем stage.
+explicit routing policy. FS-018 sampling выбирает explicit `EQUAL` либо
+`PROPORTIONAL_ARC_LENGTH` allocation, выдаёт ровно requested sample count и минимум один sample на
+segment. Boundary metadata хранит sample indices, endpoints и jump length, включая periodic
+last→first seam. Один discontinuous sample sequence создаёт spectrum/timeline для
+`STRICT_TRAJECTORY` и `PEN_UP_RENDERING`; policy меняет только source-stroke artists, но не
+coefficients, reconstruction или endpoint history. Insufficient allocation отклоняется без merge.
 
 ### IM-FR-008 — 2D FFT separation
 
