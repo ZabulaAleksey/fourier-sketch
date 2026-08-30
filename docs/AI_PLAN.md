@@ -28,7 +28,7 @@
    `0.10..2.00×`, step `0.05×`; сохранить application endpoint ledger.
 3. [completed] Кэшировать static paths и static bounds по изменению curve/reconstruction/selection;
    перейти на повторно используемый scene-viewport pass.
-4. [pending] Повторить stress profile и закрепить метрику по default/stress конфигу.
+4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
 5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
 6. [pending] Закрыть live freehand+image GUI, cancellation/shutdown/persistence, DPI/resize и final
    review/docs gates; затем остановиться до FS-022.

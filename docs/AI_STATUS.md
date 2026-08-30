@@ -15,15 +15,18 @@
   offscreen component checks are implemented, committed and merged locally; push is not performed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
 - Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
-- Renderer profile separates fast core (`≈0.31 ms/frame`) from QPainter work (`≈3.66 ms/frame` at
-  K=25; stress K=256 grows `≈10.4→13.5 ms/frame` through trace length 1001). Optimization remains.
+- Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
+  QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
+  `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.
+  Endpoint parity and deterministic replay were verified by double-run equality check.
 - Authorized renderer-control delta removes persistent trace from desktop bounds/paint/toggle while
   retaining the application ledger; desktop speed maps exactly to `0.10..2.00×` in `0.05×` steps.
 - Comparable K=25/600-frame offscreen paint improved `≈3.66→2.00 ms/frame`; retained ledger ended
   at 601 points. Targeted component/Ruff/mypy/overlay PASS.
 - FS-021 static scene cache is now implemented: original/reconstruction geometry and scene bounds are
   cached until curve/reconstruction/selection changes; dynamic vectors are painted each frame.
-- Step 4 stress profile remains pending for next bounded run with current hardware/GPU tuple.
+- Step 4 stress profile completed and evidence recorded for this hardware tuple; no target breach
+  against a 16.67 ms/frame interactive budget in default or stress buckets.
 - Reviewer P1 continuous paused redraw fixed: animation timer is inactive without/running-off
   timeline, starts on Play and stops on Pause/Restart. Targeted desktop suite is 3 PASS; final full
   repository suite after the fix is `527 passed in 161.13s`.
@@ -78,8 +81,8 @@
 
 ## Следующее разумное действие
 
-После отдельной команды продолжить FS-021 с повторным stress profile и при необходимости bounded
-QML/QT scene-graph spike:
+После отдельной команды продолжить FS-021: если новые профили на целевом железе ухудшат
+показатели, перейти к bounded QML/QT scene-graph spike и затем выполнить финальные docs/tests gates.
 FS-022 и planned Android FS-031 не начинать заодно.
 
 ## Синхронизация документации
