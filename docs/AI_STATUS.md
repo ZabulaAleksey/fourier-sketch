@@ -22,7 +22,8 @@
   `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.
   Endpoint parity and deterministic replay were verified by double-run equality check.
 - Authorized renderer-control delta removes persistent trace from desktop bounds/paint/toggle while
-  retaining the application ledger; desktop speed maps exactly to `0.10..2.00×` in `0.05×` steps.
+  retaining the application ledger; desktop speed is capped for smoother interaction at
+  `0.10..1.00×`, currently mapped with `0.01×` resolution.
 - Comparable K=25/600-frame offscreen paint improved `≈3.66→2.00 ms/frame`; retained ledger ended
   at 601 points. Targeted component/Ruff/mypy/overlay PASS.
 - FS-021 static scene cache is now implemented: original/reconstruction geometry and scene bounds are

@@ -43,10 +43,11 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     assert window._canvas._frame is not None
     assert window._play.isEnabled()
     assert window._harmonics.minimum() == 1
-    assert window._speed.minimum() == 2
-    assert window._speed.maximum() == 40
+    assert window._speed.minimum() == 10
+    assert window._speed.maximum() == 100
     assert window._speed.singleStep() == 1
-    assert window._speed.value() / 20.0 == 0.10
+    assert window._speed.value() == window._speed.minimum()
+    assert window._speed.value() / 100.0 == 0.10
     assert window._canvas._frame.speed == 0.10
     assert not window._timer.isActive()
     assert not any(
@@ -57,8 +58,8 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     assert window._canvas._frame is not None
     assert not window._canvas._frame.visibility.trace
 
-    window._speed.setValue(40)
-    assert window._canvas._frame.speed == 2.00
+    window._speed.setValue(100)
+    assert window._canvas._frame.speed == 1.00
 
     window.keyPressEvent(
         QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_Space, Qt.KeyboardModifier.NoModifier)

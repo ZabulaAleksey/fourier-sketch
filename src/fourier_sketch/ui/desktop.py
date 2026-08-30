@@ -60,6 +60,12 @@ class _Job(QThread):
             self.failed.emit("desktop.error.runtime")
 
 
+_SPEED_MIN = 0.10
+_SPEED_MAX = 1.00
+_SPEED_STEP = 0.01
+_SPEED_SCALE = int(1 / _SPEED_STEP)
+
+
 class EpicycleCanvas(QWidget):
     """Paint-only view of a ready immutable frame; it never calculates Fourier state."""
 
@@ -338,13 +344,19 @@ class DesktopWindow(QMainWindow):
         options = QFormLayout()
         self._harmonics = QSlider(Qt.Orientation.Horizontal)
         self._speed = QSlider(Qt.Orientation.Horizontal)
-        self._speed.setRange(2, 40)
+        self._speed.setRange(
+            int(_SPEED_MIN * _SPEED_SCALE),
+            int(_SPEED_MAX * _SPEED_SCALE),
+        )
         self._speed.setSingleStep(1)
-        self._speed.setValue(2)
+        self._speed.setPageStep(5)
+        self._speed.setValue(int(_SPEED_MIN * _SPEED_SCALE))
         self._harmonics.valueChanged.connect(
             lambda value: self._timeline_action("harmonics", value)
         )
-        self._speed.valueChanged.connect(lambda value: self._timeline_action("speed", value / 20.0))
+        self._speed.valueChanged.connect(
+            lambda value: self._timeline_action("speed", value / _SPEED_SCALE)
+        )
         options.addRow(self._translator.text("control.harmonics"), self._harmonics)
         options.addRow(self._translator.text("control.speed"), self._speed)
         for field in ("circles", "vectors", "endpoint", "original", "reconstruction"):
@@ -468,7 +480,7 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._timeline = timeline
-        speed = self._speed.value() / 20.0
+        speed = self._speed.value() / _SPEED_SCALE
         self._apply_frame(timeline.set_speed(speed))
 
     def _apply_frame(self, frame: object) -> None:
