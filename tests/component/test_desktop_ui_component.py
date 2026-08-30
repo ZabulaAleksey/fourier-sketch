@@ -145,3 +145,25 @@ def test_desktop_window_cancel_then_close_stops_timer_and_job() -> None:
     window._cancel_current_job()
     assert window._timer.isActive() is False
     window.close()
+
+
+def test_desktop_cancelled_job_does_not_apply_stale_timeline() -> None:
+    _application()
+    window = DesktopWindow()
+
+    def delayed_operation() -> object:
+        time.sleep(0.2)
+        return build_freehand_timeline(
+            Curve(
+                (Point2D(0.0, 0.0), Point2D(1.0, 0.0), Point2D(0.5, 1.0)),
+                closed=True,
+            )
+        )
+
+    window._start_job(delayed_operation, window._apply_timeline)
+    window._cancel_current_job()
+
+    time.sleep(0.25)
+    assert window._timeline is None
+
+    window.close()

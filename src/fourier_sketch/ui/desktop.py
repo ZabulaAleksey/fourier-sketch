@@ -5,8 +5,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 from time import monotonic
+from typing import cast
 
-from PySide6.QtCore import QPointF, Qt, QThread, QTimer, Signal
+from PySide6.QtCore import QPointF, QSettings, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QColor, QKeyEvent, QMouseEvent, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
@@ -51,7 +52,10 @@ class _Job(QThread):
 
     def run(self) -> None:
         try:
-            self.finished_snapshot.emit(self._operation())
+            result = self._operation()
+            if self.isInterruptionRequested():
+                return
+            self.finished_snapshot.emit(result)
         except Exception:
             self.failed.emit("desktop.error.runtime")
 
@@ -270,6 +274,8 @@ class DesktopWindow(QMainWindow):
         self._image = ImageMvpController()
         self._timeline: EpicycleTimeline | None = None
         self._job: _Job | None = None
+        self._job_generation = 0
+        self._settings = QSettings("fourier-sketch", "desktop")
         self._last_tick = monotonic()
         self._canvas = EpicycleCanvas(self._translator)
         self._pages: QStackedWidget
@@ -279,6 +285,7 @@ class DesktopWindow(QMainWindow):
         self._timer.setInterval(33)
         self._timer.timeout.connect(self._tick)
         self._build()
+        self._restore_settings()
 
     def _build(self) -> None:
         self.setWindowTitle(self._translator.text("app.title"))
@@ -387,18 +394,40 @@ class DesktopWindow(QMainWindow):
         if self._job is not None and self._job.isRunning():
             self._set_status(self._translator.text("desktop.status.busy"))
             return
+        self._job_generation += 1
+        generation = self._job_generation
         self._job = _Job(operation)
-        self._job.finished_snapshot.connect(on_success)
-        self._job.failed.connect(
-            lambda _key: self._set_status(self._translator.text("desktop.status.runtime"))
-        )
+
+        def on_job_success(result: object, expected: int = generation) -> None:
+            if self._job_generation != expected:
+                return
+            on_success(result)
+
+        def on_job_failed(_key: str, expected: int = generation) -> None:
+            if self._job_generation != expected:
+                return
+            self._set_status(self._translator.text("desktop.status.runtime"))
+
+        self._job.finished_snapshot.connect(on_job_success)
+        self._job.failed.connect(on_job_failed)
         self._job.finished.connect(self._job_finished)
         self._job.start()
 
     def _cancel_current_job(self) -> None:
         self._image.cancel()
+        self._job_generation += 1
+        if self._job is None:
+            return
+
+        if self._job.isRunning():
+            self._job.requestInterruption()
+            self._job.wait(3000)
+            if self._job.isRunning():
+                self._job.terminate()
+                self._job.wait(3000)
         if self._job is not None and self._job.isRunning():
             self._set_status(self._translator.text("desktop.status.cancelled"))
+        self._job = None
 
     def _set_visibility(self, field: str, enabled: bool) -> None:
         timeline = self._timeline
@@ -524,14 +553,47 @@ class DesktopWindow(QMainWindow):
         super().keyPressEvent(event)
 
     def closeEvent(self, event: QCloseEvent) -> None:
+        self._save_settings()
         self._timer.stop()
-        self._image.cancel()
-        if self._job is not None and self._job.isRunning():
-            self._job.wait(3000)
+        self._cancel_current_job()
         event.accept()
 
     def _set_status(self, text: str) -> None:
         self._status.setText(text)
+
+    def _restore_settings(self) -> None:
+        window_width = cast(int, self._settings.value("window/width", 1200, int))
+        window_height = cast(int, self._settings.value("window/height", 760, int))
+        control_speed = cast(int, self._settings.value("controls/speed", 2, int))
+        control_harmonics = cast(int, self._settings.value("controls/harmonics", 1, int))
+        self.resize(
+            window_width,
+            window_height,
+        )
+        self._speed.setValue(
+            max(
+                self._speed.minimum(),
+                min(
+                    self._speed.maximum(),
+                    control_speed,
+                ),
+            )
+        )
+        self._harmonics.setValue(
+            max(
+                self._harmonics.minimum(),
+                min(
+                    self._harmonics.maximum(),
+                    control_harmonics,
+                ),
+            )
+        )
+
+    def _save_settings(self) -> None:
+        self._settings.setValue("window/width", self.width())
+        self._settings.setValue("window/height", self.height())
+        self._settings.setValue("controls/speed", self._speed.value())
+        self._settings.setValue("controls/harmonics", self._harmonics.value())
 
 
 def run_desktop(*, locale: str | None = None) -> int:
