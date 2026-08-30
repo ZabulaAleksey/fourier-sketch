@@ -102,7 +102,8 @@ degraded contour.
 
 `Cancel` не останавливает native/Pillow/OpenCV call принудительно: проверка token происходит между
 bounded pipeline steps и перед publication. Это cooperative cancellation, а не false-complete
-fallback; FS-023 отвечает за measured cancellation latency и hardening representative large input.
+fallback. FS-023 подтвердил generation-safe late-result suppression и удалил unsafe forced Qt thread
+termination; worker остаётся owned до normal completion.
 
 ## Skeletonization (FS-014)
 

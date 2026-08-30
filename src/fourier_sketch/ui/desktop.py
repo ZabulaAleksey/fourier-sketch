@@ -593,6 +593,7 @@ class DesktopWindow(QMainWindow):
         self._timeline: EpicycleTimeline | None = None
         self._job: _Job | None = None
         self._job_generation = 0
+        self._close_pending = False
         self._settings = QSettings("fourier-sketch", "desktop")
         self._last_tick = monotonic()
         self._canvas = EpicycleCanvas(self._translator)
@@ -838,10 +839,7 @@ class DesktopWindow(QMainWindow):
 
         if job.isRunning():
             job.requestInterruption()
-            job.wait(3000)
-            if job.isRunning():
-                job.terminate()
-                job.wait(3000)
+            self._cancel.setEnabled(False)
         if not job.isRunning():
             self._job = None
             job.deleteLater()
@@ -862,6 +860,9 @@ class DesktopWindow(QMainWindow):
             self._job.deleteLater()
         self._job = None
         self._cancel.setEnabled(False)
+        if self._close_pending:
+            self._close_pending = False
+            QTimer.singleShot(0, self.close)
 
     def _apply_image(self, snapshot: object) -> None:
         if not isinstance(snapshot, ImageMvpSnapshot):
@@ -1131,6 +1132,10 @@ class DesktopWindow(QMainWindow):
         self._save_settings()
         self._timer.stop()
         self._cancel_current_job()
+        if self._job is not None and self._job.isRunning():
+            self._close_pending = True
+            event.ignore()
+            return
         event.accept()
 
     def _set_status(self, text: str) -> None:

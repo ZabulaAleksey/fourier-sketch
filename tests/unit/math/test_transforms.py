@@ -93,6 +93,20 @@ def test_fft_backend_failure_is_explicit_without_reference_fallback(
         fft_dft((1.0 + 0.0j,))
 
 
+def test_inverse_fft_backend_failure_is_explicit_without_scalar_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    spectrum = fft_dft((1.0 + 0.0j, 0.0j))
+
+    def fail_ifft(_values: object) -> object:
+        raise RuntimeError("backend unavailable")
+
+    monkeypatch.setattr(np.fft, "ifft", fail_ifft)
+
+    with pytest.raises(FourierBackendError, match="NumPy inverse FFT"):
+        idft(spectrum)
+
+
 def test_idft_requires_a_complete_spectrum() -> None:
     invalid = cast(FourierSpectrum, object())
 

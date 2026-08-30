@@ -149,13 +149,24 @@ Python 3.12+, `pyproject.toml` и `uv.lock` являются dependency source o
 ### NFR-UI-001 — Responsiveness
 
 Длительные image/Fourier/export operations не блокируют GUI thread и поддерживают progress,
-cancellation и понятный failure state.
+cancellation и понятный failure state. Cooperative cancellation не использует unsafe forced thread
+termination: late result подавляется generation guard, а закрытие окна откладывается до завершения
+всё ещё принадлежащего приложению bounded worker.
 
 ### NFR-PORT-001 — Переносимость
 
 Paths строятся через `pathlib`; Windows является первым проверяемым desktop environment, а Android
 — отдельным planned client environment. Shared domain/application contracts не содержат
 machine-specific абсолютных путей или UI-framework imports.
+
+### NFR-HARD-001 — Измеряемое hardening evidence
+
+FS-023 фиксирует named-environment baseline для representative large-N FFT, default/stress-K chain
+и desktop paint, проверяет numerical optimization против reference path, положительный Unicode/
+space Windows path и clean wheel/source-run smoke. Wall-clock measurements записываются как evidence,
+но correctness suite использует только широкие resource/complexity guards, а не хрупкий machine-time
+threshold. Installer не считается выбранным или готовым без отдельного redistribution/license
+решения и installer smoke.
 
 ## 7. Требования безопасности
 
@@ -215,6 +226,12 @@ complex samples или full user paths без диагностической н�
 - AC-SYS-010: каждый stage имеет runnable slice, PASS evidence и не зависит от future stage.
 - AC-SYS-011: user-facing strings проходят default/fallback/pseudo-locale checks.
 - AC-SYS-012: security/resource limits дают контролируемый отказ.
+- AC-SYS-013: optimized inverse reconstruction сохраняет reference parity на finite fixtures и
+  representative large input, не меняя Fourier normalization/frequency convention.
+- AC-SYS-014: Cancel не вызывает forced Qt worker termination; cancelled/stale result не публикуется,
+  partial export отсутствует, а window shutdown не теряет ownership живого worker.
+- AC-SYS-015: clean wheel устанавливается и импортируется в isolated environment; это evidence
+  source-package readiness, а не claim о готовом desktop installer.
 
 ## 11. Связь с feature-SPEC и tests
 

@@ -14,10 +14,16 @@ uv run pytest
 uv run ruff check .
 uv run mypy
 py -3 ~/.codex/tools/validate_project_overlay.py .
+uv run coverage erase
+uv run coverage run -m pytest
+uv run coverage report
+uv run python tools/fs023_hardening.py
+uv build --wheel
 ```
 
-После появления packaging/GUI/export project manifest и CI расширят command surface; команды не
-считаются каноническими до фиксации в `pyproject.toml`, README и этом документе.
+FS-023 дополнительно выполняет measured coverage, hardening benchmark и clean wheel smoke командами,
+зафиксированными в README после появления соответствующего harness. Installer smoke не заявляется:
+выбран только recoverable source wheel, а desktop installer остаётся без утверждённого target.
 
 ## Уровни
 
@@ -261,6 +267,12 @@ disk. GIF metadata endpoint history must equal the exported frame chain endpoint
 cooperative cancellation, temp cleanup and explicit MP4-unavailable behavior receive negative tests.
 Desktop component evidence drives the EXPORT page/file-picker/overwrite decision through the actual
 worker/export boundary; it does not substitute a codec or write into user preferences.
+
+FS-023 tests compare optimized inverse reconstruction with the scalar reference evaluation, exercise
+representative large N and stress K within existing caps, measure rather than disguise machine-specific
+timings, and prove that Cancel never force-terminates an owned Qt worker. Positive Unicode/space paths
+pass through real atomic export. Clean wheel installation/import/resource loading is source-package
+evidence only and does not substitute an installer or visible GUI/DPI verification.
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 

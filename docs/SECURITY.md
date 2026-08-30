@@ -146,6 +146,12 @@ full coefficient arrays, secrets или full path by default. Export/session per
 FS-012 success summary показывает только basename; Unicode control/format/surrogate и bidi
 characters экранируются как `\\uXXXX`/`\\UXXXXXXXX`, чтобы filename не менял terminal/log display.
 
+FS-023 removes forced `QThread.terminate()` from desktop cancellation. Cancellation is cooperative,
+late publication is generation-suppressed, and window close retains ownership until bounded worker
+completion. FFT2 CLI failures expose only escaped input basename, never raw native exception/full path.
+Unicode/space paths pass real JSON/GIF publication; hard-link failure remains controlled with sibling
+temporary cleanup and no non-atomic fallback.
+
 ## Failure and fallback invariants
 
 - validation/integrity/resource-limit failure → fail closed;

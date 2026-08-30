@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (through FS-021)
+## Текущая dependency surface (through FS-023)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic
@@ -101,6 +101,15 @@ PySide6 has LGPL/commercial dual licensing; installer and redistribution complia
 FS-022 reuses pinned Pillow 12.3.x for mandatory GIF encoding; no dependency delta is required.
 Pillow GIF is local/in-process and covered by the existing HPND license review. No reviewed MP4 backend
 or subprocess is selected, so MP4 remains explicitly unavailable rather than adding FFmpeg/imageio.
+
+FS-023 adds dev-only Coverage.py 7.16.0 (Apache-2.0) for branch-aware regression measurement; runtime
+graph is unchanged. Frozen lock contains 38 installed distributions. `uv lock --check`, universal
+tree, `uv pip check`, CycloneDX 1.5 export and `pip-audit 2.10.1` PASS on 2026-08-30; audit reported no
+known vulnerabilities for auditable dependencies and skipped unpublished `fourier-sketch` itself.
+Metadata inventory still finds missing license expressions for the project, colorama and pathspec;
+PySide6/shiboken6 declare LGPL/GPL choices. Therefore the selected readiness target is source-run plus
+recoverable wheel smoke, not public wheel/installer redistribution. Public packaging remains blocked
+until project licensing, third-party notices and LGPL obligations are approved.
 
 FS-031 Android dependencies/toolchain are not selected or added during desktop work. The stage must
 record a capability/license/maintenance/build-size comparison and keep one reproducible mobile

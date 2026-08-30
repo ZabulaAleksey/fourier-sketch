@@ -477,3 +477,23 @@ path; unversioned ad-hoc JSON/CSV не обеспечивает migration contra
 **Последствия:** dependency graph не меняется, все exports локальные и воспроизводимые; GIF baseline
 ограничен 120 кадрами и fixed renderer size. Выбор MP4 backend, повышение animation budgets или schema
 version требует отдельного capability/security/compatibility решения.
+
+## 2026-08-30 — ADR-024: IFFT hardening and source-package readiness boundary
+
+**Контекст:** scalar sample-grid reconstruction делала stress `N=K=4096` desktop update примерно за
+4.9 s, а FS-023 требует reference parity, measured resource evidence, safe cancellation и packaging
+decision. Принудительный `QThread.terminate()` мог оборвать cleanup/atomic publication. Bundled
+installer не имеет утверждённых project-license/notices/LGPL criteria.
+
+**Решение:** complete и sparse coefficient grids собираются в bounded NumPy bins и вычисляются через
+IFFT с сохранением signed-frequency/normalization semantics; scalar `reconstruct_at` остаётся oracle.
+Desktop Cancel только запрашивает cooperative interruption, invalidates generation и удерживает job
+до `finished`; close откладывается, если owned job ещё жив. Distribution target FS-023 — frozen
+source-run и isolated wheel smoke. Bundled installer/public redistribution не выбираются.
+
+**Рассмотренные альтернативы:** сохранить `O(N×K)` scalar reconstruction; allocate dense exponential
+matrix; force-terminate worker; объявить wheel готовым к public redistribution без license/notices.
+
+**Последствия:** stress timeline на measured host стал `≈0.1 s`; reference/large-N parity и broad
+resource guards входят в suite. NumPy остается explicit backend без scalar fallback. Installer/public
+release требует отдельного license/third-party-notice/PySide6 LGPL решения; rollback — source-run path.

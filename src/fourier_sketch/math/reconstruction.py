@@ -5,6 +5,7 @@ from math import pi
 
 from fourier_sketch.domain import CoefficientSelection, DomainValidationError
 
+from ._inverse import inverse_grid
 from ._validation import finite_complex_value
 
 MAX_RECONSTRUCTION_SAMPLES = 262_144
@@ -52,9 +53,9 @@ def reconstruct_samples(
         raise DomainValidationError(
             f"reconstruction must not exceed {MAX_RECONSTRUCTION_TERMS} evaluated terms"
         )
-    return tuple(
-        reconstruct_at(selection, index / output_count)
-        for index in range(output_count)
+    return inverse_grid(
+        selection.coefficients,
+        output_count=output_count,
     )
 
 

@@ -57,7 +57,9 @@ file parsing и export encoding не выполняются в event handlers/pa
 
 Long operations выполняются вне GUI thread, публикуют progress/error/cancel states и корректно
 завершают workers при закрытии окна. Cancel доступен только пока есть cancellable background job;
-без job control disabled и не создаёт ложный cancelled state.
+без job control disabled и не создаёт ложный cancelled state. Cancel только запрашивает cooperative
+interruption и подавляет late publication: `QThread.terminate()` запрещён. Если owned worker ещё
+выполняется, закрытие окна откладывается до его normal finish.
 
 ### UI-FR-007 — Bounded renderer work
 
@@ -128,6 +130,8 @@ error и completed state. Missing translation показывает fallback stri
 - EX-AC-001: exported animation endpoint history эквивалентна interactive history.
 - EX-AC-002: codec unavailable даёт явный degraded/unavailable result без ложного MP4 success.
 - EX-AC-003: existing file и cancellation не приводят к silent data loss.
+- UI-AC-007: cancellation остаётся responsive, не вызывает forced termination и сохраняет ownership
+  worker до normal finish; close завершается после bounded worker completion.
 
 ## Планируемая трассировка
 

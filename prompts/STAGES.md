@@ -1033,15 +1033,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-023 — Hardening and Packaging Readiness
 
-- Lifecycle: `planned`; required product milestone.
+- Lifecycle: `completed`; required product milestone; automated gates PASS and independent re-review GO.
 - Goal: establish measured numerical/performance/reliability/platform evidence for completed product.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-022 → FS-023`; complete desktop/export primary paths required.
 - Entry evidence: full accepted regression suite and representative data/operation inventory.
-- Current gate: prerequisite FS-022 is satisfied, but FS-023 remains separately unselected and
-  unstarted until an explicit later slice.
+- Current gate: prerequisite FS-022 satisfied; user explicitly selected FS-023. Implementation,
+  automated gates and independent re-review are complete on `feature/fs-023-hardening`.
 
 ### Scope / non-goals / invariants
 
@@ -1064,6 +1064,12 @@ completion claim. Evidence records environment/branch and caveats.
 - Baseline→profile→targeted optimization→parity→benchmark; unit/integration/component/all live E2E;
   clean restore/build/package smoke if selected; security/dependency/license/static/overlay/diff review.
   Evidence records hardware/OS/Python/commit and caveats.
+- Current evidence: 43 targeted and 566 full tests PASS; branch coverage 76% with floor 75%; frozen
+  sync, Ruff, strict mypy, dependency compatibility/audit/SBOM and isolated wheel smoke PASS. Named
+  Windows benchmark records `N=65,536`, stress `K=4096`, allocation and offscreen paint evidence;
+  offscreen timing is not visible GUI/DPI evidence. Source-run/wheel selected, installer/public
+  redistribution unselected pending license/notice/LGPL compliance.
+- Independent review: initial two P2 test-harness findings fixed; final re-review `GO`, no P0/P1/P2.
 
 ### Temporary / deferred / failure
 
@@ -1084,7 +1090,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-023 + FS-021 + FS-005 → FS-024`; hardened GUI and chain metadata completed.
 - Entry evidence: stable selection/hit-test mapping and accessible inspector design.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: DAG prerequisites are completed; optional stage remains unselected and its entry
+  evidence has not been reviewed.
 
 ### Scope / non-goals / invariants
 
@@ -1122,7 +1129,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-024 + FS-003 → FS-025`; inspector and deterministic selection completed.
 - Entry evidence: selected coefficient IDs and separation of render selection vs Fourier selection.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: unsatisfied while FS-024 remains planned.
 
 ### Scope / non-goals / invariants
 
@@ -1162,7 +1169,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-024 + FS-004 + FS-021 → FS-026`; inspector, selection/reconstruction and GUI completed.
 - Entry evidence: deterministic ordering and timeline/state-machine decision.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: unsatisfied while FS-024 remains planned.
 
 ### Scope / non-goals / invariants
 
@@ -1200,7 +1207,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-023 + FS-009 + FS-013 → FS-027`; hardened metrics/parameterization/image MVP completed.
 - Entry evidence: baseline sample/error/performance measurements and algorithm decision.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: DAG prerequisites are completed; optional stage remains unselected and its algorithm
+  entry evidence has not been accepted.
 
 ### Scope / non-goals / invariants
 
@@ -1277,7 +1285,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-023 + FS-017 → FS-029`; hardened product and baseline route/cost completed.
 - Entry evidence: representative benchmark corpus, baseline costs/time and optimization goal.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: DAG prerequisites are completed; optional stage remains unselected and its benchmark
+  entry evidence has not been accepted.
 
 ### Scope / non-goals / invariants
 
@@ -1324,7 +1333,8 @@ completion claim. Evidence records environment/branch and caveats.
   a completed desktop basis-control surface are required.
 - Entry evidence: accepted basis-decomposition SPEC, canonical freehand/closed-curve fixture corpus,
   numerical baseline and UI language distinguishing a rotating epicycle from a wavelet term.
-- Current gate: unsatisfied while FS-021 and FS-023 are incomplete.
+- Current gate: DAG prerequisites are completed; FS-032 remains unselected and may start only through
+  a separately approved stage slice.
 
 ### Scope / non-goals / invariants
 
@@ -1421,7 +1431,8 @@ completion claim. Evidence records environment/branch and caveats.
   Android adapter around a portable core; React Native/Skia is eligible only if current Android and
   required desktop/toolchain support are proven. Record build size, offline capability, bridge cost,
   renderer frame time, maintenance/license and packaging implications. No framework is preselected.
-- Current gate: unsatisfied while FS-023 is planned.
+- Current gate: DAG prerequisites are completed, but Android capability/SDK/device entry evidence is
+  not approved and FS-031 remains unselected.
 
 ### Scope / non-goals / invariants
 

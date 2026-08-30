@@ -25,7 +25,9 @@ and slider. Each vector and its circle receives the same deterministic rainbow c
 and an existing selection position keeps its color when K grows; this is presentation-only. Reset clears
 mouse/touch pan and returns every zoom input to `1.00×`. `Original` is disabled/unchecked without a
 ready curve and thereafter exactly mirrors whether the original curve layer is visible. Cancel is
-disabled until a background conversion job exists.
+disabled until a background conversion job exists. FS-023 makes Cancel non-blocking and cooperative:
+the UI suppresses late publication without `QThread.terminate()`, retains the worker until `finished`,
+and defers final window close while that owned bounded worker remains alive.
 FS-022 enables an EXPORT page after a timeline is ready. It offers current Curve JSON/CSV, current
 ordered coefficient-selection JSON/CSV, reconstruction/spectrum PNG and bounded GIF. Frame count and
 duration are explicit; progress/cancel use the existing worker lifecycle. MP4 remains visible but

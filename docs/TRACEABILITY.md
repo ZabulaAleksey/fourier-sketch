@@ -20,6 +20,7 @@
 | `BH-ANIMATION-001` | EP-FR-006, UI-FR-002, UI-FR-007, UI-FR-008 | FS-006, FS-008, FS-013, FS-021 | renderer timeline/view state | component + E2E + frame profile | verified through integrated PySide6 workflow, measured renderer, stable rainbow pairing, fixed-center zoom/source-relative 100% baseline, synchronized Original visibility, desktop touch navigation and user-confirmed manual Windows GUI/DPI/resize + physical-touch checklist |
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise conversion + discontinuous Fourier/render policy | unit + property + integration + component + E2E | verified locally through FS-018 |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | verified locally: versioned JSON/CSV, PNG, bounded endpoint-metadata GIF, atomic/cancel/no-overwrite and explicit MP4 unavailable; independent review GO |
+| `BH-HARDENING-001` | NFR-NUM-001, NFR-UI-001, NFR-REPRO-001, NFR-PORT-001, NFR-HARD-001 | FS-023 | inverse-grid adapter + owned Qt worker lifecycle + evidence harness | parity + hardening benchmark + coverage + Unicode export + isolated wheel smoke | verified locally; independent re-review GO |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain
@@ -328,3 +329,4 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | AC-SYS-010 | stage/evidence review | every stage |
 | AC-SYS-011 | component + E2E | FS-006, FS-021 |
 | AC-SYS-012 | negative integration/E2E | FS-010, FS-011, FS-012, FS-022, FS-023 |
+| AC-SYS-013..015 | parity + component + hardening/package smoke | FS-023 |

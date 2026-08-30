@@ -2,17 +2,42 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-022`; versioned data/PNG/GIF export, bounded cancellation and explicit
-  MP4 unavailability passed automated gates and independent read-only review.
-- Active Stage ID: `FS-022`, lifecycle `completed`; this record intentionally stops before selecting
-  or implementing FS-023.
+- Last completed Stage ID: `FS-023`.
+- Active Stage ID: `FS-023`, lifecycle `completed`; automated gates PASS and independent re-review GO.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b` are in local `main`.
   No push, PR, release or deployment was performed.
-- Scope: FS-023, FS-031 and FS-032 remain inactive and were not started as part of FS-022.
+- Scope: только mandatory FS-023 hardening; FS-024+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-023 progress
+
+- Complete/sparse inverse grid переведён с Python `O(N×K)` summation на bounded NumPy IFFT с теми же
+  signed-frequency/normalization semantics. Scalar `reconstruct_at` остаётся reference oracle;
+  small/reference, representative `N=16,384` и stress `K=4096` parity regressions PASS.
+- Qt Cancel больше не блокирует GUI ожиданием и не вызывает `QThread.terminate()`. Generation guard
+  подавляет late publication; owned worker сохраняется до `finished`, а close откладывается до его
+  normal completion. Correctness regressions проверяют state/cleanup без wall-clock assertion;
+  harness измерил cancel request `2.87e-05 s` при broad catastrophic limit `0.25 s`. Real GIF test
+  дожидается worker cleanup. Atomic export cleanup, Unicode/space JSON+GIF paths и privacy-safe FFT2
+  CLI failure covered by regressions.
+- Named Windows baseline: Python 3.12.5, NumPy 2.5.2, PySide6 6.11.2, Intel64 Family 6 Model 140;
+  `N=65,536` FFT round-trip `1.311 s`, max error `2.04e-15`, traced Python peak `17,050,172` bytes;
+  stress `K=4096` timeline `0.112 s`, offscreen paint median `0.050 s` versus default `0.0048 s`.
+  These are local/offscreen measurements, not visible GUI/DPI or native-total-memory claims.
+- Narrow hardening/export/desktop suite: `43 passed`; full suite: `566 passed in 126.34s` with one
+  pre-existing pytest-cache permission warning. Branch-aware coverage: `76%`, configured floor `75%`.
+  Frozen sync, Ruff, strict mypy, lock/tree/pip compatibility and isolated wheel import/resource/
+  desktop-help smoke PASS. `pip-audit 2.10.1` reported no known vulnerabilities for auditable
+  dependencies; project itself was skipped because it is not published on PyPI.
+- Independent read-only review found two P2 test-harness issues (a brittle component wall-clock
+  assertion and missing wait after close); both were fixed. Final re-review: `GO`, no P0/P1/P2.
+- Packaging decision: source-run plus recoverable wheel is the supported artifact/path. Bundled
+  installer/public redistribution remain unselected and blocked by missing project license/third-party
+  notices and unresolved PySide6 LGPL redistribution obligations; this is not an installer failure
+  because SPEC does not require an installer for FS-023.
 
 ## FS-022 progress
 
@@ -72,10 +97,9 @@
   Это component evidence, а не ручная visual/DPI проверка видимого Windows окна.
 - Добавлены проверки корректного ресайза/готовности canvas, guard от stale-job после cancel и сохранения
   базовых UI-предпочтений; это закрывает большую часть step 6 lifecycle/persistence gates.
-- Review P2 исправлены: Cancel всегда публикует `cancelled` после остановки job; `run_desktop()` больше
-  не перезаписывает восстановленный размер окна. Неостанавливаемый после bounded terminate job остаётся
-  во владении окна до фактического завершения, поэтому `QThread` не уничтожается while running.
-  Component regressions покрывают все три случая.
+- Historical FS-021 review fixed cancelled state, restored window size and job ownership. FS-023
+  supersedes its bounded-terminate implementation: forced termination is removed, cancellation is
+  non-blocking and close is deferred until the still-owned job finishes.
 - Current full repository regression: `543 passed in 130.51s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
@@ -145,19 +169,19 @@
 - Windows Graphics Capture remains unavailable with `SetIsBorderRequired failed (0x80004002)` after
   reset/retry. This limits automated screenshot evidence but no longer blocks FS-021 because the user
   confirmed the visible GUI/DPI/resize and physical-touch checklist manually.
-- Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
-  FS-023 residual risk.
+- Lexical local-path guard не доказывает physical locality mapped/reparse targets; это остаётся
+  documented residual risk после FS-023.
 
 ## Следующее разумное действие
 
-Maintenance delta локально слит; остановиться до отдельного выбора следующего stage. FS-023,
-FS-031 и FS-032 не начинались заодно.
+FS-023 завершён в feature branch; остановиться до explicit merge или выбора следующего stage.
+FS-024+, FS-031 и FS-032 не начинались заодно; push/PR/merge/release/deploy не разрешены этим stage.
 
 ## Синхронизация документации
 
-- Обновлены README, SPEC/ADR, architecture/design/security/testing/traceability/dependencies/
-  fallbacks и AI plan/status/roadmap/stage registry.
-- Математический/API/export contract проверен: FS-018 добавляет discontinuous application API,
-  но не меняет persistence/export contracts FS-022.
+- Обновлены README, system/desktop SPEC, architecture/decisions/design/security/testing/traceability/
+  dependencies и AI plan/status/roadmap/stage registry; добавлена bounded evidence note.
+- Fourier convention и export schema не изменены; optimized inverse-grid path проверен против scalar
+  oracle, а desktop cancellation contract усилен без нового product dependency.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
-  диагностику сверх принятых graph contracts и regression evidence.
+  диагностику сверх versioned hardening harness/evidence.

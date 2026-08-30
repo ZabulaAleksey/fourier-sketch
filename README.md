@@ -33,6 +33,9 @@ closed `Curve`, применяет arc-length resampling и передаёт в 
 `FS-013` завершил cohesive image-to-Fourier MVP, `FS-014` добавил отдельный диагностический
 binary-to-skeleton path через explicit scikit-image Lee backend, а `FS-015` преобразует этот
 skeleton в детерминированный graph topology без преждевременного routing.
+Обязательный hardening `FS-023` реализован и локально проверен: inverse reconstruction использует
+parity-tested bounded NumPy IFFT, Qt cancellation не вызывает forced thread termination, Unicode/
+space Windows exports проходят actual codecs, а source wheel устанавливается в isolated environment.
 
 ## Целевой pipeline
 
@@ -335,10 +338,28 @@ coefficients как versioned JSON/CSV, reconstruction/spectrum PNG или bound
 cancel/failure не публикуют partial artifact. MP4 отображается как unavailable, потому что reviewed
 codec backend пока не выбран; silent fallback в GIF отсутствует.
 
+## Hardening evidence (FS-023)
+
+```powershell
+uv run python tools/fs023_hardening.py
+uv run coverage erase
+uv run coverage run -m pytest
+uv run coverage report
+uv build --wheel
+```
+
+Harness записывает named Windows/Python/NumPy/PySide6 environment, large-N FFT round-trip,
+stress-K timeline, Python allocation peak и offscreen QPainter timings. Offscreen measurement не
+является manual visible GUI/DPI evidence. Coverage baseline составляет 76% branch-aware при floor 75%.
+Поддерживается recoverable source wheel/source-run workflow; bundled desktop installer и public
+redistribution не выбраны, пока отсутствуют project-license/third-party-notice и PySide6 LGPL
+compliance decisions.
+
 ## Ограничения
 
 Matplotlib diagnostics остаются поддерживаемыми diagnostic adapters. FS-021 добавляет source-run
-PySide6 shell, а FS-022 — local data/PNG/GIF export. Packaging и MP4 ещё не реализованы.
+PySide6 shell, FS-022 — local data/PNG/GIF export, а FS-023 — measured hardening и проверяемый
+source wheel. Bundled installer и MP4 ещё не реализованы.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
 Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,

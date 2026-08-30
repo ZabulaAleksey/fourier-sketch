@@ -13,7 +13,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import pytest
 from PIL import Image, ImageDraw
 from PySide6.QtCore import QEvent, QPoint, QPointF, Qt
-from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent, QWheelEvent
+from PySide6.QtGui import QCloseEvent, QImage, QKeyEvent, QMouseEvent, QWheelEvent
 from PySide6.QtWidgets import QApplication, QCheckBox, QMessageBox, QPushButton
 
 from fourier_sketch.application import (
@@ -785,6 +785,7 @@ def test_desktop_cancelled_real_gif_worker_leaves_no_artifact(
     window._choose_export()
     assert window._job is not None
     window._cancel_current_job()
+    _wait_for_job(window, timeout_seconds=10.0)
 
     assert not output.exists()
     assert not tuple(tmp_path.glob(".cancelled-desktop.*.tmp"))
@@ -866,6 +867,8 @@ def test_desktop_window_cancel_then_close_stops_timer_and_job() -> None:
     assert not window._cancel.isEnabled()
     assert window._status.text() == window._translator.text("desktop.status.cancelled")
     window.close()
+    _wait_for_job(window)
+    assert window._job is None
 
 
 def test_desktop_cancel_keeps_a_stubborn_job_owned_until_it_stops() -> None:
@@ -875,7 +878,6 @@ def test_desktop_cancel_keeps_a_stubborn_job_owned_until_it_stops() -> None:
     class _StubbornJob:
         def __init__(self) -> None:
             self.interruption_requested = False
-            self.terminated = False
             self.deleted = False
 
         def isRunning(self) -> bool:
@@ -883,12 +885,6 @@ def test_desktop_cancel_keeps_a_stubborn_job_owned_until_it_stops() -> None:
 
         def requestInterruption(self) -> None:
             self.interruption_requested = True
-
-        def wait(self, _milliseconds: int) -> None:
-            pass
-
-        def terminate(self) -> None:
-            self.terminated = True
 
         def deleteLater(self) -> None:
             self.deleted = True
@@ -899,11 +895,48 @@ def test_desktop_cancel_keeps_a_stubborn_job_owned_until_it_stops() -> None:
     window._cancel_current_job()
 
     assert job.interruption_requested
-    assert job.terminated
     assert not job.deleted
     assert cast(object, window._job) is job
+    assert not window._cancel.isEnabled()
     assert window._status.text() == window._translator.text("desktop.status.cancelled")
-    window.close()
+
+
+def test_desktop_close_is_deferred_until_owned_worker_finishes() -> None:
+    _application()
+    window = DesktopWindow()
+
+    class _FinishingJob:
+        def __init__(self) -> None:
+            self.running = True
+            self.interruption_requested = False
+            self.deleted = False
+
+        def isRunning(self) -> bool:
+            return self.running
+
+        def requestInterruption(self) -> None:
+            self.interruption_requested = True
+
+        def deleteLater(self) -> None:
+            self.deleted = True
+
+    job = _FinishingJob()
+    window._job = cast(object, job)  # type: ignore[assignment]
+    event = QCloseEvent()
+
+    window.closeEvent(event)
+
+    assert not event.isAccepted()
+    assert window._close_pending
+    assert job.interruption_requested
+    assert cast(object, window._job) is job
+
+    job.running = False
+    window._job_finished()
+
+    assert window._job is None
+    assert job.deleted
+    assert not window._close_pending
 
 
 def test_desktop_cancelled_job_does_not_apply_stale_timeline() -> None:

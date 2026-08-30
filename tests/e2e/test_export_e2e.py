@@ -11,7 +11,9 @@ from fourier_sketch.application import (
     AnimationExportPlan,
     EpicycleFrame,
     ExportCancelled,
+    ExportFormat,
     build_freehand_timeline,
+    export_curve_data,
 )
 from fourier_sketch.domain import Curve, Point2D
 from fourier_sketch.presentation import Translator
@@ -103,3 +105,23 @@ def test_gif_codec_failure_leaves_no_partial_artifact(
 
     assert not output.exists()
     assert not tuple(tmp_path.glob(".failed.*.tmp"))
+
+
+def test_unicode_and_space_paths_support_real_data_and_gif_export(tmp_path: Path) -> None:
+    directory = tmp_path / "Папка \u0441 пробелами"
+    directory.mkdir()
+    curve_output = directory / "кривая 例.json"
+    gif_output = directory / "анимация 例.gif"
+    frame = _frame()
+
+    export_curve_data(frame.original, curve_output, format=ExportFormat.CURVE_JSON)
+    export_animation_gif(
+        AnimationExportPlan(frame, frame_count=2, frame_duration_ms=20),
+        gif_output,
+        Translator("en"),
+    )
+
+    assert json.loads(curve_output.read_text(encoding="utf-8"))["version"] == 1
+    with Image.open(gif_output) as image:
+        assert image.format == "GIF"
+        assert cast(Any, image).n_frames == 2

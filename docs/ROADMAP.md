@@ -30,10 +30,12 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-020` | Separate 2D Fourier Image Mode | `completed` |
 | `FS-021` | PySide6 GUI with central Epicycles view | `completed` |
 | `FS-022` | Data/image/GIF and capability-gated MP4 export | `completed` |
+| `FS-023` | Numerical, performance, cancellation and source-package hardening | `completed` |
 
 ## Текущий этап
 
-Текущий selected record `FS-022` завершён. `FS-023` остаётся planned и не начат.
+Текущий selected record `FS-023` завершён в feature branch с automated gates и independent review
+GO. Optional/mobile stages не начинались.
 
 ## Image-to-curve pipeline
 

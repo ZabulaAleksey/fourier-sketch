@@ -2,19 +2,17 @@
 
 ## Текущая цель
 
-Закрыть одобренный post-completion maintenance delta FS-021: fixed-center zoom, source-relative
-freehand baseline `1.00×`, synchronized `Original` visibility и desktop speed minimum `0.01×`, не
-выбирая и не начиная FS-023 или optional extensions.
+Реализовать отдельный проверяемый FS-023 hardening slice поверх завершённых desktop/export primary
+paths: численные/resource/cancellation/platform/packaging evidence без optional FS-024+ или mobile.
 
 ## Активный stage
 
-- Stage ID: `FS-022`
-- Lifecycle: FS-022 остаётся `completed`; текущая работа является совместимым maintenance delta
-  завершённого FS-021, а не новым stage или началом FS-023.
-- Prerequisite: FS-021 `completed`; automated/component evidence и user-confirmed manual visible
-  Windows GUI/DPI/resize + physical-touch checklist получены.
-- Contract: export должен потреблять существующие Curve/coefficient/timeline/endpoint данные без
-  отдельного математического или animation-state path.
+- Stage ID: `FS-023`
+- Lifecycle: `completed`; automated gates and independent review GO; atomic commit accompanies this
+  completion record.
+- Prerequisite: FS-022 `completed`; desktop/export primary paths validated and locally integrated.
+- Contract: hardening добавляет измеряемые guards/evidence и packaging decision, не меняя Fourier
+  convention, accepted UI/export semantics или dependency manager.
 
 ## Integration state
 
@@ -26,12 +24,13 @@ freehand baseline `1.00×`, synchronized `Original` visibility и desktop speed 
 
 ## План выполнения
 
-1. [completed] Обновить принятый desktop UI contract до кода.
-2. [completed] Исправить fixed-center zoom, freehand `1.00×`, `Original` synchronization и speed minimum.
-3. [completed] Выполнить desktop/full/static/overlay gates, independent read-only review и
+1. [completed] Прочитать FS-023 contract/SPEC/ADR и инвентаризировать numerical, resource,
+   cancellation, Windows-path, dependency/license и packaging gaps.
+2. [completed] Реализовать минимальные hardening guards и reproducible evidence harness без optional scope.
+3. [completed] Выполнить targeted/full/static/dependency/platform/package gates, independent review и
    Completion Documentation Synchronization Gate.
 
 ## Handoff
 
-Maintenance delta FS-021 проверен и локально слит в `main`. FS-022 остаётся завершён; остановиться
-до отдельного выбора FS-023.
+FS-023 завершён в рабочей ветке. Не начинать FS-024+, FS-031 или FS-032 заодно; push/PR/merge/
+release/deploy не выполнять без отдельного разрешения.

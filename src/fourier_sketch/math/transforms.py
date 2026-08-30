@@ -12,7 +12,8 @@ from fourier_sketch.domain import (
     FourierSpectrum,
 )
 
-from ._validation import finite_complex_samples, finite_complex_value
+from ._inverse import inverse_grid
+from ._validation import finite_complex_samples
 from .errors import FourierBackendError
 from .frequencies import signed_frequencies
 
@@ -69,16 +70,7 @@ def idft(spectrum: FourierSpectrum) -> tuple[complex, ...]:
     """Reconstruct the sample grid from a complete canonical spectrum."""
     if not isinstance(spectrum, FourierSpectrum):
         raise DomainValidationError("spectrum must be a FourierSpectrum")
-    sample_count = spectrum.sample_count
-    reconstructed = tuple(
-        sum(
-            coefficient.value
-            * exp(2j * pi * coefficient.frequency * index / sample_count)
-            for coefficient in spectrum.coefficients
-        )
-        for index in range(sample_count)
-    )
-    return tuple(
-        finite_complex_value(value, field_name=f"reconstruction[{index}]")
-        for index, value in enumerate(reconstructed)
+    return inverse_grid(
+        spectrum.coefficients,
+        output_count=spectrum.sample_count,
     )

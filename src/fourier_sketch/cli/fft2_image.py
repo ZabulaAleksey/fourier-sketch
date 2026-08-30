@@ -42,8 +42,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"2D Fourier diagnostic written: {safe_display_basename(Path(options.output))} "
             f"({result.width}x{result.height})"
         )
-    except (DomainValidationError, FourierBackendError, FileExistsError, OSError) as error:
-        print(f"2D Fourier diagnostic failed: {error}", file=sys.stderr)
+    except (DomainValidationError, FourierBackendError, FileExistsError, OSError):
+        print(
+            "2D Fourier diagnostic failed for "
+            f"{safe_display_basename(Path(options.input))}.",
+            file=sys.stderr,
+        )
         return 2
     return 0
 

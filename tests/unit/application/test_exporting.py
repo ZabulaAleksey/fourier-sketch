@@ -115,6 +115,24 @@ def test_data_export_cancelled_before_publication_leaves_no_artifact(tmp_path: P
     assert not tuple(tmp_path.glob(".curve.*.tmp"))
 
 
+def test_no_overwrite_link_failure_leaves_no_partial_artifact(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output = tmp_path / "curve.json"
+
+    def fail_link(*_args: object, **_kwargs: object) -> None:
+        raise OSError("hard links unavailable")
+
+    monkeypatch.setattr("fourier_sketch.application.exporting.os.link", fail_link)
+
+    with pytest.raises(OSError, match="hard links unavailable"):
+        export_curve_data(_frame().original, output, format=ExportFormat.CURVE_JSON)
+
+    assert not output.exists()
+    assert not tuple(tmp_path.glob(".curve.*.tmp"))
+
+
 def test_animation_plan_uses_actual_chain_endpoints_and_cancels_cooperatively() -> None:
     frame = _frame()
     plan = AnimationExportPlan(frame, frame_count=4, frame_duration_ms=50)

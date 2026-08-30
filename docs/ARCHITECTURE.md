@@ -306,9 +306,11 @@ library adapter с валидируемым output contract.
 
 ## Packaging и deployment
 
-На FS-001 поддерживается source package через Python 3.12+ и `uv`. Desktop packaging target и
-installer не выбраны; решение откладывается до hardening после platform evidence. Repository не
-зависит от machine-local prompt/Downloads path.
+FS-023 подтвердил source package через Python 3.12+ и frozen `uv`: wheel строится Hatchling,
+устанавливается с locked dependencies в isolated environment, импортирует packaged resources и
+запускает desktop CLI help вне checkout. Bundled desktop installer не выбран: project license,
+third-party notices и PySide6 LGPL redistribution obligations требуют отдельного решения до public
+redistribution. Repository не зависит от machine-local prompt/Downloads path.
 
 ## Ключевые ограничения
 

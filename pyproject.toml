@@ -19,6 +19,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+  "coverage>=7.10",
   "hypothesis>=6.165.10",
   "mypy",
   "pytest",
@@ -53,3 +54,12 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 python_version = "3.12"
 strict = true
 files = ["src", "tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["fourier_sketch"]
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true
+skip_covered = true
