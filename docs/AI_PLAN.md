@@ -2,16 +2,16 @@
 
 ## Текущая цель
 
-Завершить текущий проверяемый FS-021 desktop navigation/color slice: vector/circle pair сохраняет
-стабильный rainbow color по selection order, а wheel/slider/touch pinch и mouse/touch pan меняют
-только bounded viewport. Сохранить manual Windows GUI/DPI/resize evidence gate.
+Получить недостающее manual visible Windows GUI/DPI/resize evidence для FS-021, не подменяя его
+offscreen/component проверками. Интегрированный desktop navigation/color slice сохраняет стабильный
+rainbow color по selection order и presentation-only bounded viewport.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; renderer-control и предыдущие UI fixes интегрированы в `main`, текущий
-  touch/rainbow slice validated locally; merge остаётся отдельным решением.
-- Branch: `fix/fs-021-touch-rainbow`; `main` не изменяется до отдельного разрешения merge.
+- Lifecycle: `partial`; renderer-control, предыдущие UI fixes и touch/rainbow slice интегрированы
+  в `main`; manual visible evidence gate остаётся открытым.
+- Integration: `cb323e2` находится в локальном `main`; push не выполнялся.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -19,7 +19,8 @@
 ## Integration state
 
 - `main` содержит renderer-control implementation `0faf8fc`, последующие UI commits
-  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d` и планирование routing/basis `29b23ca`.
+  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d`, touch/rainbow `cb323e2` и планирование
+  routing/basis `29b23ca`.
 - PR/release/deployment не выполнялись; публикация `main` в `origin` — отдельное Git evidence,
   не доказательство ручной visual/DPI проверки.
 
@@ -52,5 +53,5 @@
 
 ## Handoff
 
-После атомарного commit остановиться в `fix/fs-021-touch-rainbow`; не начинать FS-022/FS-023/FS-031/
-FS-032 и не выполнять merge без отдельного разрешения пользователя.
+Продолжить только FS-021 manual visible Windows GUI/DPI/resize evidence. Не начинать FS-022,
+FS-023, FS-031 или FS-032, пока lifecycle FS-021 остаётся `partial`.

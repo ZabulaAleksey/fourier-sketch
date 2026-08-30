@@ -4,10 +4,9 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `fix/fs-021-touch-rainbow`; current touch/rainbow delta is validated locally and unmerged.
-  `main` retains the earlier renderer-control and desktop UI commits plus basis planning without
-  activating FS-022, FS-023, FS-031 or FS-032.
-- Integration: no push, PR, merge, release or deployment was performed for the current slice.
+- Integration: touch/rainbow commit `cb323e2` is merged by fast-forward into local `main`; `main`
+  is ahead of `origin/main` by one commit. No push, PR, release or deployment was performed.
+- Scope: FS-022, FS-023, FS-031 and FS-032 remain inactive while FS-021 is `partial`.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
   automation возвращает `SetIsBorderRequired failed (0x80004002)` после retry/reset. Accessibility-only
   fallback подтверждает actual window hierarchy и keyboard controls, но без geometry не доказывает
@@ -28,16 +27,16 @@
   canvas. The instruction now wraps rather than forcing the source column wider than the renderer.
   Presentation zoom is numerically bounded at `0.01..100.00×`, which is practically unrestricted for
   mouse-wheel navigation while keeping finite QPainter transforms. Component evidence is `16 passed`;
-  full repository regression, Ruff and strict mypy PASS locally. Current branch remains unmerged.
+  full repository regression, Ruff and strict mypy PASS locally. This delta is integrated in `main`.
 - Freehand source now converts screen Y to Cartesian Y before timeline construction, while its source
   canvas maps it back for display; this preserves the vertical orientation of the user stroke in the
   epicycle canvas. The canvas supports pointer-centered wheel zoom and LMB-drag pan; reset restores
-  `1.00×` and zero pan. Component evidence drives both event paths. Current branch remains unmerged.
+  `1.00×` and zero pan. Component evidence drives both event paths. This delta is integrated in `main`.
 - Desktop image source now defaults to dark-ink/light-background preprocessing and exposes an explicit
   reverse-polarity opt-out. This prevents a light source background from becoming the dominant outer
   contour. The central canvas also has persisted presentation-only `0.01..100.00×` zoom and reset to
   `1.00×`; neither control mutates Fourier/timeline state. Targeted component evidence is `13 passed`;
-  full repository regression, Ruff and strict mypy PASS locally. Merge/push remain pending.
+  full repository regression, Ruff and strict mypy PASS locally. This delta is integrated in `main`.
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls, renderer-control
   checks and source-workflow component slice are implemented, committed, merged, and pushed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
