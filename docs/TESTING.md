@@ -229,6 +229,9 @@ before/after frame buckets and exact endpoint parity.
 Desktop image regression uses a dark contour on a light PNG and goes through the actual picker/worker
 path. Canvas zoom regressions cover its bounded `0.50..2.50×` presentation scale, reset button and
 persisted preference without changing timeline state.
+Freehand component regressions assert the screen-to-Cartesian Y conversion used by the renderer;
+viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, then require reset
+to restore both the fitted zoom and zero pan.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker
 callback for a local PNG through their existing worker/application paths; test-local in-memory settings
 keep this evidence from writing user preferences. It does not replace manual visible Windows/DPI evidence.

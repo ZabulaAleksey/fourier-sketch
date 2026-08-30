@@ -4,9 +4,9 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `fix/fs-021-image-contour-and-zoom`; renderer-control and desktop E2E deltas are already
-  integrated in `main`, while the current image/zoom fix is locally verified, independently reviewed,
-  and awaits merge/push.
+- Branch: `fix/fs-021-canvas-navigation`; renderer-control and desktop E2E deltas are already
+  integrated in `main`. Parent commit `644fd82` is locally reviewed; the current canvas-navigation
+  fix is locally verified and awaits commit/merge.
 - Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
   and pushed to `origin`. PR/release/deployment were not performed.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
@@ -16,6 +16,10 @@
 
 ## FS-021 progress
 
+- Freehand source now converts screen Y to Cartesian Y before timeline construction, while its source
+  canvas maps it back for display; this preserves the vertical orientation of the user stroke in the
+  epicycle canvas. The canvas supports pointer-centered wheel zoom and LMB-drag pan; reset restores
+  `1.00×` and zero pan. Component evidence drives both event paths. Current branch remains unmerged.
 - Desktop image source now defaults to dark-ink/light-background preprocessing and exposes an explicit
   reverse-polarity opt-out. This prevents a light source background from becoming the dominant outer
   contour. The central canvas also has persisted presentation-only `0.50..2.50×` zoom and reset to

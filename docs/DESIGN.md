@@ -11,7 +11,9 @@ keyboard-focusable controls, visibility checkboxes and `en`/pseudo resources. De
 and no partial frame. Image picker defaults to a dark drawing on a light background (with an explicit
 reverse-polarity opt-out), so a light image background cannot become the selected outer contour.
 The canvas has presentation-only `0.50..2.50×` zoom, persisted with desktop preferences, and a reset
-to its `1.00×` fitted view. Export remains deferred.
+to its `1.00×` fitted view. The mouse wheel zooms the canvas and left-button drag pans it; reset also
+clears the pan. Freehand screen coordinates are converted to Cartesian Y before building a timeline,
+so the contour has the same vertical orientation as the input stroke. Export remains deferred.
 
 ## Diagnostic FS-006 — фактический baseline
 
@@ -218,7 +220,8 @@ Canvas contract:
 
 - desktop-first resizable layout: left workflow/controls, central canvas, optional right inspector;
 - canvas сохраняет aspect ratio curve, имеет fit/reset view и bounded `0.50..2.50×` user zoom,
-  который не меняет curve/chain/timeline state;
+  который не меняет curve/chain/timeline state; wheel zoom и LMB drag pan меняют только viewport,
+  а reset возвращает zoom/pan fit baseline;
 - typography, color tokens и spacing утверждаются при первом UI implementation на основе
   component evidence, не выдумываются bootstrap-документом;
 - color не единственный signal; selected/failure/paused states имеют icon/text/shape;

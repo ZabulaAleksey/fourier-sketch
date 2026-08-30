@@ -9,7 +9,16 @@ from time import monotonic
 from typing import cast
 
 from PySide6.QtCore import QLineF, QPointF, QSettings, Qt, QThread, QTimer, Signal
-from PySide6.QtGui import QCloseEvent, QColor, QKeyEvent, QMouseEvent, QPainter, QPainterPath, QPen
+from PySide6.QtGui import (
+    QCloseEvent,
+    QColor,
+    QKeyEvent,
+    QMouseEvent,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QWheelEvent,
+)
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -87,6 +96,8 @@ class EpicycleCanvas(QWidget):
         self._vector_lines: list[QLineF] = []
         self._circle_centers: list[tuple[float, float, float]] = []
         self._view_zoom = _VIEW_ZOOM_DEFAULT
+        self._view_pan = QPointF()
+        self._pan_anchor: QPointF | None = None
         self.setMinimumSize(360, 300)
         self.setAccessibleName("Epicycles canvas")
 
@@ -95,6 +106,12 @@ class EpicycleCanvas(QWidget):
         """Return the user-selected view-only scale without touching timeline state."""
 
         return self._view_zoom
+
+    @property
+    def view_pan(self) -> tuple[float, float]:
+        """Return the viewport translation in device pixels for component assertions."""
+
+        return (self._view_pan.x(), self._view_pan.y())
 
     def set_view_zoom(self, zoom: float) -> None:
         """Set a bounded view scale; rendering remains independent from Fourier state."""
@@ -107,7 +124,56 @@ class EpicycleCanvas(QWidget):
     def reset_view(self) -> None:
         """Restore the fitted scene scale selected for a new desktop view."""
 
-        self.set_view_zoom(_VIEW_ZOOM_DEFAULT)
+        self._view_zoom = _VIEW_ZOOM_DEFAULT
+        self._view_pan = QPointF()
+        self.update()
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() is Qt.MouseButton.LeftButton:
+            self._pan_anchor = event.position()
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        if self._pan_anchor is not None and event.buttons() & Qt.MouseButton.LeftButton:
+            position = event.position()
+            delta = position - self._pan_anchor
+            self._view_pan = QPointF(
+                self._view_pan.x() + delta.x(), self._view_pan.y() + delta.y()
+            )
+            self._pan_anchor = position
+            self.update()
+            event.accept()
+            return
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        if event.button() is Qt.MouseButton.LeftButton and self._pan_anchor is not None:
+            self._pan_anchor = None
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        wheel_delta = event.angleDelta().y()
+        if wheel_delta == 0:
+            event.ignore()
+            return
+        zoom_factor = 1.15 ** (wheel_delta / 120.0)
+        requested_zoom = self._view_zoom * zoom_factor
+        next_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, requested_zoom))
+        if next_zoom != self._view_zoom:
+            scale_ratio = next_zoom / self._view_zoom
+            center = QPointF(self.width() / 2.0, self.height() / 2.0)
+            relative = event.position() - center - self._view_pan
+            self._view_pan = QPointF(
+                self._view_pan.x() + relative.x() * (1.0 - scale_ratio),
+                self._view_pan.y() + relative.y() * (1.0 - scale_ratio),
+            )
+            self._view_zoom = next_zoom
+            self.update()
+        event.accept()
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
         if frame is not None:
@@ -224,7 +290,10 @@ class EpicycleCanvas(QWidget):
             return QPointF(point.x, point.y)
 
         painter.save()
-        painter.translate(self.width() / 2.0, self.height() / 2.0)
+        painter.translate(
+            self.width() / 2.0 + self._view_pan.x(),
+            self.height() / 2.0 + self._view_pan.y(),
+        )
         painter.scale(scale, -scale)
         painter.translate(-center_x, -center_y)
 
@@ -303,14 +372,14 @@ class FreehandCanvas(QWidget):
         points = self._capture.snapshot().points
         if len(points) < 2:
             return
-        path = QPainterPath(QPointF(points[0].x, points[0].y))
+        path = QPainterPath(QPointF(points[0].x, -points[0].y))
         for point in points[1:]:
-            path.lineTo(point.x, point.y)
+            path.lineTo(point.x, -point.y)
         painter.setPen(QPen(QColor("#1d4ed8"), 2.0))
         painter.drawPath(path)
 
     def _point(self, position: QPointF) -> Point2D:
-        return Point2D(float(position.x()), float(position.y()))
+        return Point2D(float(position.x()), -float(position.y()))
 
 
 class DesktopWindow(QMainWindow):
@@ -418,9 +487,7 @@ class DesktopWindow(QMainWindow):
         options.addRow(self._translator.text("control.speed"), self._speed)
         reset_view = QPushButton(self._translator.text("control.reset_view"))
         reset_view.setAccessibleName("Reset canvas view")
-        reset_view.clicked.connect(
-            lambda: self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
-        )
+        reset_view.clicked.connect(self._reset_canvas_view)
         options.addRow(self._translator.text("control.zoom"), self._zoom)
         options.addRow(reset_view)
         for field in ("circles", "vectors", "endpoint", "original", "reconstruction"):
@@ -642,6 +709,10 @@ class DesktopWindow(QMainWindow):
 
     def _set_status(self, text: str) -> None:
         self._status.setText(text)
+
+    def _reset_canvas_view(self) -> None:
+        self._canvas.reset_view()
+        self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
 
     def _restore_settings(self) -> None:
         window_width = cast(int, self._settings.value("window/width", 1200, int))

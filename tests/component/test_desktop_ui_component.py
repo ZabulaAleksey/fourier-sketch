@@ -10,8 +10,8 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
 from PIL import Image, ImageDraw
-from PySide6.QtCore import QEvent, QPointF, Qt
-from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent
+from PySide6.QtCore import QEvent, QPoint, QPointF, Qt
+from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent, QWheelEvent
 from PySide6.QtWidgets import QApplication, QCheckBox, QPushButton
 
 from fourier_sketch.application import (
@@ -213,6 +213,68 @@ def test_desktop_canvas_zoom_is_bounded_and_resettable() -> None:
     reset_button.click()
     assert window._zoom.value() == 100
     assert window._canvas.view_zoom == 1.0
+    window.close()
+
+
+def test_desktop_freehand_screen_y_is_converted_to_cartesian_y() -> None:
+    _application()
+    window = DesktopWindow()
+
+    # Screen coordinates grow downward; the Fourier/domain curve must grow
+    # upward so the painted result is not vertically mirrored.
+    assert window._source._point(QPointF(31.0, 24.0)) == Point2D(31.0, -24.0)
+    window.close()
+
+
+def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
+    _application()
+    window = DesktopWindow()
+    canvas = window._canvas
+
+    initial_pan = canvas.view_pan
+    canvas.wheelEvent(
+        QWheelEvent(
+            QPointF(120.0, 100.0),
+            QPointF(120.0, 100.0),
+            QPoint(0, 0),
+            QPoint(0, 120),
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+    )
+    assert canvas.view_zoom > 1.0
+
+    canvas.mousePressEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonPress,
+            QPointF(100.0, 100.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseMoveEvent(
+        _mouse_event(
+            QEvent.Type.MouseMove,
+            QPointF(135.0, 82.0),
+            button=Qt.MouseButton.NoButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseReleaseEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonRelease,
+            QPointF(135.0, 82.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.NoButton,
+        )
+    )
+    assert canvas.view_pan != initial_pan
+
+    canvas.reset_view()
+    assert canvas.view_zoom == 1.0
+    assert canvas.view_pan == (0.0, 0.0)
     window.close()
 
 

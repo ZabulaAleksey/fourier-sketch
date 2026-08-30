@@ -2,15 +2,16 @@
 
 ## Текущая цель
 
-Проверить и интегрировать FS-021 исправление image source: тёмный рисунок на светлом фоне не должен
-давать contour рамки; сохранить manual Windows GUI/DPI/resize evidence gate.
+Проверить и интегрировать FS-021 canvas-navigation исправление: freehand contour не отражается
+вертикально; колесо масштабирует, а LMB drag перемещает viewport. Сохранить manual Windows
+GUI/DPI/resize evidence gate.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; renderer-control slice интегрирован в `main`, image/zoom fix локально
-  проверен в отдельной ветке.
-- Branch: `fix/fs-021-image-contour-and-zoom`; merge/push не выполнялись.
+- Lifecycle: `partial`; renderer-control slice интегрирован в `main`, image/zoom parent fix и
+  canvas-navigation fix локально проверяются в отдельных ветках.
+- Branch: `fix/fs-021-canvas-navigation`; merge/push не выполнялись.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -32,8 +33,10 @@
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
 5. [completed] Для desktop image source включить default dark-ink/light-background preprocessing,
    добавить explicit reverse-polarity opt-out, bounded canvas zoom/reset и component regressions.
-6. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-7. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+6. [completed] Перевести freehand screen Y в Cartesian input, добавить wheel zoom/LMB pan и reset
+   viewport с component regressions.
+7. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
+8. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
    подтверждён; review P2 для `cancelled` status и CLI persistence исправлены. Accessibility-only
    fallback подтвердил actual window hierarchy/keyboard controls; lingering job после bounded terminate
    безопасно retained до finish. Manual mouse/image/DPI/resize diagnostic не получен: screenshot capture
