@@ -16,7 +16,7 @@ from PySide6.QtWidgets import QApplication, QCheckBox
 
 from fourier_sketch.application import TimelineState, build_freehand_timeline
 from fourier_sketch.domain import Curve, Point2D
-from fourier_sketch.ui.desktop import DesktopWindow
+from fourier_sketch.ui.desktop import DesktopWindow, run_desktop
 
 
 def _application() -> QApplication:
@@ -175,6 +175,45 @@ def test_desktop_restores_non_sensitive_preferences() -> None:
     restored.close()
 
 
+def test_desktop_cli_does_not_override_restored_window_size(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class _DesktopWindowStub:
+        def __init__(self, *, locale: str | None = None) -> None:
+            self.locale = locale
+            self.was_shown = False
+            self.resize_calls = 0
+            created.append(self)
+
+        def resize(self, _width: int, _height: int) -> None:
+            self.resize_calls += 1
+
+        def show(self) -> None:
+            self.was_shown = True
+
+    created: list[_DesktopWindowStub] = []
+
+    class _ApplicationStub:
+        @staticmethod
+        def instance() -> None:
+            return None
+
+        def __init__(self, _args: list[str]) -> None:
+            pass
+
+        def exec(self) -> int:
+            return 0
+
+    monkeypatch.setattr("fourier_sketch.ui.desktop.DesktopWindow", _DesktopWindowStub)
+    monkeypatch.setattr("fourier_sketch.ui.desktop.QApplication", _ApplicationStub)
+
+    assert run_desktop(locale="pseudo") == 0
+    assert len(created) == 1
+    assert created[0].locale == "pseudo"
+    assert created[0].was_shown
+    assert created[0].resize_calls == 0
+
+
 def test_desktop_resets_legacy_speed_preference_to_safe_minimum() -> None:
     _application()
     _MemorySettings.values = {"controls/speed": 40}
@@ -303,6 +342,45 @@ def test_desktop_window_cancel_then_close_stops_timer_and_job() -> None:
     assert window._job is not None and window._job.isRunning()
     window._cancel_current_job()
     assert window._timer.isActive() is False
+    assert window._status.text() == window._translator.text("desktop.status.cancelled")
+    window.close()
+
+
+def test_desktop_cancel_keeps_a_stubborn_job_owned_until_it_stops() -> None:
+    _application()
+    window = DesktopWindow()
+
+    class _StubbornJob:
+        def __init__(self) -> None:
+            self.interruption_requested = False
+            self.terminated = False
+            self.deleted = False
+
+        def isRunning(self) -> bool:
+            return True
+
+        def requestInterruption(self) -> None:
+            self.interruption_requested = True
+
+        def wait(self, _milliseconds: int) -> None:
+            pass
+
+        def terminate(self) -> None:
+            self.terminated = True
+
+        def deleteLater(self) -> None:
+            self.deleted = True
+
+    job = _StubbornJob()
+    window._job = cast(object, job)  # type: ignore[assignment]
+
+    window._cancel_current_job()
+
+    assert job.interruption_requested
+    assert job.terminated
+    assert not job.deleted
+    assert cast(object, window._job) is job
+    assert window._status.text() == window._translator.text("desktop.status.cancelled")
     window.close()
 
 

@@ -31,9 +31,11 @@
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
 5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
 6. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
-   подтверждён. Manual visible Windows GUI/DPI/resize diagnostic не получен: automation capture
-   повторно завершился `SetIsBorderRequired failed (0x80004002)`. После его получения выполнить
-   final review/docs gates; затем остановиться до FS-022.
+   подтверждён; review P2 для `cancelled` status и CLI persistence исправлены. Accessibility-only
+   fallback подтвердил actual window hierarchy/keyboard controls; lingering job после bounded terminate
+   безопасно retained до finish. Manual mouse/image/DPI/resize diagnostic не получен: screenshot capture
+   повторно завершился `SetIsBorderRequired failed (0x80004002)`. После его получения выполнить final
+   review/docs gates; затем остановиться до FS-022.
 
 ## Handoff
 

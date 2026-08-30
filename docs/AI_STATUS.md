@@ -7,9 +7,10 @@
 - Branch: `main`; renderer-control and desktop E2E deltas are integrated.
 - Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
   and pushed to `origin`. PR/release/deployment were not performed.
-- Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: Windows automation capture
-  вернул `SetIsBorderRequired failed (0x80004002)` после retry/reset. Это не влияет на automated
-  evidence, но не позволяет заявлять visual/DPI PASS.
+- Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
+  automation возвращает `SetIsBorderRequired failed (0x80004002)` после retry/reset. Accessibility-only
+  fallback подтверждает actual window hierarchy и keyboard controls, но без geometry не доказывает
+  mouse stroke, image dialog или visual/DPI result.
 
 ## FS-021 progress
 
@@ -23,7 +24,11 @@
   Это component evidence, а не ручная visual/DPI проверка видимого Windows окна.
 - Добавлены проверки корректного ресайза/готовности canvas, guard от stale-job после cancel и сохранения
   базовых UI-предпочтений; это закрывает большую часть step 6 lifecycle/persistence gates.
-- Full repository regression: `534 passed in 158.40s`; Ruff, strict mypy, frozen sync and overlay PASS.
+- Review P2 исправлены: Cancel всегда публикует `cancelled` после остановки job; `run_desktop()` больше
+  не перезаписывает восстановленный размер окна. Неостанавливаемый после bounded terminate job остаётся
+  во владении окна до фактического завершения, поэтому `QThread` не уничтожается while running.
+  Component regressions покрывают все три случая.
+- Full repository regression: `536 passed in 156.61s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
   `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.
@@ -87,8 +92,9 @@
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
 - Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
 - PySide6 shell exists as a partial FS-021 source-run slice; offscreen component evidence подтверждает
-  freehand+image source workflows. Manual visible Windows GUI/DPI/resize diagnostic remains `NOT VERIFIED`:
-  current automation capture failed with `SetIsBorderRequired failed (0x80004002)` even after one reset/retry.
+  freehand+image source workflows. Accessibility-only Windows fallback подтвердил видимые controls и
+  keyboard structure, но manual mouse/image/DPI/resize diagnostic remains `NOT VERIFIED`: screenshot
+  capture failed with `SetIsBorderRequired failed (0x80004002)` even after one reset/retry.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 

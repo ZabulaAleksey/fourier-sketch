@@ -444,18 +444,20 @@ class DesktopWindow(QMainWindow):
     def _cancel_current_job(self) -> None:
         self._image.cancel()
         self._job_generation += 1
-        if self._job is None:
+        job = self._job
+        if job is None:
             return
 
-        if self._job.isRunning():
-            self._job.requestInterruption()
-            self._job.wait(3000)
-            if self._job.isRunning():
-                self._job.terminate()
-                self._job.wait(3000)
-        if self._job is not None and self._job.isRunning():
-            self._set_status(self._translator.text("desktop.status.cancelled"))
-        self._job = None
+        if job.isRunning():
+            job.requestInterruption()
+            job.wait(3000)
+            if job.isRunning():
+                job.terminate()
+                job.wait(3000)
+        if not job.isRunning():
+            self._job = None
+            job.deleteLater()
+        self._set_status(self._translator.text("desktop.status.cancelled"))
 
     def _set_visibility(self, field: str, enabled: bool) -> None:
         timeline = self._timeline
@@ -639,6 +641,5 @@ class DesktopWindow(QMainWindow):
 def run_desktop(*, locale: str | None = None) -> int:
     app = QApplication.instance() or QApplication([])
     window = DesktopWindow(locale=locale)
-    window.resize(1200, 760)
     window.show()
     return app.exec()

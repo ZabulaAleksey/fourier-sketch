@@ -914,7 +914,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Entry evidence: stable application use cases/view states, i18n resources, PySide6 platform/license
   review and offscreen component-test feasibility.
 - Current evidence: PySide6 dependency and source-run shell committed; current full repository suite
-  `534 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
+  `536 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
   core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
   from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
 - Current no-trail/speed delta evidence: desktop paint no longer scans/renders trace or exposes its

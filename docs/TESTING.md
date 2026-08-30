@@ -229,6 +229,9 @@ before/after frame buckets and exact endpoint parity.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker
 callback for a local PNG through their existing worker/application paths; test-local in-memory settings
 keep this evidence from writing user preferences. It does not replace manual visible Windows/DPI evidence.
+Component regressions also require that Cancel publishes the localized cancelled state and that the CLI
+launch path preserves the size restored by `DesktopWindow`; a job that survives bounded termination
+remains owned until it actually stops.
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
