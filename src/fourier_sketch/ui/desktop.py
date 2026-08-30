@@ -7,7 +7,7 @@ from pathlib import Path
 from time import monotonic
 from typing import cast
 
-from PySide6.QtCore import QPointF, QSettings, Qt, QThread, QTimer, Signal
+from PySide6.QtCore import QLineF, QPointF, QSettings, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QColor, QKeyEvent, QMouseEvent, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
@@ -77,6 +77,8 @@ class EpicycleCanvas(QWidget):
         self._scene_bounds: tuple[float, float, float, float] | None = None
         self._original_scene_path = QPainterPath()
         self._reconstruction_scene_path = QPainterPath()
+        self._vector_lines: list[QLineF] = []
+        self._circle_centers: list[tuple[float, float, float]] = []
         self.setMinimumSize(360, 300)
         self.setAccessibleName("Epicycles canvas")
 
@@ -131,6 +133,21 @@ class EpicycleCanvas(QWidget):
             self._scene_bounds = None
             self._original_scene_path = QPainterPath()
             self._reconstruction_scene_path = QPainterPath()
+            self._vector_lines = []
+            self._circle_centers = []
+        else:
+            self._vector_lines = []
+            self._circle_centers = []
+            for vector in frame.chain.vectors:
+                self._vector_lines.append(
+                    QLineF(
+                        QPointF(vector.start.x, vector.start.y),
+                        QPointF(vector.end.x, vector.end.y),
+                    )
+                )
+                self._circle_centers.append(
+                    (vector.start.x, vector.start.y, vector.amplitude),
+                )
         self._frame = frame
         self.update()
 
@@ -202,14 +219,12 @@ class EpicycleCanvas(QWidget):
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
             painter.setPen(QPen(QColor("#3b82f6"), 1.0 * line_scale))
-            for vector in frame.chain.vectors:
-                center = map_point(vector.start)
-                radius = vector.amplitude
-                painter.drawEllipse(center, radius, radius)
+            for x, y, radius in self._circle_centers:
+                painter.drawEllipse(QPointF(x, y), radius, radius)
         if visibility.vectors:
             painter.setPen(QPen(QColor("#1e3a8a"), 1.2 * line_scale))
-            for vector in frame.chain.vectors:
-                painter.drawLine(map_point(vector.start), map_point(vector.end))
+            if self._vector_lines:
+                painter.drawLines(self._vector_lines)
         if visibility.endpoint:
             painter.setBrush(QColor("#dc2626"))
             painter.setPen(Qt.PenStyle.NoPen)

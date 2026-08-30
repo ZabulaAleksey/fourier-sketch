@@ -28,6 +28,8 @@
   at 601 points. Targeted component/Ruff/mypy/overlay PASS.
 - FS-021 static scene cache is now implemented: original/reconstruction geometry and scene bounds are
   cached until curve/reconstruction/selection changes; dynamic vectors are painted each frame.
+- Dynamic chain geometry is now pre-batched per frame (`QLineF`/circle cache) before paint, reducing
+  per-paint allocations in dynamic epicycle drawing.
 - Step 4 stress profile completed and evidence recorded for this hardware tuple; no target breach
   against a 16.67 ms/frame interactive budget in default or stress buckets.
 - Reviewer P1 continuous paused redraw fixed: animation timer is inactive without/running-off
