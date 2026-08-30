@@ -904,8 +904,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-021 — PySide6 Desktop GUI
 
-- Lifecycle: `partial`; source-run shell is implemented/validated locally, renderer optimization,
-  live GUI and shutdown/persistence gates remain open.
+- Lifecycle: `partial`; source-run shell, renderer optimization and offscreen source-workflow component
+  evidence are implemented/validated locally; manual visible GUI/DPI and final gates remain open.
 - Goal: replace diagnostic shell with a responsive desktop workflow centered on Epicycles view.
 
 ### Dependency DAG & entry preconditions
@@ -913,8 +913,8 @@ completion claim. Evidence records environment/branch and caveats.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; both MVPs, discontinuity and FFT2 modes completed.
 - Entry evidence: stable application use cases/view states, i18n resources, PySide6 platform/license
   review and offscreen component-test feasibility.
-- Current evidence: PySide6 dependency and source-run shell committed; full repository suite
-  `526 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
+- Current evidence: PySide6 dependency and source-run shell committed; current full repository suite
+  `533 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
   core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
   from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
 - Current no-trail/speed delta evidence: desktop paint no longer scans/renders trace or exposes its
@@ -942,7 +942,7 @@ completion claim. Evidence records environment/branch and caveats.
 4. Remove persistent trace from the desktop paint path and its toggle while retaining the bounded
    application ledger for parity/export; bounds and paint work must not scan `frame.trace`.
 5. Batch dynamic geometry and avoid one Python/Qt object allocation per circle/vector where possible.
-6. Map desktop speed slider exactly to `0.10..2.00×` in `0.05×` increments and test endpoints/steps.
+6. Map desktop speed slider exactly to `0.10..1.00×` in `0.01×` increments and test endpoints/steps.
 7. Re-profile and prove endpoint/frame parity. Only if declared target remains unmet, run a bounded
    Qt Quick/QML scene-graph spike; adopt it only with measured gain, compatibility and rollback.
 8. Do not migrate to React Native as a performance shortcut. A mobile technology decision belongs
@@ -961,8 +961,9 @@ completion claim. Evidence records environment/branch and caveats.
 ### PASS evidence
 
 - Unit view-state/reducer; integration worker/application; component pages/states/keyboard/i18n/text
-  expansion; live freehand+image E2E; shutdown/cancel/thread leak checks; full/static/dependency/
-  Windows smoke/overlay PASS and manual DPI/resize diagnostic. Performance evidence includes
+  expansion; offscreen freehand+image callbacks through the actual desktop/application path;
+  shutdown/cancel/thread leak checks; full/static/dependency/Windows smoke/overlay PASS and manual
+  visible DPI/resize diagnostic. Performance evidence includes
   before/after frame-time buckets, long-trace behavior, parity and paused-redraw assertion.
   Component evidence asserts no desktop trace paint/toggle and exact smooth speed range/step.
 

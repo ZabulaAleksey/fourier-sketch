@@ -3,21 +3,56 @@
 import os
 import time
 from dataclasses import replace
-from typing import cast
+from pathlib import Path
+from typing import ClassVar, cast
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QKeyEvent
+import pytest
+from PIL import Image, ImageDraw
+from PySide6.QtCore import QEvent, QPointF, Qt
+from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QCheckBox
 
-from fourier_sketch.application import build_freehand_timeline
+from fourier_sketch.application import TimelineState, build_freehand_timeline
 from fourier_sketch.domain import Curve, Point2D
 from fourier_sketch.ui.desktop import DesktopWindow
 
 
 def _application() -> QApplication:
     return cast(QApplication, QApplication.instance() or QApplication([]))
+
+
+class _MemorySettings:
+    """In-memory QSettings replacement that keeps component tests isolated."""
+
+    values: ClassVar[dict[str, object]] = {}
+
+    def __init__(self, *_args: object) -> None:
+        pass
+
+    def value(self, key: str, default: object, _type: object) -> object:
+        return self.values.get(key, default)
+
+    def setValue(self, key: str, value: object) -> None:
+        self.values[key] = value
+
+
+@pytest.fixture(autouse=True)
+def _desktop_settings_are_isolated(monkeypatch: pytest.MonkeyPatch) -> None:
+    _MemorySettings.values = {}
+    monkeypatch.setattr("fourier_sketch.ui.desktop.QSettings", _MemorySettings)
+
+
+def _wait_for_timeline(window: DesktopWindow, *, timeout_seconds: float = 2.0) -> None:
+    app = _application()
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        app.processEvents()
+        if window._timeline is not None:
+            return
+        time.sleep(0.01)
+    raise AssertionError("Desktop timeline was not produced before timeout")
 
 
 def test_desktop_window_uses_pseudo_locale_and_has_a_disabled_future_page() -> None:
@@ -28,6 +63,112 @@ def test_desktop_window_uses_pseudo_locale_and_has_a_disabled_future_page() -> N
     assert any(not button.isEnabled() for button in window.findChildren(type(window._play)))
 
     window.close()
+
+
+def _mouse_event(
+    event_type: QEvent.Type,
+    point: QPointF,
+    *,
+    button: Qt.MouseButton,
+    buttons: Qt.MouseButton,
+) -> QMouseEvent:
+    return QMouseEvent(
+        event_type,
+        point,
+        point,
+        point,
+        button,
+        buttons,
+        Qt.KeyboardModifier.NoModifier,
+    )
+
+
+def test_desktop_freehand_flow_generates_animation_frame() -> None:
+    _application()
+    window = DesktopWindow()
+
+    window._source.mousePressEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonPress,
+            QPointF(20.0, 20.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    window._source.mouseMoveEvent(
+        _mouse_event(
+            QEvent.Type.MouseMove,
+            QPointF(80.0, 45.0),
+            button=Qt.MouseButton.NoButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    window._source.mouseReleaseEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonRelease,
+            QPointF(120.0, 75.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.NoButton,
+        )
+    )
+    _wait_for_timeline(window)
+
+    assert window._timeline is not None
+    assert window._canvas._frame is not None
+    assert window._canvas._frame.timeline_state is TimelineState.PAUSED
+
+    window._timeline_action("play")
+    time.sleep(0.05)
+    _application().processEvents()
+    assert window._canvas._frame is not None
+    window._timeline_action("pause")
+    assert window._canvas._frame.timeline_state is TimelineState.PAUSED
+    window.close()
+
+
+def test_desktop_image_flow_from_file_and_runs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _application()
+    source = tmp_path / "shape.png"
+    image = Image.new("L", (24, 18), 0)
+    ImageDraw.Draw(image).rectangle((4, 4, 19, 13), outline=255, width=2)
+    image.save(source)
+    window = DesktopWindow()
+    window._speed.setValue(42)
+
+    def fake_open(*_args: object, **_kwargs: object) -> tuple[str, str]:
+        return (str(source), "")
+
+    monkeypatch.setattr("fourier_sketch.ui.desktop.QFileDialog.getOpenFileName", fake_open)
+    window._choose_image()
+    _wait_for_timeline(window, timeout_seconds=6.0)
+
+    assert window._timeline is not None
+    assert window._canvas._frame is not None
+    assert window._canvas._frame.speed == 0.42
+
+    window._timeline_action("play")
+    time.sleep(0.05)
+    _application().processEvents()
+    assert window._canvas._frame is not None
+    window.close()
+
+
+def test_desktop_restores_non_sensitive_preferences() -> None:
+    _application()
+    first = DesktopWindow()
+    first.resize(720, 540)
+    first._speed.setValue(42)
+    first._harmonics.setValue(17)
+    first.close()
+
+    restored = DesktopWindow()
+
+    assert (restored.width(), restored.height()) == (720, 540)
+    assert restored._speed.value() == 42
+    assert restored._harmonics.value() == 17
+    restored.close()
 
 
 def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enabled() -> None:
@@ -46,6 +187,9 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     assert window._speed.minimum() == 10
     assert window._speed.maximum() == 100
     assert window._speed.singleStep() == 1
+    window._speed.setValue(42)
+    assert window._canvas._frame.speed == 0.42
+    window._speed.setValue(window._speed.minimum())
     assert window._speed.value() == window._speed.minimum()
     assert window._speed.value() / 100.0 == 0.10
     assert window._canvas._frame.speed == 0.10

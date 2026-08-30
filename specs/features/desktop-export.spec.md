@@ -38,7 +38,7 @@ endpoint/state parity. GPU/QML adapter вводится только после 
 
 ### UI-FR-008 — Desktop speed control
 
-Desktop speed control использует небольшой bounded диапазон `0.10..2.00×` с шагом `0.05×`.
+Desktop speed control использует небольшой bounded диапазон `0.10..1.00×` с шагом `0.01×`.
 Отображаемое значение и timeline speed совпадают; keyboard step не перескакивает скрытые значения.
 
 ### UI-FR-005 — Localization
@@ -81,7 +81,7 @@ error и completed state. Missing translation показывает fallback stri
 - UI-AC-005: frame-time profile на named Windows environment подтверждает declared interactive
   budget для default и stress K/trace; paused view не выполняет continuous redraw.
 - UI-AC-006: desktop canvas не создаёт trace artist/path, а speed slider точно покрывает
-  `0.10..2.00×` с шагом `0.05×` и не передаёт timeline значение выше `2.00×`.
+  `0.10..1.00×` с шагом `0.01×` и не передаёт timeline значение выше `1.00×`.
 - EX-AC-001: exported animation endpoint history эквивалентна interactive history.
 - EX-AC-002: codec unavailable даёт явный degraded/unavailable result без ложного MP4 success.
 - EX-AC-003: existing file и cancellation не приводят к silent data loss.

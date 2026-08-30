@@ -2,14 +2,14 @@
 
 ## Текущая цель
 
-Подготовить следующий bounded FS-021 renderer optimization slice: cache static paths/bounds и
-повторный stress profile, не начиная работу без отдельной команды пользователя.
+Завершить ограниченный FS-021 evidence slice: подтвердить desktop source workflows через реальные
+component callbacks и синхронизировать контракты после изменения диапазона скорости.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
 - Lifecycle: `partial`; renderer-control slice завершён и локально интегрирован в `main`.
-- Branch: `main` после fast-forward integration renderer-control delta.
+- Branch: `feature/fs-021-desktop-e2e-gates`; предыдущий renderer-control delta уже integrated in `main`.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -30,9 +30,10 @@
    перейти на повторно используемый scene-viewport pass.
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
 5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-6. [pending] Закрыть live freehand+image GUI, cancellation/shutdown/persistence, DPI/resize и final
-   review/docs gates; затем остановиться до FS-022.
+6. [partial] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+   подтверждён. Остаются ручной visible Windows GUI/DPI/resize diagnostic и final review/docs gates;
+   затем остановиться до FS-022.
 
 ## Handoff
 
-После synchronization commit отправить `main` в `origin` и продолжить только после вашего запроса.
+После synchronization commit остановиться на feature branch и ожидать отдельного разрешения на merge.

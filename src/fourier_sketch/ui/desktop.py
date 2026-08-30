@@ -591,7 +591,10 @@ class DesktopWindow(QMainWindow):
     def _restore_settings(self) -> None:
         window_width = cast(int, self._settings.value("window/width", 1200, int))
         window_height = cast(int, self._settings.value("window/height", 760, int))
-        control_speed = cast(int, self._settings.value("controls/speed", 2, int))
+        control_speed = cast(
+            int,
+            self._settings.value("controls/speed", self._speed.minimum(), int),
+        )
         control_harmonics = cast(int, self._settings.value("controls/harmonics", 1, int))
         self.resize(
             window_width,

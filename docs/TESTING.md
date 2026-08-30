@@ -222,10 +222,13 @@ FS-020 acceptance проверяет constant/impulse/sinusoid bins, generated r
 types/convention metadata, low/high/selected masks, asymmetric complex rejection, pre-allocation
 resource failure, safe local-image integration, atomic component PNG и live/bidi-safe CLI.
 
-FS-021 desktop component evidence asserts no trace paint/toggle, exact `0.10..2.00×` speed mapping
-with `0.05×` steps and preserved application endpoint ledger. Remaining performance evidence records
+FS-021 desktop component evidence asserts no trace paint/toggle, exact `0.10..1.00×` speed mapping
+with `0.01×` steps and preserved application endpoint ledger. Remaining performance evidence records
 default/stress K, trace length, DPI/window and hardware; asserts no continuous paused redraw,
 before/after frame buckets and exact endpoint parity.
+The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker
+callback for a local PNG through their existing worker/application paths; test-local in-memory settings
+keep this evidence from writing user preferences. It does not replace manual visible Windows/DPI evidence.
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 

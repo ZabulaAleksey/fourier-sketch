@@ -4,9 +4,10 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `main`; renderer-control delta integrated locally by fast-forward.
-- Integration: implementation `0faf8fc` and evidence updates are present in `main`;
-  latest changes are pushed to `origin`; PR/release/deployment were not performed.
+- Branch: `feature/fs-021-desktop-e2e-gates`; renderer-control delta remains integrated in `main`.
+- Integration: implementation `0faf8fc` and previous evidence updates are present in `main` and pushed
+  to `origin`; current desktop E2E/doc slice is locally validated on the feature branch. PR/release/
+  deployment were not performed.
 - Blockers: нет.
 
 ## FS-021 progress
@@ -14,9 +15,14 @@
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
   offscreen component checks are implemented, committed, merged, and pushed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
+- Offscreen desktop component path теперь вызывает реальные mouse callbacks freehand canvas и file-picker
+  callback для локального PNG: оба проходят через существующие application/worker boundaries до
+  timeline/frame. `QSettings` заменяется test-local in-memory adapter, поэтому проверки не меняют
+  пользовательские preference. Связанный component+integration набор: `13 passed in 2.05s`.
+  Это component evidence, а не ручная visual/DPI проверка видимого Windows окна.
 - Добавлены проверки корректного ресайза/готовности canvas, guard от stale-job после cancel и сохранения
   базовых UI-предпочтений; это закрывает большую часть step 6 lifecycle/persistence gates.
-- Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
+- Full repository regression: `533 passed in 168.84s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
   `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.
@@ -79,15 +85,17 @@
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
 - Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
-- PySide6 shell exists as a partial FS-021 source-run slice; remaining terminal work включает завершение
-  live freehand+image E2E и финальный performance/reliability gates.
+- PySide6 shell exists as a partial FS-021 source-run slice; offscreen component evidence подтверждает
+  freehand+image source workflows. Remaining terminal work — ручные visible Windows GUI/DPI/resize
+  diagnostics и final review/docs gates.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-После отдельной команды продолжить FS-021: если новые профили на целевом железе ухудшат
-показатели, перейти к bounded QML/QT scene-graph spike и затем выполнить финальные docs/tests gates.
+После отдельной команды продолжить FS-021 ручной visible Windows GUI/DPI/resize diagnostic и final
+review/docs gates. Если новый профиль на целевом железе ухудшит показатели, перейти к bounded
+QML/QT scene-graph spike.
 FS-022 и planned Android FS-031 не начинать заодно.
 
 ## Синхронизация документации
