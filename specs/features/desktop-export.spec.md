@@ -19,11 +19,17 @@ UI предоставляет SOURCE, MONOCHROME, EDGES, CONTOURS, CURVE, FOURIE
 Центральный desktop canvas одновременно показывает nested rotating circles, head-to-tail vectors,
 moving endpoint и уже построенный contour/reconstruction. Persistent trace остаётся application/
 export evidence, но desktop canvas его не рисует: дублирующий шлейф не должен увеличивать frame work.
-Canvas сохраняет fit-to-scene aspect ratio, предоставляет bounded user zoom `0.50..2.50×` и явный
+Canvas сохраняет fit-to-scene aspect ratio, предоставляет numerically bounded near-unrestricted user
+zoom `0.01..100.00×` и явный
 reset к `1.00×`; масштаб меняет только presentation, не Fourier/timeline state. Колесо мыши меняет
 zoom, а drag левой кнопкой мыши перемещает viewport; reset также возвращает pan к нулю. Координата Y
 freehand input переводится из экранной вниз-направленной системы в Cartesian presentation contract,
 чтобы ready contour не был отражён по вертикали.
+
+### UI-FR-010 — Source/view alignment
+
+В desktop-first layout поле freehand drawing выравнивается по вертикальному центру с epicycle canvas;
+на компактном окне сохраняется безопасный минимальный размер поля без перекрытия controls.
 
 ### UI-FR-003 — State separation
 

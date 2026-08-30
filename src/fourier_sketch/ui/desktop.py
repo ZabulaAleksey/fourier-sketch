@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QSizePolicy,
     QSlider,
     QStackedWidget,
     QVBoxLayout,
@@ -76,10 +77,11 @@ _SPEED_MAX = 1.00
 _SPEED_STEP = 0.01
 _SPEED_SCALE = int(1 / _SPEED_STEP)
 _SPEED_SETTINGS_VERSION = 2
-_VIEW_ZOOM_MIN = 0.50
-_VIEW_ZOOM_MAX = 2.50
+_VIEW_ZOOM_MIN = 0.01
+_VIEW_ZOOM_MAX = 100.00
 _VIEW_ZOOM_SCALE = 100
 _VIEW_ZOOM_DEFAULT = 1.00
+_SOURCE_LAYOUT_BOTTOM_RESERVE = 250
 
 
 class EpicycleCanvas(QWidget):
@@ -423,7 +425,15 @@ class DesktopWindow(QMainWindow):
         self._pages = QStackedWidget()
         source_page = QWidget()
         source_layout = QVBoxLayout(source_page)
-        source_layout.addWidget(QLabel(self._translator.text("desktop.source.instructions")))
+        source_layout.setContentsMargins(9, 9, 9, _SOURCE_LAYOUT_BOTTOM_RESERVE)
+        instructions = QLabel(self._translator.text("desktop.source.instructions"))
+        instructions.setWordWrap(True)
+        instructions.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Maximum,
+        )
+        source_layout.addWidget(instructions)
+        self._source.setMaximumHeight(450)
         source_layout.addWidget(self._source)
         buttons = QHBoxLayout()
         clear = QPushButton(self._translator.text("desktop.source.clear"))
@@ -471,8 +481,8 @@ class DesktopWindow(QMainWindow):
             int(_VIEW_ZOOM_MIN * _VIEW_ZOOM_SCALE),
             int(_VIEW_ZOOM_MAX * _VIEW_ZOOM_SCALE),
         )
-        self._zoom.setSingleStep(5)
-        self._zoom.setPageStep(25)
+        self._zoom.setSingleStep(1)
+        self._zoom.setPageStep(100)
         self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
         self._harmonics.valueChanged.connect(
             lambda value: self._timeline_action("harmonics", value)

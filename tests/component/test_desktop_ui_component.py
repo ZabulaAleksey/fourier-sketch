@@ -195,10 +195,10 @@ def test_desktop_canvas_zoom_is_bounded_and_resettable() -> None:
     _application()
     window = DesktopWindow()
 
-    window._canvas.set_view_zoom(9.0)
-    assert window._canvas.view_zoom == 2.5
-    window._canvas.set_view_zoom(0.01)
-    assert window._canvas.view_zoom == 0.5
+    window._canvas.set_view_zoom(1_000_000.0)
+    assert window._canvas.view_zoom == 100.0
+    window._canvas.set_view_zoom(0.000001)
+    assert window._canvas.view_zoom == 0.01
 
     window._canvas.set_view_zoom(1.8)
     window._canvas.reset_view()
@@ -213,6 +213,22 @@ def test_desktop_canvas_zoom_is_bounded_and_resettable() -> None:
     reset_button.click()
     assert window._zoom.value() == 100
     assert window._canvas.view_zoom == 1.0
+    window.close()
+
+
+def test_desktop_source_field_is_centered_with_epicycle_canvas() -> None:
+    app = _application()
+    window = DesktopWindow()
+    window.resize(1200, 760)
+    window.show()
+    app.processEvents()
+
+    source = window._source.geometry()
+    canvas = window._canvas.geometry()
+    source_center_y = source.y() + source.height() / 2.0
+    canvas_center_y = canvas.y() + canvas.height() / 2.0
+
+    assert abs(source_center_y - canvas_center_y) <= 1.0
     window.close()
 
 
