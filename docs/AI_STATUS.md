@@ -4,9 +4,9 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `feat/fs-021-source-layout-and-zoom-range`; renderer-control and desktop E2E deltas are
-  already integrated in `main`. Parent commits `644fd82`/`7d53100` and the current source-layout/zoom
-  fix are locally verified; the current fix awaits merge/push after its local commit.
+- Branch: `feat/fs-021-centered-origin-and-rainbow-vectors`; renderer-control and desktop E2E deltas
+  are already integrated in `main`. Parent commits `644fd82`/`7d53100`/`66ec1ef` and the current
+  centered-origin/rainbow fix are locally verified; the current fix awaits merge/push after its commit.
 - Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
   and pushed to `origin`. PR/release/deployment were not performed.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
@@ -16,6 +16,11 @@
 
 ## FS-021 progress
 
+- The visual center of the freehand field now maps to Cartesian `O=(0,0)`, the start of the head-to-tail
+  chain and its stationary DC vector. Wheel and slider share one zoom value, vector/circle pairs use a
+  deterministic rainbow palette, and Cancel is disabled unless a conversion job runs. Component evidence
+  remains `16 passed`; full repository regression, Ruff and strict mypy PASS locally. Current branch
+  remains unmerged.
 - In normal `1200×760` desktop geometry the freehand field is vertically centered with the epicycle
   canvas. The instruction now wraps rather than forcing the source column wider than the renderer.
   Presentation zoom is numerically bounded at `0.01..100.00×`, which is practically unrestricted for

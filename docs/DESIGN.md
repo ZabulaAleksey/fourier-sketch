@@ -13,7 +13,11 @@ reverse-polarity opt-out), so a light image background cannot become the selecte
 The canvas has presentation-only near-unrestricted `0.01..100.00×` zoom, persisted with desktop preferences, and a reset
 to its `1.00×` fitted view. The mouse wheel zooms the canvas and left-button drag pans it; reset also
 clears the pan. Freehand screen coordinates are converted to Cartesian Y before building a timeline,
-so the contour has the same vertical orientation as the input stroke. Export remains deferred.
+so the contour has the same vertical orientation as the input stroke. The freehand field visual center
+is Cartesian origin `O`, the head-to-tail chain start (including the stationary DC vector). Wheel zoom
+and the slider stay synchronized. Each vector and its circle receives a deterministic rainbow color by
+selection order; this is presentation-only. Cancel is disabled until a background conversion job exists.
+Export remains deferred.
 The freehand field is vertically aligned with the epicycle viewport in the normal desktop layout; at
 smaller window heights it remains usable instead of overlapping the source controls.
 

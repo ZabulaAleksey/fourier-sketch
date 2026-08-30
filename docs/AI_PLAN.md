@@ -2,16 +2,16 @@
 
 ## Текущая цель
 
-Проверить и интегрировать FS-021 source-layout/zoom-range улучшение: freehand field центрируется с
-epicycle canvas, а wheel zoom остаётся практически неограниченным. Сохранить manual Windows
-GUI/DPI/resize evidence gate.
+Проверить и интегрировать FS-021 centered-origin/rainbow улучшение: center freehand field совпадает
+с chain origin, wheel и slider zoom синхронизированы, vector colors различимы. Сохранить manual
+Windows GUI/DPI/resize evidence gate.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
 - Lifecycle: `partial`; renderer-control slice интегрирован в `main`, а UI fixes локально проверены
   в последовательности отдельных веток.
-- Branch: `feat/fs-021-source-layout-and-zoom-range`; merge/push не выполнялись.
+- Branch: `feat/fs-021-centered-origin-and-rainbow-vectors`; merge/push не выполнялись.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -37,8 +37,10 @@ GUI/DPI/resize evidence gate.
    viewport с component regressions.
 7. [completed] Центрировать freehand field с epicycle canvas в normal desktop layout и расширить
    presentation zoom до `0.01..100.00×` с component regression.
-8. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-9. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+8. [completed] Сделать center freehand field chain origin, связать wheel/slider zoom, раскрасить
+   vector/circle по rainbow order и disabled-state Cancel без background job.
+9. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
+10. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
    подтверждён; review P2 для `cancelled` status и CLI persistence исправлены. Accessibility-only
    fallback подтвердил actual window hierarchy/keyboard controls; lingering job после bounded terminate
    безопасно retained до finish. Manual mouse/image/DPI/resize diagnostic не получен: screenshot capture

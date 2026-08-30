@@ -87,6 +87,8 @@ _SOURCE_LAYOUT_BOTTOM_RESERVE = 250
 class EpicycleCanvas(QWidget):
     """Paint-only view of a ready immutable frame; it never calculates Fourier state."""
 
+    view_zoom_changed = Signal(float)
+
     def __init__(self, translator: Translator, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._translator = translator
@@ -97,6 +99,7 @@ class EpicycleCanvas(QWidget):
         self._reconstruction_scene_path = QPainterPath()
         self._vector_lines: list[QLineF] = []
         self._circle_centers: list[tuple[float, float, float]] = []
+        self._vector_colors: list[QColor] = []
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
         self._pan_anchor: QPointF | None = None
@@ -120,15 +123,22 @@ class EpicycleCanvas(QWidget):
 
         if not isfinite(zoom):
             raise ValueError("view zoom must be finite")
-        self._view_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, zoom))
+        next_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, zoom))
+        if next_zoom == self._view_zoom:
+            return
+        self._view_zoom = next_zoom
         self.update()
+        self.view_zoom_changed.emit(self._view_zoom)
 
     def reset_view(self) -> None:
         """Restore the fitted scene scale selected for a new desktop view."""
 
+        zoom_changed = self._view_zoom != _VIEW_ZOOM_DEFAULT
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
         self.update()
+        if zoom_changed:
+            self.view_zoom_changed.emit(self._view_zoom)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() is Qt.MouseButton.LeftButton:
@@ -175,6 +185,7 @@ class EpicycleCanvas(QWidget):
             )
             self._view_zoom = next_zoom
             self.update()
+            self.view_zoom_changed.emit(self._view_zoom)
         event.accept()
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
@@ -222,6 +233,11 @@ class EpicycleCanvas(QWidget):
                     frame.chain.origin.y + total_amplitude,
                 )
                 self._scene_bounds = (minimum_x, maximum_x, minimum_y, maximum_y)
+                vector_count = len(frame.chain.vectors)
+                self._vector_colors = [
+                    QColor.fromHsvF(index / max(vector_count, 1), 0.85, 0.85)
+                    for index in range(vector_count)
+                ]
 
         if frame is None:
             self._frame_cache_key = None
@@ -230,6 +246,7 @@ class EpicycleCanvas(QWidget):
             self._reconstruction_scene_path = QPainterPath()
             self._vector_lines = []
             self._circle_centers = []
+            self._vector_colors = []
         else:
             self._vector_lines = []
             self._circle_centers = []
@@ -316,13 +333,15 @@ class EpicycleCanvas(QWidget):
         # application trace remains available for export and other renderers.
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
-            painter.setPen(QPen(QColor("#3b82f6"), 1.0 * line_scale))
-            for x, y, radius in self._circle_centers:
+            for (x, y, radius), color in zip(
+                self._circle_centers, self._vector_colors, strict=True
+            ):
+                painter.setPen(QPen(color, 1.0 * line_scale))
                 painter.drawEllipse(QPointF(x, y), radius, radius)
         if visibility.vectors:
-            painter.setPen(QPen(QColor("#1e3a8a"), 1.2 * line_scale))
-            if self._vector_lines:
-                painter.drawLines(self._vector_lines)
+            for line, color in zip(self._vector_lines, self._vector_colors, strict=True):
+                painter.setPen(QPen(color.darker(130), 1.2 * line_scale))
+                painter.drawLine(line)
         if visibility.endpoint:
             painter.setBrush(QColor("#dc2626"))
             painter.setPen(Qt.PenStyle.NoPen)
@@ -374,14 +393,20 @@ class FreehandCanvas(QWidget):
         points = self._capture.snapshot().points
         if len(points) < 2:
             return
-        path = QPainterPath(QPointF(points[0].x, -points[0].y))
+        path = QPainterPath(self._screen_point(points[0]))
         for point in points[1:]:
-            path.lineTo(point.x, -point.y)
+            path.lineTo(self._screen_point(point))
         painter.setPen(QPen(QColor("#1d4ed8"), 2.0))
         painter.drawPath(path)
 
     def _point(self, position: QPointF) -> Point2D:
-        return Point2D(float(position.x()), -float(position.y()))
+        return Point2D(
+            float(position.x() - self.width() / 2.0),
+            float(self.height() / 2.0 - position.y()),
+        )
+
+    def _screen_point(self, point: Point2D) -> QPointF:
+        return QPointF(point.x + self.width() / 2.0, self.height() / 2.0 - point.y)
 
 
 class DesktopWindow(QMainWindow):
@@ -456,15 +481,16 @@ class DesktopWindow(QMainWindow):
         self._play = QPushButton(self._translator.text("control.play"))
         self._pause = QPushButton(self._translator.text("control.pause"))
         restart = QPushButton(self._translator.text("control.restart"))
-        cancel = QPushButton(self._translator.text("desktop.control.cancel"))
+        self._cancel = QPushButton(self._translator.text("desktop.control.cancel"))
+        self._cancel.setEnabled(False)
         self._play.clicked.connect(lambda: self._timeline_action("play"))
         self._pause.clicked.connect(lambda: self._timeline_action("pause"))
         restart.clicked.connect(lambda: self._timeline_action("restart"))
-        cancel.clicked.connect(self._cancel_current_job)
+        self._cancel.clicked.connect(self._cancel_current_job)
         controls.addWidget(self._play)
         controls.addWidget(self._pause)
         controls.addWidget(restart)
-        controls.addWidget(cancel)
+        controls.addWidget(self._cancel)
         center.addLayout(controls)
         options = QFormLayout()
         self._harmonics = QSlider(Qt.Orientation.Horizontal)
@@ -493,6 +519,7 @@ class DesktopWindow(QMainWindow):
         self._zoom.valueChanged.connect(
             lambda value: self._canvas.set_view_zoom(value / _VIEW_ZOOM_SCALE)
         )
+        self._canvas.view_zoom_changed.connect(self._sync_zoom_control)
         options.addRow(self._translator.text("control.harmonics"), self._harmonics)
         options.addRow(self._translator.text("control.speed"), self._speed)
         reset_view = QPushButton(self._translator.text("control.reset_view"))
@@ -554,6 +581,7 @@ class DesktopWindow(QMainWindow):
         self._job_generation += 1
         generation = self._job_generation
         self._job = _Job(operation)
+        self._cancel.setEnabled(True)
 
         def on_job_success(result: object, expected: int = generation) -> None:
             if self._job_generation != expected:
@@ -586,6 +614,7 @@ class DesktopWindow(QMainWindow):
         if not job.isRunning():
             self._job = None
             job.deleteLater()
+            self._cancel.setEnabled(False)
         self._set_status(self._translator.text("desktop.status.cancelled"))
 
     def _set_visibility(self, field: str, enabled: bool) -> None:
@@ -601,6 +630,7 @@ class DesktopWindow(QMainWindow):
         if self._job is not None:
             self._job.deleteLater()
         self._job = None
+        self._cancel.setEnabled(False)
 
     def _apply_image(self, snapshot: object) -> None:
         if not isinstance(snapshot, ImageMvpSnapshot):
@@ -722,7 +752,9 @@ class DesktopWindow(QMainWindow):
 
     def _reset_canvas_view(self) -> None:
         self._canvas.reset_view()
-        self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
+
+    def _sync_zoom_control(self, zoom: float) -> None:
+        self._zoom.setValue(round(zoom * _VIEW_ZOOM_SCALE))
 
     def _restore_settings(self) -> None:
         window_width = cast(int, self._settings.value("window/width", 1200, int))

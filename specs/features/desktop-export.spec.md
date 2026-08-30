@@ -24,7 +24,10 @@ zoom `0.01..100.00×` и явный
 reset к `1.00×`; масштаб меняет только presentation, не Fourier/timeline state. Колесо мыши меняет
 zoom, а drag левой кнопкой мыши перемещает viewport; reset также возвращает pan к нулю. Координата Y
 freehand input переводится из экранной вниз-направленной системы в Cartesian presentation contract,
-чтобы ready contour не был отражён по вертикали.
+чтобы ready contour не был отражён по вертикали. Wheel zoom и zoom slider всегда показывают одно
+и то же view scale. Начало координат поля freehand совпадает с его visual center и с `O`, началом
+head-to-tail chain, включая stationary DC vector. Vector/circle colors детерминированно следуют
+rainbow palette по selection order, не меняя математическое состояние.
 
 ### UI-FR-010 — Source/view alignment
 
@@ -39,7 +42,8 @@ file parsing и export encoding не выполняются в event handlers/pa
 ### UI-FR-004 — Responsiveness and cancellation
 
 Long operations выполняются вне GUI thread, публикуют progress/error/cancel states и корректно
-завершают workers при закрытии окна.
+завершают workers при закрытии окна. Cancel доступен только пока есть cancellable background job;
+без job control disabled и не создаёт ложный cancelled state.
 
 ### UI-FR-007 — Bounded renderer work
 

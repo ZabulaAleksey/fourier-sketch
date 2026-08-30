@@ -233,6 +233,9 @@ persisted preference without changing timeline state.
 Freehand component regressions assert the screen-to-Cartesian Y conversion used by the renderer;
 viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, then require reset
 to restore both the fitted zoom and zero pan.
+The source center maps to `(0, 0)` and round-trips through its screen transform. Wheel zoom updates the
+slider to the same scale; rainbow colors are one-per-vector, and Cancel is disabled without a job then
+enabled only for a running conversion.
 Source-layout regression opens the normal `1200×760` desktop shell and requires the freehand field's
 vertical center to match the epicycle canvas center.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker

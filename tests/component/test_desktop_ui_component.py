@@ -235,10 +235,16 @@ def test_desktop_source_field_is_centered_with_epicycle_canvas() -> None:
 def test_desktop_freehand_screen_y_is_converted_to_cartesian_y() -> None:
     _application()
     window = DesktopWindow()
+    source = window._source
+    center = QPointF(source.width() / 2.0, source.height() / 2.0)
 
-    # Screen coordinates grow downward; the Fourier/domain curve must grow
-    # upward so the painted result is not vertically mirrored.
-    assert window._source._point(QPointF(31.0, 24.0)) == Point2D(31.0, -24.0)
+    # The center of the drawing field is the Cartesian origin and the start
+    # of the head-to-tail chain. Screen Y still grows downward.
+    assert source._point(center) == Point2D(0.0, 0.0)
+    assert source._point(QPointF(center.x() + 31.0, center.y() - 24.0)) == Point2D(31.0, 24.0)
+    assert source._screen_point(Point2D(31.0, 24.0)) == QPointF(
+        center.x() + 31.0, center.y() - 24.0
+    )
     window.close()
 
 
@@ -261,6 +267,7 @@ def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
         )
     )
     assert canvas.view_zoom > 1.0
+    assert window._zoom.value() == round(canvas.view_zoom * 100)
 
     canvas.mousePressEvent(
         _mouse_event(
@@ -354,7 +361,12 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     window._apply_timeline(timeline)
 
     assert window._canvas._frame is not None
+    assert len(window._canvas._vector_colors) == len(window._canvas._frame.chain.vectors)
+    assert len({color.name() for color in window._canvas._vector_colors}) == len(
+        window._canvas._vector_colors
+    )
     assert window._play.isEnabled()
+    assert not window._cancel.isEnabled()
     assert window._harmonics.minimum() == 1
     assert window._speed.minimum() == 10
     assert window._speed.maximum() == 100
@@ -459,8 +471,10 @@ def test_desktop_window_cancel_then_close_stops_timer_and_job() -> None:
 
     window._start_job(slow_operation, window._apply_timeline)
     assert window._job is not None and window._job.isRunning()
+    assert window._cancel.isEnabled()
     window._cancel_current_job()
     assert window._timer.isActive() is False
+    assert not window._cancel.isEnabled()
     assert window._status.text() == window._translator.text("desktop.status.cancelled")
     window.close()
 
