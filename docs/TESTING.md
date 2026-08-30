@@ -238,13 +238,15 @@ slider to the same scale. Rainbow regressions use several harmonics, require sta
 position as K grows, and require each vector/circle pair to share its color. Touch regressions exercise
 the isolated viewport-gesture calculation for one-finger pan, bounded pinch zoom anchored at its center,
 reset and presentation-state isolation; the offscreen Qt runtime is not evidence that a physical touch
-device delivered native `QTouchEvent` sequences. Cancel is disabled without a job then enabled only for
-a running conversion.
+device delivered native `QTouchEvent` sequences. The user-confirmed manual Windows checklist supplies
+the physical-touch, visible DPI and resize evidence separately. Cancel is disabled without a job then
+enabled only for a running conversion.
 Source-layout regression opens the normal `1200×760` desktop shell and requires the freehand field's
 vertical center to match the epicycle canvas center.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker
 callback for a local PNG through their existing worker/application paths; test-local in-memory settings
 keep this evidence from writing user preferences. It does not replace manual visible Windows/DPI evidence.
+That manual evidence was confirmed separately by the user at the FS-021 terminal gate.
 Component regressions also require that Cancel publishes the localized cancelled state and that the CLI
 launch path preserves the size restored by `DesktopWindow`; a job that survives bounded termination
 remains owned until it actually stops.

@@ -2,15 +2,15 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
-- Active Stage ID: `FS-021`, lifecycle `partial`.
-- Integration: touch/rainbow commit `cb323e2` is merged by fast-forward into local `main`; `main`
-  is ahead of `origin/main` by one commit. No push, PR, release or deployment was performed.
-- Scope: FS-022, FS-023, FS-031 and FS-032 remain inactive while FS-021 is `partial`.
-- Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
-  automation возвращает `SetIsBorderRequired failed (0x80004002)` после retry/reset. Accessibility-only
-  fallback подтверждает actual window hierarchy и keyboard controls, но без geometry не доказывает
-  mouse stroke, image dialog или visual/DPI result.
+- Last completed Stage ID: `FS-021`; implementation is integrated in local `main` and terminal manual
+  Windows GUI/DPI/resize + physical-touch checklist is user-confirmed.
+- Active Stage ID: `FS-022`, lifecycle `planned`; export implementation has not started.
+- Integration: touch/rainbow commit `cb323e2` and post-merge status sync are in local `main`.
+  No push, PR, release or deployment was performed.
+- Scope: FS-023, FS-031 and FS-032 remain inactive; the next bounded slice is FS-022 only.
+- Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
+  `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
+  DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
 
 ## FS-021 progress
 
@@ -20,7 +20,8 @@
   with wheel/slider; reset clears zoom/pan/active gesture state. Component logic verifies presentation-only
   isolation from frame/timeline/trace/animation. Targeted desktop suite: `19 passed`; full repository:
   `543 passed in 130.51s`; Ruff, strict mypy, frozen sync and overlay validator PASS locally. Native
-  physical-touch delivery and visible Windows GUI/DPI/resize remain outside automated evidence.
+  physical-touch delivery and visible Windows GUI/DPI/resize remain outside automated evidence and
+  were confirmed manually by the user.
 - Independent read-only re-review: `GO`; the fractional pinch-anchor correction has no remaining
   P0/P1/P2 finding and no scope creep into FS-022, FS-023, FS-031 or FS-032 was found.
 - In normal `1200×760` desktop geometry the freehand field is vertically centered with the epicycle
@@ -98,6 +99,9 @@
   energy/RMSE, partial resource status и live discontinuous-vs-continuous chart.
 - `FS-020`: dedicated readonly FFT2 raster/spectrum types, recorded convention, low/high/selected
   filters, controlled real IFFT, safe local-image diagnostic и atomic export.
+- `FS-021`: integrated PySide6 source-run workflow, bounded worker/cancellation lifecycle, central
+  optimized Epicycles canvas, controls/persistence/i18n, mouse/touch navigation and stable rainbow pairs;
+  automated quality gates, independent review and user-confirmed manual Windows terminal checklist PASS.
 
 ## Evidence FS-020
 
@@ -114,19 +118,16 @@
 - Graph foreground `≤250,000`, node+edge records `≤500,000`, canonical JSON `≤32 MiB`.
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
 - Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
-- PySide6 shell exists as a partial FS-021 source-run slice; offscreen component evidence подтверждает
-  freehand+image source workflows. Accessibility-only Windows fallback подтвердил видимые controls и
-  keyboard structure, но manual mouse/image/DPI/resize diagnostic remains `NOT VERIFIED`: screenshot
-  capture failed with `SetIsBorderRequired failed (0x80004002)` even after one reset/retry.
+- Windows Graphics Capture remains unavailable with `SetIsBorderRequired failed (0x80004002)` after
+  reset/retry. This limits automated screenshot evidence but no longer blocks FS-021 because the user
+  confirmed the visible GUI/DPI/resize and physical-touch checklist manually.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-После отдельной команды повторить manual visible Windows GUI/DPI/resize diagnostic, когда доступен
-работающий capture либо ручное подтверждение пользователя. Если новый профиль на целевом железе
-ухудшит показатели, перейти к bounded QML/QT scene-graph spike.
-FS-022 и planned Android FS-031 не начинать заодно.
+Прочитать FS-022 Stage contract и подготовить минимальный export slice. FS-023, FS-031 и FS-032
+не начинать заодно.
 
 ## Синхронизация документации
 

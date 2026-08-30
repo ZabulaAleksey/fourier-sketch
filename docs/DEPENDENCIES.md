@@ -17,7 +17,7 @@
 Competing `requirements*.txt`, `poetry.lock`, Pipenv or conda lockfiles запрещены без отдельного
 documented migration/exception.
 
-## Текущая dependency surface (FS-021)
+## Текущая dependency surface (through FS-021)
 
 - build backend: Hatchling;
 - runtime: NumPy `>=2.5.2` для explicit FFT adapter; Matplotlib `>=3.10.6` для diagnostic

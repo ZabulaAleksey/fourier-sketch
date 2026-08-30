@@ -904,8 +904,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-021 — PySide6 Desktop GUI
 
-- Lifecycle: `partial`; source-run shell, renderer optimization and offscreen source-workflow component
-  evidence are implemented/validated locally; manual visible GUI/DPI and final gates remain open.
+- Lifecycle: `completed`; source-run shell, renderer optimization, automated/component checks,
+  independent review and user-confirmed manual Windows GUI/DPI/resize + physical-touch gates PASS.
 - Goal: replace diagnostic shell with a responsive desktop workflow centered on Epicycles view.
 
 ### Dependency DAG & entry preconditions
@@ -916,13 +916,13 @@ completion claim. Evidence records environment/branch and caveats.
 - Current evidence: PySide6 dependency and source-run shell committed; current full repository suite
   `543 passed`, Ruff/mypy/frozen sync/overlay PASS. Stable vector/circle rainbow pairing and isolated
   desktop touch pan/pinch component logic pass locally; physical-touch delivery and manual visible
-  GUI/DPI/resize remain unverified. Measured baseline on the recorded Windows host:
+  GUI/DPI/resize were confirmed by the user. Measured baseline on the recorded Windows host:
   core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
-  from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
+  from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates PASS.
 - Current no-trail/speed delta evidence: desktop paint no longer scans/renders trace or exposes its
   toggle; application ledger remains intact. Comparable K=25/600-frame paint improved
   ≈`3.66→2.00 ms/frame`. Reviewer P1 fixed: timer is inactive while paused and runs only after
-  Play; final full suite `527 passed`; independent re-review `GO`. Remaining terminal gates stay open.
+  Play; final full suite `527 passed`; independent re-review `GO`. Terminal gates are closed.
 
 ### Scope / non-goals / invariants
 
@@ -978,7 +978,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: export implementation FS-022 and packaging hardening FS-023.
 - Failure: background exception becomes localized stable error state; no UI-thread fallback.
 - Docs: README run workflow, DESIGN, architecture, security/testing/dependencies, trace/status/plan.
-- Handoff: commit and stop before FS-022.
+- Handoff: FS-021 integrated in local `main`; proceed only through a separately selected FS-022 slice.
 
 ## FS-022 — Export
 
@@ -989,7 +989,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-021 → FS-022`; desktop/application timeline must be completed.
 - Entry evidence: stable Curve/spectrum/state contracts, safe path policy and codec capability review.
-- Current gate: unsatisfied while FS-021 remains partial.
+- Current gate: satisfied; FS-021 is completed with automated, review and user-confirmed manual
+  Windows evidence. FS-022 implementation has not started.
 
 ### Scope / non-goals / invariants
 

@@ -28,11 +28,11 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-018` | Discontinuous Fourier Mode | `completed` |
 | `FS-019` | Discontinuity Spectrum Analysis | `completed` |
 | `FS-020` | Separate 2D Fourier Image Mode | `completed` |
+| `FS-021` | PySide6 GUI with central Epicycles view | `completed` |
 
 ## Текущий этап
 
-`FS-021` — PySide6 GUI (`partial`; source-run slice committed, measured renderer optimization and
-terminal GUI gates remain for the next session).
+`FS-022` — Data/image/GIF and capability-gated MP4 export (`planned`; implementation not started).
 
 ## Image-to-curve pipeline
 

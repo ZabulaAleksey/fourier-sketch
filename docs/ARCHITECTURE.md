@@ -67,7 +67,7 @@ src/fourier_sketch/
 ├── cli/                        # diagnostic, freehand, image/CV, skeleton и skeleton_graph
 ├── imaging/                    # существует: raster, Pillow, edge и external-contour adapters
 ├── routing/                    # dominant, piecewise и explicit forced-route policies
-└── ui/                         # planned FS-021
+└── ui/                         # существует: PySide6 desktop adapter FS-021
 ```
 
 Empty directories и placeholder interfaces заранее не создаются.
