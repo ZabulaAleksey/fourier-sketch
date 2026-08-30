@@ -5,14 +5,14 @@
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
 - Branch: `main`; renderer-control delta integrated locally by fast-forward.
-- Integration: implementation `0faf8fc` and evidence update `2c552a7` are present in `main`;
-  PR/release/deployment were not performed.
+- Integration: implementation `0faf8fc` and evidence updates are present in `main`;
+  latest changes are pushed to `origin`; PR/release/deployment were not performed.
 - Blockers: нет.
 
 ## FS-021 progress
 
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
-  offscreen component checks are implemented, committed and merged locally; push is not performed.
+  offscreen component checks are implemented, committed, merged, and pushed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
 - Добавлены проверки корректного ресайза/готовности canvas, guard от stale-job после cancel и сохранения
   базовых UI-предпочтений; это закрывает большую часть step 6 lifecycle/persistence gates.
