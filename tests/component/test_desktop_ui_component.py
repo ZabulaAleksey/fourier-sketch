@@ -361,6 +361,7 @@ def test_desktop_canvas_zoom_preserves_pan_and_left_drag_reset_view() -> None:
     )
     panned = canvas.view_pan
     assert panned == (35.0, -18.0)
+    centered_scene_offset = tuple(-value / canvas.view_zoom for value in panned)
 
     canvas.wheelEvent(
         QWheelEvent(
@@ -376,11 +377,15 @@ def test_desktop_canvas_zoom_preserves_pan_and_left_drag_reset_view() -> None:
     )
     assert canvas.view_zoom > 1.0
     assert window._zoom.value() == round(canvas.view_zoom * 100)
-    assert canvas.view_pan == panned
+    assert tuple(-value / canvas.view_zoom for value in canvas.view_pan) == pytest.approx(
+        centered_scene_offset
+    )
 
     window._zoom.setValue(250)
     assert canvas.view_zoom == 2.5
-    assert canvas.view_pan == panned
+    assert tuple(-value / canvas.view_zoom for value in canvas.view_pan) == pytest.approx(
+        centered_scene_offset
+    )
 
     canvas.reset_view()
     assert canvas.view_zoom == 1.0
@@ -407,7 +412,7 @@ def test_touch_gesture_math_pans_with_one_finger_and_keeps_pinch_center_fixed() 
         current_points=((100.0, 100.0), (140.0, 100.0)),
     )
     assert next_zoom == 4.0
-    assert next_pan == old_pan
+    assert next_pan == (20.0, -10.0)
 
     fractional_zoom, fractional_pan = _gesture_view_transform(
         zoom=1.0,
@@ -452,7 +457,7 @@ def test_desktop_touch_pan_and_pinch_are_presentation_only_and_resettable() -> N
         {1: (80.0, 100.0), 2: (120.0, 100.0)},
     )
     assert canvas.view_zoom == 2.0
-    assert canvas.view_pan == (25.0, -15.0)
+    assert canvas.view_pan == (50.0, -30.0)
     assert window._zoom.value() == 200
     assert canvas._frame is frame_before
     assert timeline.snapshot() == timeline_before

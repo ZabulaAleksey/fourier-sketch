@@ -24,7 +24,8 @@ Canvas сохраняет aspect ratio, предоставляет numerically b
 state. После принятия новой freehand curve значение `1.00×` отображает её в той же относительной
 системе координат, что drawing field: центр поля остаётся `O`, а доля ширины/высоты исходного поля
 сохраняется в epicycle viewport без fit-to-content растягивания. Колесо мыши, slider и pinch меняют
-масштаб вокруг фиксированного центра viewport, не меняя существующий pan; drag левой кнопкой мыши
+масштаб вокруг фиксированного центра viewport: scene-coordinate под геометрическим центром canvas
+остаётся неизменной, а pan пропорционально корректируется; drag левой кнопкой мыши
 перемещает viewport, а reset возвращает pan к нулю. Координата Y
 freehand input переводится из экранной вниз-направленной системы в Cartesian presentation contract,
 чтобы ready contour не был отражён по вертикали. Wheel zoom и zoom slider всегда показывают одно

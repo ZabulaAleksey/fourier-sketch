@@ -13,8 +13,9 @@ reverse-polarity opt-out), so a light image background cannot become the selecte
 The canvas has presentation-only near-unrestricted `0.01..100.00×` zoom and resets every newly
 accepted curve to `1.00×` with zero pan. For freehand input this baseline preserves the curve's
 relative position and size inside the original drawing field instead of stretching its bounds to fill
-the epicycle viewport. Wheel, slider and pinch scale around the fixed viewport center without changing
-pan; left-button drag and one-finger touch remain the explicit pan actions. Freehand screen coordinates
+the epicycle viewport. Wheel, slider and pinch keep the same scene-coordinate under the geometric
+viewport center by scaling pan proportionally; left-button drag and one-finger touch remain the
+explicit pan actions. Freehand screen coordinates
 are converted to Cartesian Y before building a timeline,
 so the contour has the same vertical orientation as the input stroke. The freehand field visual center
 is Cartesian origin `O`, the head-to-tail chain start (including the stationary DC vector). Wheel zoom
@@ -240,7 +241,8 @@ Canvas contract:
 - canvas сохраняет aspect ratio curve, имеет fit/reset view и numerically bounded near-unrestricted
   `0.01..100.00×` user zoom,
   который не меняет curve/chain/timeline state; wheel zoom, touchscreen pinch и slider используют одно
-  синхронизированное значение и не меняют pan, LMB drag и one-finger touch меняют только viewport,
+  синхронизированное значение и сохраняют scene-coordinate под центром canvas через пропорциональную
+  коррекцию pan, LMB drag и one-finger touch меняют viewport,
   а reset возвращает zoom/pan к fixed-center `1.00×` baseline;
 - typography, color tokens и spacing утверждаются при первом UI implementation на основе
   component evidence, не выдумываются bootstrap-документом;

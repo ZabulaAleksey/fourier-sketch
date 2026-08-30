@@ -232,7 +232,8 @@ presentation scale, reset button and
 persisted preference without changing timeline state.
 Freehand component regressions assert the screen-to-Cartesian Y conversion used by the renderer;
 viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, require all zoom
-inputs to preserve pan, and require reset/newly accepted curve to restore `1.00×` and zero pan. A
+inputs to preserve the scene-coordinate under the canvas center by proportional pan correction, and
+require reset/newly accepted curve to restore `1.00×` and zero pan. A
 freehand baseline regression verifies that the source-field and epicycle-field coordinate extents map
 proportionally instead of fitting the curve's own bounds. `Original` control regressions require
 disabled/unchecked empty state and exact checked-to-layer visibility synchronization for a ready frame.

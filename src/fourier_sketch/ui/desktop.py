@@ -129,6 +129,21 @@ def _bounded_view_zoom(zoom: float) -> float:
     return round(bounded * _VIEW_ZOOM_SCALE) / _VIEW_ZOOM_SCALE
 
 
+def _center_anchored_view_transform(
+    *,
+    zoom: float,
+    pan: tuple[float, float],
+    requested_zoom: float,
+) -> tuple[float, tuple[float, float]]:
+    """Keep the scene-coordinate under the geometric viewport center unchanged."""
+
+    next_zoom = _bounded_view_zoom(requested_zoom)
+    if next_zoom == zoom:
+        return zoom, pan
+    scale_ratio = next_zoom / zoom
+    return next_zoom, (pan[0] * scale_ratio, pan[1] * scale_ratio)
+
+
 def _gesture_view_transform(
     *,
     zoom: float,
@@ -157,7 +172,11 @@ def _gesture_view_transform(
 
     if previous_distance <= 1e-9:
         return zoom, pan
-    return _bounded_view_zoom(zoom * current_distance / previous_distance), pan
+    return _center_anchored_view_transform(
+        zoom=zoom,
+        pan=pan,
+        requested_zoom=zoom * current_distance / previous_distance,
+    )
 
 
 class EpicycleCanvas(QWidget):
@@ -201,10 +220,15 @@ class EpicycleCanvas(QWidget):
     def set_view_zoom(self, zoom: float) -> None:
         """Set a bounded view scale; rendering remains independent from Fourier state."""
 
-        next_zoom = _bounded_view_zoom(zoom)
+        next_zoom, next_pan = _center_anchored_view_transform(
+            zoom=self._view_zoom,
+            pan=self.view_pan,
+            requested_zoom=zoom,
+        )
         if next_zoom == self._view_zoom:
             return
         self._view_zoom = next_zoom
+        self._view_pan = QPointF(*next_pan)
         self.update()
         self.view_zoom_changed.emit(self._view_zoom)
 

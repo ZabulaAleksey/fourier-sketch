@@ -30,13 +30,14 @@
 
 ## FS-021 progress
 
-- Latest maintenance delta uses fixed-center zoom for wheel/slider/pinch without implicit pan, resets
+- Latest maintenance delta uses center-anchored zoom for wheel/slider/pinch with proportional pan
+  correction that preserves the scene-coordinate under the geometric canvas center, resets
   every accepted freehand curve to `1.00×`/zero pan, and maps its source-field-relative coordinate
   extent instead of fitting its own bounds. `Original` is disabled/unchecked without a ready frame
   and exactly mirrors `frame.visibility.original` thereafter. Desktop speed is `0.01..1.00×` in
-  `0.01×` steps. Desktop component suite: `24 passed`; full suite: `558 passed in 110.18s`; frozen
+  `0.01×` steps. Desktop component suite: `24 passed`; full suite: `558 passed in 129.07s`; frozen
   sync, Ruff, strict mypy, diff and overlay PASS. Independent read-only review: `GO`; its full-suite
-  rerun reached `558 passed in 152.90s` with no P0/P1/P2 findings.
+  rerun reached `558 passed in 117.39s` with no P0/P1/P2 findings.
 - Vector/circle colors now use a stable deterministic rainbow palette by selection position: existing
   colors remain unchanged when K grows and each pair uses the same color. `EpicycleCanvas` accepts
   one-finger touch pan and two-finger fixed-center pinch through the same `0.01..100.00×` zoom synchronized

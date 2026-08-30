@@ -924,8 +924,9 @@ completion claim. Evidence records environment/branch and caveats.
   ≈`3.66→2.00 ms/frame`. Reviewer P1 fixed: timer is inactive while paused and runs only after
   Play; final full suite `527 passed`; independent re-review `GO`. Terminal gates are closed.
 - Current fixed-center/view-alignment maintenance evidence: newly accepted freehand curves reset to
-  `1.00×`/zero pan and preserve their source-field-relative geometry; wheel/slider/pinch keep pan
-  unchanged, `Original` mirrors ready-layer visibility, and desktop speed starts at `0.01×`.
+  `1.00×`/zero pan and preserve their source-field-relative geometry; wheel/slider/pinch preserve the
+  scene-coordinate under the canvas center through proportional pan correction, `Original` mirrors
+  ready-layer visibility, and desktop speed starts at `0.01×`.
   Desktop component suite `24 passed`; full repository suite `558 passed`; frozen sync, Ruff, strict
   mypy, diff and overlay PASS; independent read-only review `GO`.
 
