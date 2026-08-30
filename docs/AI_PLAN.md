@@ -19,7 +19,8 @@ freehand baseline `1.00×`, synchronized `Original` visibility и desktop speed 
 ## Integration state
 
 - `main` содержит завершённый FS-021, включая renderer-control `0faf8fc`, последующие UI commits
-  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d` и touch/rainbow `cb323e2`.
+  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d`, touch/rainbow `cb323e2` и fixed-center canvas
+  maintenance `02c026b`.
 - Push/PR/release/deployment не выполнялись; публикация `main` в `origin` остаётся отдельным
   не выполненным Git action.
 
@@ -32,4 +33,5 @@ freehand baseline `1.00×`, synchronized `Original` visibility и desktop speed 
 
 ## Handoff
 
-Maintenance delta FS-021 проверен. FS-022 остаётся завершён; остановиться до отдельного выбора FS-023.
+Maintenance delta FS-021 проверен и локально слит в `main`. FS-022 остаётся завершён; остановиться
+до отдельного выбора FS-023.

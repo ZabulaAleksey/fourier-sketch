@@ -6,7 +6,8 @@
   MP4 unavailability passed automated gates and independent read-only review.
 - Active Stage ID: `FS-022`, lifecycle `completed`; this record intentionally stops before selecting
   or implementing FS-023.
-- Integration: touch/rainbow commit `cb323e2` and post-merge status sync are in local `main`.
+- Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
+  `02c026b` are in local `main`.
   No push, PR, release or deployment was performed.
 - Scope: FS-023, FS-031 and FS-032 remain inactive and were not started as part of FS-022.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -148,8 +149,8 @@
 
 ## Следующее разумное действие
 
-Создать атомарный maintenance commit, выполнить разрешённый local merge и остановиться. FS-023,
-FS-031 и FS-032 не начинать заодно.
+Maintenance delta локально слит; остановиться до отдельного выбора следующего stage. FS-023,
+FS-031 и FS-032 не начинались заодно.
 
 ## Синхронизация документации
 
