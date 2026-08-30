@@ -14,6 +14,8 @@
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
   offscreen component checks are implemented, committed and merged locally; push is not performed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
+- Добавлены проверки корректного ресайза/готовности canvas и гарантии остановки фонового задания при
+  cancel+close; это закрывает часть step 6 lifecycle (без финальной persistence gates).
 - Full repository regression: `526 passed in 98.80s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and

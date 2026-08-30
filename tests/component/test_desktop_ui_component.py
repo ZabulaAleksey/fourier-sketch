@@ -1,6 +1,7 @@
 """Offscreen component contract for the FS-021 desktop shell."""
 
 import os
+import time
 from dataclasses import replace
 from typing import cast
 
@@ -95,4 +96,52 @@ def test_desktop_canvas_pixels_do_not_depend_on_persistent_trace_history() -> No
 
     assert first == second
 
+    window.close()
+
+
+def test_desktop_window_resize_keeps_canvas_ready_for_render() -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            (Point2D(0.0, 0.0), Point2D(1.0, 0.0), Point2D(0.5, 1.0)),
+            closed=True,
+        )
+    )
+
+    frame = timeline.snapshot()
+    window._canvas.set_frame(frame)
+    first_size = (640, 480)
+    second_size = (820, 620)
+    first = QImage(*first_size, QImage.Format.Format_ARGB32)
+    second = QImage(*second_size, QImage.Format.Format_ARGB32)
+    window._canvas.resize(*first_size)
+    window._canvas.render(first)
+    window._canvas.resize(*second_size)
+    window._canvas.render(second)
+
+    # No exception and cache invalidation on resize should preserve interactive state.
+    assert window._canvas._frame is frame
+    assert window._canvas._frame and window._canvas._frame.original.sample_count == 3
+
+    window.close()
+
+
+def test_desktop_window_cancel_then_close_stops_timer_and_job() -> None:
+    _application()
+    window = DesktopWindow()
+
+    def slow_operation() -> object:
+        time.sleep(0.2)
+        return build_freehand_timeline(
+            Curve(
+                (Point2D(0.0, 0.0), Point2D(1.0, 0.0), Point2D(0.5, 1.0)),
+                closed=True,
+            )
+        )
+
+    window._start_job(slow_operation, window._apply_timeline)
+    assert window._job is not None and window._job.isRunning()
+    window._cancel_current_job()
+    assert window._timer.isActive() is False
     window.close()
