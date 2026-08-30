@@ -1,5 +1,6 @@
 """Rendering adapters for immutable application frames."""
 
+from .exporting import export_animation_gif, render_spectrum_png
 from .matplotlib_discontinuous import draw_discontinuous_source, render_discontinuous_png
 from .matplotlib_epicycles import draw_frame, render_frame_png, run_interactive
 from .matplotlib_fft2 import render_fft2_png
@@ -42,6 +43,7 @@ __all__ = [
     "draw_skeleton_graph_overlay",
     "draw_skeleton_preview",
     "draw_spectrum_analysis",
+    "export_animation_gif",
     "render_discontinuous_png",
     "render_fft2_png",
     "render_forced_route_overlay_png",
@@ -51,6 +53,7 @@ __all__ = [
     "render_skeleton_graph_overlay_png",
     "render_skeleton_preview_png",
     "render_spectrum_analysis_png",
+    "render_spectrum_png",
     "run_freehand_interactive",
     "run_image_mvp_interactive",
     "run_interactive",

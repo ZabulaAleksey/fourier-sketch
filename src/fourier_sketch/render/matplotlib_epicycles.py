@@ -1,7 +1,7 @@
 """Matplotlib adapter that consumes renderer-ready epicycle frames."""
 
-import os
-import tempfile
+from collections.abc import Callable
+from io import BytesIO
 from pathlib import Path
 from typing import Any, cast
 
@@ -11,6 +11,7 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Circle, FancyArrowPatch
 
 from fourier_sketch.application import EpicycleFrame, EpicycleTimeline, TimelineState
+from fourier_sketch.application.exporting import atomic_publish_bytes
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D
 from fourier_sketch.presentation import Translator
 
@@ -124,55 +125,24 @@ def render_frame_png(
     *,
     dpi: int = 120,
     overwrite: bool = False,
+    cancelled: Callable[[], bool] | None = None,
 ) -> Path:
     """Render a PNG through Agg and publish it atomically at an explicit destination."""
-    if not isinstance(output, Path):
-        raise DomainValidationError("output must be a pathlib.Path")
-    if output.suffix.lower() != ".png":
-        raise DomainValidationError("output must use the .png extension")
     if isinstance(dpi, bool) or not isinstance(dpi, int) or dpi < 72 or dpi > 600:
         raise DomainValidationError("dpi must be an integer between 72 and 600")
-    if not isinstance(overwrite, bool):
-        raise DomainValidationError("overwrite must be a boolean")
-    if not output.parent.is_dir():
-        raise DomainValidationError("output parent directory must exist")
-    if output.exists() and not overwrite:
-        raise FileExistsError(output.name)
-
-    temporary_path: Path | None = None
-    reserved_destination = False
-    try:
-        with tempfile.NamedTemporaryFile(
-            prefix=f".{output.stem}.",
-            suffix=".tmp",
-            dir=output.parent,
-            delete=False,
-        ) as temporary:
-            temporary_path = Path(temporary.name)
-
-        figure = Figure(figsize=(8.0, 8.0), layout="constrained")
-        canvas = FigureCanvasAgg(figure)
-        axes = figure.subplots()
-        draw_frame(axes, frame, translator)
-        cast_canvas = cast(Any, canvas)
-        cast_canvas.print_png(temporary_path)
-        if temporary_path.stat().st_size == 0:
-            raise OSError("renderer produced an empty PNG")
-
-        if not overwrite:
-            with output.open("xb"):
-                reserved_destination = True
-        os.replace(temporary_path, output)
-        temporary_path = None
-        reserved_destination = False
-        return output
-    except Exception:
-        if reserved_destination and output.exists():
-            output.unlink()
-        raise
-    finally:
-        if temporary_path is not None and temporary_path.exists():
-            temporary_path.unlink()
+    figure = Figure(figsize=(8.0, 8.0), layout="constrained")
+    canvas = FigureCanvasAgg(figure)
+    axes = figure.subplots()
+    draw_frame(axes, frame, translator)
+    encoded = BytesIO()
+    cast(Any, canvas).print_png(encoded)
+    return atomic_publish_bytes(
+        output,
+        encoded.getvalue(),
+        suffix=".png",
+        overwrite=overwrite,
+        cancelled=cancelled,
+    )
 
 
 def run_interactive(

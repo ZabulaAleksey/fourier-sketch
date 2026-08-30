@@ -1,8 +1,10 @@
 """Offscreen component contract for the FS-021 desktop shell."""
 
+import json
 import os
 import time
 from dataclasses import replace
+from math import cos, pi, sin
 from pathlib import Path
 from typing import ClassVar, cast
 
@@ -12,9 +14,10 @@ import pytest
 from PIL import Image, ImageDraw
 from PySide6.QtCore import QEvent, QPoint, QPointF, Qt
 from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent, QWheelEvent
-from PySide6.QtWidgets import QApplication, QCheckBox, QPushButton
+from PySide6.QtWidgets import QApplication, QCheckBox, QMessageBox, QPushButton
 
 from fourier_sketch.application import (
+    ExportFormat,
     ImageContourTimelineResult,
     TimelineState,
     build_freehand_timeline,
@@ -61,6 +64,17 @@ def _wait_for_timeline(window: DesktopWindow, *, timeout_seconds: float = 2.0) -
             return
         time.sleep(0.01)
     raise AssertionError("Desktop timeline was not produced before timeout")
+
+
+def _wait_for_job(window: DesktopWindow, *, timeout_seconds: float = 5.0) -> None:
+    app = _application()
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        app.processEvents()
+        if window._job is None:
+            return
+        time.sleep(0.01)
+    raise AssertionError("Desktop job did not finish before timeout")
 
 
 def _assert_playback_advances(window: DesktopWindow) -> None:
@@ -211,7 +225,8 @@ def test_desktop_canvas_zoom_is_bounded_and_resettable() -> None:
     window._zoom.setValue(200)
     assert window._canvas.view_zoom == 2.0
     reset_button = next(
-        button for button in window.findChildren(QPushButton)
+        button
+        for button in window.findChildren(QPushButton)
         if button.accessibleName() == "Reset canvas view"
     )
     reset_button.click()
@@ -331,12 +346,8 @@ def test_touch_gesture_math_pans_and_keeps_pinch_center_anchored() -> None:
         (pinch_center[1] - 150.0 - old_pan[1]) / old_zoom,
     )
     assert next_zoom == 4.0
-    assert 200.0 + next_pan[0] + next_zoom * scene_point[0] == pytest.approx(
-        pinch_center[0]
-    )
-    assert 150.0 + next_pan[1] + next_zoom * scene_point[1] == pytest.approx(
-        pinch_center[1]
-    )
+    assert 200.0 + next_pan[0] + next_zoom * scene_point[0] == pytest.approx(pinch_center[0])
+    assert 150.0 + next_pan[1] + next_zoom * scene_point[1] == pytest.approx(pinch_center[1])
 
     fractional_center = (110.0, 100.0)
     fractional_zoom, fractional_pan = _gesture_view_transform(
@@ -351,12 +362,12 @@ def test_touch_gesture_math_pans_and_keeps_pinch_center_anchored() -> None:
         fractional_center[1] - 150.0,
     )
     assert fractional_zoom == 1.12
-    assert 200.0 + fractional_pan[0] + fractional_zoom * fractional_scene_point[
-        0
-    ] == pytest.approx(fractional_center[0])
-    assert 150.0 + fractional_pan[1] + fractional_zoom * fractional_scene_point[
-        1
-    ] == pytest.approx(fractional_center[1])
+    assert 200.0 + fractional_pan[0] + fractional_zoom * fractional_scene_point[0] == pytest.approx(
+        fractional_center[0]
+    )
+    assert 150.0 + fractional_pan[1] + fractional_zoom * fractional_scene_point[1] == pytest.approx(
+        fractional_center[1]
+    )
 
 
 def test_desktop_touch_pan_and_pinch_are_presentation_only_and_resettable() -> None:
@@ -555,6 +566,174 @@ def test_desktop_rainbow_pairs_stay_stable_when_harmonic_count_grows() -> None:
     assert expanded_colors[:3] == first_colors
     assert expanded_colors == tuple(color.name() for color in window._canvas._circle_colors)
 
+    window.close()
+
+
+def test_desktop_export_page_writes_current_curve_and_reports_mp4_unavailable(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            (
+                Point2D(1.0, 0.0),
+                Point2D(0.0, 1.0),
+                Point2D(-1.0, 0.0),
+                Point2D(0.0, -1.0),
+            ),
+            closed=True,
+        )
+    )
+    window._apply_timeline(timeline)
+    output = tmp_path / "curve.json"
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QFileDialog.getSaveFileName",
+        lambda *_args, **_kwargs: (str(output), "JSON (*.json)"),
+    )
+
+    window._export_format.setCurrentIndex(
+        window._export_format.findData(ExportFormat.CURVE_JSON.value)
+    )
+    assert window._export_nav.isEnabled()
+    assert window._export_action.isEnabled()
+    window._choose_export()
+    _wait_for_job(window)
+
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schema"] == "fourier-sketch.curve"
+    assert payload["points"] == [
+        {"x": point.x, "y": point.y} for point in timeline.snapshot().original.points
+    ]
+    assert output.name in window._status.text()
+
+    window._export_format.setCurrentIndex(window._export_format.findData(ExportFormat.MP4.value))
+    assert not window._export_action.isEnabled()
+    assert "MP4" in window._status.text()
+    window.close()
+
+
+def test_desktop_export_requires_explicit_overwrite(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(Curve((Point2D(0.0, 0.0), Point2D(1.0, 1.0)), closed=False))
+    window._apply_timeline(timeline)
+    output = tmp_path / "curve.json"
+    output.write_text("keep", encoding="utf-8")
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QFileDialog.getSaveFileName",
+        lambda *_args, **_kwargs: (str(output), "JSON (*.json)"),
+    )
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QMessageBox.question",
+        lambda *_args, **_kwargs: QMessageBox.StandardButton.No,
+    )
+    window._export_format.setCurrentIndex(
+        window._export_format.findData(ExportFormat.CURVE_JSON.value)
+    )
+
+    window._choose_export()
+
+    assert output.read_text(encoding="utf-8") == "keep"
+    assert window._job is None
+
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QMessageBox.question",
+        lambda *_args, **_kwargs: QMessageBox.StandardButton.Yes,
+    )
+    window._choose_export()
+    _wait_for_job(window)
+
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schema"] == "fourier-sketch.curve"
+    window.close()
+
+
+def test_desktop_export_page_runs_real_gif_worker(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            (
+                Point2D(1.0, 0.0),
+                Point2D(0.0, 1.0),
+                Point2D(-1.0, 0.0),
+                Point2D(0.0, -1.0),
+            ),
+            closed=True,
+        )
+    )
+    window._apply_timeline(timeline)
+    output = tmp_path / "desktop.gif"
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QFileDialog.getSaveFileName",
+        lambda *_args, **_kwargs: (str(output), "GIF (*.gif)"),
+    )
+    window._export_format.setCurrentIndex(window._export_format.findData(ExportFormat.GIF.value))
+    window._export_frames.setValue(2)
+    window._export_duration.setValue(20)
+    statuses: list[str] = []
+    original_set_status = window._set_status
+
+    def record_status(text: str) -> None:
+        statuses.append(text)
+        original_set_status(text)
+
+    monkeypatch.setattr(window, "_set_status", record_status)
+
+    window._choose_export()
+    _wait_for_job(window, timeout_seconds=10.0)
+
+    with Image.open(output) as image:
+        assert image.format == "GIF"
+        assert image.info["comment"]
+    assert any("%" in status for status in statuses)
+    assert output.name in window._status.text()
+    window.close()
+
+
+def test_desktop_cancelled_real_gif_worker_leaves_no_artifact(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            tuple(
+                Point2D(
+                    cos(2.0 * pi * index / 96),
+                    sin(2.0 * pi * index / 96),
+                )
+                for index in range(96)
+            ),
+            closed=True,
+        )
+    )
+    window._apply_timeline(timeline)
+    output = tmp_path / "cancelled-desktop.gif"
+    monkeypatch.setattr(
+        "fourier_sketch.ui.desktop.QFileDialog.getSaveFileName",
+        lambda *_args, **_kwargs: (str(output), "GIF (*.gif)"),
+    )
+    window._export_format.setCurrentIndex(window._export_format.findData(ExportFormat.GIF.value))
+    window._export_frames.setValue(120)
+    window._export_duration.setValue(20)
+
+    window._choose_export()
+    assert window._job is not None
+    window._cancel_current_job()
+
+    assert not output.exists()
+    assert not tuple(tmp_path.glob(".cancelled-desktop.*.tmp"))
+    assert window._status.text() == window._translator.text("desktop.status.cancelled")
     window.close()
 
 

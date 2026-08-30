@@ -982,15 +982,17 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-022 — Export
 
-- Lifecycle: `planned`.
+- Lifecycle: `completed`; implementation, automated gates, documentation synchronization and
+  independent read-only review PASS on `feature/fs-022-export`.
 - Goal: export versioned data/images and animation generated from the same chain timeline.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-021 → FS-022`; desktop/application timeline must be completed.
 - Entry evidence: stable Curve/spectrum/state contracts, safe path policy and codec capability review.
-- Current gate: satisfied; FS-021 is completed with automated, review and user-confirmed manual
-  Windows evidence. FS-022 implementation has not started.
+- Current gate: satisfied; FS-021 is completed. FS-022 targeted combined suite is `37 passed`, full
+  repository suite is `557 passed`; frozen sync, Ruff, strict mypy, diff and overlay PASS.
+  Independent read-only review: `GO`.
 
 ### Scope / non-goals / invariants
 
@@ -1032,7 +1034,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-022 → FS-023`; complete desktop/export primary paths required.
 - Entry evidence: full accepted regression suite and representative data/operation inventory.
-- Current gate: unsatisfied while FS-022 is planned.
+- Current gate: prerequisite FS-022 is satisfied, but FS-023 remains separately unselected and
+  unstarted until an explicit later slice.
 
 ### Scope / non-goals / invariants
 

@@ -282,6 +282,15 @@ Predictable reconstruction budget exhaustion returns explicit partial analysis w
 1D `FourierSpectrum`/epicycle modules не импортируются. Application rejects raster budget before
 float conversion, renderer consumes readonly shifted views, CLI enters through FS-010 safe decode.
 
+## Export boundary (FS-022)
+
+`application.exporting` owns schema-versioned Curve/current-selection JSON/CSV, bounded animation
+plans and atomic byte publication. Animation frames call the accepted `build_epicycle_chain` for the
+same selection and accumulate only actual endpoints; they do not mutate the interactive timeline.
+`render.exporting` owns Matplotlib spectrum PNG and fixed-size Pillow GIF encoding. Desktop widgets
+only select parameters/destination and dispatch the existing worker. MP4 has an explicit unavailable
+capability result; no subprocess, alternate codec or silent format substitution exists.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

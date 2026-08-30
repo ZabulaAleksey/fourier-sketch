@@ -82,16 +82,24 @@ expansion не скрывают primary controls. Color не является е
 
 Поддерживаются Curve JSON/CSV, coefficients JSON/CSV, spectrum/reconstruction PNG и diagnostic
 intermediates соответствующих stages. Format/version/provenance включены там, где применимо.
+FS-022 desktop export serializes the current original Curve and current ordered coefficient selection;
+JSON and CSV name their schema/version and preserve point/coefficient order. PNG views consume the
+same immutable frame/selection as the canvas and do not recalculate a second Fourier result.
 
 ### EX-FR-002 — Animation export
 
 GIF обязателен; MP4 включается только после capability/license check. Frames строятся из того же
-chain state/endpoint trace, что interactive renderer.
+chain state/endpoint trace, что interactive renderer. Initial FS-022 GIF is bounded to `2..120`
+frames with `20..1000 ms` duration per frame and records bounded endpoint-history metadata. Pillow,
+already pinned for safe local images, is the selected GIF backend. No reviewed MP4 backend exists,
+so MP4 is visibly unavailable and must not fall back to GIF silently.
 
 ### EX-FR-003 — Safe paths and failure
 
 Existing destination не перезаписывается молча. Partial files маркируются/удаляются безопасно;
 failure сообщает фактически созданные artifacts и не использует shell-interpolated command.
+Every FS-022 artifact is encoded to a sibling temporary file and atomically published only after
+successful completion; cancellation checks occur between animation frames and leave no destination.
 
 ## Состояния UI
 

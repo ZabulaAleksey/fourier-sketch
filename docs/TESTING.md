@@ -250,6 +250,13 @@ That manual evidence was confirmed separately by the user at the FS-021 terminal
 Component regressions also require that Cancel publishes the localized cancelled state and that the CLI
 launch path preserves the size restored by `DesktopWindow`; a job that survives bounded termination
 remains owned until it actually stops.
+
+FS-022 tests require versioned/order-preserving Curve and selected-coefficient JSON/CSV, atomic
+no-overwrite publication, readable reconstruction/spectrum PNG, and a real Pillow GIF reopened from
+disk. GIF metadata endpoint history must equal the exported frame chain endpoints. Bounds, progress,
+cooperative cancellation, temp cleanup and explicit MP4-unavailable behavior receive negative tests.
+Desktop component evidence drives the EXPORT page/file-picker/overwrite decision through the actual
+worker/export boundary; it does not substitute a codec or write into user preferences.
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 

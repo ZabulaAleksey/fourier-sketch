@@ -2,15 +2,30 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-021`; implementation is integrated in local `main` and terminal manual
-  Windows GUI/DPI/resize + physical-touch checklist is user-confirmed.
-- Active Stage ID: `FS-022`, lifecycle `planned`; export implementation has not started.
+- Last completed Stage ID: `FS-022`; versioned data/PNG/GIF export, bounded cancellation and explicit
+  MP4 unavailability passed automated gates and independent read-only review.
+- Active Stage ID: `FS-022`, lifecycle `completed`; this record intentionally stops before selecting
+  or implementing FS-023.
 - Integration: touch/rainbow commit `cb323e2` and post-merge status sync are in local `main`.
   No push, PR, release or deployment was performed.
-- Scope: FS-023, FS-031 and FS-032 remain inactive; the next bounded slice is FS-022 only.
+- Scope: FS-023, FS-031 and FS-032 remain inactive and were not started as part of FS-022.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-022 progress
+
+- EXPORT page activates only for a ready timeline and writes the current original Curve or current
+  ordered coefficient selection as schema-versioned JSON/CSV, reconstruction/spectrum PNG, or a
+  bounded Pillow GIF generated from the same `EpicycleChainState` selection/endpoint semantics.
+- GIF is bounded to `2..120` frames and `20..1000 ms`; endpoint-history metadata reopens with the
+  artifact and matches actual frame endpoints. Progress/cancel use the existing worker lifecycle.
+  Sibling-temp atomic publication, default no-overwrite, explicit overwrite and codec/cancel cleanup
+  are covered. MP4 is visibly unavailable with no subprocess or silent GIF fallback.
+- Targeted unit/integration/component/live export command: `37 passed in 5.34s`. Full repository
+  regression: `557 passed in 113.67s`. Reviewer reruns independently reached `37 passed in 4.90s`
+  and `557 passed in 145.58s`. `uv sync --all-groups --frozen`, Ruff, strict mypy, diff check and
+  overlay validator PASS; dependency graph remains 37 packages. Independent read-only review: `GO`.
 
 ## FS-021 progress
 
@@ -126,8 +141,7 @@
 
 ## Следующее разумное действие
 
-Прочитать FS-022 Stage contract и подготовить минимальный export slice. FS-023, FS-031 и FS-032
-не начинать заодно.
+Создать атомарный FS-022 commit и остановиться. FS-023, FS-031 и FS-032 не начинать заодно.
 
 ## Синхронизация документации
 

@@ -29,10 +29,11 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-019` | Discontinuity Spectrum Analysis | `completed` |
 | `FS-020` | Separate 2D Fourier Image Mode | `completed` |
 | `FS-021` | PySide6 GUI with central Epicycles view | `completed` |
+| `FS-022` | Data/image/GIF and capability-gated MP4 export | `completed` |
 
 ## Текущий этап
 
-`FS-022` — Data/image/GIF and capability-gated MP4 export (`planned`; implementation not started).
+Текущий selected record `FS-022` завершён. `FS-023` остаётся planned и не начат.
 
 ## Image-to-curve pipeline
 

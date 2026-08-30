@@ -179,3 +179,13 @@ FS-019 не меняет ordering/log floor автоматически. Predicta
 
 FS-020 не переключается на GPU/alternate backend. Oversized/malformed/non-finite raster, invalid
 mask, complex real-reconstruction residual и NumPy backend failure завершаются typed failure.
+
+## Export (FS-022)
+
+| Поле | Контракт |
+|---|---|
+| Primary path | current immutable frame/selection → versioned data/PNG or bounded Pillow GIF → atomic local artifact |
+| Failure signal | typed validation, existing destination, cancelled, encode failure or explicit MP4 unavailable |
+| Automatic fallback | MP4→GIF, alternate codec, format substitution and partial-success claims запрещены |
+| Cancellation | cooperative check between GIF frames; sibling temp removed; destination absent/preserved |
+| Recovery | choose a valid local destination/format, explicitly approve overwrite, reduce bounded frame plan or choose GIF manually |

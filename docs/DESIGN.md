@@ -21,7 +21,11 @@ and slider. Each vector and its circle receives the same deterministic rainbow c
 and an existing selection position keeps its color when K grows; this is presentation-only. Reset clears
 mouse/touch pan and returns every zoom input to `1.00×`. Cancel is disabled until a background conversion
 job exists.
-Export remains deferred.
+FS-022 enables an EXPORT page after a timeline is ready. It offers current Curve JSON/CSV, current
+ordered coefficient-selection JSON/CSV, reconstruction/spectrum PNG and bounded GIF. Frame count and
+duration are explicit; progress/cancel use the existing worker lifecycle. MP4 remains visible but
+unavailable with an explanation until a reviewed codec backend exists. Existing destinations require
+an explicit overwrite decision and no failed/cancelled export is shown as completed.
 The freehand field is vertically aligned with the epicycle viewport in the normal desktop layout; at
 smaller window heights it remains usable instead of overlapping the source controls.
 

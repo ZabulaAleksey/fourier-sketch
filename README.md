@@ -322,16 +322,24 @@ Desktop speed slider ограничен `0.10..1.00×` и меняется ша�
 сохраняется для parity/export. Wheel, zoom slider и touchscreen pinch используют один bounded
 `0.01..100.00×` presentation zoom; LMB drag и one-finger touch перемещают только viewport, reset
 возвращает `1.00×` и нулевой pan. Vector/circle каждой harmonic pair имеют стабильный различимый
-rainbow color по selection order. Export pages и installer пока disabled/deferred.
+rainbow color по selection order. Другие workflow pages и installer пока disabled/deferred.
+
+После построения timeline страница EXPORT позволяет сохранить current Curve и ordered selected
+coefficients как versioned JSON/CSV, reconstruction/spectrum PNG или bounded animated GIF. GIF
+использует тот же chain/endpoint path, хранит endpoint-history metadata и ограничен `2..120`
+кадрами по `20..1000 ms`. Existing destination заменяется только после явного подтверждения;
+cancel/failure не публикуют partial artifact. MP4 отображается как unavailable, потому что reviewed
+codec backend пока не выбран; silent fallback в GIF отсутствует.
 
 ## Ограничения
 
 Matplotlib diagnostics остаются поддерживаемыми diagnostic adapters. FS-021 добавляет source-run
-PySide6 shell, но animation/data export и packaging ещё не реализованы.
+PySide6 shell, а FS-022 — local data/PNG/GIF export. Packaging и MP4 ещё не реализованы.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
 Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,
-explicit forced route и discontinuous Fourier реализованы; animation export остаётся planned.
+explicit forced route, discontinuous Fourier и bounded GIF export реализованы; MP4/additional codecs
+остаются planned.
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
 

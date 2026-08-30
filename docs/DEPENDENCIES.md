@@ -98,7 +98,9 @@ FS-021 добавляет `PySide6>=6.8,<7` как direct dependency для sour
 `uv.lock` resolves PySide6 6.11.2 together with matching Addons, Essentials and shiboken6 runtime
 packages. Qt is isolated to `fourier_sketch.ui`; domain, math and application remain framework-free.
 PySide6 has LGPL/commercial dual licensing; installer and redistribution compliance remain FS-023.
-Animation codec dependencies remain deferred to FS-022.
+FS-022 reuses pinned Pillow 12.3.x for mandatory GIF encoding; no dependency delta is required.
+Pillow GIF is local/in-process and covered by the existing HPND license review. No reviewed MP4 backend
+or subprocess is selected, so MP4 remains explicitly unavailable rather than adding FFmpeg/imageio.
 
 FS-031 Android dependencies/toolchain are not selected or added during desktop work. The stage must
 record a capability/license/maintenance/build-size comparison and keep one reproducible mobile

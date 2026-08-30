@@ -179,3 +179,10 @@ Fallback Policy наследуется и здесь не копируется.
 
 Stages `FS-010`–`FS-017` have live decode/CV/graph/routing/overwrite/privacy evidence; Stage `FS-022`
 cannot complete without overwrite/partial-output/codec-failure evidence.
+
+FS-022 accepts only explicit local destinations with a format-matching suffix. JSON/CSV text, PNG and
+GIF use sibling temporary files and atomic publication; no-overwrite is the default and overwrite is an
+explicit UI decision. GIF work is bounded to `2..120` frames, `20..1000 ms` per frame and a fixed
+renderer size; cancellation is checked between frames and temp output is removed. Metadata contains
+only schema/version, bounded numeric parameters and endpoint coordinates—never source paths. MP4 has
+no backend and returns explicit unavailable state without subprocess, shell interpolation or fallback.

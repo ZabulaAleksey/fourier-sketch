@@ -456,3 +456,24 @@ desktop optimization; mobile framework FS-031 выбирается отдель�
 **Последствия:** существующие math/application tests и source-run rollback сохраняются. Любой GPU/
 QML/mobile adapter обязан доказать endpoint/frame parity и measured gain; framework migration не
 может маскировать regression или переносить обязательную инфраструктуру в будущий stage.
+
+## 2026-08-30 — ADR-023: Versioned atomic export and Pillow-only GIF baseline
+
+**Контекст:** FS-022 должен экспортировать data/images/animation из уже проверенного desktop timeline,
+не вводя второй Fourier/animation path. GIF обязателен, MP4 требует отдельной capability/license
+проверки, а existing/partial destinations являются user-data boundary.
+
+**Решение:** Curve и текущая ordered coefficient selection получают явные JSON/CSV schema version 1.
+Reconstruction/spectrum PNG потребляют текущие immutable frame/selection. GIF строит bounded sequence
+`2..120` из `build_epicycle_chain` для той же selection, накапливает только фактические endpoints и
+кодируется already-pinned Pillow в sibling temporary file. Публикация атомарна; no-overwrite default,
+overwrite explicit, cancellation проверяется между кадрами. Endpoint history сохраняется bounded GIF
+metadata для reopen/parity evidence. MP4 backend отсутствует и объявляется unavailable без fallback.
+
+**Рассмотренные альтернативы:** FFmpeg subprocess, imageio-ffmpeg и silent MP4→GIF fallback отклонены
+без отдельного dependency/license/redistribution review; screen capture отклонён как второй renderer
+path; unversioned ad-hoc JSON/CSV не обеспечивает migration contract.
+
+**Последствия:** dependency graph не меняется, все exports локальные и воспроизводимые; GIF baseline
+ограничен 120 кадрами и fixed renderer size. Выбор MP4 backend, повышение animation budgets или schema
+version требует отдельного capability/security/compatibility решения.

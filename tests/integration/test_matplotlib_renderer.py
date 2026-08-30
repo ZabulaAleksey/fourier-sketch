@@ -11,7 +11,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle, FancyArrowPatch
 
-from fourier_sketch.application import EpicycleFrame, EpicycleTimeline
+from fourier_sketch.application import EpicycleFrame, EpicycleTimeline, LocalPathError
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D, SpectrumOrdering
 from fourier_sketch.math import fft_dft
 from fourier_sketch.presentation import Translator
@@ -88,6 +88,9 @@ def test_png_writer_validates_destination_and_preserves_existing_file(tmp_path: 
 
     with pytest.raises(DomainValidationError, match=r"\.png"):
         render_frame_png(frame, tmp_path / "diagnostic.jpg", translator)
+
+    with pytest.raises(LocalPathError, match="UNC"):
+        render_frame_png(frame, Path(r"\\server\share\diagnostic.png"), translator)
 
 
 def test_renderer_boundaries_reject_invalid_collaborators_before_use() -> None:

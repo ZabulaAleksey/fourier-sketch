@@ -24,23 +24,28 @@ from PySide6.QtGui import (
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
+    QComboBox,
     QFileDialog,
     QFormLayout,
     QHBoxLayout,
     QLabel,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QSizePolicy,
     QSlider,
+    QSpinBox,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
 
 from fourier_sketch.application import (
+    AnimationExportPlan,
     CaptureState,
     EpicycleFrame,
     EpicycleTimeline,
+    ExportFormat,
     FreehandCapture,
     ImageMvpConfig,
     ImageMvpController,
@@ -48,10 +53,16 @@ from fourier_sketch.application import (
     ImageMvpState,
     TimelineState,
     build_freehand_timeline,
+    export_coefficient_data,
+    export_curve_data,
+    mp4_capability,
+    safe_display_basename,
+    validate_local_path,
 )
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D
 from fourier_sketch.imaging import ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, resolve_locale
+from fourier_sketch.render import export_animation_gif, render_frame_png, render_spectrum_png
 
 
 class _Job(QThread):
@@ -59,6 +70,7 @@ class _Job(QThread):
 
     finished_snapshot = Signal(object)
     failed = Signal(str)
+    progress = Signal(int)
 
     def __init__(self, operation: Callable[[], object]) -> None:
         super().__init__()
@@ -85,6 +97,22 @@ _VIEW_ZOOM_SCALE = 100
 _VIEW_ZOOM_DEFAULT = 1.00
 _SOURCE_LAYOUT_BOTTOM_RESERVE = 250
 _RAINBOW_HUE_STEP = 0.618033988749895
+
+
+def _export_dialog_contract(export_format: ExportFormat) -> tuple[str, str]:
+    contracts = {
+        ExportFormat.CURVE_JSON: (".json", "desktop.export.filter.json"),
+        ExportFormat.CURVE_CSV: (".csv", "desktop.export.filter.csv"),
+        ExportFormat.COEFFICIENTS_JSON: (".json", "desktop.export.filter.json"),
+        ExportFormat.COEFFICIENTS_CSV: (".csv", "desktop.export.filter.csv"),
+        ExportFormat.RECONSTRUCTION_PNG: (".png", "desktop.export.filter.png"),
+        ExportFormat.SPECTRUM_PNG: (".png", "desktop.export.filter.png"),
+        ExportFormat.GIF: (".gif", "desktop.export.filter.gif"),
+    }
+    try:
+        return contracts[export_format]
+    except KeyError as error:
+        raise DomainValidationError("selected export format has no file contract") from error
 
 
 def _rainbow_color(selection_index: int) -> QColor:
@@ -298,9 +326,7 @@ class EpicycleCanvas(QWidget):
         if self._pan_anchor is not None and event.buttons() & Qt.MouseButton.LeftButton:
             position = event.position()
             delta = position - self._pan_anchor
-            self._view_pan = QPointF(
-                self._view_pan.x() + delta.x(), self._view_pan.y() + delta.y()
-            )
+            self._view_pan = QPointF(self._view_pan.x() + delta.x(), self._view_pan.y() + delta.y())
             self._pan_anchor = position
             self.update()
             event.accept()
@@ -568,6 +594,11 @@ class DesktopWindow(QMainWindow):
         self._last_tick = monotonic()
         self._canvas = EpicycleCanvas(self._translator)
         self._pages: QStackedWidget
+        self._export_nav: QPushButton
+        self._export_format: QComboBox
+        self._export_frames: QSpinBox
+        self._export_duration: QSpinBox
+        self._export_action: QPushButton
         self._status = QLabel()
         self._source = FreehandCanvas()
         self._timer = QTimer(self)
@@ -585,11 +616,16 @@ class DesktopWindow(QMainWindow):
         source_button.setAccessibleName("Source page")
         source_button.clicked.connect(lambda: self._pages.setCurrentIndex(0))
         sidebar.addWidget(source_button)
-        for key in ("monochrome", "edges", "contours", "curve", "spectrum", "export"):
+        for key in ("monochrome", "edges", "contours", "curve", "spectrum"):
             button = QPushButton(self._translator.text(f"desktop.page.{key}"))
             button.setEnabled(False)
             button.setToolTip(self._translator.text("desktop.deferred"))
             sidebar.addWidget(button)
+        self._export_nav = QPushButton(self._translator.text("desktop.page.export"))
+        self._export_nav.setEnabled(False)
+        self._export_nav.setToolTip(self._translator.text("desktop.export.needs_timeline"))
+        self._export_nav.clicked.connect(lambda: self._pages.setCurrentIndex(1))
+        sidebar.addWidget(self._export_nav)
         sidebar.addStretch(1)
         layout.addLayout(sidebar)
         self._pages = QStackedWidget()
@@ -618,6 +654,37 @@ class DesktopWindow(QMainWindow):
         source_layout.addLayout(buttons)
         source_layout.addWidget(self._dark_ink)
         self._pages.addWidget(source_page)
+        export_page = QWidget()
+        export_layout = QVBoxLayout(export_page)
+        export_instructions = QLabel(self._translator.text("desktop.export.instructions"))
+        export_instructions.setWordWrap(True)
+        export_layout.addWidget(export_instructions)
+        export_form = QFormLayout()
+        self._export_format = QComboBox()
+        for export_format in ExportFormat:
+            self._export_format.addItem(
+                self._translator.text(f"desktop.export.format.{export_format.value}"),
+                export_format.value,
+            )
+        self._export_frames = QSpinBox()
+        self._export_frames.setRange(2, 120)
+        self._export_frames.setValue(60)
+        self._export_duration = QSpinBox()
+        self._export_duration.setRange(20, 1000)
+        self._export_duration.setValue(33)
+        export_form.addRow(self._translator.text("desktop.export.format"), self._export_format)
+        export_form.addRow(self._translator.text("desktop.export.frames"), self._export_frames)
+        export_form.addRow(
+            self._translator.text("desktop.export.frame_duration"), self._export_duration
+        )
+        export_layout.addLayout(export_form)
+        self._export_action = QPushButton(self._translator.text("desktop.export.save"))
+        self._export_action.setEnabled(False)
+        self._export_action.clicked.connect(self._choose_export)
+        self._export_format.currentIndexChanged.connect(self._export_format_changed)
+        export_layout.addWidget(self._export_action)
+        export_layout.addStretch(1)
+        self._pages.addWidget(export_page)
         layout.addWidget(self._pages, 1)
         center = QVBoxLayout()
         center.addWidget(self._canvas, 1)
@@ -718,7 +785,11 @@ class DesktopWindow(QMainWindow):
         self._start_job(lambda: self._image.process(generation, Path(name)), self._apply_image)
 
     def _start_job(
-        self, operation: Callable[[], object], on_success: Callable[[object], None]
+        self,
+        operation: Callable[[], object],
+        on_success: Callable[[object], None],
+        *,
+        on_progress: Callable[[int], None] | None = None,
     ) -> None:
         if self._job is not None and self._job.isRunning():
             self._set_status(self._translator.text("desktop.status.busy"))
@@ -740,6 +811,8 @@ class DesktopWindow(QMainWindow):
 
         self._job.finished_snapshot.connect(on_job_success)
         self._job.failed.connect(on_job_failed)
+        if on_progress is not None:
+            self._job.progress.connect(on_progress)
         self._job.finished.connect(self._job_finished)
         self._job.start()
 
@@ -802,8 +875,146 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._timeline = timeline
+        self._export_nav.setEnabled(True)
+        self._export_format_changed()
         speed = self._speed.value() / _SPEED_SCALE
         self._apply_frame(timeline.set_speed(speed))
+
+    def _export_format_changed(self) -> None:
+        export_format = self._selected_export_format()
+        is_mp4 = export_format is ExportFormat.MP4
+        self._export_action.setEnabled(self._timeline is not None and not is_mp4)
+        self._export_frames.setEnabled(export_format is ExportFormat.GIF)
+        self._export_duration.setEnabled(export_format is ExportFormat.GIF)
+        if is_mp4:
+            self._export_action.setToolTip(mp4_capability().reason)
+            self._set_status(self._translator.text("desktop.export.mp4_unavailable"))
+        else:
+            self._export_action.setToolTip("")
+
+    def _choose_export(self) -> None:
+        timeline = self._timeline
+        export_format = self._selected_export_format()
+        if timeline is None:
+            return
+        if export_format is ExportFormat.MP4:
+            self._set_status(self._translator.text("desktop.export.mp4_unavailable"))
+            return
+        suffix, filter_key = _export_dialog_contract(export_format)
+        name, _ = QFileDialog.getSaveFileName(
+            self,
+            self._translator.text("desktop.export.dialog"),
+            filter=self._translator.text(filter_key),
+        )
+        if not name:
+            return
+        output = Path(name)
+        if output.suffix.lower() != suffix:
+            output = output.with_suffix(suffix)
+        try:
+            validate_local_path(output, field_name="export output")
+        except DomainValidationError:
+            self._set_status(self._translator.text("desktop.status.invalid_control"))
+            return
+        overwrite = False
+        if output.exists():
+            answer = QMessageBox.question(
+                self,
+                self._translator.text("desktop.export.overwrite_title"),
+                self._translator.text(
+                    "desktop.export.overwrite_message", name=safe_display_basename(output)
+                ),
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                return
+            overwrite = True
+        frame = timeline.snapshot()
+        frame_count = self._export_frames.value()
+        frame_duration_ms = self._export_duration.value()
+
+        def operation() -> Path:
+            def cancelled() -> bool:
+                return QThread.currentThread().isInterruptionRequested()
+
+            if export_format in {ExportFormat.CURVE_JSON, ExportFormat.CURVE_CSV}:
+                return export_curve_data(
+                    frame.original,
+                    output,
+                    format=export_format,
+                    overwrite=overwrite,
+                    cancelled=cancelled,
+                )
+            if export_format in {
+                ExportFormat.COEFFICIENTS_JSON,
+                ExportFormat.COEFFICIENTS_CSV,
+            }:
+                return export_coefficient_data(
+                    frame.selection,
+                    output,
+                    format=export_format,
+                    overwrite=overwrite,
+                    cancelled=cancelled,
+                )
+            if export_format is ExportFormat.RECONSTRUCTION_PNG:
+                return render_frame_png(
+                    frame,
+                    output,
+                    self._translator,
+                    overwrite=overwrite,
+                    cancelled=cancelled,
+                )
+            if export_format is ExportFormat.SPECTRUM_PNG:
+                return render_spectrum_png(
+                    frame.selection,
+                    output,
+                    self._translator,
+                    overwrite=overwrite,
+                    cancelled=cancelled,
+                )
+            if export_format is ExportFormat.GIF:
+                plan = AnimationExportPlan(
+                    frame,
+                    frame_count=frame_count,
+                    frame_duration_ms=frame_duration_ms,
+                )
+
+                def progress(value: int) -> None:
+                    current = QThread.currentThread()
+                    if isinstance(current, _Job):
+                        current.progress.emit(value)
+
+                return export_animation_gif(
+                    plan,
+                    output,
+                    self._translator,
+                    overwrite=overwrite,
+                    cancelled=cancelled,
+                    progress=progress,
+                )
+            raise DomainValidationError("unsupported export format")
+
+        self._set_status(self._translator.text("desktop.export.processing"))
+        self._start_job(
+            operation,
+            self._apply_export_result,
+            on_progress=lambda value: self._set_status(
+                self._translator.text("desktop.export.progress", progress=value)
+            ),
+        )
+
+    def _apply_export_result(self, result: object) -> None:
+        if not isinstance(result, Path):
+            self._set_status(self._translator.text("desktop.status.runtime"))
+            return
+        self._set_status(
+            self._translator.text("desktop.export.completed", name=safe_display_basename(result))
+        )
+
+    def _selected_export_format(self) -> ExportFormat:
+        try:
+            return ExportFormat(str(self._export_format.currentData()))
+        except ValueError as error:
+            raise DomainValidationError("desktop export format selection is invalid") from error
 
     def _apply_frame(self, frame: object) -> None:
         if not isinstance(frame, EpicycleFrame):
