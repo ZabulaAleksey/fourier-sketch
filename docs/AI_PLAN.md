@@ -2,25 +2,26 @@
 
 ## Текущая цель
 
-Проверить и интегрировать FS-021 centered-origin/rainbow улучшение: center freehand field совпадает
-с chain origin, wheel и slider zoom синхронизированы, vector colors различимы. Сохранить manual
-Windows GUI/DPI/resize evidence gate.
+Сохранить и при отдельной команде пользователя завершить FS-021 centered-origin/rainbow улучшение:
+центр freehand field совпадает с chain origin, wheel и slider zoom синхронизированы, vector colors
+различимы. Сохранить manual Windows GUI/DPI/resize evidence gate.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; renderer-control slice интегрирован в `main`, а UI fixes локально проверены
-  в последовательности отдельных веток.
-- Branch: `feat/fs-021-centered-origin-and-rainbow-vectors`; merge/push не выполнялись.
+- Lifecycle: `partial`; renderer-control и последующие UI fixes интегрированы в `main`.
+- Branch: `main`; временные feature/fix/docs ветви после подтверждённого MDP больше не являются
+  источником состояния.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
 
 ## Integration state
 
-- `main` содержит renderer-control implementation `0faf8fc` и evidence update `2c552a7`.
-- PR/release/deployment не выполнялись; remote synchronization проверяется отдельно как внешнее
-  integration evidence.
+- `main` содержит renderer-control implementation `0faf8fc`, последующие UI commits
+  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d` и планирование routing/basis `29b23ca`.
+- PR/release/deployment не выполнялись; публикация `main` в `origin` — отдельное Git evidence,
+  не доказательство ручной visual/DPI проверки.
 
 ## План выполнения
 

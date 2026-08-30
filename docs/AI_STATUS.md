@@ -4,11 +4,11 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `feat/fs-021-centered-origin-and-rainbow-vectors`; renderer-control and desktop E2E deltas
-  are already integrated in `main`. Parent commits `644fd82`/`7d53100`/`66ec1ef` and the current
-  centered-origin/rainbow fix are locally verified; the current fix awaits merge/push after its commit.
-- Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
-  and pushed to `origin`. PR/release/deployment were not performed.
+- Branch: `main`; renderer-control and all current desktop UI deltas are integrated. Commits
+  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d` are locally verified; `29b23ca` records the planned
+  complex-routing and selectable Fourier/Haar-basis work without activating those stages.
+- Integration: `main` contains implementation `0faf8fc` and the current desktop E2E/doc slice.
+  PR/release/deployment were not performed; GitHub publication is separate external evidence.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
   automation возвращает `SetIsBorderRequired failed (0x80004002)` после retry/reset. Accessibility-only
   fallback подтверждает actual window hierarchy и keyboard controls, но без geometry не доказывает
