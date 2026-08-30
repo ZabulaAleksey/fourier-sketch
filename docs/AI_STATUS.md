@@ -4,11 +4,10 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `main`; renderer-control and all current desktop UI deltas are integrated. Commits
-  `644fd82`/`7d53100`/`66ec1ef`/`7cf355d` are locally verified; `29b23ca` records the planned
-  complex-routing and selectable Fourier/Haar-basis work without activating those stages.
-- Integration: `main` contains implementation `0faf8fc` and the current desktop E2E/doc slice.
-  PR/release/deployment were not performed; GitHub publication is separate external evidence.
+- Branch: `fix/fs-021-touch-rainbow`; current touch/rainbow delta is validated locally and unmerged.
+  `main` retains the earlier renderer-control and desktop UI commits plus basis planning without
+  activating FS-022, FS-023, FS-031 or FS-032.
+- Integration: no push, PR, merge, release or deployment was performed for the current slice.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
   automation возвращает `SetIsBorderRequired failed (0x80004002)` после retry/reset. Accessibility-only
   fallback подтверждает actual window hierarchy и keyboard controls, но без geometry не доказывает
@@ -16,11 +15,15 @@
 
 ## FS-021 progress
 
-- The visual center of the freehand field now maps to Cartesian `O=(0,0)`, the start of the head-to-tail
-  chain and its stationary DC vector. Wheel and slider share one zoom value, vector/circle pairs use a
-  deterministic rainbow palette, and Cancel is disabled unless a conversion job runs. Component evidence
-  remains `16 passed`; full repository regression, Ruff and strict mypy PASS locally. Current branch
-  remains unmerged.
+- Vector/circle colors now use a stable deterministic rainbow palette by selection position: existing
+  colors remain unchanged when K grows and each pair uses the same color. `EpicycleCanvas` accepts
+  one-finger touch pan and two-finger anchored pinch through the same `0.01..100.00×` zoom synchronized
+  with wheel/slider; reset clears zoom/pan/active gesture state. Component logic verifies presentation-only
+  isolation from frame/timeline/trace/animation. Targeted desktop suite: `19 passed`; full repository:
+  `543 passed in 130.51s`; Ruff, strict mypy, frozen sync and overlay validator PASS locally. Native
+  physical-touch delivery and visible Windows GUI/DPI/resize remain outside automated evidence.
+- Independent read-only re-review: `GO`; the fractional pinch-anchor correction has no remaining
+  P0/P1/P2 finding and no scope creep into FS-022, FS-023, FS-031 or FS-032 was found.
 - In normal `1200×760` desktop geometry the freehand field is vertically centered with the epicycle
   canvas. The instruction now wraps rather than forcing the source column wider than the renderer.
   Presentation zoom is numerically bounded at `0.01..100.00×`, which is practically unrestricted for
@@ -49,7 +52,7 @@
   не перезаписывает восстановленный размер окна. Неостанавливаемый после bounded terminate job остаётся
   во владении окна до фактического завершения, поэтому `QThread` не уничтожается while running.
   Component regressions покрывают все три случая.
-- Full repository regression: `536 passed in 156.61s`; Ruff, strict mypy, frozen sync and overlay PASS.
+- Current full repository regression: `543 passed in 130.51s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
   `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.

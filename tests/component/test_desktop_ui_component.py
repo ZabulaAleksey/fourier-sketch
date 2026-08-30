@@ -20,7 +20,11 @@ from fourier_sketch.application import (
     build_freehand_timeline,
 )
 from fourier_sketch.domain import Curve, Point2D
-from fourier_sketch.ui.desktop import DesktopWindow, run_desktop
+from fourier_sketch.ui.desktop import (
+    DesktopWindow,
+    _gesture_view_transform,
+    run_desktop,
+)
 
 
 def _application() -> QApplication:
@@ -301,6 +305,121 @@ def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
     window.close()
 
 
+def test_touch_gesture_math_pans_and_keeps_pinch_center_anchored() -> None:
+    panned_zoom, panned = _gesture_view_transform(
+        zoom=1.0,
+        pan=(4.0, -3.0),
+        previous_points=((20.0, 30.0),),
+        current_points=((32.0, 25.0),),
+        viewport_center=(200.0, 150.0),
+    )
+    assert panned_zoom == 1.0
+    assert panned == (16.0, -8.0)
+
+    old_zoom = 2.0
+    old_pan = (10.0, -5.0)
+    pinch_center = (120.0, 100.0)
+    next_zoom, next_pan = _gesture_view_transform(
+        zoom=old_zoom,
+        pan=old_pan,
+        previous_points=((110.0, 100.0), (130.0, 100.0)),
+        current_points=((100.0, 100.0), (140.0, 100.0)),
+        viewport_center=(200.0, 150.0),
+    )
+    scene_point = (
+        (pinch_center[0] - 200.0 - old_pan[0]) / old_zoom,
+        (pinch_center[1] - 150.0 - old_pan[1]) / old_zoom,
+    )
+    assert next_zoom == 4.0
+    assert 200.0 + next_pan[0] + next_zoom * scene_point[0] == pytest.approx(
+        pinch_center[0]
+    )
+    assert 150.0 + next_pan[1] + next_zoom * scene_point[1] == pytest.approx(
+        pinch_center[1]
+    )
+
+    fractional_center = (110.0, 100.0)
+    fractional_zoom, fractional_pan = _gesture_view_transform(
+        zoom=1.0,
+        pan=(0.0, 0.0),
+        previous_points=((100.0, 100.0), (120.0, 100.0)),
+        current_points=((98.77, 100.0), (121.23, 100.0)),
+        viewport_center=(200.0, 150.0),
+    )
+    fractional_scene_point = (
+        fractional_center[0] - 200.0,
+        fractional_center[1] - 150.0,
+    )
+    assert fractional_zoom == 1.12
+    assert 200.0 + fractional_pan[0] + fractional_zoom * fractional_scene_point[
+        0
+    ] == pytest.approx(fractional_center[0])
+    assert 150.0 + fractional_pan[1] + fractional_zoom * fractional_scene_point[
+        1
+    ] == pytest.approx(fractional_center[1])
+
+
+def test_desktop_touch_pan_and_pinch_are_presentation_only_and_resettable() -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            (
+                Point2D(1.0, 0.0),
+                Point2D(0.7, 0.7),
+                Point2D(0.0, 1.0),
+                Point2D(-0.7, 0.7),
+                Point2D(-1.0, 0.0),
+                Point2D(-0.7, -0.7),
+                Point2D(0.0, -1.0),
+                Point2D(0.7, -0.7),
+            ),
+            closed=True,
+        )
+    )
+    window._apply_timeline(timeline)
+    canvas = window._canvas
+    canvas.resize(400, 300)
+    frame_before = canvas._frame
+    timeline_before = timeline.snapshot()
+    timer_before = window._timer.isActive()
+
+    canvas._apply_touch_points({1: (80.0, 90.0)}, {1: (105.0, 75.0)})
+    assert canvas.view_pan == (25.0, -15.0)
+
+    canvas._apply_touch_points(
+        {1: (90.0, 100.0), 2: (110.0, 100.0)},
+        {1: (80.0, 100.0), 2: (120.0, 100.0)},
+    )
+    assert canvas.view_zoom == 2.0
+    assert window._zoom.value() == 200
+    assert canvas._frame is frame_before
+    assert timeline.snapshot() == timeline_before
+    assert window._timer.isActive() is timer_before
+
+    canvas._apply_touch_points(
+        {1: (99.5, 100.0), 2: (100.5, 100.0)},
+        {1: (-900.0, 100.0), 2: (1100.0, 100.0)},
+    )
+    assert canvas.view_zoom == 100.0
+    assert window._zoom.value() == 10_000
+
+    canvas._apply_touch_points(
+        {1: (-900.0, 100.0), 2: (1100.0, 100.0)},
+        {1: (99.95, 100.0), 2: (100.05, 100.0)},
+    )
+    assert canvas.view_zoom == 0.01
+    assert window._zoom.value() == 1
+
+    canvas._touch_points = {1: (100.0, 100.0)}
+    canvas.reset_view()
+    assert canvas.view_zoom == 1.0
+    assert canvas.view_pan == (0.0, 0.0)
+    assert canvas._touch_points == {}
+    assert window._zoom.value() == 100
+    window.close()
+
+
 def test_desktop_cli_does_not_override_restored_window_size(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -399,6 +518,42 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     )
     assert window._canvas._frame.timeline_state.value == "paused"
     assert not window._timer.isActive()
+
+    window.close()
+
+
+def test_desktop_rainbow_pairs_stay_stable_when_harmonic_count_grows() -> None:
+    _application()
+    window = DesktopWindow()
+    timeline = build_freehand_timeline(
+        Curve(
+            (
+                Point2D(1.0, 0.0),
+                Point2D(0.7, 0.7),
+                Point2D(0.0, 1.0),
+                Point2D(-0.7, 0.7),
+                Point2D(-1.0, 0.0),
+                Point2D(-0.7, -0.7),
+                Point2D(0.0, -1.0),
+                Point2D(0.7, -0.7),
+            ),
+            closed=True,
+        )
+    )
+    window._apply_timeline(timeline)
+
+    window._harmonics.setValue(3)
+    first_colors = tuple(color.name() for color in window._canvas._vector_colors)
+    assert len(first_colors) == 3
+    assert len(set(first_colors)) == 3
+    assert first_colors == tuple(color.name() for color in window._canvas._circle_colors)
+
+    window._harmonics.setValue(8)
+    expanded_colors = tuple(color.name() for color in window._canvas._vector_colors)
+    assert len(expanded_colors) == 8
+    assert len(set(expanded_colors)) == 8
+    assert expanded_colors[:3] == first_colors
+    assert expanded_colors == tuple(color.name() for color in window._canvas._circle_colors)
 
     window.close()
 

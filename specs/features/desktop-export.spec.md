@@ -27,7 +27,13 @@ freehand input переводится из экранной вниз-напра�
 чтобы ready contour не был отражён по вертикали. Wheel zoom и zoom slider всегда показывают одно
 и то же view scale. Начало координат поля freehand совпадает с его visual center и с `O`, началом
 head-to-tail chain, включая stationary DC vector. Vector/circle colors детерминированно следуют
-rainbow palette по selection order, не меняя математическое состояние.
+rainbow palette по selection order, не меняя математическое состояние; цвет уже существующей позиции
+не меняется при увеличении harmonic count, а vector и circle одной позиции используют один цвет.
+На desktop-устройствах с сенсорным экраном один палец перемещает viewport, а pinch двумя пальцами
+масштабирует относительно центра pinch в тех же границах `0.01..100.00×`. Wheel, slider и pinch
+синхронизируют одно view scale; touch-навигация и reset не меняют curve, coefficients, selection,
+chain geometry, endpoint, timeline, trace ledger или animation state. Android touch input остаётся
+отдельным контрактом FS-031.
 
 ### UI-FR-010 — Source/view alignment
 

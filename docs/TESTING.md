@@ -234,8 +234,12 @@ Freehand component regressions assert the screen-to-Cartesian Y conversion used 
 viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, then require reset
 to restore both the fitted zoom and zero pan.
 The source center maps to `(0, 0)` and round-trips through its screen transform. Wheel zoom updates the
-slider to the same scale; rainbow colors are one-per-vector, and Cancel is disabled without a job then
-enabled only for a running conversion.
+slider to the same scale. Rainbow regressions use several harmonics, require stable colors by selection
+position as K grows, and require each vector/circle pair to share its color. Touch regressions exercise
+the isolated viewport-gesture calculation for one-finger pan, bounded pinch zoom anchored at its center,
+reset and presentation-state isolation; the offscreen Qt runtime is not evidence that a physical touch
+device delivered native `QTouchEvent` sequences. Cancel is disabled without a job then enabled only for
+a running conversion.
 Source-layout regression opens the normal `1200×760` desktop shell and requires the freehand field's
 vertical center to match the epicycle canvas center.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker

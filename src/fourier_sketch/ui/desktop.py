@@ -8,15 +8,17 @@ from pathlib import Path
 from time import monotonic
 from typing import cast
 
-from PySide6.QtCore import QLineF, QPointF, QSettings, Qt, QThread, QTimer, Signal
+from PySide6.QtCore import QEvent, QLineF, QPointF, QSettings, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import (
     QCloseEvent,
     QColor,
+    QEventPoint,
     QKeyEvent,
     QMouseEvent,
     QPainter,
     QPainterPath,
     QPen,
+    QTouchEvent,
     QWheelEvent,
 )
 from PySide6.QtWidgets import (
@@ -82,6 +84,93 @@ _VIEW_ZOOM_MAX = 100.00
 _VIEW_ZOOM_SCALE = 100
 _VIEW_ZOOM_DEFAULT = 1.00
 _SOURCE_LAYOUT_BOTTOM_RESERVE = 250
+_RAINBOW_HUE_STEP = 0.618033988749895
+
+
+def _rainbow_color(selection_index: int) -> QColor:
+    """Return a stable presentation color independent of the selected K."""
+
+    hue = (selection_index * _RAINBOW_HUE_STEP) % 1.0
+    return QColor.fromHsvF(hue, 0.78, 0.90)
+
+
+def _bounded_view_zoom(zoom: float) -> float:
+    if not isfinite(zoom):
+        raise ValueError("view zoom must be finite")
+    bounded = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, zoom))
+    return round(bounded * _VIEW_ZOOM_SCALE) / _VIEW_ZOOM_SCALE
+
+
+def _zoom_about_point(
+    *,
+    zoom: float,
+    pan: tuple[float, float],
+    anchor: tuple[float, float],
+    viewport_center: tuple[float, float],
+    requested_zoom: float,
+) -> tuple[float, tuple[float, float]]:
+    """Scale a presentation viewport while preserving the scene point at ``anchor``."""
+
+    next_zoom = _bounded_view_zoom(requested_zoom)
+    if next_zoom == zoom:
+        return zoom, pan
+    scale_ratio = next_zoom / zoom
+    relative_x = anchor[0] - viewport_center[0] - pan[0]
+    relative_y = anchor[1] - viewport_center[1] - pan[1]
+    return next_zoom, (
+        pan[0] + relative_x * (1.0 - scale_ratio),
+        pan[1] + relative_y * (1.0 - scale_ratio),
+    )
+
+
+def _gesture_view_transform(
+    *,
+    zoom: float,
+    pan: tuple[float, float],
+    previous_points: tuple[tuple[float, float], ...],
+    current_points: tuple[tuple[float, float], ...],
+    viewport_center: tuple[float, float],
+) -> tuple[float, tuple[float, float]]:
+    """Compute one-finger pan or two-finger anchored pinch without product state."""
+
+    if len(previous_points) != len(current_points):
+        return zoom, pan
+    if len(current_points) == 1:
+        return zoom, (
+            pan[0] + current_points[0][0] - previous_points[0][0],
+            pan[1] + current_points[0][1] - previous_points[0][1],
+        )
+    if len(current_points) != 2:
+        return zoom, pan
+
+    previous_center = (
+        (previous_points[0][0] + previous_points[1][0]) / 2.0,
+        (previous_points[0][1] + previous_points[1][1]) / 2.0,
+    )
+    current_center = (
+        (current_points[0][0] + current_points[1][0]) / 2.0,
+        (current_points[0][1] + current_points[1][1]) / 2.0,
+    )
+    previous_dx = previous_points[1][0] - previous_points[0][0]
+    previous_dy = previous_points[1][1] - previous_points[0][1]
+    current_dx = current_points[1][0] - current_points[0][0]
+    current_dy = current_points[1][1] - current_points[0][1]
+    previous_distance = (previous_dx * previous_dx + previous_dy * previous_dy) ** 0.5
+    current_distance = (current_dx * current_dx + current_dy * current_dy) ** 0.5
+
+    translated_pan = (
+        pan[0] + current_center[0] - previous_center[0],
+        pan[1] + current_center[1] - previous_center[1],
+    )
+    if previous_distance <= 1e-9:
+        return zoom, translated_pan
+    return _zoom_about_point(
+        zoom=zoom,
+        pan=translated_pan,
+        anchor=current_center,
+        viewport_center=viewport_center,
+        requested_zoom=zoom * current_distance / previous_distance,
+    )
 
 
 class EpicycleCanvas(QWidget):
@@ -100,10 +189,13 @@ class EpicycleCanvas(QWidget):
         self._vector_lines: list[QLineF] = []
         self._circle_centers: list[tuple[float, float, float]] = []
         self._vector_colors: list[QColor] = []
+        self._circle_colors: list[QColor] = []
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
         self._pan_anchor: QPointF | None = None
+        self._touch_points: dict[int, tuple[float, float]] = {}
         self.setMinimumSize(360, 300)
+        self.setAttribute(Qt.WidgetAttribute.WA_AcceptTouchEvents)
         self.setAccessibleName("Epicycles canvas")
 
     @property
@@ -121,9 +213,7 @@ class EpicycleCanvas(QWidget):
     def set_view_zoom(self, zoom: float) -> None:
         """Set a bounded view scale; rendering remains independent from Fourier state."""
 
-        if not isfinite(zoom):
-            raise ValueError("view zoom must be finite")
-        next_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, zoom))
+        next_zoom = _bounded_view_zoom(zoom)
         if next_zoom == self._view_zoom:
             return
         self._view_zoom = next_zoom
@@ -136,6 +226,63 @@ class EpicycleCanvas(QWidget):
         zoom_changed = self._view_zoom != _VIEW_ZOOM_DEFAULT
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
+        self._pan_anchor = None
+        self._touch_points = {}
+        self.update()
+        if zoom_changed:
+            self.view_zoom_changed.emit(self._view_zoom)
+
+    def event(self, event: QEvent) -> bool:
+        if event.type() in {
+            QEvent.Type.TouchBegin,
+            QEvent.Type.TouchUpdate,
+            QEvent.Type.TouchEnd,
+            QEvent.Type.TouchCancel,
+        } and isinstance(event, QTouchEvent):
+            self._handle_touch_event(event)
+            return True
+        return super().event(event)
+
+    def _handle_touch_event(self, event: QTouchEvent) -> None:
+        if event.type() in {QEvent.Type.TouchEnd, QEvent.Type.TouchCancel}:
+            self._touch_points = {}
+            event.accept()
+            return
+
+        current_points = {
+            point.id(): (point.position().x(), point.position().y())
+            for point in event.points()
+            if point.state() != QEventPoint.State.Released
+        }
+        if event.type() == QEvent.Type.TouchBegin:
+            self._pan_anchor = None
+        self._apply_touch_points(self._touch_points, current_points)
+        self._touch_points = current_points
+        event.accept()
+
+    def _apply_touch_points(
+        self,
+        previous: dict[int, tuple[float, float]],
+        current: dict[int, tuple[float, float]],
+    ) -> None:
+        """Apply a testable touch sample transition to presentation state only."""
+
+        if set(previous) != set(current) or len(current) not in {1, 2}:
+            return
+        point_ids = sorted(current)
+        next_zoom, next_pan = _gesture_view_transform(
+            zoom=self._view_zoom,
+            pan=self.view_pan,
+            previous_points=tuple(previous[point_id] for point_id in point_ids),
+            current_points=tuple(current[point_id] for point_id in point_ids),
+            viewport_center=(self.width() / 2.0, self.height() / 2.0),
+        )
+        zoom_changed = next_zoom != self._view_zoom
+        pan_changed = next_pan != self.view_pan
+        if not zoom_changed and not pan_changed:
+            return
+        self._view_zoom = next_zoom
+        self._view_pan = QPointF(*next_pan)
         self.update()
         if zoom_changed:
             self.view_zoom_changed.emit(self._view_zoom)
@@ -173,17 +320,16 @@ class EpicycleCanvas(QWidget):
             event.ignore()
             return
         zoom_factor = 1.15 ** (wheel_delta / 120.0)
-        requested_zoom = self._view_zoom * zoom_factor
-        next_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, requested_zoom))
+        next_zoom, next_pan = _zoom_about_point(
+            zoom=self._view_zoom,
+            pan=self.view_pan,
+            anchor=(event.position().x(), event.position().y()),
+            viewport_center=(self.width() / 2.0, self.height() / 2.0),
+            requested_zoom=self._view_zoom * zoom_factor,
+        )
         if next_zoom != self._view_zoom:
-            scale_ratio = next_zoom / self._view_zoom
-            center = QPointF(self.width() / 2.0, self.height() / 2.0)
-            relative = event.position() - center - self._view_pan
-            self._view_pan = QPointF(
-                self._view_pan.x() + relative.x() * (1.0 - scale_ratio),
-                self._view_pan.y() + relative.y() * (1.0 - scale_ratio),
-            )
             self._view_zoom = next_zoom
+            self._view_pan = QPointF(*next_pan)
             self.update()
             self.view_zoom_changed.emit(self._view_zoom)
         event.accept()
@@ -234,10 +380,8 @@ class EpicycleCanvas(QWidget):
                 )
                 self._scene_bounds = (minimum_x, maximum_x, minimum_y, maximum_y)
                 vector_count = len(frame.chain.vectors)
-                self._vector_colors = [
-                    QColor.fromHsvF(index / max(vector_count, 1), 0.85, 0.85)
-                    for index in range(vector_count)
-                ]
+                self._vector_colors = [_rainbow_color(index) for index in range(vector_count)]
+                self._circle_colors = [QColor(color) for color in self._vector_colors]
 
         if frame is None:
             self._frame_cache_key = None
@@ -247,6 +391,7 @@ class EpicycleCanvas(QWidget):
             self._vector_lines = []
             self._circle_centers = []
             self._vector_colors = []
+            self._circle_colors = []
         else:
             self._vector_lines = []
             self._circle_centers = []
@@ -334,13 +479,13 @@ class EpicycleCanvas(QWidget):
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
             for (x, y, radius), color in zip(
-                self._circle_centers, self._vector_colors, strict=True
+                self._circle_centers, self._circle_colors, strict=True
             ):
                 painter.setPen(QPen(color, 1.0 * line_scale))
                 painter.drawEllipse(QPointF(x, y), radius, radius)
         if visibility.vectors:
             for line, color in zip(self._vector_lines, self._vector_colors, strict=True):
-                painter.setPen(QPen(color.darker(130), 1.2 * line_scale))
+                painter.setPen(QPen(color, 1.2 * line_scale))
                 painter.drawLine(line)
         if visibility.endpoint:
             painter.setBrush(QColor("#dc2626"))

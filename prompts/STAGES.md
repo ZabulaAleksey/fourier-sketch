@@ -914,7 +914,9 @@ completion claim. Evidence records environment/branch and caveats.
 - Entry evidence: stable application use cases/view states, i18n resources, PySide6 platform/license
   review and offscreen component-test feasibility.
 - Current evidence: PySide6 dependency and source-run shell committed; current full repository suite
-  `536 passed`, Ruff/mypy/frozen sync/overlay PASS. Measured baseline on the recorded Windows host:
+  `543 passed`, Ruff/mypy/frozen sync/overlay PASS. Stable vector/circle rainbow pairing and isolated
+  desktop touch pan/pinch component logic pass locally; physical-touch delivery and manual visible
+  GUI/DPI/resize remain unverified. Measured baseline on the recorded Windows host:
   core timeline ≈`0.31 ms/frame`, QPainter canvas ≈`3.66 ms/frame` at K=25, stress K=256 grows
   from ≈`10.4` to `13.5 ms/frame` as trace reaches 1001 points. Terminal gates remain pending.
 - Current no-trail/speed delta evidence: desktop paint no longer scans/renders trace or exposes its
@@ -965,7 +967,8 @@ completion claim. Evidence records environment/branch and caveats.
   shutdown/cancel/thread leak checks; full/static/dependency/Windows smoke/overlay PASS and manual
   visible DPI/resize diagnostic. Performance evidence includes
   before/after frame-time buckets, long-trace behavior, parity and paused-redraw assertion.
-  Component evidence asserts no desktop trace paint/toggle and exact smooth speed range/step.
+  Component evidence asserts no desktop trace paint/toggle, exact smooth speed range/step, stable
+  vector/circle colors by selection position, and bounded presentation-only mouse/touch viewport logic.
 
 ### Temporary / deferred / failure
 

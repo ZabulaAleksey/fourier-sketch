@@ -2,16 +2,16 @@
 
 ## Текущая цель
 
-Сохранить и при отдельной команде пользователя завершить FS-021 centered-origin/rainbow улучшение:
-центр freehand field совпадает с chain origin, wheel и slider zoom синхронизированы, vector colors
-различимы. Сохранить manual Windows GUI/DPI/resize evidence gate.
+Завершить текущий проверяемый FS-021 desktop navigation/color slice: vector/circle pair сохраняет
+стабильный rainbow color по selection order, а wheel/slider/touch pinch и mouse/touch pan меняют
+только bounded viewport. Сохранить manual Windows GUI/DPI/resize evidence gate.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; renderer-control и последующие UI fixes интегрированы в `main`.
-- Branch: `main`; временные feature/fix/docs ветви после подтверждённого MDP больше не являются
-  источником состояния.
+- Lifecycle: `partial`; renderer-control и предыдущие UI fixes интегрированы в `main`, текущий
+  touch/rainbow slice validated locally; merge остаётся отдельным решением.
+- Branch: `fix/fs-021-touch-rainbow`; `main` не изменяется до отдельного разрешения merge.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -40,8 +40,10 @@
    presentation zoom до `0.01..100.00×` с component regression.
 8. [completed] Сделать center freehand field chain origin, связать wheel/slider zoom, раскрасить
    vector/circle по rainbow order и disabled-state Cancel без background job.
-9. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-10. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+9. [completed] Стабилизировать rainbow color по selection position при росте K, выровнять color
+   vector/circle pair и добавить one-finger touch pan/two-finger anchored pinch с component regressions.
+10. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
+11. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
    подтверждён; review P2 для `cancelled` status и CLI persistence исправлены. Accessibility-only
    fallback подтвердил actual window hierarchy/keyboard controls; lingering job после bounded terminate
    безопасно retained до finish. Manual mouse/image/DPI/resize diagnostic не получен: screenshot capture
@@ -50,4 +52,5 @@
 
 ## Handoff
 
-После MDP остановиться на `main` и ожидать отдельной команды пользователя до следующего FS-021 slice.
+После атомарного commit остановиться в `fix/fs-021-touch-rainbow`; не начинать FS-022/FS-023/FS-031/
+FS-032 и не выполнять merge без отдельного разрешения пользователя.

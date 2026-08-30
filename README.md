@@ -319,7 +319,10 @@ uv run python -m fourier_sketch.cli.desktop
 существующий validated image-to-contour application flow в background worker; epicycle canvas
 показывает готовый contour, rotating vectors и moving endpoint без дублирующего trace-шлейфа.
 Desktop speed slider ограничен `0.10..1.00×` и меняется шагом `0.01×`. Application endpoint ledger
-сохраняется для parity/export. Export pages и installer пока disabled/deferred.
+сохраняется для parity/export. Wheel, zoom slider и touchscreen pinch используют один bounded
+`0.01..100.00×` presentation zoom; LMB drag и one-finger touch перемещают только viewport, reset
+возвращает `1.00×` и нулевой pan. Vector/circle каждой harmonic pair имеют стабильный различимый
+rainbow color по selection order. Export pages и installer пока disabled/deferred.
 
 ## Ограничения
 

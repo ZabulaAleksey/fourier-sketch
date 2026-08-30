@@ -15,8 +15,12 @@ to its `1.00×` fitted view. The mouse wheel zooms the canvas and left-button dr
 clears the pan. Freehand screen coordinates are converted to Cartesian Y before building a timeline,
 so the contour has the same vertical orientation as the input stroke. The freehand field visual center
 is Cartesian origin `O`, the head-to-tail chain start (including the stationary DC vector). Wheel zoom
-and the slider stay synchronized. Each vector and its circle receives a deterministic rainbow color by
-selection order; this is presentation-only. Cancel is disabled until a background conversion job exists.
+and the slider stay synchronized. On touchscreen laptops, one-finger touch pans the epicycle viewport
+and a two-finger pinch zooms around the pinch center; pinch uses the same bounded zoom value as wheel
+and slider. Each vector and its circle receives the same deterministic rainbow color by selection order,
+and an existing selection position keeps its color when K grows; this is presentation-only. Reset clears
+mouse/touch pan and returns every zoom input to `1.00×`. Cancel is disabled until a background conversion
+job exists.
 Export remains deferred.
 The freehand field is vertically aligned with the epicycle viewport in the normal desktop layout; at
 smaller window heights it remains usable instead of overlapping the source controls.
@@ -227,8 +231,9 @@ Canvas contract:
 - desktop-first resizable layout: left workflow/controls, central canvas, optional right inspector;
 - canvas сохраняет aspect ratio curve, имеет fit/reset view и numerically bounded near-unrestricted
   `0.01..100.00×` user zoom,
-  который не меняет curve/chain/timeline state; wheel zoom и LMB drag pan меняют только viewport,
-  а reset возвращает zoom/pan fit baseline;
+  который не меняет curve/chain/timeline state; wheel zoom, touchscreen pinch и slider используют одно
+  синхронизированное значение, LMB drag и one-finger touch меняют только viewport, pinch удерживает
+  выбранный центр, а reset возвращает zoom/pan fit baseline;
 - typography, color tokens и spacing утверждаются при первом UI implementation на основе
   component evidence, не выдумываются bootstrap-документом;
 - color не единственный signal; selected/failure/paused states имеют icon/text/shape;
@@ -260,6 +265,9 @@ Export overwrite требует явного выбора.
 - formatted numbers presentation-aware, domain values остаются canonical floats/integers.
 
 ## Planned Android touch surface (FS-031)
+
+Desktop touchscreen navigation в FS-021 ограничена pan/pinch существующего epicycle viewport и не
+реализует Android stroke/lifecycle surface ниже.
 
 - primary canvas accepts a bounded finger/stylus stroke and exposes an explicit cancel state;
 - completed stroke transitions to the same circles/vectors/endpoint/trace semantics as desktop;
