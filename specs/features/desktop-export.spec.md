@@ -19,6 +19,8 @@ UI предоставляет SOURCE, MONOCHROME, EDGES, CONTOURS, CURVE, FOURIE
 Центральный desktop canvas одновременно показывает nested rotating circles, head-to-tail vectors,
 moving endpoint и уже построенный contour/reconstruction. Persistent trace остаётся application/
 export evidence, но desktop canvas его не рисует: дублирующий шлейф не должен увеличивать frame work.
+Canvas сохраняет fit-to-scene aspect ratio, предоставляет bounded user zoom `0.50..2.50×` и явный
+reset к `1.00×`; масштаб меняет только presentation, не Fourier/timeline state.
 
 ### UI-FR-003 — State separation
 
@@ -40,6 +42,12 @@ endpoint/state parity. GPU/QML adapter вводится только после 
 
 Desktop speed control использует небольшой bounded диапазон `0.10..1.00×` с шагом `0.01×`.
 Отображаемое значение и timeline speed совпадают; keyboard step не перескакивает скрытые значения.
+
+### UI-FR-009 — Image foreground polarity
+
+Desktop image source по умолчанию обрабатывает тёмный рисунок на светлом фоне, чтобы светлый фон не
+становился dominant contour рамки изображения. Пользователь может отключить этот режим для обратной
+полярности; выбор применяется как explicit preprocessing option до запуска worker.
 
 ### UI-FR-005 — Localization
 

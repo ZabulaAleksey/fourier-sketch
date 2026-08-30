@@ -4,7 +4,9 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `main`; renderer-control and desktop E2E deltas are integrated.
+- Branch: `fix/fs-021-image-contour-and-zoom`; renderer-control and desktop E2E deltas are already
+  integrated in `main`, while the current image/zoom fix is locally verified, independently reviewed,
+  and awaits merge/push.
 - Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
   and pushed to `origin`. PR/release/deployment were not performed.
 - Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: screenshot capture Windows
@@ -14,6 +16,11 @@
 
 ## FS-021 progress
 
+- Desktop image source now defaults to dark-ink/light-background preprocessing and exposes an explicit
+  reverse-polarity opt-out. This prevents a light source background from becoming the dominant outer
+  contour. The central canvas also has persisted presentation-only `0.50..2.50×` zoom and reset to
+  `1.00×`; neither control mutates Fourier/timeline state. Targeted component evidence is `13 passed`;
+  full repository regression, Ruff and strict mypy PASS locally. Merge/push remain pending.
 - PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls, renderer-control
   checks and source-workflow component slice are implemented, committed, merged, and pushed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.

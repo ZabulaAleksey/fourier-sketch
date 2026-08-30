@@ -8,7 +8,10 @@ disabled future workflow pages, mouse freehand/image selection, central resizabl
 keyboard-focusable controls, visibility checkboxes and `en`/pseudo resources. Desktop показывает
 готовый contour и moving endpoint без дублирующего persistent trace-шлейфа. Speed ограничен
 `0.10..1.00×` с шагом `0.01×`. Image work runs in a single worker; cancel publishes a stable state
-and no partial frame. Export remains deferred.
+and no partial frame. Image picker defaults to a dark drawing on a light background (with an explicit
+reverse-polarity opt-out), so a light image background cannot become the selected outer contour.
+The canvas has presentation-only `0.50..2.50×` zoom, persisted with desktop preferences, and a reset
+to its `1.00×` fitted view. Export remains deferred.
 
 ## Diagnostic FS-006 — фактический baseline
 
@@ -214,7 +217,8 @@ Canvas contract:
 ## Layout и visual foundation
 
 - desktop-first resizable layout: left workflow/controls, central canvas, optional right inspector;
-- canvas сохраняет aspect ratio curve и имеет fit/reset view;
+- canvas сохраняет aspect ratio curve, имеет fit/reset view и bounded `0.50..2.50×` user zoom,
+  который не меняет curve/chain/timeline state;
 - typography, color tokens и spacing утверждаются при первом UI implementation на основе
   component evidence, не выдумываются bootstrap-документом;
 - color не единственный signal; selected/failure/paused states имеют icon/text/shape;

@@ -12,9 +12,13 @@ import pytest
 from PIL import Image, ImageDraw
 from PySide6.QtCore import QEvent, QPointF, Qt
 from PySide6.QtGui import QImage, QKeyEvent, QMouseEvent
-from PySide6.QtWidgets import QApplication, QCheckBox
+from PySide6.QtWidgets import QApplication, QCheckBox, QPushButton
 
-from fourier_sketch.application import TimelineState, build_freehand_timeline
+from fourier_sketch.application import (
+    ImageContourTimelineResult,
+    TimelineState,
+    build_freehand_timeline,
+)
 from fourier_sketch.domain import Curve, Point2D
 from fourier_sketch.ui.desktop import DesktopWindow, run_desktop
 
@@ -138,8 +142,10 @@ def test_desktop_image_flow_from_file_and_runs(
 ) -> None:
     _application()
     source = tmp_path / "shape.png"
-    image = Image.new("L", (24, 18), 0)
-    ImageDraw.Draw(image).rectangle((4, 4, 19, 13), outline=255, width=2)
+    # The source contract is a dark drawing on a light background.  A white
+    # canvas must not be interpreted as a framed black image by preprocessing.
+    image = Image.new("L", (24, 18), 255)
+    ImageDraw.Draw(image).rectangle((4, 4, 19, 13), outline=0, width=2)
     image.save(source)
     window = DesktopWindow()
     window._speed.setValue(42)
@@ -154,6 +160,13 @@ def test_desktop_image_flow_from_file_and_runs(
     assert window._timeline is not None
     assert window._canvas._frame is not None
     assert window._canvas._frame.speed == 0.42
+    snapshot = window._image.snapshot()
+    assert isinstance(snapshot.result, ImageContourTimelineResult)
+    assert snapshot.result.selection.candidate.bounding_box == (4, 4, 19, 13)
+    grayscale = snapshot.result.preprocessing.grayscale
+    assert grayscale.pixels[0] == 255
+    assert grayscale.pixels[5 * grayscale.width + 5] == 0
+    assert window._canvas._frame.original.sample_count > 4
 
     _assert_playback_advances(window)
     window.close()
@@ -165,6 +178,7 @@ def test_desktop_restores_non_sensitive_preferences() -> None:
     first.resize(720, 540)
     first._speed.setValue(42)
     first._harmonics.setValue(17)
+    first._zoom.setValue(175)
     first.close()
 
     restored = DesktopWindow()
@@ -172,7 +186,34 @@ def test_desktop_restores_non_sensitive_preferences() -> None:
     assert (restored.width(), restored.height()) == (720, 540)
     assert restored._speed.value() == 42
     assert restored._harmonics.value() == 17
+    assert restored._zoom.value() == 175
+    assert restored._canvas.view_zoom == 1.75
     restored.close()
+
+
+def test_desktop_canvas_zoom_is_bounded_and_resettable() -> None:
+    _application()
+    window = DesktopWindow()
+
+    window._canvas.set_view_zoom(9.0)
+    assert window._canvas.view_zoom == 2.5
+    window._canvas.set_view_zoom(0.01)
+    assert window._canvas.view_zoom == 0.5
+
+    window._canvas.set_view_zoom(1.8)
+    window._canvas.reset_view()
+    assert window._canvas.view_zoom == 1.0
+
+    window._zoom.setValue(200)
+    assert window._canvas.view_zoom == 2.0
+    reset_button = next(
+        button for button in window.findChildren(QPushButton)
+        if button.accessibleName() == "Reset canvas view"
+    )
+    reset_button.click()
+    assert window._zoom.value() == 100
+    assert window._canvas.view_zoom == 1.0
+    window.close()
 
 
 def test_desktop_cli_does_not_override_restored_window_size(

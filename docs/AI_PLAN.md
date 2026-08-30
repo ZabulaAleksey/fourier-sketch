@@ -2,14 +2,15 @@
 
 ## Текущая цель
 
-Закрыть оставшийся FS-021 manual evidence gate: получить visible Windows GUI/DPI/resize diagnostic
-после восстановления capture либо через подтверждение пользователя.
+Проверить и интегрировать FS-021 исправление image source: тёмный рисунок на светлом фоне не должен
+давать contour рамки; сохранить manual Windows GUI/DPI/resize evidence gate.
 
 ## Активный stage
 
 - Stage ID: `FS-021`
-- Lifecycle: `partial`; renderer-control slice завершён и локально интегрирован в `main`.
-- Branch: `main`; desktop E2E and renderer-control deltas integrated and pushed.
+- Lifecycle: `partial`; renderer-control slice интегрирован в `main`, image/zoom fix локально
+  проверен в отдельной ветке.
+- Branch: `fix/fs-021-image-contour-and-zoom`; merge/push не выполнялись.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -29,8 +30,10 @@
 3. [completed] Кэшировать static paths и static bounds по изменению curve/reconstruction/selection;
    перейти на повторно используемый scene-viewport pass.
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
-5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-6. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+5. [completed] Для desktop image source включить default dark-ink/light-background preprocessing,
+   добавить explicit reverse-polarity opt-out, bounded canvas zoom/reset и component regressions.
+6. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
+7. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
    подтверждён; review P2 для `cancelled` status и CLI persistence исправлены. Accessibility-only
    fallback подтвердил actual window hierarchy/keyboard controls; lingering job после bounded terminate
    безопасно retained до finish. Manual mouse/image/DPI/resize diagnostic не получен: screenshot capture

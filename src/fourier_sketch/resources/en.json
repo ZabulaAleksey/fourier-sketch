@@ -233,6 +233,7 @@
   "desktop.source.instructions": "Draw a freehand stroke, or choose a supported local PNG/JPEG.",
   "desktop.source.clear": "Clear",
   "desktop.source.choose_image": "Choose image…",
+  "desktop.source.dark_ink": "Dark drawing on light background",
   "desktop.source.dialog": "Choose image",
   "desktop.source.filter": "Images (*.png *.jpg *.jpeg)",
   "desktop.canvas.empty": "No timeline yet",
@@ -244,5 +245,7 @@
   "desktop.status.empty": "No usable contour was found.",
   "desktop.status.cancelled": "Processing was cancelled.",
   "desktop.status.invalid_control": "The selected control value is invalid.",
-  "desktop.control.cancel": "Cancel"
+  "desktop.control.cancel": "Cancel",
+  "control.zoom": "View zoom",
+  "control.reset_view": "Reset view"
 }

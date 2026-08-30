@@ -226,6 +226,9 @@ FS-021 desktop component evidence asserts no trace paint/toggle, exact `0.10..1.
 with `0.01×` steps and preserved application endpoint ledger. Remaining performance evidence records
 default/stress K, trace length, DPI/window and hardware; asserts no continuous paused redraw,
 before/after frame buckets and exact endpoint parity.
+Desktop image regression uses a dark contour on a light PNG and goes through the actual picker/worker
+path. Canvas zoom regressions cover its bounded `0.50..2.50×` presentation scale, reset button and
+persisted preference without changing timeline state.
 The offscreen component suite drives actual `FreehandCanvas` mouse callbacks and the desktop file-picker
 callback for a local PNG through their existing worker/application paths; test-local in-memory settings
 keep this evidence from writing user preferences. It does not replace manual visible Windows/DPI evidence.

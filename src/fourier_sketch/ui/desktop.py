@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from math import isfinite
 from pathlib import Path
 from time import monotonic
 from typing import cast
@@ -37,6 +38,7 @@ from fourier_sketch.application import (
     build_freehand_timeline,
 )
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D
+from fourier_sketch.imaging import ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, resolve_locale
 
 
@@ -65,6 +67,10 @@ _SPEED_MAX = 1.00
 _SPEED_STEP = 0.01
 _SPEED_SCALE = int(1 / _SPEED_STEP)
 _SPEED_SETTINGS_VERSION = 2
+_VIEW_ZOOM_MIN = 0.50
+_VIEW_ZOOM_MAX = 2.50
+_VIEW_ZOOM_SCALE = 100
+_VIEW_ZOOM_DEFAULT = 1.00
 
 
 class EpicycleCanvas(QWidget):
@@ -80,8 +86,28 @@ class EpicycleCanvas(QWidget):
         self._reconstruction_scene_path = QPainterPath()
         self._vector_lines: list[QLineF] = []
         self._circle_centers: list[tuple[float, float, float]] = []
+        self._view_zoom = _VIEW_ZOOM_DEFAULT
         self.setMinimumSize(360, 300)
         self.setAccessibleName("Epicycles canvas")
+
+    @property
+    def view_zoom(self) -> float:
+        """Return the user-selected view-only scale without touching timeline state."""
+
+        return self._view_zoom
+
+    def set_view_zoom(self, zoom: float) -> None:
+        """Set a bounded view scale; rendering remains independent from Fourier state."""
+
+        if not isfinite(zoom):
+            raise ValueError("view zoom must be finite")
+        self._view_zoom = max(_VIEW_ZOOM_MIN, min(_VIEW_ZOOM_MAX, zoom))
+        self.update()
+
+    def reset_view(self) -> None:
+        """Restore the fitted scene scale selected for a new desktop view."""
+
+        self.set_view_zoom(_VIEW_ZOOM_DEFAULT)
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
         if frame is not None:
@@ -188,7 +214,7 @@ class EpicycleCanvas(QWidget):
             return
         minimum_x, maximum_x, minimum_y, maximum_y = scene_bounds
         span = max(maximum_x - minimum_x, maximum_y - minimum_y, 1.0) * 1.15
-        scale = min(self.width(), self.height()) / span
+        scale = min(self.width(), self.height()) / span * self._view_zoom
         center_x = (minimum_x + maximum_x) / 2.0
         center_y = (minimum_y + maximum_y) / 2.0
         scale = max(scale, 1e-12)
@@ -335,9 +361,13 @@ class DesktopWindow(QMainWindow):
         clear.clicked.connect(self._source.reset)
         image = QPushButton(self._translator.text("desktop.source.choose_image"))
         image.clicked.connect(self._choose_image)
+        self._dark_ink = QCheckBox(self._translator.text("desktop.source.dark_ink"))
+        self._dark_ink.setChecked(True)
+        self._dark_ink.setAccessibleName("Dark drawing on light background")
         buttons.addWidget(clear)
         buttons.addWidget(image)
         source_layout.addLayout(buttons)
+        source_layout.addWidget(self._dark_ink)
         self._pages.addWidget(source_page)
         layout.addWidget(self._pages, 1)
         center = QVBoxLayout()
@@ -360,6 +390,7 @@ class DesktopWindow(QMainWindow):
         options = QFormLayout()
         self._harmonics = QSlider(Qt.Orientation.Horizontal)
         self._speed = QSlider(Qt.Orientation.Horizontal)
+        self._zoom = QSlider(Qt.Orientation.Horizontal)
         self._speed.setRange(
             int(_SPEED_MIN * _SPEED_SCALE),
             int(_SPEED_MAX * _SPEED_SCALE),
@@ -367,14 +398,31 @@ class DesktopWindow(QMainWindow):
         self._speed.setSingleStep(1)
         self._speed.setPageStep(5)
         self._speed.setValue(int(_SPEED_MIN * _SPEED_SCALE))
+        self._zoom.setRange(
+            int(_VIEW_ZOOM_MIN * _VIEW_ZOOM_SCALE),
+            int(_VIEW_ZOOM_MAX * _VIEW_ZOOM_SCALE),
+        )
+        self._zoom.setSingleStep(5)
+        self._zoom.setPageStep(25)
+        self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
         self._harmonics.valueChanged.connect(
             lambda value: self._timeline_action("harmonics", value)
         )
         self._speed.valueChanged.connect(
             lambda value: self._timeline_action("speed", value / _SPEED_SCALE)
         )
+        self._zoom.valueChanged.connect(
+            lambda value: self._canvas.set_view_zoom(value / _VIEW_ZOOM_SCALE)
+        )
         options.addRow(self._translator.text("control.harmonics"), self._harmonics)
         options.addRow(self._translator.text("control.speed"), self._speed)
+        reset_view = QPushButton(self._translator.text("control.reset_view"))
+        reset_view.setAccessibleName("Reset canvas view")
+        reset_view.clicked.connect(
+            lambda: self._zoom.setValue(int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE))
+        )
+        options.addRow(self._translator.text("control.zoom"), self._zoom)
+        options.addRow(reset_view)
         for field in ("circles", "vectors", "endpoint", "original", "reconstruction"):
             toggle = QCheckBox(self._translator.text(f"control.{field}"))
             toggle.setChecked(True)
@@ -412,7 +460,11 @@ class DesktopWindow(QMainWindow):
         )
         if not name:
             return
-        generation = self._image.begin(ImageMvpConfig())
+        generation = self._image.begin(
+            ImageMvpConfig(
+                preprocessing=ImagePreprocessingOptions(invert=self._dark_ink.isChecked())
+            )
+        )
         self._set_status(self._translator.text("desktop.status.processing"))
         self._start_job(lambda: self._image.process(generation, Path(name)), self._apply_image)
 
@@ -607,6 +659,12 @@ class DesktopWindow(QMainWindow):
             else self._speed.minimum()
         )
         control_harmonics = cast(int, self._settings.value("controls/harmonics", 1, int))
+        view_zoom = cast(
+            int,
+            self._settings.value(
+                "controls/view_zoom", int(_VIEW_ZOOM_DEFAULT * _VIEW_ZOOM_SCALE), int
+            ),
+        )
         self.resize(
             window_width,
             window_height,
@@ -629,6 +687,15 @@ class DesktopWindow(QMainWindow):
                 ),
             )
         )
+        self._zoom.setValue(
+            max(
+                self._zoom.minimum(),
+                min(
+                    self._zoom.maximum(),
+                    view_zoom,
+                ),
+            )
+        )
 
     def _save_settings(self) -> None:
         self._settings.setValue("window/width", self.width())
@@ -636,6 +703,7 @@ class DesktopWindow(QMainWindow):
         self._settings.setValue("controls/speed_schema", _SPEED_SETTINGS_VERSION)
         self._settings.setValue("controls/speed", self._speed.value())
         self._settings.setValue("controls/harmonics", self._harmonics.value())
+        self._settings.setValue("controls/view_zoom", self._zoom.value())
 
 
 def run_desktop(*, locale: str | None = None) -> int:
