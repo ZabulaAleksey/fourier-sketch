@@ -9,7 +9,7 @@ component callbacks и синхронизировать контракты по�
 
 - Stage ID: `FS-021`
 - Lifecycle: `partial`; renderer-control slice завершён и локально интегрирован в `main`.
-- Branch: `feature/fs-021-desktop-e2e-gates`; предыдущий renderer-control delta уже integrated in `main`.
+- Branch: `main`; desktop E2E and renderer-control deltas integrated and pushed.
 - DAG: `FS-013 + FS-018 + FS-020 → FS-021`; prerequisites completed locally.
 - Contract: UI dispatches existing use cases; optimization preserves actual endpoint history and
   begins with measured QPainter improvements before any QML/GPU decision.
@@ -36,4 +36,4 @@ component callbacks и синхронизировать контракты по�
 
 ## Handoff
 
-После synchronization commit остановиться на feature branch и ожидать отдельного разрешения на merge.
+После MDP остановиться на `main` и ожидать отдельной команды пользователя до следующего FS-021 slice.

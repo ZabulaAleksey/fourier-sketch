@@ -4,17 +4,15 @@
 
 - Last completed Stage ID: `FS-020`; validated and committed locally at `5895315`.
 - Active Stage ID: `FS-021`, lifecycle `partial`.
-- Branch: `feature/fs-021-desktop-e2e-gates`; renderer-control delta remains integrated in `main`.
-- Integration: implementation `0faf8fc` and previous evidence updates are present in `main` and pushed
-  to `origin`; current desktop E2E/doc slice is locally validated on the feature branch. PR/release/
-  deployment were not performed.
+- Branch: `main`; renderer-control and desktop E2E deltas are integrated.
+- Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
+  and pushed to `origin`. PR/release/deployment were not performed.
 - Blockers: нет.
 
 ## FS-021 progress
 
-- PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and the
-  renderer-control checks are implemented, committed, merged, and pushed. The newer source-workflow
-  component slice is tracked separately as current feature-branch work until its integration completes.
+- PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls, renderer-control
+  checks and source-workflow component slice are implemented, committed, merged, and pushed.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
 - Offscreen desktop component path теперь вызывает реальные mouse callbacks freehand canvas и file-picker
   callback для локального PNG: оба проходят через существующие application/worker boundaries до
