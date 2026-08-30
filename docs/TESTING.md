@@ -222,7 +222,7 @@ FS-020 acceptance проверяет constant/impulse/sinusoid bins, generated r
 types/convention metadata, low/high/selected masks, asymmetric complex rejection, pre-allocation
 resource failure, safe local-image integration, atomic component PNG и live/bidi-safe CLI.
 
-FS-021 desktop component evidence asserts no trace paint/toggle, exact `0.10..1.00×` speed mapping
+FS-021 desktop component evidence asserts no trace paint/toggle, exact `0.01..1.00×` speed mapping
 with `0.01×` steps and preserved application endpoint ledger. Remaining performance evidence records
 default/stress K, trace length, DPI/window and hardware; asserts no continuous paused redraw,
 before/after frame buckets and exact endpoint parity.
@@ -231,12 +231,15 @@ path. Canvas zoom regressions cover its numerically bounded near-unrestricted `0
 presentation scale, reset button and
 persisted preference without changing timeline state.
 Freehand component regressions assert the screen-to-Cartesian Y conversion used by the renderer;
-viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, then require reset
-to restore both the fitted zoom and zero pan.
+viewport interaction regressions drive an actual `QWheelEvent` and left-button drag, require all zoom
+inputs to preserve pan, and require reset/newly accepted curve to restore `1.00×` and zero pan. A
+freehand baseline regression verifies that the source-field and epicycle-field coordinate extents map
+proportionally instead of fitting the curve's own bounds. `Original` control regressions require
+disabled/unchecked empty state and exact checked-to-layer visibility synchronization for a ready frame.
 The source center maps to `(0, 0)` and round-trips through its screen transform. Wheel zoom updates the
 slider to the same scale. Rainbow regressions use several harmonics, require stable colors by selection
 position as K grows, and require each vector/circle pair to share its color. Touch regressions exercise
-the isolated viewport-gesture calculation for one-finger pan, bounded pinch zoom anchored at its center,
+the isolated viewport-gesture calculation for one-finger pan and bounded fixed-center pinch zoom,
 reset and presentation-state isolation; the offscreen Qt runtime is not evidence that a physical touch
 device delivered native `QTouchEvent` sequences. The user-confirmed manual Windows checklist supplies
 the physical-touch, visible DPI and resize evidence separately. Cancel is disabled without a job then

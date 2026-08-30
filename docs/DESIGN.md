@@ -7,20 +7,24 @@ freehand canvas на том же renderer path. FS-021 добавляет source
 disabled future workflow pages, mouse freehand/image selection, central resizable Epicycles canvas,
 keyboard-focusable controls, visibility checkboxes and `en`/pseudo resources. Desktop показывает
 готовый contour и moving endpoint без дублирующего persistent trace-шлейфа. Speed ограничен
-`0.10..1.00×` с шагом `0.01×`. Image work runs in a single worker; cancel publishes a stable state
+`0.01..1.00×` с шагом `0.01×`. Image work runs in a single worker; cancel publishes a stable state
 and no partial frame. Image picker defaults to a dark drawing on a light background (with an explicit
 reverse-polarity opt-out), so a light image background cannot become the selected outer contour.
-The canvas has presentation-only near-unrestricted `0.01..100.00×` zoom, persisted with desktop preferences, and a reset
-to its `1.00×` fitted view. The mouse wheel zooms the canvas and left-button drag pans it; reset also
-clears the pan. Freehand screen coordinates are converted to Cartesian Y before building a timeline,
+The canvas has presentation-only near-unrestricted `0.01..100.00×` zoom and resets every newly
+accepted curve to `1.00×` with zero pan. For freehand input this baseline preserves the curve's
+relative position and size inside the original drawing field instead of stretching its bounds to fill
+the epicycle viewport. Wheel, slider and pinch scale around the fixed viewport center without changing
+pan; left-button drag and one-finger touch remain the explicit pan actions. Freehand screen coordinates
+are converted to Cartesian Y before building a timeline,
 so the contour has the same vertical orientation as the input stroke. The freehand field visual center
 is Cartesian origin `O`, the head-to-tail chain start (including the stationary DC vector). Wheel zoom
 and the slider stay synchronized. On touchscreen laptops, one-finger touch pans the epicycle viewport
-and a two-finger pinch zooms around the pinch center; pinch uses the same bounded zoom value as wheel
+and a two-finger pinch zooms around the fixed viewport center; pinch uses the same bounded zoom value as wheel
 and slider. Each vector and its circle receives the same deterministic rainbow color by selection order,
 and an existing selection position keeps its color when K grows; this is presentation-only. Reset clears
-mouse/touch pan and returns every zoom input to `1.00×`. Cancel is disabled until a background conversion
-job exists.
+mouse/touch pan and returns every zoom input to `1.00×`. `Original` is disabled/unchecked without a
+ready curve and thereafter exactly mirrors whether the original curve layer is visible. Cancel is
+disabled until a background conversion job exists.
 FS-022 enables an EXPORT page after a timeline is ready. It offers current Curve JSON/CSV, current
 ordered coefficient-selection JSON/CSV, reconstruction/spectrum PNG and bounded GIF. Frame count and
 duration are explicit; progress/cancel use the existing worker lifecycle. MP4 remains visible but
@@ -236,8 +240,8 @@ Canvas contract:
 - canvas сохраняет aspect ratio curve, имеет fit/reset view и numerically bounded near-unrestricted
   `0.01..100.00×` user zoom,
   который не меняет curve/chain/timeline state; wheel zoom, touchscreen pinch и slider используют одно
-  синхронизированное значение, LMB drag и one-finger touch меняют только viewport, pinch удерживает
-  выбранный центр, а reset возвращает zoom/pan fit baseline;
+  синхронизированное значение и не меняют pan, LMB drag и one-finger touch меняют только viewport,
+  а reset возвращает zoom/pan к fixed-center `1.00×` baseline;
 - typography, color tokens и spacing утверждаются при первом UI implementation на основе
   component evidence, не выдумываются bootstrap-документом;
 - color не единственный signal; selected/failure/paused states имеют icon/text/shape;

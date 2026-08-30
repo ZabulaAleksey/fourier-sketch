@@ -29,15 +29,22 @@
 
 ## FS-021 progress
 
+- Latest maintenance delta uses fixed-center zoom for wheel/slider/pinch without implicit pan, resets
+  every accepted freehand curve to `1.00×`/zero pan, and maps its source-field-relative coordinate
+  extent instead of fitting its own bounds. `Original` is disabled/unchecked without a ready frame
+  and exactly mirrors `frame.visibility.original` thereafter. Desktop speed is `0.01..1.00×` in
+  `0.01×` steps. Desktop component suite: `24 passed`; full suite: `558 passed in 110.18s`; frozen
+  sync, Ruff, strict mypy, diff and overlay PASS. Independent read-only review: `GO`; its full-suite
+  rerun reached `558 passed in 152.90s` with no P0/P1/P2 findings.
 - Vector/circle colors now use a stable deterministic rainbow palette by selection position: existing
   colors remain unchanged when K grows and each pair uses the same color. `EpicycleCanvas` accepts
-  one-finger touch pan and two-finger anchored pinch through the same `0.01..100.00×` zoom synchronized
+  one-finger touch pan and two-finger fixed-center pinch through the same `0.01..100.00×` zoom synchronized
   with wheel/slider; reset clears zoom/pan/active gesture state. Component logic verifies presentation-only
   isolation from frame/timeline/trace/animation. Targeted desktop suite: `19 passed`; full repository:
   `543 passed in 130.51s`; Ruff, strict mypy, frozen sync and overlay validator PASS locally. Native
   physical-touch delivery and visible Windows GUI/DPI/resize remain outside automated evidence and
   were confirmed manually by the user.
-- Independent read-only re-review: `GO`; the fractional pinch-anchor correction has no remaining
+- Independent read-only re-review: `GO`; the earlier fractional pinch-anchor correction had no remaining
   P0/P1/P2 finding and no scope creep into FS-022, FS-023, FS-031 or FS-032 was found.
 - In normal `1200×760` desktop geometry the freehand field is vertically centered with the epicycle
   canvas. The instruction now wraps rather than forcing the source column wider than the renderer.
@@ -46,7 +53,7 @@
   full repository regression, Ruff and strict mypy PASS locally. This delta is integrated in `main`.
 - Freehand source now converts screen Y to Cartesian Y before timeline construction, while its source
   canvas maps it back for display; this preserves the vertical orientation of the user stroke in the
-  epicycle canvas. The canvas supports pointer-centered wheel zoom and LMB-drag pan; reset restores
+  epicycle canvas. The canvas supports fixed-center wheel zoom and LMB-drag pan; reset restores
   `1.00×` and zero pan. Component evidence drives both event paths. This delta is integrated in `main`.
 - Desktop image source now defaults to dark-ink/light-background preprocessing and exposes an explicit
   reverse-polarity opt-out. This prevents a light source background from becoming the dominant outer
@@ -74,7 +81,7 @@
   Endpoint parity and deterministic replay were verified by double-run equality check.
 - Authorized renderer-control delta removes persistent trace from desktop bounds/paint/toggle while
   retaining the application ledger; desktop speed is capped for smoother interaction at
-  `0.10..1.00×`, currently mapped with `0.01×` resolution.
+  `0.01..1.00×`, currently mapped with `0.01×` resolution.
 - Comparable K=25/600-frame offscreen paint improved `≈3.66→2.00 ms/frame`; retained ledger ended
   at 601 points. Targeted component/Ruff/mypy/overlay PASS.
 - FS-021 static scene cache is now implemented: original/reconstruction geometry and scene bounds are
@@ -141,7 +148,8 @@
 
 ## Следующее разумное действие
 
-Создать атомарный FS-022 commit и остановиться. FS-023, FS-031 и FS-032 не начинать заодно.
+Создать атомарный maintenance commit, выполнить разрешённый local merge и остановиться. FS-023,
+FS-031 и FS-032 не начинать заодно.
 
 ## Синхронизация документации
 

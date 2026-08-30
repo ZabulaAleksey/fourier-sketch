@@ -86,7 +86,7 @@ class _Job(QThread):
             self.failed.emit("desktop.error.runtime")
 
 
-_SPEED_MIN = 0.10
+_SPEED_MIN = 0.01
 _SPEED_MAX = 1.00
 _SPEED_STEP = 0.01
 _SPEED_SCALE = int(1 / _SPEED_STEP)
@@ -129,37 +129,14 @@ def _bounded_view_zoom(zoom: float) -> float:
     return round(bounded * _VIEW_ZOOM_SCALE) / _VIEW_ZOOM_SCALE
 
 
-def _zoom_about_point(
-    *,
-    zoom: float,
-    pan: tuple[float, float],
-    anchor: tuple[float, float],
-    viewport_center: tuple[float, float],
-    requested_zoom: float,
-) -> tuple[float, tuple[float, float]]:
-    """Scale a presentation viewport while preserving the scene point at ``anchor``."""
-
-    next_zoom = _bounded_view_zoom(requested_zoom)
-    if next_zoom == zoom:
-        return zoom, pan
-    scale_ratio = next_zoom / zoom
-    relative_x = anchor[0] - viewport_center[0] - pan[0]
-    relative_y = anchor[1] - viewport_center[1] - pan[1]
-    return next_zoom, (
-        pan[0] + relative_x * (1.0 - scale_ratio),
-        pan[1] + relative_y * (1.0 - scale_ratio),
-    )
-
-
 def _gesture_view_transform(
     *,
     zoom: float,
     pan: tuple[float, float],
     previous_points: tuple[tuple[float, float], ...],
     current_points: tuple[tuple[float, float], ...],
-    viewport_center: tuple[float, float],
 ) -> tuple[float, tuple[float, float]]:
-    """Compute one-finger pan or two-finger anchored pinch without product state."""
+    """Compute one-finger pan or fixed-center two-finger zoom without product state."""
 
     if len(previous_points) != len(current_points):
         return zoom, pan
@@ -171,14 +148,6 @@ def _gesture_view_transform(
     if len(current_points) != 2:
         return zoom, pan
 
-    previous_center = (
-        (previous_points[0][0] + previous_points[1][0]) / 2.0,
-        (previous_points[0][1] + previous_points[1][1]) / 2.0,
-    )
-    current_center = (
-        (current_points[0][0] + current_points[1][0]) / 2.0,
-        (current_points[0][1] + current_points[1][1]) / 2.0,
-    )
     previous_dx = previous_points[1][0] - previous_points[0][0]
     previous_dy = previous_points[1][1] - previous_points[0][1]
     current_dx = current_points[1][0] - current_points[0][0]
@@ -186,19 +155,9 @@ def _gesture_view_transform(
     previous_distance = (previous_dx * previous_dx + previous_dy * previous_dy) ** 0.5
     current_distance = (current_dx * current_dx + current_dy * current_dy) ** 0.5
 
-    translated_pan = (
-        pan[0] + current_center[0] - previous_center[0],
-        pan[1] + current_center[1] - previous_center[1],
-    )
     if previous_distance <= 1e-9:
-        return zoom, translated_pan
-    return _zoom_about_point(
-        zoom=zoom,
-        pan=translated_pan,
-        anchor=current_center,
-        viewport_center=viewport_center,
-        requested_zoom=zoom * current_distance / previous_distance,
-    )
+        return zoom, pan
+    return _bounded_view_zoom(zoom * current_distance / previous_distance), pan
 
 
 class EpicycleCanvas(QWidget):
@@ -212,6 +171,7 @@ class EpicycleCanvas(QWidget):
         self._frame: EpicycleFrame | None = None
         self._frame_cache_key: tuple[int, int, tuple[int, ...]] | None = None
         self._scene_bounds: tuple[float, float, float, float] | None = None
+        self._reference_view_size: tuple[float, float] | None = None
         self._original_scene_path = QPainterPath()
         self._reconstruction_scene_path = QPainterPath()
         self._vector_lines: list[QLineF] = []
@@ -248,8 +208,22 @@ class EpicycleCanvas(QWidget):
         self.update()
         self.view_zoom_changed.emit(self._view_zoom)
 
+    def set_reference_view_size(self, size: tuple[float, float] | None) -> None:
+        """Set the source-field extent represented by the fixed-center 1.00x baseline."""
+
+        if size is None:
+            self._reference_view_size = None
+        else:
+            width, height = size
+            if not isfinite(width) or not isfinite(height) or width <= 0.0 or height <= 0.0:
+                raise DomainValidationError(
+                    "reference view size must contain positive finite values"
+                )
+            self._reference_view_size = (float(width), float(height))
+        self.update()
+
     def reset_view(self) -> None:
-        """Restore the fitted scene scale selected for a new desktop view."""
+        """Restore the fixed-center 1.00x baseline selected for a new desktop view."""
 
         zoom_changed = self._view_zoom != _VIEW_ZOOM_DEFAULT
         self._view_zoom = _VIEW_ZOOM_DEFAULT
@@ -303,7 +277,6 @@ class EpicycleCanvas(QWidget):
             pan=self.view_pan,
             previous_points=tuple(previous[point_id] for point_id in point_ids),
             current_points=tuple(current[point_id] for point_id in point_ids),
-            viewport_center=(self.width() / 2.0, self.height() / 2.0),
         )
         zoom_changed = next_zoom != self._view_zoom
         pan_changed = next_pan != self.view_pan
@@ -346,18 +319,7 @@ class EpicycleCanvas(QWidget):
             event.ignore()
             return
         zoom_factor = 1.15 ** (wheel_delta / 120.0)
-        next_zoom, next_pan = _zoom_about_point(
-            zoom=self._view_zoom,
-            pan=self.view_pan,
-            anchor=(event.position().x(), event.position().y()),
-            viewport_center=(self.width() / 2.0, self.height() / 2.0),
-            requested_zoom=self._view_zoom * zoom_factor,
-        )
-        if next_zoom != self._view_zoom:
-            self._view_zoom = next_zoom
-            self._view_pan = QPointF(*next_pan)
-            self.update()
-            self.view_zoom_changed.emit(self._view_zoom)
+        self.set_view_zoom(self._view_zoom * zoom_factor)
         event.accept()
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
@@ -468,12 +430,7 @@ class EpicycleCanvas(QWidget):
         scene_bounds = self._scene_bounds
         if scene_bounds is None:
             return
-        minimum_x, maximum_x, minimum_y, maximum_y = scene_bounds
-        span = max(maximum_x - minimum_x, maximum_y - minimum_y, 1.0) * 1.15
-        scale = min(self.width(), self.height()) / span * self._view_zoom
-        center_x = (minimum_x + maximum_x) / 2.0
-        center_y = (minimum_y + maximum_y) / 2.0
-        scale = max(scale, 1e-12)
+        scale, center_x, center_y = self._scene_transform()
         line_scale = 1.0 / scale
 
         def map_point(point: Point2D) -> QPointF:
@@ -518,6 +475,28 @@ class EpicycleCanvas(QWidget):
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawEllipse(map_point(frame.chain.endpoint), 4.0 * line_scale, 4.0 * line_scale)
         painter.restore()
+
+    def _scene_transform(self) -> tuple[float, float, float]:
+        """Return device scale and fixed scene center for the current presentation baseline."""
+
+        scene_bounds = self._scene_bounds
+        if scene_bounds is None:
+            return (max(self._view_zoom, 1e-12), 0.0, 0.0)
+        reference_size = self._reference_view_size
+        if reference_size is not None:
+            base_scale = min(
+                self.width() / reference_size[0],
+                self.height() / reference_size[1],
+            )
+            return (max(base_scale * self._view_zoom, 1e-12), 0.0, 0.0)
+        minimum_x, maximum_x, minimum_y, maximum_y = scene_bounds
+        span = max(maximum_x - minimum_x, maximum_y - minimum_y, 1.0) * 1.15
+        scale = min(self.width(), self.height()) / span * self._view_zoom
+        return (
+            max(scale, 1e-12),
+            (minimum_x + maximum_x) / 2.0,
+            (minimum_y + maximum_y) / 2.0,
+        )
 
 
 class FreehandCanvas(QWidget):
@@ -599,6 +578,7 @@ class DesktopWindow(QMainWindow):
         self._export_frames: QSpinBox
         self._export_duration: QSpinBox
         self._export_action: QPushButton
+        self._visibility_toggles: dict[str, QCheckBox] = {}
         self._status = QLabel()
         self._source = FreehandCanvas()
         self._timer = QTimer(self)
@@ -741,10 +721,12 @@ class DesktopWindow(QMainWindow):
         options.addRow(reset_view)
         for field in ("circles", "vectors", "endpoint", "original", "reconstruction"):
             toggle = QCheckBox(self._translator.text(f"control.{field}"))
-            toggle.setChecked(True)
+            toggle.setChecked(field != "original")
+            toggle.setEnabled(False)
             toggle.toggled.connect(
                 lambda checked, selected=field: self._set_visibility(selected, checked)
             )
+            self._visibility_toggles[field] = toggle
             options.addRow(toggle)
         center.addLayout(options)
         layout.addLayout(center, 2)
@@ -761,12 +743,19 @@ class DesktopWindow(QMainWindow):
         points = tuple(getattr(snapshot, "points", ()))
         if not points:
             return
+        reference_view_size = (float(self._source.width()), float(self._source.height()))
 
         def operation() -> EpicycleTimeline:
             curve = Curve(points, closed=False)
             return build_freehand_timeline(curve)
 
-        self._start_job(operation, self._apply_timeline)
+        self._start_job(
+            operation,
+            lambda result: self._apply_timeline(
+                result,
+                reference_view_size=reference_view_size,
+            ),
+        )
 
     def _choose_image(self) -> None:
         name, _ = QFileDialog.getOpenFileName(
@@ -870,11 +859,23 @@ class DesktopWindow(QMainWindow):
                 self._translator.text(snapshot.failure_key or "image_mvp.error.runtime")
             )
 
-    def _apply_timeline(self, timeline: object) -> None:
+    def _apply_timeline(
+        self,
+        timeline: object,
+        *,
+        reference_view_size: tuple[float, float] | None = None,
+    ) -> None:
         if not isinstance(timeline, EpicycleTimeline):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._timeline = timeline
+        self._canvas.set_reference_view_size(reference_view_size)
+        self._canvas.reset_view()
+        for toggle in self._visibility_toggles.values():
+            blocked = toggle.blockSignals(True)
+            toggle.setChecked(True)
+            toggle.setEnabled(True)
+            toggle.blockSignals(blocked)
         self._export_nav.setEnabled(True)
         self._export_format_changed()
         speed = self._speed.value() / _SPEED_SCALE
@@ -1021,6 +1022,11 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._canvas.set_frame(frame)
+        for field, toggle in self._visibility_toggles.items():
+            blocked = toggle.blockSignals(True)
+            toggle.setChecked(bool(getattr(frame.visibility, field)))
+            toggle.setEnabled(True)
+            toggle.blockSignals(blocked)
         self._harmonics.setRange(1, frame.selection.sample_count)
         self._harmonics.setValue(frame.selection.coefficient_count)
         self._set_status(

@@ -267,26 +267,73 @@ def test_desktop_freehand_screen_y_is_converted_to_cartesian_y() -> None:
     window.close()
 
 
-def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
+def test_new_freehand_curve_resets_to_source_relative_100_percent_and_syncs_original() -> None:
+    _application()
+    window = DesktopWindow()
+    source = window._source
+    canvas = window._canvas
+    source.resize(600, 400)
+    canvas.resize(300, 200)
+    original = window._visibility_toggles["original"]
+
+    assert not original.isEnabled()
+    assert not original.isChecked()
+
+    canvas.set_view_zoom(2.5)
+    canvas._apply_touch_points({1: (50.0, 50.0)}, {1: (70.0, 40.0)})
+    source.mousePressEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonPress,
+            QPointF(150.0, 100.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    source.mouseMoveEvent(
+        _mouse_event(
+            QEvent.Type.MouseMove,
+            QPointF(300.0, 200.0),
+            button=Qt.MouseButton.NoButton,
+            buttons=Qt.MouseButton.LeftButton,
+        )
+    )
+    source.mouseReleaseEvent(
+        _mouse_event(
+            QEvent.Type.MouseButtonRelease,
+            QPointF(450.0, 300.0),
+            button=Qt.MouseButton.LeftButton,
+            buttons=Qt.MouseButton.NoButton,
+        )
+    )
+    _wait_for_timeline(window)
+
+    assert canvas.view_zoom == 1.0
+    assert canvas.view_pan == (0.0, 0.0)
+    scale, center_x, center_y = canvas._scene_transform()
+    assert scale == pytest.approx(
+        min(canvas.width() / source.width(), canvas.height() / source.height())
+    )
+    assert (center_x, center_y) == (0.0, 0.0)
+    assert original.isEnabled()
+    assert original.isChecked()
+    assert canvas._frame is not None and canvas._frame.visibility.original
+
+    original.click()
+    assert not original.isChecked()
+    assert canvas._frame is not None and not canvas._frame.visibility.original
+
+    window._apply_timeline(
+        build_freehand_timeline(Curve((Point2D(-1.0, 0.0), Point2D(1.0, 0.0)), closed=False))
+    )
+    assert original.isChecked()
+    assert canvas._frame is not None and canvas._frame.visibility.original
+    window.close()
+
+
+def test_desktop_canvas_zoom_preserves_pan_and_left_drag_reset_view() -> None:
     _application()
     window = DesktopWindow()
     canvas = window._canvas
-
-    initial_pan = canvas.view_pan
-    canvas.wheelEvent(
-        QWheelEvent(
-            QPointF(120.0, 100.0),
-            QPointF(120.0, 100.0),
-            QPoint(0, 0),
-            QPoint(0, 120),
-            Qt.MouseButton.NoButton,
-            Qt.KeyboardModifier.NoModifier,
-            Qt.ScrollPhase.NoScrollPhase,
-            False,
-        )
-    )
-    assert canvas.view_zoom > 1.0
-    assert window._zoom.value() == round(canvas.view_zoom * 100)
 
     canvas.mousePressEvent(
         _mouse_event(
@@ -312,7 +359,28 @@ def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
             buttons=Qt.MouseButton.NoButton,
         )
     )
-    assert canvas.view_pan != initial_pan
+    panned = canvas.view_pan
+    assert panned == (35.0, -18.0)
+
+    canvas.wheelEvent(
+        QWheelEvent(
+            QPointF(120.0, 100.0),
+            QPointF(120.0, 100.0),
+            QPoint(0, 0),
+            QPoint(0, 120),
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+    )
+    assert canvas.view_zoom > 1.0
+    assert window._zoom.value() == round(canvas.view_zoom * 100)
+    assert canvas.view_pan == panned
+
+    window._zoom.setValue(250)
+    assert canvas.view_zoom == 2.5
+    assert canvas.view_pan == panned
 
     canvas.reset_view()
     assert canvas.view_zoom == 1.0
@@ -320,54 +388,35 @@ def test_desktop_canvas_wheel_zoom_and_left_drag_pan_reset_view() -> None:
     window.close()
 
 
-def test_touch_gesture_math_pans_and_keeps_pinch_center_anchored() -> None:
+def test_touch_gesture_math_pans_with_one_finger_and_keeps_pinch_center_fixed() -> None:
     panned_zoom, panned = _gesture_view_transform(
         zoom=1.0,
         pan=(4.0, -3.0),
         previous_points=((20.0, 30.0),),
         current_points=((32.0, 25.0),),
-        viewport_center=(200.0, 150.0),
     )
     assert panned_zoom == 1.0
     assert panned == (16.0, -8.0)
 
     old_zoom = 2.0
     old_pan = (10.0, -5.0)
-    pinch_center = (120.0, 100.0)
     next_zoom, next_pan = _gesture_view_transform(
         zoom=old_zoom,
         pan=old_pan,
         previous_points=((110.0, 100.0), (130.0, 100.0)),
         current_points=((100.0, 100.0), (140.0, 100.0)),
-        viewport_center=(200.0, 150.0),
-    )
-    scene_point = (
-        (pinch_center[0] - 200.0 - old_pan[0]) / old_zoom,
-        (pinch_center[1] - 150.0 - old_pan[1]) / old_zoom,
     )
     assert next_zoom == 4.0
-    assert 200.0 + next_pan[0] + next_zoom * scene_point[0] == pytest.approx(pinch_center[0])
-    assert 150.0 + next_pan[1] + next_zoom * scene_point[1] == pytest.approx(pinch_center[1])
+    assert next_pan == old_pan
 
-    fractional_center = (110.0, 100.0)
     fractional_zoom, fractional_pan = _gesture_view_transform(
         zoom=1.0,
         pan=(0.0, 0.0),
         previous_points=((100.0, 100.0), (120.0, 100.0)),
         current_points=((98.77, 100.0), (121.23, 100.0)),
-        viewport_center=(200.0, 150.0),
-    )
-    fractional_scene_point = (
-        fractional_center[0] - 200.0,
-        fractional_center[1] - 150.0,
     )
     assert fractional_zoom == 1.12
-    assert 200.0 + fractional_pan[0] + fractional_zoom * fractional_scene_point[0] == pytest.approx(
-        fractional_center[0]
-    )
-    assert 150.0 + fractional_pan[1] + fractional_zoom * fractional_scene_point[1] == pytest.approx(
-        fractional_center[1]
-    )
+    assert fractional_pan == (0.0, 0.0)
 
 
 def test_desktop_touch_pan_and_pinch_are_presentation_only_and_resettable() -> None:
@@ -403,6 +452,7 @@ def test_desktop_touch_pan_and_pinch_are_presentation_only_and_resettable() -> N
         {1: (80.0, 100.0), 2: (120.0, 100.0)},
     )
     assert canvas.view_zoom == 2.0
+    assert canvas.view_pan == (25.0, -15.0)
     assert window._zoom.value() == 200
     assert canvas._frame is frame_before
     assert timeline.snapshot() == timeline_before
@@ -498,15 +548,15 @@ def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enab
     assert window._play.isEnabled()
     assert not window._cancel.isEnabled()
     assert window._harmonics.minimum() == 1
-    assert window._speed.minimum() == 10
+    assert window._speed.minimum() == 1
     assert window._speed.maximum() == 100
     assert window._speed.singleStep() == 1
     window._speed.setValue(42)
     assert window._canvas._frame.speed == 0.42
     window._speed.setValue(window._speed.minimum())
     assert window._speed.value() == window._speed.minimum()
-    assert window._speed.value() / 100.0 == 0.10
-    assert window._canvas._frame.speed == 0.10
+    assert window._speed.value() / 100.0 == 0.01
+    assert window._canvas._frame.speed == 0.01
     assert not window._timer.isActive()
     assert not any(
         "trace" in checkbox.text().lower() for checkbox in window.findChildren(QCheckBox)

@@ -923,6 +923,11 @@ completion claim. Evidence records environment/branch and caveats.
   toggle; application ledger remains intact. Comparable K=25/600-frame paint improved
   ≈`3.66→2.00 ms/frame`. Reviewer P1 fixed: timer is inactive while paused and runs only after
   Play; final full suite `527 passed`; independent re-review `GO`. Terminal gates are closed.
+- Current fixed-center/view-alignment maintenance evidence: newly accepted freehand curves reset to
+  `1.00×`/zero pan and preserve their source-field-relative geometry; wheel/slider/pinch keep pan
+  unchanged, `Original` mirrors ready-layer visibility, and desktop speed starts at `0.01×`.
+  Desktop component suite `24 passed`; full repository suite `558 passed`; frozen sync, Ruff, strict
+  mypy, diff and overlay PASS; independent read-only review `GO`.
 
 ### Scope / non-goals / invariants
 
@@ -944,7 +949,7 @@ completion claim. Evidence records environment/branch and caveats.
 4. Remove persistent trace from the desktop paint path and its toggle while retaining the bounded
    application ledger for parity/export; bounds and paint work must not scan `frame.trace`.
 5. Batch dynamic geometry and avoid one Python/Qt object allocation per circle/vector where possible.
-6. Map desktop speed slider exactly to `0.10..1.00×` in `0.01×` increments and test endpoints/steps.
+6. Map desktop speed slider exactly to `0.01..1.00×` in `0.01×` increments and test endpoints/steps.
 7. Re-profile and prove endpoint/frame parity. Only if declared target remains unmet, run a bounded
    Qt Quick/QML scene-graph spike; adopt it only with measured gain, compatibility and rollback.
 8. Do not migrate to React Native as a performance shortcut. A mobile technology decision belongs

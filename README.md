@@ -318,10 +318,13 @@ uv run python -m fourier_sketch.cli.desktop
 В окне можно нарисовать freehand stroke либо выбрать локальный PNG/JPEG. Image path использует
 существующий validated image-to-contour application flow в background worker; epicycle canvas
 показывает готовый contour, rotating vectors и moving endpoint без дублирующего trace-шлейфа.
-Desktop speed slider ограничен `0.10..1.00×` и меняется шагом `0.01×`. Application endpoint ledger
+Desktop speed slider ограничен `0.01..1.00×` и меняется шагом `0.01×`. Application endpoint ledger
 сохраняется для parity/export. Wheel, zoom slider и touchscreen pinch используют один bounded
-`0.01..100.00×` presentation zoom; LMB drag и one-finger touch перемещают только viewport, reset
-возвращает `1.00×` и нулевой pan. Vector/circle каждой harmonic pair имеют стабильный различимый
+`0.01..100.00×` presentation zoom вокруг фиксированного центра и не меняют pan; LMB drag и
+one-finger touch перемещают только viewport. Новая freehand curve сбрасывает view к `1.00×`/нулевому
+pan и сохраняет свой относительный размер и положение внутри исходного drawing field. `Original`
+disabled/unchecked без ready curve и затем точно отражает видимость исходного слоя. Vector/circle
+каждой harmonic pair имеют стабильный различимый
 rainbow color по selection order. Другие workflow pages и installer пока disabled/deferred.
 
 После построения timeline страница EXPORT позволяет сохранить current Curve и ordered selected

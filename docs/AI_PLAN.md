@@ -2,14 +2,15 @@
 
 ## Текущая цель
 
-Подготовить отдельный проверяемый slice FS-022 для data/image/animation export поверх завершённого
-desktop/application timeline, не включая packaging hardening FS-023 или optional extensions.
+Закрыть одобренный post-completion maintenance delta FS-021: fixed-center zoom, source-relative
+freehand baseline `1.00×`, synchronized `Original` visibility и desktop speed minimum `0.01×`, не
+выбирая и не начиная FS-023 или optional extensions.
 
 ## Активный stage
 
 - Stage ID: `FS-022`
-- Lifecycle: `completed`; implementation, automated checks, documentation synchronization and
-  independent read-only review PASS. Atomic commit is the final publication boundary for this record.
+- Lifecycle: FS-022 остаётся `completed`; текущая работа является совместимым maintenance delta
+  завершённого FS-021, а не новым stage или началом FS-023.
 - Prerequisite: FS-021 `completed`; automated/component evidence и user-confirmed manual visible
   Windows GUI/DPI/resize + physical-touch checklist получены.
 - Contract: export должен потреблять существующие Curve/coefficient/timeline/endpoint данные без
@@ -24,12 +25,11 @@ desktop/application timeline, не включая packaging hardening FS-023 и�
 
 ## План выполнения
 
-1. [completed] Прочитать и проверить FS-022 Stage contract, export SPEC/ADR и существующие serialization
-   boundaries; определить минимальный runnable export slice.
-2. [completed] Реализовать FS-022 строго через существующие immutable application/timeline данные.
-3. [completed] Добавить unit/integration/component/live export evidence, выполнить full quality gates,
-   independent review и Completion Documentation Synchronization Gate.
+1. [completed] Обновить принятый desktop UI contract до кода.
+2. [completed] Исправить fixed-center zoom, freehand `1.00×`, `Original` synchronization и speed minimum.
+3. [completed] Выполнить desktop/full/static/overlay gates, independent read-only review и
+   Completion Documentation Synchronization Gate.
 
 ## Handoff
 
-FS-022 завершён. Остановиться до отдельного выбора FS-023; FS-031 и FS-032 также не начинать заодно.
+Maintenance delta FS-021 проверен. FS-022 остаётся завершён; остановиться до отдельного выбора FS-023.
