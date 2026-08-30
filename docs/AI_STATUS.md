@@ -5,8 +5,8 @@
 - Last completed Stage ID: `FS-023`.
 - Active Stage ID: `FS-023`, lifecycle `completed`; automated gates PASS and independent re-review GO.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
-  `02c026b` are in local `main`.
-  No push, PR, release or deployment was performed.
+  `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
+  No PR, release or deployment was performed.
 - Scope: только mandatory FS-023 hardening; FS-024+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
@@ -174,8 +174,8 @@
 
 ## Следующее разумное действие
 
-FS-023 завершён в feature branch; остановиться до explicit merge или выбора следующего stage.
-FS-024+, FS-031 и FS-032 не начинались заодно; push/PR/merge/release/deploy не разрешены этим stage.
+FS-023 завершён, интегрирован в `main` и опубликован в `origin/main`; остановиться до выбора
+следующего stage. FS-024+, FS-031 и FS-032 не начинались заодно.
 
 ## Синхронизация документации
 

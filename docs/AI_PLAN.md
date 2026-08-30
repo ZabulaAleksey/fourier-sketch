@@ -18,9 +18,8 @@ paths: численные/resource/cancellation/platform/packaging evidence бе
 
 - `main` содержит завершённый FS-021, включая renderer-control `0faf8fc`, последующие UI commits
   `644fd82`/`7d53100`/`66ec1ef`/`7cf355d`, touch/rainbow `cb323e2` и fixed-center canvas
-  maintenance `02c026b`.
-- Push/PR/release/deployment не выполнялись; публикация `main` в `origin` остаётся отдельным
-  не выполненным Git action.
+  maintenance `02c026b`, а также завершённый FS-023 commit `a2d7a2c`.
+- `main` с FS-023 опубликован в `origin/main`. PR, release и deployment не выполнялись.
 
 ## План выполнения
 
@@ -32,5 +31,5 @@ paths: численные/resource/cancellation/platform/packaging evidence бе
 
 ## Handoff
 
-FS-023 завершён в рабочей ветке. Не начинать FS-024+, FS-031 или FS-032 заодно; push/PR/merge/
-release/deploy не выполнять без отдельного разрешения.
+FS-023 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий stage не выбран:
+не начинать FS-024+, FS-031 или FS-032 без отдельного решения пользователя.

@@ -34,8 +34,8 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 ## Текущий этап
 
-Текущий selected record `FS-023` завершён в feature branch с automated gates и independent review
-GO. Optional/mobile stages не начинались.
+Текущий selected record `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`;
+automated gates и independent review GO. Optional/mobile stages не начинались.
 
 ## Image-to-curve pipeline
 

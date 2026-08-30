@@ -1041,7 +1041,8 @@ completion claim. Evidence records environment/branch and caveats.
 - DAG: `FS-022 → FS-023`; complete desktop/export primary paths required.
 - Entry evidence: full accepted regression suite and representative data/operation inventory.
 - Current gate: prerequisite FS-022 satisfied; user explicitly selected FS-023. Implementation,
-  automated gates and independent re-review are complete on `feature/fs-023-hardening`.
+  automated gates and independent re-review are complete; commit `a2d7a2c` is integrated in `main`
+  and published to `origin/main`.
 
 ### Scope / non-goals / invariants
 
@@ -1077,9 +1078,9 @@ completion claim. Evidence records environment/branch and caveats.
   and runnable, while packaging status remains non-terminal only if installer is required by SPEC.
 - Deferred: optional educational/analysis enhancements.
 - Failure/rollback: retain known-good implementation/lockfile; optimization/package experiment
-  reverts in feature branch, never deletes user data or disables gates.
+  reverts in a dedicated recovery branch, never deletes user data or disables gates.
 - Docs: all completion-gate sources, performance/platform limits and release readiness decision.
-- Handoff: commit product milestone, do not claim released/deployed, stop.
+- Handoff: product milestone committed, integrated and published; no release/deployment claim; stop.
 
 ## FS-024 — Harmonic Inspector (Optional)
 
