@@ -21,6 +21,9 @@
   retaining the application ledger; desktop speed maps exactly to `0.10..2.00×` in `0.05×` steps.
 - Comparable K=25/600-frame offscreen paint improved `≈3.66→2.00 ms/frame`; retained ledger ended
   at 601 points. Targeted component/Ruff/mypy/overlay PASS.
+- FS-021 static scene cache is now implemented: original/reconstruction geometry and scene bounds are
+  cached until curve/reconstruction/selection changes; dynamic vectors are painted each frame.
+- Step 4 stress profile remains pending for next bounded run with current hardware/GPU tuple.
 - Reviewer P1 continuous paused redraw fixed: animation timer is inactive without/running-off
   timeline, starts on Play and stops on Pause/Restart. Targeted desktop suite is 3 PASS; final full
   repository suite after the fix is `527 passed in 161.13s`.
@@ -75,7 +78,8 @@
 
 ## Следующее разумное действие
 
-После отдельной команды продолжить FS-021 с cache static paths/bounds и повторным stress profile;
+После отдельной команды продолжить FS-021 с повторным stress profile и при необходимости bounded
+QML/QT scene-graph spike:
 FS-022 и planned Android FS-031 не начинать заодно.
 
 ## Синхронизация документации

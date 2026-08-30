@@ -63,12 +63,85 @@ class EpicycleCanvas(QWidget):
         super().__init__(parent)
         self._translator = translator
         self._frame: EpicycleFrame | None = None
+        self._frame_cache_key: tuple[int, int, tuple[int, ...]] | None = None
+        self._scene_bounds: tuple[float, float, float, float] | None = None
+        self._original_scene_path = QPainterPath()
+        self._reconstruction_scene_path = QPainterPath()
         self.setMinimumSize(360, 300)
         self.setAccessibleName("Epicycles canvas")
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
+        if frame is not None:
+            cache_key = (
+                id(frame.original),
+                id(frame.reconstruction),
+                tuple(frame.selection.frequencies),
+            )
+            if cache_key != self._frame_cache_key:
+                self._frame_cache_key = cache_key
+                total_amplitude = sum(vector.amplitude for vector in frame.chain.vectors)
+                original_points = frame.original.points + (
+                    (frame.original.start,) if frame.original.closed else ()
+                )
+                reconstruction_points = frame.reconstruction.points + (
+                    (frame.reconstruction.start,) if frame.reconstruction.closed else ()
+                )
+                self._original_scene_path, original_bounds = self._build_scene_path(original_points)
+                self._reconstruction_scene_path, reconstruction_bounds = self._build_scene_path(
+                    reconstruction_points
+                )
+                minimum_x = min(
+                    original_bounds[0],
+                    reconstruction_bounds[0],
+                    frame.chain.origin.x,
+                    frame.chain.origin.x - total_amplitude,
+                )
+                maximum_x = max(
+                    original_bounds[1],
+                    reconstruction_bounds[1],
+                    frame.chain.origin.x,
+                    frame.chain.origin.x + total_amplitude,
+                )
+                minimum_y = min(
+                    original_bounds[2],
+                    reconstruction_bounds[2],
+                    frame.chain.origin.y,
+                    frame.chain.origin.y - total_amplitude,
+                )
+                maximum_y = max(
+                    original_bounds[3],
+                    reconstruction_bounds[3],
+                    frame.chain.origin.y,
+                    frame.chain.origin.y + total_amplitude,
+                )
+                self._scene_bounds = (minimum_x, maximum_x, minimum_y, maximum_y)
+
+        if frame is None:
+            self._frame_cache_key = None
+            self._scene_bounds = None
+            self._original_scene_path = QPainterPath()
+            self._reconstruction_scene_path = QPainterPath()
         self._frame = frame
         self.update()
+
+    def _build_scene_path(
+        self, points: tuple[Point2D, ...]
+    ) -> tuple[QPainterPath, tuple[float, float, float, float]]:
+        if len(points) < 2:
+            return QPainterPath(), (0.0, 0.0, 0.0, 0.0)
+        first = points[0]
+        minimum_x = first.x
+        maximum_x = first.x
+        minimum_y = first.y
+        maximum_y = first.y
+        path = QPainterPath(QPointF(first.x, first.y))
+        for point in points[1:]:
+            path.lineTo(point.x, point.y)
+            minimum_x = min(minimum_x, point.x)
+            maximum_x = max(maximum_x, point.x)
+            minimum_y = min(minimum_y, point.y)
+            maximum_y = max(maximum_y, point.y)
+        return path, (minimum_x, maximum_x, minimum_y, maximum_y)
 
     def paintEvent(self, _event: object) -> None:
         painter = QPainter(self)
@@ -82,66 +155,56 @@ class EpicycleCanvas(QWidget):
                 self._translator.text("desktop.canvas.empty"),
             )
             return
-        # The desktop view does not render or scan the accumulated trace. Static
-        # contours plus current chain geometry are sufficient to fit the scene.
-        points = [*frame.original.points, *frame.reconstruction.points]
-        for vector in frame.chain.vectors:
-            points.extend((vector.start, vector.end))
-        minimum_x = min(point.x for point in points)
-        maximum_x = max(point.x for point in points)
-        minimum_y = min(point.y for point in points)
-        maximum_y = max(point.y for point in points)
+        scene_bounds = self._scene_bounds
+        if scene_bounds is None:
+            return
+        minimum_x, maximum_x, minimum_y, maximum_y = scene_bounds
         span = max(maximum_x - minimum_x, maximum_y - minimum_y, 1.0) * 1.15
         scale = min(self.width(), self.height()) / span
         center_x = (minimum_x + maximum_x) / 2.0
         center_y = (minimum_y + maximum_y) / 2.0
+        scale = max(scale, 1e-12)
+        line_scale = 1.0 / scale
 
         def map_point(point: Point2D) -> QPointF:
-            return QPointF(
-                self.width() / 2.0 + (point.x - center_x) * scale,
-                self.height() / 2.0 - (point.y - center_y) * scale,
-            )
+            return QPointF(point.x, point.y)
 
-        def draw_polyline(points_to_draw: tuple[Point2D, ...], color: str, width: float) -> None:
-            if len(points_to_draw) < 2:
-                return
-            path = QPainterPath(map_point(points_to_draw[0]))
-            for point in points_to_draw[1:]:
-                path.lineTo(map_point(point))
-            painter.setPen(QPen(QColor(color), width))
+        painter.save()
+        painter.translate(self.width() / 2.0, self.height() / 2.0)
+        painter.scale(scale, -scale)
+        painter.translate(-center_x, -center_y)
+
+        # The desktop view does not render or scan the accumulated trace. Static
+        # contours plus current chain geometry are sufficient to fit the scene.
+        # Cached scene-paths are reused until curves, selection, or resize changes.
+
+        def draw_path(path: QPainterPath, color: str, width: float) -> None:
+            painter.setPen(QPen(QColor(color), width * line_scale))
             painter.drawPath(path)
 
         visibility = frame.visibility
         if visibility.original:
-            draw_polyline(
-                frame.original.points + ((frame.original.start,) if frame.original.closed else ()),
-                "#94a3b8",
-                1.0,
-            )
+            draw_path(self._original_scene_path, "#94a3b8", 1.0)
         if visibility.reconstruction:
-            draw_polyline(
-                frame.reconstruction.points
-                + ((frame.reconstruction.start,) if frame.reconstruction.closed else ()),
-                "#14b8a6",
-                1.4,
-            )
+            draw_path(self._reconstruction_scene_path, "#14b8a6", 1.4)
         # Desktop intentionally shows the source and moving endpoint only; the
         # application trace remains available for export and other renderers.
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
-            painter.setPen(QPen(QColor("#3b82f6"), 1.0))
+            painter.setPen(QPen(QColor("#3b82f6"), 1.0 * line_scale))
             for vector in frame.chain.vectors:
                 center = map_point(vector.start)
-                radius = vector.amplitude * scale
+                radius = vector.amplitude
                 painter.drawEllipse(center, radius, radius)
         if visibility.vectors:
-            painter.setPen(QPen(QColor("#1e3a8a"), 1.2))
+            painter.setPen(QPen(QColor("#1e3a8a"), 1.2 * line_scale))
             for vector in frame.chain.vectors:
                 painter.drawLine(map_point(vector.start), map_point(vector.end))
         if visibility.endpoint:
             painter.setBrush(QColor("#dc2626"))
             painter.setPen(Qt.PenStyle.NoPen)
-            painter.drawEllipse(map_point(frame.chain.endpoint), 4.0, 4.0)
+            painter.drawEllipse(map_point(frame.chain.endpoint), 4.0 * line_scale, 4.0 * line_scale)
+        painter.restore()
 
 
 class FreehandCanvas(QWidget):

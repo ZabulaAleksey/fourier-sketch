@@ -26,10 +26,11 @@
    keyboard/visibility controls и offscreen evidence.
 2. [completed] Убрать trace из desktop paint/toggle и ограничить smooth speed slider диапазоном
    `0.10..2.00×`, step `0.05×`; сохранить application endpoint ledger.
-3. [pending] Cache static paths/bounds и повторить stress profile; continuous paused redraw уже
-   устранён и timer запускается только для running timeline.
-4. [pending] Только при недостигнутом budget выполнить bounded Qt Quick/QML scene-graph spike.
-5. [pending] Закрыть live freehand+image GUI, cancellation/shutdown/persistence, DPI/resize и final
+3. [completed] Кэшировать static paths и static bounds по изменению curve/reconstruction/selection;
+   перейти на повторно используемый scene-viewport pass.
+4. [pending] Повторить stress profile и закрепить метрику по default/stress конфигу.
+5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
+6. [pending] Закрыть live freehand+image GUI, cancellation/shutdown/persistence, DPI/resize и final
    review/docs gates; затем остановиться до FS-022.
 
 ## Handoff
