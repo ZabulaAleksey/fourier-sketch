@@ -1269,16 +1269,21 @@ completion claim. Evidence records environment/branch and caveats.
 ### Scope / non-goals / invariants
 
 - Scope: one justified improved graph heuristic, deterministic budget, baseline comparison and
-  selectable algorithm/provenance.
-- Non-goals: exact global optimum unless algorithm/proof and feasible bounds explicitly accepted.
+  selectable algorithm/provenance. Corpus includes representative complex multi-stroke line art with
+  disconnected components, loops and branches; the user sees added length, bridge count and duplicate
+  length before accepting an improved route.
+- Non-goals: exact global optimum unless algorithm/proof and feasible bounds explicitly accepted;
+  silently turning pen-up input into a continuous route.
 - Invariants: graph coverage and continuity preserved; cost never reported without method;
   timeout/cancel returns no false-complete route.
 
 ### Runnable vertical slice & concrete E2E
 
-- Entry: accepted routing corpus and optimization budget.
-- Path: graph → baseline/improved route → cost/time comparison → existing Fourier endpoint trace.
-- Observable result: valid route plus measured delta; baseline remains available.
+- Entry: accepted routing corpus, including complex multi-stroke line art, and optimization budget.
+- Path: graph → user-selected baseline/improved route → cost/time comparison → existing Fourier
+  endpoint trace.
+- Observable result: valid route plus measured delta; baseline and `PIECEWISE_DISCONNECTED` remain
+  available instead of fabricated bridges.
 
 ### PASS evidence
 
@@ -1293,6 +1298,60 @@ completion claim. Evidence records environment/branch and caveats.
 - Fallback: timeout may offer explicit baseline route after capability check; no silent switch.
 - Docs: ADR/algorithm limits/performance/trace/status/plan.
 - Handoff: commit and stop.
+
+## FS-032 — Basis Selection and Haar Wavelet Reconstruction (Optional)
+
+- Lifecycle: `planned`, optional.
+- Goal: let a user explicitly choose `FOURIER_EPICYCLE` or `HAAR_WAVELET` for a bounded curve
+  decomposition, then animate the selected basis' actual partial reconstruction.
+
+### Dependency DAG & entry preconditions
+
+- DAG: `FS-023 + FS-004 + FS-021 → FS-032`; hardened product, partial-reconstruction metrics and
+  a completed desktop basis-control surface are required.
+- Entry evidence: accepted basis-decomposition SPEC, canonical freehand/closed-curve fixture corpus,
+  numerical baseline and UI language distinguishing a rotating epicycle from a wavelet term.
+- Current gate: unsatisfied while FS-021 and FS-023 are incomplete.
+
+### Scope / non-goals / invariants
+
+- Scope: explicit basis selector with `FOURIER_EPICYCLE` default and project-owned orthonormal Haar
+  baseline; immutable basis-specific result/provenance, bounded coefficient/term selection and one
+  actual animated partial-reconstruction view for each basis.
+- Non-goals: silently replacing Fourier, presenting Haar terms as rotating circles, arbitrary wavelet
+  families, image raster transforms, or a claim that one basis is universally superior.
+- Invariants: source `Curve` stays immutable; selected basis and ordering are recorded; invalid or
+  unavailable basis fails visibly without fallback; Fourier endpoint/epicycle equality remains exact
+  only in Fourier mode, while Haar animation displays scale/location terms and the corresponding
+  reconstructed curve.
+
+### Runnable vertical slice & concrete E2E
+
+- Entry: user completes a canonical freehand curve and selects a basis before decomposition.
+- Path: Curve → explicit basis adapter → bounded immutable decomposition → basis-specific term
+  selection → animation frame → desktop view/provenance.
+- Observable result: Fourier mode shows the existing head-to-tail epicycles; Haar mode visibly builds
+  the same curve approximation from selected scale/location terms and labels it as wavelet
+  reconstruction, without fabricated circles or endpoint-trace equivalence.
+
+### PASS evidence
+
+- Unit Haar analysis/synthesis on constant, impulse, step and small deterministic curves; property
+  finite/bounded round trip and coefficient-selection provenance; integration basis adapter and
+  reconstruction metrics; component selector/disabled/error/pseudo-locale paths; live desktop E2E for
+  both bases; numerical/performance/full/static/overlay PASS with environment and caveats recorded.
+
+### Temporary / deferred / failure
+
+- Allowed: Haar only as the fully working non-Fourier baseline; it must reconstruct and animate its
+  declared slice without an external numerical-library fallback.
+- Deferred: Daubechies/biorthogonal families, learned bases, cross-basis quality rankings and export
+  extensions until separately specified.
+- Failure: unsupported basis, over-budget input or numerical failure publishes no partial/stale
+  reconstruction; the user may explicitly choose Fourier, but the application never switches modes
+  silently.
+- Docs: basis SPEC, ARCHITECTURE/ADR, DESIGN/MATHEMATICS/TESTING, traceability/status/plan.
+- Handoff: commit optional stage and stop.
 
 ## FS-030 — Educational Mode (Optional)
 

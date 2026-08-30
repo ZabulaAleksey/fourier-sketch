@@ -60,6 +60,7 @@ terminal GUI gates remain for the next session).
 | `FS-028` | Adaptive Sampling |
 | `FS-029` | Better Single-Stroke Optimization |
 | `FS-030` | Educational Mode |
+| `FS-032` | Basis Selection and Haar Wavelet Reconstruction |
 
 ## Mobile expansion
 

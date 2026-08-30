@@ -18,6 +18,8 @@ head-to-tail цепочка вращающихся vectors воспроизво�
 - preprocessing, contours, skeleton graph и routing policies;
 - discontinuity analysis и отдельный 2D image FFT mode;
 - экспорт данных, изображений и animation.
+- planned explicit Fourier/Haar basis selection for curve reconstruction; wavelet presentation is
+  basis-specific and does not claim epicycle semantics.
 
 ## 3. Вне области
 
@@ -83,6 +85,12 @@ endpoint последнего vector. Независимый decorative reconstr
 
 Система должна различать dominant contour, all disconnected components, forced continuous route
 и piecewise route. Искусственные bridges должны иметь явное происхождение и cost.
+
+### FR-BASIS-001 — Explicit decomposition basis
+
+Planned basis selector must make `FOURIER_EPICYCLE` and `HAAR_WAVELET` explicit, preserve source
+curve/provenance and never silently substitute one basis for another. Epicycle endpoint equivalence is
+a Fourier-only contract; wavelet mode exposes its own scale/location reconstruction semantics.
 
 ### FR-DISCONTINUITY-001 — Разрывы
 
