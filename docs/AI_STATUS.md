@@ -12,17 +12,18 @@
 
 ## FS-021 progress
 
-- PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and
-  offscreen component checks are implemented, committed, merged, and pushed.
+- PySide6 source-run shell, freehand/image dispatch, background worker, canvas controls and the
+  renderer-control checks are implemented, committed, merged, and pushed. The newer source-workflow
+  component slice is tracked separately as current feature-branch work until its integration completes.
 - Targeted desktop component tests, Ruff, mypy, frozen sync and overlay validator pass.
 - Offscreen desktop component path теперь вызывает реальные mouse callbacks freehand canvas и file-picker
   callback для локального PNG: оба проходят через существующие application/worker boundaries до
   timeline/frame. `QSettings` заменяется test-local in-memory adapter, поэтому проверки не меняют
-  пользовательские preference. Связанный component+integration набор: `13 passed in 2.05s`.
+  пользовательские preference. Связанный component+integration набор: `14 passed in 2.17s`.
   Это component evidence, а не ручная visual/DPI проверка видимого Windows окна.
 - Добавлены проверки корректного ресайза/готовности canvas, guard от stale-job после cancel и сохранения
   базовых UI-предпочтений; это закрывает большую часть step 6 lifecycle/persistence gates.
-- Full repository regression: `533 passed in 168.84s`; Ruff, strict mypy, frozen sync and overlay PASS.
+- Full repository regression: `534 passed in 158.40s`; Ruff, strict mypy, frozen sync and overlay PASS.
 - Renderer profile (offscreen, Windows-10-10.0.19045-SP0, 8 vCPU): fast core remains `≈0.31 ms/frame`; full
   QPainter paint now measures `≈1.55 ms/frame` default (K=25, N=1024, 300 frames, 1200×760) and
   `≈4.55 ms/frame` stress (K=256, N=4096, 1001 frames, 1200×760), with p99 `6.63` и `11.81 ms/frame`.

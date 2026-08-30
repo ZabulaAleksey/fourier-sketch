@@ -55,6 +55,16 @@ def _wait_for_timeline(window: DesktopWindow, *, timeout_seconds: float = 2.0) -
     raise AssertionError("Desktop timeline was not produced before timeout")
 
 
+def _assert_playback_advances(window: DesktopWindow) -> None:
+    assert window._canvas._frame is not None
+    trace_length = len(window._canvas._frame.trace)
+    window._timeline_action("play")
+    window._last_tick -= 0.05
+    window._tick()
+    assert window._canvas._frame is not None
+    assert len(window._canvas._frame.trace) > trace_length
+
+
 def test_desktop_window_uses_pseudo_locale_and_has_a_disabled_future_page() -> None:
     _application()
     window = DesktopWindow(locale="pseudo")
@@ -117,10 +127,7 @@ def test_desktop_freehand_flow_generates_animation_frame() -> None:
     assert window._canvas._frame is not None
     assert window._canvas._frame.timeline_state is TimelineState.PAUSED
 
-    window._timeline_action("play")
-    time.sleep(0.05)
-    _application().processEvents()
-    assert window._canvas._frame is not None
+    _assert_playback_advances(window)
     window._timeline_action("pause")
     assert window._canvas._frame.timeline_state is TimelineState.PAUSED
     window.close()
@@ -148,10 +155,7 @@ def test_desktop_image_flow_from_file_and_runs(
     assert window._canvas._frame is not None
     assert window._canvas._frame.speed == 0.42
 
-    window._timeline_action("play")
-    time.sleep(0.05)
-    _application().processEvents()
-    assert window._canvas._frame is not None
+    _assert_playback_advances(window)
     window.close()
 
 
@@ -169,6 +173,16 @@ def test_desktop_restores_non_sensitive_preferences() -> None:
     assert restored._speed.value() == 42
     assert restored._harmonics.value() == 17
     restored.close()
+
+
+def test_desktop_resets_legacy_speed_preference_to_safe_minimum() -> None:
+    _application()
+    _MemorySettings.values = {"controls/speed": 40}
+
+    window = DesktopWindow()
+
+    assert window._speed.value() == window._speed.minimum()
+    window.close()
 
 
 def test_desktop_window_renders_existing_timeline_and_keyboard_controls_are_enabled() -> None:

@@ -64,6 +64,7 @@ _SPEED_MIN = 0.10
 _SPEED_MAX = 1.00
 _SPEED_STEP = 0.01
 _SPEED_SCALE = int(1 / _SPEED_STEP)
+_SPEED_SETTINGS_VERSION = 2
 
 
 class EpicycleCanvas(QWidget):
@@ -591,9 +592,17 @@ class DesktopWindow(QMainWindow):
     def _restore_settings(self) -> None:
         window_width = cast(int, self._settings.value("window/width", 1200, int))
         window_height = cast(int, self._settings.value("window/height", 760, int))
-        control_speed = cast(
+        speed_settings_version = cast(
             int,
-            self._settings.value("controls/speed", self._speed.minimum(), int),
+            self._settings.value("controls/speed_schema", 1, int),
+        )
+        control_speed = (
+            cast(
+                int,
+                self._settings.value("controls/speed", self._speed.minimum(), int),
+            )
+            if speed_settings_version == _SPEED_SETTINGS_VERSION
+            else self._speed.minimum()
         )
         control_harmonics = cast(int, self._settings.value("controls/harmonics", 1, int))
         self.resize(
@@ -622,6 +631,7 @@ class DesktopWindow(QMainWindow):
     def _save_settings(self) -> None:
         self._settings.setValue("window/width", self.width())
         self._settings.setValue("window/height", self.height())
+        self._settings.setValue("controls/speed_schema", _SPEED_SETTINGS_VERSION)
         self._settings.setValue("controls/speed", self._speed.value())
         self._settings.setValue("controls/harmonics", self._harmonics.value())
 
