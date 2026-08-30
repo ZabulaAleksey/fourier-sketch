@@ -2,8 +2,8 @@
 
 ## Текущая цель
 
-Завершить ограниченный FS-021 evidence slice: подтвердить desktop source workflows через реальные
-component callbacks и синхронизировать контракты после изменения диапазона скорости.
+Закрыть оставшийся FS-021 manual evidence gate: получить visible Windows GUI/DPI/resize diagnostic
+после восстановления capture либо через подтверждение пользователя.
 
 ## Активный stage
 
@@ -30,9 +30,10 @@ component callbacks и синхронизировать контракты по�
    перейти на повторно используемый scene-viewport pass.
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
 5. [pending] Только при недостигнутом target выполнить bounded Qt Quick/QML scene-graph spike.
-6. [partial] Offscreen component path для freehand и image, cancellation/shutdown/persistence
-   подтверждён. Остаются ручной visible Windows GUI/DPI/resize diagnostic и final review/docs gates;
-   затем остановиться до FS-022.
+6. [blocked] Offscreen component path для freehand и image, cancellation/shutdown/persistence
+   подтверждён. Manual visible Windows GUI/DPI/resize diagnostic не получен: automation capture
+   повторно завершился `SetIsBorderRequired failed (0x80004002)`. После его получения выполнить
+   final review/docs gates; затем остановиться до FS-022.
 
 ## Handoff
 

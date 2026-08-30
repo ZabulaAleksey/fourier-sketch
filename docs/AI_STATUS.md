@@ -7,7 +7,9 @@
 - Branch: `main`; renderer-control and desktop E2E deltas are integrated.
 - Integration: implementation `0faf8fc` and the current desktop E2E/doc slice are present in `main`
   and pushed to `origin`. PR/release/deployment were not performed.
-- Blockers: нет.
+- Blockers: ручная visible Windows GUI/DPI/resize проверка не получена: Windows automation capture
+  вернул `SetIsBorderRequired failed (0x80004002)` после retry/reset. Это не влияет на automated
+  evidence, но не позволяет заявлять visual/DPI PASS.
 
 ## FS-021 progress
 
@@ -85,16 +87,16 @@
 - Canonical IDs/serialization и `LOOP_ANCHOR` не являются traversal order.
 - Spectrum analysis отложен до FS-019; 2D raster Fourier — до FS-020.
 - PySide6 shell exists as a partial FS-021 source-run slice; offscreen component evidence подтверждает
-  freehand+image source workflows. Remaining terminal work — ручные visible Windows GUI/DPI/resize
-  diagnostics и final review/docs gates.
+  freehand+image source workflows. Manual visible Windows GUI/DPI/resize diagnostic remains `NOT VERIFIED`:
+  current automation capture failed with `SetIsBorderRequired failed (0x80004002)` even after one reset/retry.
 - Lexical local-path guard не доказывает physical locality mapped/reparse targets; hardening остаётся
   FS-023 residual risk.
 
 ## Следующее разумное действие
 
-После отдельной команды продолжить FS-021 ручной visible Windows GUI/DPI/resize diagnostic и final
-review/docs gates. Если новый профиль на целевом железе ухудшит показатели, перейти к bounded
-QML/QT scene-graph spike.
+После отдельной команды повторить manual visible Windows GUI/DPI/resize diagnostic, когда доступен
+работающий capture либо ручное подтверждение пользователя. Если новый профиль на целевом железе
+ухудшит показатели, перейти к bounded QML/QT scene-graph spike.
 FS-022 и planned Android FS-031 не начинать заодно.
 
 ## Синхронизация документации
