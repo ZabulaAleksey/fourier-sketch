@@ -25,7 +25,7 @@
 1. [completed] Добавить PySide6 source-run shell, worker dispatch, central canvas, freehand/image,
    keyboard/visibility controls и offscreen evidence.
 2. [completed] Убрать trace из desktop paint/toggle и ограничить smooth speed slider диапазоном
-   `0.10..2.00×`, step `0.05×`; сохранить application endpoint ledger.
+  `0.10..1.00×`, step `0.01×`; сохранить application endpoint ledger.
 3. [completed] Кэшировать static paths и static bounds по изменению curve/reconstruction/selection;
    перейти на повторно используемый scene-viewport pass.
 4. [completed] Повторить stress profile и закрепить метрику по default/stress конфигу.
@@ -35,5 +35,4 @@
 
 ## Handoff
 
-После synchronization commit отправить `main` в `origin` и остановиться. Остальные performance
-steps FS-021, FS-022 и FS-031 не начинать без отдельной команды пользователя.
+После synchronization commit отправить `main` в `origin` и продолжить только после вашего запроса.
