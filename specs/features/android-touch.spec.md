@@ -1,6 +1,6 @@
 # Feature SPEC — Android Touch-to-Epicycles
 
-Статус: Принята, v0.1
+Статус: Принята, v0.2; реализация FS-031 validated
 
 ## Назначение и область
 
@@ -8,6 +8,20 @@
 приложение использует ту же Fourier convention и epicycle invariants, чтобы анимировать
 head-to-tail vectors и фактический endpoint trace. Технология mobile adapter выбирается по
 capability/performance/packaging evidence; упоминание React Native не является решением само по себе.
+
+## Принятый mobile contract
+
+- adapter: native Kotlin + Jetpack Compose, `minSdk 24`, `compileSdk/targetSdk 37`;
+- reference profile: AVD `Medium_Phone`, Android 17 / API 37, x86_64, 1080×2400, 420 dpi;
+- один primary stroke содержит не более 10 000 distinct points и после consecutive-duplicate
+  cleanup arc-length resample-ится ровно в `N=128`; degenerate stroke fail-closed;
+- canonical DFT: `C_k = (1/N) Σ z[n] exp(-i2πkn/N)` в FFT storage/signed-frequency order;
+- selection использует amplitude-descending order с deterministic canonical tie-break,
+  `K=1..128`; speed ограничена `0.01..100.00×`, trace — 10 000 endpoints;
+- ViewModel сохраняет active result через configuration change. Raw pointer input не сохраняется;
+  process recreation получает только bounded explicitly permitted state;
+- production manifest не запрашивает network/storage permission. Store release, signing и
+  redistribution остаются вне FS-031.
 
 ## Требования
 

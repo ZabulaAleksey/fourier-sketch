@@ -47,7 +47,7 @@ imaging, routing       → domain contracts; application composes them
 domain, math           → Python stdlib + NumPy only when introduced
 ```
 
-Planned Android `FS-031` follows the same direction: mobile touch/presentation adapter → portable
+Android `FS-031` follows the same direction: mobile touch/presentation adapter → portable
 application/domain/math contract. Technology selection remains open until capability evidence;
 mobile UI or bridge cannot become a second Fourier implementation.
 
@@ -418,3 +418,11 @@ redistribution. Repository не зависит от machine-local prompt/Downloa
 - Desktop renderer optimization follows ADR-022: measured QPainter work first, optional QML scene
   graph only after parity; Android framework selection is isolated to FS-031.
 - Future stage не может впервые сделать предыдущий runnable slice проверяемым.
+
+## Android adapter boundary (FS-031)
+
+`android/` содержит `:fourier-core` с pure Kotlin point/capture/resampling/DFT/selection/chain
+state без Android imports и `:app` с Compose/ViewModel/lifecycle/accessibility/rendering adapter.
+Versioned JSON parity fixtures производит Python reference, а JVM tests потребляют тот же corpus.
+Mobile runtime не импортирует Python и не переопределяет принятую Fourier convention. No network or
+storage adapter exists in this slice.

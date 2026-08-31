@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Fourier Sketch</string>
+    <string name="draw_hint">Touch the canvas to draw a closed curve</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="restart">Restart</string>
+    <string name="clear">Clear</string>
+    <string name="new_curve">New curve</string>
+    <string name="harmonics_value">Harmonics: %1$d</string>
+    <string name="harmonics_description">Harmonics K</string>
+    <string name="speed_value">Speed: %1$.2f×</string>
+    <string name="speed_description">Animation speed</string>
+    <string name="zoom_value">Zoom: %1$.2f×</string>
+    <string name="reset_view">Reset view</string>
+    <string name="drawing_canvas_description">Drawing canvas</string>
+    <string name="epicycle_canvas_description">Fourier epicycle canvas. One finger pans; two fingers zoom.</string>
+</resources>

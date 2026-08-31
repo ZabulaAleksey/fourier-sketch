@@ -610,3 +610,23 @@ boundary-policy, dense learned basis, fake epicycles для DCT/Walsh, расш�
 **Последствия:** новые basis остаются численно и визуально честными; будущие Daubechies/biorthogonal
 families требуют отдельной SPEC. Playground переиспользует canonical Fourier math/QTimer/canvas, но
 export и canonical lesson в mode намеренно unavailable.
+
+## ADR-031 — Native Kotlin/Compose Android adapter with fixture-proven Fourier parity
+
+**Статус:** Accepted.
+
+**Контекст:** FS-031 требует installable offline Android UI, real touch/lifecycle/accessibility
+semantics и измерения на named emulator/device, сохраняя принятую Python Fourier convention.
+
+**Решение:** Android adapter реализуется нативно на Kotlin + Jetpack Compose. Bounded pure-Kotlin
+resampling/DFT/selection/chain state является переносом существующей convention, а не новым
+algorithm, и проверяется общими JSON fixtures, сгенерированными Python reference. ViewModel владеет
+configuration state; Compose владеет pointer input, semantics и drawing.
+
+**Отклонено:** PySide6 Android требует Android-specific PySide/Shiboken wheels, NDK и
+buildozer/python-for-android packaging, а официальный deployment host не включает Windows.
+React Native/Skia добавляет JS/native/NDK bridge без reuse существующего Python runtime.
+
+**Последствия:** `uv` остаётся владельцем Python graph, Gradle Wrapper — воспроизводимого Android
+graph. Cross-language drift блокируется parity tests; public signing/store redistribution требуют
+отдельного решения.

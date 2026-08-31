@@ -2,17 +2,17 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-033 Indexed Bases and Harmonic Playground desktop slice:
-orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authoring.
+Реализовать проверяемый FS-031 offline Android touch-to-epicycles vertical slice.
 
 ## Активный stage
 
-- Stage ID: `FS-033`
-- Lifecycle: `completed`; commit `ab20fcc` integrated in `main` and published to `origin/main`;
-  feature branch deleted.
-- Prerequisites: completed FS-032/FS-030/FS-024 and accepted
-  `specs/features/basis-playground.spec.md`.
-- Contract: execute only FS-033; Android FS-031 remains behind its SDK/device entry gate.
+- Stage ID: `FS-031`
+- Lifecycle: `validated`, awaiting current permitted МДП on `feature/fs-031-android-mvp`.
+- Prerequisites: completed FS-023/FS-008/FS-005 and accepted
+  `specs/features/android-touch.spec.md`.
+- Entry evidence: Android SDK Platform 37, build-tools 36.0.0 and booted AVD
+  `Medium_Phone` (`emulator-5554`, Android 17/API 37) verified on 2026-08-31.
+- Contract: execute only FS-031; store release and later mobile expansion are out of scope.
 
 ## Integration state
 
@@ -32,13 +32,13 @@ orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authori
 
 ## План выполнения
 
-1. [completed] Принять bounded FS-033 SPEC/ADR/stage contract и numerical/UI boundaries.
-2. [completed] Реализовать DCT-II/Walsh typed decomposition/timeline и desktop views.
-3. [completed] Реализовать Fourier-only Harmonic Playground с exact ordered terms и baseline restore.
-4. [completed] Выполнить focused/full/static/overlay gates, numerical/UI review и documentation sync.
-5. [completed] Создать атомарный commit и выполнить ранее разрешённый МДП.
+1. [completed] Зафиксировать native Compose decision, bounds и Android entry evidence.
+2. [completed] Реализовать bounded touch capture, parity-proven Fourier core и epicycle state.
+3. [completed] Реализовать Compose canvas, controls, lifecycle и accessibility.
+4. [completed] Выполнить unit/component/instrumented/live-device gates и измерения.
+5. [in_progress] Синхронизировать документы, independent review, commit и разрешённый МДП.
 
 ## Handoff
 
-FS-033 завершён и опубликован; independent review GO. FS-031 не начинался и по-прежнему требует
-Android SDK/device evidence.
+FS-031 implementation и required gates validated. Store signing/release отсутствуют. Headless AVD
+frame profile записан как неудовлетворительный и не используется для smoothness claim.

@@ -447,6 +447,16 @@ explicit forced route, discontinuous Fourier и bounded GIF export реализ�
 Reference DFT ограничен correctness-сценариями и не включается как silent fallback. Проект не
 обещает идеальную векторизацию произвольных фотографий или оптимальный single-stroke route.
 
-После desktop hardening roadmap содержит planned `FS-031`: offline Android MVP, где finger/stylus
-stroke проходит тот же Fourier/epicycle contract и анимирует фактический endpoint trace. Mobile
-framework пока намеренно не выбран до capability/performance/packaging evidence.
+FS-031 добавляет offline Android MVP на Kotlin/Jetpack Compose: finger/stylus stroke проходит
+bounded `N=128` resampling, parity-proven Fourier/epicycle contract и анимирует фактический endpoint
+trace. Debug APK собирается воспроизводимым Gradle Wrapper без network/storage permission:
+
+```powershell
+cd android
+$env:JAVA_HOME = "<Android Studio>\jbr"
+$env:ANDROID_HOME = "<Android SDK>"
+.\gradlew.bat :app:assembleDebug
+```
+
+APK находится в `android/app/build/outputs/apk/debug/app-debug.apk`. Проверенный live profile:
+AVD `Medium_Phone`, Android 17/API 37, x86_64. Play Store signing/publication не выполнялись.

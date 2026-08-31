@@ -197,8 +197,8 @@ boundary count, pseudo-locale и повторно открываемый atomic 
 6. image file → graph components → explicit PiecewiseCurve → pen-up overlay (`FS-016`, реализован);
 7. image file → explicit forced cyclic route → Fourier trace (`FS-017`, реализован);
 8. desktop interaction → export → readable artifact with matching endpoint history (`FS-022`).
-9. Android finger/stylus stroke → parity-proven Fourier chain → animated endpoint trace on a named
-   emulator/device (`FS-031`, planned).
+9. Android finger/stylus stroke → parity-proven Fourier chain → animated endpoint trace on the named
+   Android 17/API 37 AVD (`FS-031`, validated).
 
 До появления live product path сценарий имеет `BLOCKED_BY_BACKEND`/non-terminal status и не
 заменяется mock-only success. Для local desktop equivalent backend — application/core path.
@@ -340,6 +340,17 @@ component/live CLI verify atomic side-by-side PNG, metrics, option conflict and 
 
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
+The accepted profile is AVD `Medium_Phone`, Android 17/API 37. JVM tests cover bounded capture,
+resampling, DFT, selection, chain and trace using the canonical Python-generated JSON corpus.
+Compose instrumentation drives pointer input, controls, recreation and both orientations. Device
+evidence records `dumpsys gfxinfo`, `dumpsys meminfo` and APK bytes without universal smoothness
+claims.
+FS-031 accepted evidence: Kotlin core/app unit PASS; Android lint/debug/release/instrumentation APK
+build PASS; installed AndroidJUnitRunner and final Gradle `connectedDebugAndroidTest` scenario PASS
+on `Medium_Phone` (including pointer stroke, pinch zoom, controls and Activity recreation);
+background/foreground and landscape checks PASS; Python `729 passed`; Ruff/mypy/overlay PASS. Final
+10-second headless profile was 222/495 janky frames (44.85%, p50 48 ms, p95 81 ms), so no
+smoothness claim is made.
 
 FS-033 unit/property tests cover orthonormal DCT-II and Walsh constant/impulse/random round-trip,
 canonical first-K contribution sums, finite/resource bounds and exact decomposition ownership.

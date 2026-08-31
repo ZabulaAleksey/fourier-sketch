@@ -111,9 +111,14 @@ PySide6/shiboken6 declare LGPL/GPL choices. Therefore the selected readiness tar
 recoverable wheel smoke, not public wheel/installer redistribution. Public packaging remains blocked
 until project licensing, third-party notices and LGPL obligations are approved.
 
-FS-031 Android dependencies/toolchain are not selected or added during desktop work. The stage must
-record a capability/license/maintenance/build-size comparison and keep one reproducible mobile
-manager/lock contract without changing Python `uv` ownership of the current core repository.
+FS-031 selects native Kotlin + Jetpack Compose with the checked-in Gradle Wrapper as Android
+dependency owner; exact AGP/Kotlin/Compose versions are pinned under `android/`. Python remains
+owned by frozen `uv`. PySide6 Android was rejected because it adds platform wheels, NDK,
+buildozer/python-for-android and redistribution work; React Native/Skia adds a JS/native bridge
+without runtime reuse. Resolution, license and build-size evidence are verified during the stage.
+Selected pins: Gradle Wrapper 9.5.0 with distribution SHA-256, AGP 9.3.2, built-in Kotlin plus
+Compose compiler plugin 2.3.21 and Compose BOM 2026.08.00. Per-module Gradle lockfiles are tracked;
+debug APK measured 12,126,209 bytes. Public redistribution/license approval remains out of scope.
 
 ## Cleanup classification
 

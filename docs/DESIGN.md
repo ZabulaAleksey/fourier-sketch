@@ -405,7 +405,7 @@ Export overwrite требует явного выбора.
   locale, а layout остаётся построенным на framework layouts без ручного pixel positioning;
 - formatted numbers presentation-aware, domain values остаются canonical floats/integers.
 
-## Planned Android touch surface (FS-031)
+## Android touch surface (FS-031)
 
 Desktop touchscreen navigation в FS-021 ограничена pan/pinch существующего epicycle viewport и не
 реализует Android stroke/lifecycle surface ниже.
@@ -415,6 +415,12 @@ Desktop touchscreen navigation в FS-021 ограничена pan/pinch суще
 - Play/Pause/Restart and harmonic/speed controls remain reachable in portrait and landscape;
 - touch targets/content descriptions and interruption/background recovery are acceptance surfaces;
 - image import, account/cloud sync and store-release UX are outside the MVP.
+
+Implemented FS-031 layout uses one large focusable canvas, concise state summary,
+Play/Pause/Restart and labeled harmonic/speed sliders. Before a stroke the canvas invites drawing;
+after pointer-up it renders circles/vectors/endpoint/trace. Starting a new stroke atomically
+replaces the prior result; cancel clears only in-progress input. Portrait stacks controls below the
+canvas, while landscape keeps the canvas dominant without hiding primary actions.
 
 ## Responsive/performance behavior
 

@@ -4,7 +4,7 @@
 
 - Last completed Stage ID: `FS-033`; commit `ab20fcc` integrated in `main` and published to
   `origin/main`; feature branch deleted.
-- Active Stage ID: none; FS-031 remains planned behind its Android entry gate.
+- Active Stage ID: `FS-031`; implementation is validated on `feature/fs-031-android-mvp`, МДП pending.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -22,11 +22,38 @@
   FS-033 Indexed Bases/Harmonic Playground `ab20fcc` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
-- Scope: FS-033 Indexed Bases and Harmonic Playground completed, integrated and published; FS-031
-  was not started.
+- Scope: FS-031 native Android touch-to-epicycles only; Play Store/release and additional mobile
+  features are outside the active stage.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-031 progress
+
+- Entry gate verified on 2026-08-31: Android SDK Platform 37, build-tools 36.0.0 and booted
+  `Medium_Phone` AVD (`emulator-5554`, Android 17/API 37, x86_64, 1080×2400 at 420 dpi).
+- Native Kotlin + Jetpack Compose selected; bounded Kotlin Fourier/resampling implementation must
+  prove coefficient/endpoint parity against canonical Python-generated fixtures. No network/storage
+  permission, account, telemetry, store release or desktop-core replacement is in scope.
+- Native modules `:fourier-core`/`:app`, pinned Gradle 9.5.0 + AGP 9.3.2/Kotlin 2.3.21/Compose
+  graph and dependency lockfiles are present. JVM parity/bounds/viewport/ViewModel tests, Android
+  lint, debug/release builds and the installed Compose test PASS.
+- Installed AVD path verified: touch stroke → epicycle canvas → pinch zoom (`1.00×` to `1.44×`) →
+  Play/Pause/Restart → Activity recreation; background/foreground and landscape preserve the result
+  and primary controls. The final standard `connectedDebugAndroidTest` run also PASSed one test.
+  Full Python suite: `729 passed in 164.82s`; frozen sync 38 packages; Ruff, strict mypy (252
+  source files), overlay and diff checks PASS.
+- Debug APK: 12,126,209 bytes; unsigned release inspection artifact: 8,252,442 bytes. Debug and
+  release merged manifests contain only AndroidX's app-scoped
+  `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`, no network/storage/account permission. No signing,
+  Play Store release, deployment or telemetry was performed.
+- Named headless AVD 10-second measurement after a live stroke/animation: PSS 77,896 KiB,
+  RSS 199,084 KiB; 495 frames, 222 janky (44.85%), p50 48 ms/p95 81 ms. This profile is recorded
+  honestly and does not support a smoothness claim. An earlier Gradle uninstall attempt returned
+  `DELETE_FAILED_INTERNAL_ERROR`; explicit reinstall recovered the emulator package state, the direct
+  AndroidJUnitRunner scenario PASSed, and the final `connectedDebugAndroidTest` rerun PASSed.
+- Independent final read-only re-review: `GO`; no P0/P1/P2 findings. Non-blocking Android lint
+  notices are limited to app-icon/backup/orientation modernization and available dependency updates.
 
 ## FS-033 progress
 
@@ -344,13 +371,13 @@
 
 ## Следующее разумное действие
 
-Опубликовать завершённый FS-032 через разрешённый МДП. После этого остаётся planned FS-031, чей
-entry gate требует approved Android technology decision и Android SDK/emulator или named device.
+Опубликовать validated FS-031 через уже разрешённый МДП; independent re-review уже дал `GO`. Store
+signing/publication и новые Android features требуют отдельного stage/разрешения.
 
 ## Синхронизация документации
 
-- Для FS-032 обновлены README, basis SPEC, architecture/decision/design/mathematics/testing,
-  traceability и AI plan/status/roadmap/stage registry. Existing Fourier math, dependency set,
-  security, export schema и Android behavior не изменены.
+- Для FS-031 обновлены README, Android SPEC, architecture/decision/design/security/testing/
+  dependencies, traceability и AI plan/status/roadmap/stage registry. Existing Python Fourier math,
+  desktop behavior и export schema не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: incoming/outgoing turning-angle regression и
   route heuristic/budget contracts закреплены executable tests без нового operational runbook.

@@ -1493,7 +1493,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-031 — Android Touch-to-Epicycles MVP
 
-- Lifecycle: `planned`, optional mobile expansion.
+- Lifecycle: `validated`; completion/publication pending current МДП.
 - Goal: deliver an installable offline Android MVP where a finger/stylus stroke is decomposed into
   the same Fourier vectors and animated as an actual endpoint trace.
 
@@ -1507,8 +1507,8 @@ completion claim. Evidence records environment/branch and caveats.
   Android adapter around a portable core; React Native/Skia is eligible only if current Android and
   required desktop/toolchain support are proven. Record build size, offline capability, bridge cost,
   renderer frame time, maintenance/license and packaging implications. No framework is preselected.
-- Current gate: DAG prerequisites are completed, but Android capability/SDK/device entry evidence is
-  not approved and FS-031 remains unselected.
+- Entry gate closed on 2026-08-31: SDK Platform 37/build-tools 36.0.0, booted `Medium_Phone` AVD,
+  accepted ADR-031 and canonical Python/Kotlin parity corpus are present.
 
 ### Scope / non-goals / invariants
 

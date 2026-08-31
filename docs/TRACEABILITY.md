@@ -32,7 +32,7 @@
 | `BH-WAVELET-RECONSTRUCTION-001` | BS-FR-003..005, BS-AC-003..006 | FS-032 | project-owned orthonormal Haar analysis/selection/synthesis and typed timeline | analytical + property + integration + component + performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-INDEXED-BASIS-001` | BP-FR-001..004, BP-AC-001..003 | FS-033 | typed orthonormal DCT-II/Walsh decomposition, selection and reconstruction timeline | analytical + property + integration + component + offscreen desktop E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-HARMONIC-PLAYGROUND-001` | BP-FR-005..006, BP-AC-004..006 | FS-033 | bounded ordered Fourier authoring session over canonical epicycle timeline | unit + integration + component + offscreen desktop E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
-| `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
+| `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | native Compose adapter + pure Kotlin parity-proven core | Python/Kotlin parity + JVM/component + installed API 37 E2E | verified on named AVD; no store-release claim and no smoothness claim for headless frame profile |
 
 ## Critical epicycle chain
 

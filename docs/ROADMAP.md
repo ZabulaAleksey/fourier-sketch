@@ -54,8 +54,8 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 опубликован в `origin/main`; independent review GO. Selected record `FS-030` Educational Mode
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-032
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent re-review GO. FS-033
-завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-031 не
-начат и остаётся за Android entry gate.
+завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-031
+реализован и validated на Android 17/API 37 AVD; integration/publication выполняются текущим МДП.
 
 ## Image-to-curve pipeline
 
@@ -90,7 +90,7 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 
 | Stage | Результат | Статус |
 |---|---|---|
-| `FS-031` | Offline Android finger/stylus drawing → Fourier vectors → epicycle animation | `planned` |
+| `FS-031` | Offline Android finger/stylus drawing → Fourier vectors → epicycle animation | `validated` |
 
 ## Milestones
 
