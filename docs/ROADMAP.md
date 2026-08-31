@@ -50,8 +50,8 @@ record `FS-026` Harmonic Build-Up Animation завершён, интегриро
 Adaptive Sampling завершён, интегрирован в `main` и опубликован в `origin/main`; independent review
 GO. Selected record `FS-029` Better Single-Stroke Optimization завершён, интегрирован в `main` и
 опубликован в `origin/main`; independent review GO. Selected record `FS-030` Educational Mode
-завершён и validated на feature branch с independent review GO; разрешённый МДП ещё выполняется.
-FS-031/FS-032 не начаты.
+завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-031/FS-032
+не начаты.
 
 ## Image-to-curve pipeline
 

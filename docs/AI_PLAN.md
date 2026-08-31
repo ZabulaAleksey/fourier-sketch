@@ -8,7 +8,7 @@ inspector/build-up contracts.
 ## Активный stage
 
 - Stage ID: `FS-030`
-- Lifecycle: `completed`; validated on the feature branch and ready for the authorized MDP.
+- Lifecycle: `completed`; commit `6f8a30b` integrated in `main` and published to `origin/main`.
 - Prerequisites: exact FS-030 DAG verified against completed published stages.
 - Contract: read and execute only the exact FS-030 stage record; do not start FS-031/FS-032 scope.
 
@@ -24,15 +24,16 @@ inspector/build-up contracts.
   stage удалена.
 - FS-028 commit `2b127f7` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-029 commit `5c9dcc0` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
+- FS-030 commit `6f8a30b` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 
 ## План выполнения
 
 1. [completed] Прочитать exact FS-030 contract и зафиксировать lesson/state/failure semantics.
 2. [completed] Реализовать только FS-030 vertical slice без mobile/basis scope.
 3. [completed] Выполнить targeted/full/static/overlay gates, independent review и documentation sync.
-4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
+4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-030 получил terminal evidence и independent review `GO`; остаётся commit и разрешённый МДП.
-FS-031/FS-032 в этот slice не включались.
+FS-030 получил terminal evidence, independent review `GO`, интегрирован и опубликован. Следующий
+stage ещё не выбран; FS-031/FS-032 в этот slice не включались.

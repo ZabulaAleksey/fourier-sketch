@@ -1390,7 +1390,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-030 — Educational Mode (Optional)
 
-- Lifecycle: `completed`; validated on the feature branch, pending authorized MDP.
+- Lifecycle: `completed`; commit `6f8a30b` integrated in `main` and published to `origin/main`.
 - Goal: show the causal mapping samples→coefficient→circle/vector→chain→endpoint→trace.
 
 ### Dependency DAG & entry preconditions

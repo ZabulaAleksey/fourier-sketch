@@ -2,7 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-030`; validated on `feature/fs-030-educational-mode`, pending MDP.
+- Last completed Stage ID: `FS-030`; commit `6f8a30b` integrated in `main` and published to
+  `origin/main`; feature branch deleted.
 - Active Stage ID: none until the next stage is selected after FS-030 publication.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
@@ -14,6 +15,8 @@
   FS-028 Adaptive Sampling `2b127f7` is integrated in `main` and published to `origin/main`.
   FS-029 Better Single-Stroke Optimization `5c9dcc0` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
+  FS-030 Educational Mode `6f8a30b` is integrated in `main` and published to `origin/main`; its
+  feature branch was deleted.
   No PR, release or deployment was performed.
 - Scope: FS-030 Educational Mode completed on its feature branch; FS-031 and FS-032 were not started.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -299,8 +302,8 @@
 
 ## Следующее разумное действие
 
-Опубликовать завершённый FS-030 через разрешённый МДП, затем выбрать ровно один следующий stage по
-его entry gates. Mobile/basis scope с FS-030 не смешивался.
+Выбрать ровно один следующий optional stage по его entry gates. Mobile/basis scope с FS-030 не
+смешивался.
 
 ## Синхронизация документации
 
