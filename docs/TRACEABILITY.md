@@ -27,6 +27,7 @@
 | `BH-SIMPLIFY-001` | FC-FR-008, FC-AC-006, IM-FR-009, IM-AC-009 | FS-027 | bounded Douglas–Peucker before equal-N resampling and existing timelines | unit + property + integration + component + live CLI E2E + benchmark/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-ADAPTIVE-001` | FC-FR-009, FC-AC-007, IM-FR-010, IM-AC-010 | FS-028 | weighted arc-length density with exact N and uniform comparison | unit + property + integration + component + live CLI E2E + performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-ROUTE-OPT-001` | IM-FR-011, IM-AC-011 | FS-029 | selectable bounded shortest-odd-pairing vs FS-017 baseline | unit + property + integration + component + live CLI E2E + corpus/performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
+| `BH-EDUCATION-001` | UI-FR-014, UI-AC-011 | FS-030 | canonical actual-state six-step circle lesson over existing timeline/inspector/canvas | unit + integration + component + actual Qt offscreen E2E + content/math/full/static/overlay | verified on feature branch; independent review GO; pending MDP |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain

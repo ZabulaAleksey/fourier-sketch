@@ -556,3 +556,21 @@ order в том же slice, silent baseline fallback и изменение `PIEC
 
 **Последствия:** heuristic может не улучшить каждый graph, но route correctness/provenance измеримы;
 baseline остаётся selectable и regression-compatible.
+
+## 2026-08-31 — ADR-030: Actual-state canonical circle lesson
+
+**Статус:** Accepted.
+
+**Контекст:** FS-030 должен объяснить causal Fourier→epicycle chain без mock data, нового math
+algorithm или assessment subsystem.
+
+**Решение:** один fully working 32-sample counter-clockwise unit-circle lesson использует обычный
+timeline с dominant `k=1`. Bounded six-step session хранит step/source provenance и aligned actual
+frame values; localized presentation форматирует equations. Desktop использует existing inspector,
+canvas и Play/Pause, добавляя buttons и scoped Alt-key navigation с explicit mode locks.
+
+**Отклонено:** scripted fake coefficients, отдельный educational animation timer/trace, quiz engine,
+несколько lessons и включение Android/Haar controls в тот же slice.
+
+**Последствия:** content/math parity проверяется executable mapping tests; новые lesson families
+требуют отдельного stage/spec extension.

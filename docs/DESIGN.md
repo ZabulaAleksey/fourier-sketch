@@ -85,6 +85,21 @@ smaller window heights it remains usable instead of overlapping the source contr
 - Build-Up и Solo mutually exclusive; harmonic slider, mode configuration и export disabled до Exit.
   Exit раскрывает exact latest baseline object, новый timeline очищает analysis session.
 
+## Educational Mode FS-030
+
+- Inspector получает отдельную Educational group с `Load circle lesson`, `Start/Exit`,
+  `Previous`, `Next` и `Restart lesson`. Без ready canonical fixture Start/step controls disabled и
+  показывают локализованное объяснение.
+- Canonical fixture — actual closed 32-sample counter-clockwise unit circle и обычный Fourier
+  timeline с одной dominant `k=1`; educational layer не хранит подменные coefficients/geometry.
+- Шесть textual steps синхронно используют original sample, locked inspector row `k=1`, canvas
+  vector/circle highlight, full head-to-tail chain, red endpoint и equality actual trace endpoint.
+  Persistent trace path по UI-FR-002 не добавляется обратно на canvas.
+- Lesson начинает existing timeline paused; Play/Pause обновляют actual frame без смены шага.
+  `Alt+Left`/`Alt+Right`/`Alt+Home` не конфликтуют со sliders/list navigation. Harmonics, inspector
+  retarget, Solo, Build-Up и export locked до Exit; zoom/pan/visibility остаются доступны. Новый
+  timeline очищает lesson с explanation; Android/basis controls отсутствуют.
+
 ## Curve Simplification diagnostic FS-027
 
 - Existing contour CLI получает opt-in `--simplify-tolerance`; без option UI/output остаются

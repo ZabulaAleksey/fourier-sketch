@@ -350,6 +350,16 @@ latest baseline object и возобновляет обычные timeline ticks
 только mode-local trace. Solo, manual K, configuration и export gated как взаимоисключающие policies.
 No second timer, coefficient mutation, smooth interpolation or FS-030 lesson orchestration.
 
+## Educational Mode boundary (FS-030)
+
+`application.educational_mode` владеет canonical circle fixture и bounded guided-step session над
+actual `EpicycleFrame`; snapshot содержит выровненные sample/coefficient/vector/chain/endpoint/trace
+references, source identity и lesson id, но не renderer strings. `presentation.educational_mode`
+форматирует canonical equation/resources. Desktop adapter синхронизирует locked inspector/canvas
+highlight и scoped keyboard, используя existing timeline/QTimer; отдельного lesson timer,
+coefficient math или trace ledger нет. Solo/Build-Up/export locks остаются UI boundary, а
+mobile/basis layers не импортируют lesson.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

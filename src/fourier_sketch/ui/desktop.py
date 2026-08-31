@@ -15,10 +15,12 @@ from PySide6.QtGui import (
     QColor,
     QEventPoint,
     QKeyEvent,
+    QKeySequence,
     QMouseEvent,
     QPainter,
     QPainterPath,
     QPen,
+    QShortcut,
     QTouchEvent,
     QWheelEvent,
 )
@@ -36,6 +38,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSizePolicy,
     QSlider,
     QSpinBox,
@@ -45,10 +48,15 @@ from PySide6.QtWidgets import (
 )
 
 from fourier_sketch.application import (
+    CANONICAL_CIRCLE_FREQUENCY,
     AnimationExportPlan,
     BuildUpSnapshot,
     BuildUpState,
+    CanonicalCircleLesson,
     CaptureState,
+    EducationalModeSession,
+    EducationalSnapshot,
+    EducationalUnavailable,
     EpicycleFrame,
     EpicycleTimeline,
     ExportFormat,
@@ -60,6 +68,7 @@ from fourier_sketch.application import (
     ImageMvpSnapshot,
     ImageMvpState,
     TimelineState,
+    build_canonical_circle_lesson,
     build_freehand_timeline,
     export_coefficient_data,
     export_curve_data,
@@ -69,7 +78,7 @@ from fourier_sketch.application import (
 )
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D, SpectrumOrdering
 from fourier_sketch.imaging import ImagePreprocessingOptions
-from fourier_sketch.presentation import Translator, resolve_locale
+from fourier_sketch.presentation import Translator, format_educational_copy, resolve_locale
 from fourier_sketch.presentation.harmonic_inspector import (
     HarmonicInspectorItem,
     build_harmonic_inspector_item,
@@ -245,6 +254,7 @@ class EpicycleCanvas(QWidget):
         self._pan_dragged = False
         self._touch_points: dict[int, tuple[float, float]] = {}
         self._selected_harmonic_frequency: int | None = None
+        self._educational_sample: Point2D | None = None
         self.setMinimumSize(360, 300)
         self.setAttribute(Qt.WidgetAttribute.WA_AcceptTouchEvents)
         self.setAccessibleName("Epicycles canvas")
@@ -279,6 +289,28 @@ class EpicycleCanvas(QWidget):
         if selected == self._selected_harmonic_frequency:
             return
         self._selected_harmonic_frequency = selected
+        self.update()
+
+    @property
+    def educational_sample(self) -> Point2D | None:
+        """Return the presentation-only lesson sample marker."""
+
+        return self._educational_sample
+
+    def set_educational_sample(self, sample: Point2D | None) -> None:
+        """Highlight one actual source sample without changing the frame."""
+
+        selected = sample
+        frame = self._frame
+        if selected is not None and (
+            not isinstance(selected, Point2D)
+            or frame is None
+            or selected not in frame.original.points
+        ):
+            selected = None
+        if selected == self._educational_sample:
+            return
+        self._educational_sample = selected
         self.update()
 
     def set_view_zoom(self, zoom: float) -> None:
@@ -484,6 +516,7 @@ class EpicycleCanvas(QWidget):
             self._vector_colors = []
             self._circle_colors = []
             self._selected_harmonic_frequency = None
+            self._educational_sample = None
         else:
             self._vector_lines = []
             self._circle_centers = []
@@ -499,6 +532,8 @@ class EpicycleCanvas(QWidget):
                 )
             if self._selected_harmonic_frequency not in frame.selection.frequencies:
                 self._selected_harmonic_frequency = None
+            if self._educational_sample not in frame.original.points:
+                self._educational_sample = None
         self._frame = frame
         self.update()
 
@@ -563,6 +598,14 @@ class EpicycleCanvas(QWidget):
             draw_path(self._original_scene_path, "#94a3b8", 1.0)
         if visibility.reconstruction:
             draw_path(self._reconstruction_scene_path, "#14b8a6", 1.4)
+        if self._educational_sample is not None:
+            painter.setBrush(QColor("#7c3aed"))
+            painter.setPen(QPen(QColor("#ffffff"), 1.2 * line_scale))
+            painter.drawEllipse(
+                map_point(self._educational_sample),
+                5.0 * line_scale,
+                5.0 * line_scale,
+            )
         # Desktop intentionally shows the source and moving endpoint only; the
         # application trace remains available for export and other renderers.
         painter.setBrush(Qt.BrushStyle.NoBrush)
@@ -757,6 +800,18 @@ class DesktopWindow(QMainWindow):
         self._build_up_ordering: QComboBox
         self._build_up_target: QSpinBox
         self._build_up_dwell: QSpinBox
+        self._educational = EducationalModeSession()
+        self._educational_lesson: CanonicalCircleLesson | None = None
+        self._educational_snapshot: EducationalSnapshot | None = None
+        self._educational_mode: QLabel
+        self._educational_body: QLabel
+        self._educational_equation: QLabel
+        self._educational_load: QPushButton
+        self._educational_action: QPushButton
+        self._educational_previous: QPushButton
+        self._educational_next: QPushButton
+        self._educational_restart: QPushButton
+        self._educational_shortcuts: list[QShortcut] = []
         self._baseline_frame: EpicycleFrame | None = None
         self._current_frame: EpicycleFrame | None = None
         self._status = QLabel()
@@ -999,7 +1054,82 @@ class DesktopWindow(QMainWindow):
         self._build_up_action.clicked.connect(self._toggle_build_up)
         build_up_layout.addWidget(self._build_up_action)
         inspector_layout.addWidget(build_up)
-        layout.addWidget(inspector)
+        educational = QGroupBox(self._translator.text("desktop.educational.title"))
+        educational.setAccessibleName(self._translator.text("desktop.educational.title"))
+        educational_layout = QVBoxLayout(educational)
+        self._educational_mode = QLabel(
+            self._translator.text("desktop.educational.unavailable")
+        )
+        self._educational_mode.setWordWrap(True)
+        self._educational_mode.setAccessibleName(
+            self._translator.text("desktop.educational.mode")
+        )
+        educational_layout.addWidget(self._educational_mode)
+        self._educational_body = QLabel("")
+        self._educational_body.setWordWrap(True)
+        educational_layout.addWidget(self._educational_body)
+        self._educational_equation = QLabel("")
+        self._educational_equation.setWordWrap(True)
+        self._educational_equation.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByKeyboard
+        )
+        educational_layout.addWidget(self._educational_equation)
+        self._educational_load = QPushButton(
+            self._translator.text("desktop.educational.load")
+        )
+        self._educational_load.clicked.connect(self._load_educational_lesson)
+        educational_layout.addWidget(self._educational_load)
+        self._educational_action = QPushButton(
+            self._translator.text("desktop.educational.start")
+        )
+        self._educational_action.setEnabled(False)
+        self._educational_action.clicked.connect(self._toggle_educational)
+        educational_layout.addWidget(self._educational_action)
+        lesson_navigation = QHBoxLayout()
+        self._educational_previous = QPushButton(
+            self._translator.text("desktop.educational.previous")
+        )
+        self._educational_next = QPushButton(
+            self._translator.text("desktop.educational.next")
+        )
+        self._educational_restart = QPushButton(
+            self._translator.text("desktop.educational.restart")
+        )
+        self._educational_previous.clicked.connect(
+            lambda: self._educational_step("previous")
+        )
+        self._educational_next.clicked.connect(lambda: self._educational_step("next"))
+        self._educational_restart.clicked.connect(
+            lambda: self._educational_step("home")
+        )
+        self._educational_previous.setEnabled(False)
+        self._educational_next.setEnabled(False)
+        self._educational_restart.setEnabled(False)
+        lesson_navigation.addWidget(self._educational_previous)
+        lesson_navigation.addWidget(self._educational_next)
+        educational_layout.addLayout(lesson_navigation)
+        educational_layout.addWidget(self._educational_restart)
+        inspector_layout.addWidget(educational)
+        inspector_scroll = QScrollArea()
+        inspector_scroll.setWidgetResizable(True)
+        inspector_scroll.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        inspector_scroll.setMinimumWidth(240)
+        inspector_scroll.setMaximumWidth(340)
+        inspector_scroll.setWidget(inspector)
+        layout.addWidget(inspector_scroll)
+        for sequence, action in (
+            ("Alt+Left", "previous"),
+            ("Alt+Right", "next"),
+            ("Alt+Home", "home"),
+        ):
+            shortcut = QShortcut(QKeySequence(sequence), root)
+            shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+            shortcut.activated.connect(
+                lambda selected=action: self._educational_step(selected)
+            )
+            self._educational_shortcuts.append(shortcut)
         self.setCentralWidget(root)
         self._source.completed.connect(self._build_freehand)
         self._source.changed.connect(self._capture_changed)
@@ -1135,6 +1265,7 @@ class DesktopWindow(QMainWindow):
         timeline: object,
         *,
         reference_view_size: tuple[float, float] | None = None,
+        educational_lesson: CanonicalCircleLesson | None = None,
     ) -> None:
         if not isinstance(timeline, EpicycleTimeline):
             self._set_status(self._translator.text("desktop.status.runtime"))
@@ -1143,6 +1274,10 @@ class DesktopWindow(QMainWindow):
         self._build_up.clear()
         self._build_up_snapshot = None
         self._build_up_restore_frequency = None
+        self._educational.clear()
+        self._educational_snapshot = None
+        self._educational_lesson = educational_lesson
+        self._canvas.set_educational_sample(None)
         self._reset_harmonic_inspector()
         self._timeline = timeline
         self._canvas.set_reference_view_size(reference_view_size)
@@ -1162,7 +1297,9 @@ class DesktopWindow(QMainWindow):
     def _export_format_changed(self) -> None:
         export_format = self._selected_export_format()
         is_mp4 = export_format is ExportFormat.MP4
-        analysis_active = self._solo.active or self._build_up.active
+        analysis_active = (
+            self._solo.active or self._build_up.active or self._educational.active
+        )
         self._export_action.setEnabled(
             self._timeline is not None and not is_mp4 and not analysis_active
         )
@@ -1325,13 +1462,19 @@ class DesktopWindow(QMainWindow):
                 self._selected_harmonic_frequency = (
                     build_snapshot.metrics.latest_frequency
                 )
+            educational_snapshot = self._project_educational(frame)
+            if educational_snapshot is not None:
+                self._selected_harmonic_frequency = CANONICAL_CIRCLE_FREQUENCY
         except DomainValidationError:
             self._solo.clear()
             self._build_up.clear()
+            self._educational.clear()
             display_frame = frame
             build_snapshot = None
+            educational_snapshot = None
             self._set_status(self._translator.text("desktop.status.invalid_control"))
         self._build_up_snapshot = build_snapshot
+        self._educational_snapshot = educational_snapshot
         self._current_frame = display_frame
         self._canvas.set_frame(display_frame)
         self._sync_harmonic_inspector(display_frame if build_snapshot is not None else frame)
@@ -1346,6 +1489,7 @@ class DesktopWindow(QMainWindow):
         self._harmonics.blockSignals(harmonics_blocked)
         self._sync_solo_controls(frame)
         self._sync_build_up_controls(build_snapshot)
+        self._sync_educational_controls(educational_snapshot)
         self._set_status(
             self._translator.text(
                 "status.summary",
@@ -1385,7 +1529,9 @@ class DesktopWindow(QMainWindow):
                 self._inspector_list.addItem(row)
             self._inspector_list.blockSignals(blocked)
             self._inspector_frequencies = frequencies
-        self._inspector_list.setEnabled(not self._solo.active)
+        self._inspector_list.setEnabled(
+            not self._solo.active and not self._educational.active
+        )
 
         stale_selection = (
             self._selected_harmonic_frequency is not None
@@ -1446,7 +1592,7 @@ class DesktopWindow(QMainWindow):
         )
 
     def _select_harmonic(self, frequency: int | None) -> None:
-        if self._solo.active or self._build_up.active:
+        if self._solo.active or self._build_up.active or self._educational.active:
             return
         self._selected_harmonic_frequency = frequency
         frame = self._current_frame
@@ -1461,6 +1607,166 @@ class DesktopWindow(QMainWindow):
     def _canvas_harmonic_selected(self, value: object) -> None:
         frequency = value if type(value) is int else None
         self._select_harmonic(frequency)
+
+    def _load_educational_lesson(self) -> None:
+        if self._job is not None or self._educational.active:
+            return
+        try:
+            lesson = build_canonical_circle_lesson()
+            self._apply_timeline(lesson.timeline, educational_lesson=lesson)
+            self._set_status(self._translator.text("desktop.educational.ready"))
+        except DomainValidationError:
+            self._educational_lesson = None
+            self._set_status(self._translator.text("desktop.educational.invalid"))
+            self._sync_educational_controls(None)
+
+    def _project_educational(self, frame: EpicycleFrame) -> EducationalSnapshot | None:
+        lesson = self._educational_lesson
+        timeline = self._timeline
+        if not self._educational.active:
+            return None
+        if lesson is None or timeline is None:
+            self._educational.clear()
+            return None
+        projection = self._educational.project(
+            frame,
+            spectrum=timeline.complete_spectrum,
+            source=lesson,
+            lesson_id=lesson.lesson_id,
+        )
+        if isinstance(projection, EducationalUnavailable):
+            self._set_status(self._translator.text("desktop.educational.invalid"))
+            return None
+        return projection
+
+    def _toggle_educational(self) -> None:
+        timeline = self._timeline
+        lesson = self._educational_lesson
+        baseline = self._baseline_frame
+        if timeline is None or lesson is None or baseline is None:
+            return
+        try:
+            if self._educational.active:
+                self._educational.clear()
+                self._educational_snapshot = None
+                self._canvas.set_educational_sample(None)
+                self._selected_harmonic_frequency = None
+                self._apply_frame(timeline.snapshot())
+                return
+            if self._solo.active or self._build_up.active or timeline is not lesson.timeline:
+                raise DomainValidationError("Educational Mode requires its canonical timeline")
+            if timeline.state is TimelineState.RUNNING:
+                baseline = timeline.pause()
+                self._timer.stop()
+            projection = self._educational.enter(
+                baseline,
+                spectrum=timeline.complete_spectrum,
+                source=lesson,
+                lesson_id=lesson.lesson_id,
+            )
+            if isinstance(projection, EducationalUnavailable):
+                raise DomainValidationError("Educational Mode projection is unavailable")
+            self._selected_harmonic_frequency = CANONICAL_CIRCLE_FREQUENCY
+            self._apply_frame(baseline)
+        except DomainValidationError:
+            self._educational.clear()
+            self._educational_snapshot = None
+            self._canvas.set_educational_sample(None)
+            self._set_status(self._translator.text("desktop.educational.invalid"))
+            self._sync_educational_controls(None)
+
+    def _educational_step(self, action: str) -> None:
+        if not self._educational.active:
+            return
+        timeline = self._timeline
+        if timeline is None:
+            return
+        try:
+            operation = {
+                "previous": self._educational.previous,
+                "next": self._educational.next,
+                "home": self._educational.home,
+            }.get(action)
+            if operation is None:
+                return
+            operation()
+            self._apply_frame(timeline.snapshot())
+        except DomainValidationError:
+            self._educational.clear()
+            self._educational_snapshot = None
+            self._canvas.set_educational_sample(None)
+            self._set_status(self._translator.text("desktop.educational.invalid"))
+
+    def _sync_educational_controls(
+        self, snapshot: EducationalSnapshot | None
+    ) -> None:
+        lesson_ready = (
+            self._educational_lesson is not None
+            and self._timeline is self._educational_lesson.timeline
+        )
+        if self._educational.active and snapshot is not None:
+            active = True
+            copy = format_educational_copy(snapshot, self._translator)
+            self._educational_mode.setText(
+                self._translator.text(
+                    "desktop.educational.active",
+                    current=snapshot.step_index + 1,
+                    total=snapshot.step_count,
+                    title=copy.title,
+                )
+            )
+            self._educational_body.setText(copy.body)
+            self._educational_equation.setText(copy.equation)
+            action_text = self._translator.text("desktop.educational.exit")
+            self._canvas.set_educational_sample(
+                snapshot.sample if snapshot.step.value == "samples" else None
+            )
+        else:
+            active = False
+            action_text = self._translator.text("desktop.educational.start")
+            self._educational_mode.setText(
+                self._translator.text(
+                    "desktop.educational.ready"
+                    if lesson_ready
+                    else "desktop.educational.unavailable"
+                )
+            )
+            self._educational_body.setText("")
+            self._educational_equation.setText("")
+            self._canvas.set_educational_sample(None)
+        self._educational_action.setText(action_text)
+        self._educational_action.setAccessibleName(action_text)
+        self._educational_action.setEnabled(
+            active
+            or (
+                lesson_ready
+                and not self._solo.active
+                and not self._build_up.active
+            )
+        )
+        self._educational_load.setEnabled(not active and self._job is None)
+        step_index = snapshot.step_index if snapshot is not None else 0
+        step_count = snapshot.step_count if snapshot is not None else 0
+        self._educational_previous.setEnabled(active and step_index > 0)
+        self._educational_next.setEnabled(
+            active and step_index + 1 < step_count
+        )
+        self._educational_restart.setEnabled(active and step_index > 0)
+        baseline_controls_enabled = (
+            not active and not self._solo.active and not self._build_up.active
+        )
+        self._harmonics.setEnabled(baseline_controls_enabled)
+        self._inspector_list.setEnabled(baseline_controls_enabled)
+        self._export_nav.setEnabled(
+            self._timeline is not None
+            and not active
+            and not self._solo.active
+            and not self._build_up.active
+        )
+        self._export_nav.setToolTip(
+            self._translator.text("desktop.educational.export_disabled") if active else ""
+        )
+        self._export_format_changed()
 
     def _inspector_row_changed(
         self,
@@ -1484,6 +1790,8 @@ class DesktopWindow(QMainWindow):
             if self._solo.active:
                 self._solo.exit(baseline, source=timeline)
             else:
+                if self._educational.active:
+                    raise DomainValidationError("Solo cannot start during Educational Mode")
                 frequency = self._selected_harmonic_frequency
                 if frequency is None:
                     raise DomainValidationError("frequency Solo requires a selection")
@@ -1494,7 +1802,7 @@ class DesktopWindow(QMainWindow):
 
     def _sync_solo_controls(self, _frame: EpicycleFrame) -> None:
         active = self._solo.active
-        build_active = self._build_up.active
+        build_active = self._build_up.active or self._educational.active
         frequency = self._solo.frequency
         if active and frequency is not None:
             action_text = self._translator.text("desktop.solo.exit")
@@ -1542,7 +1850,7 @@ class DesktopWindow(QMainWindow):
                 else:
                     self._timer.stop()
             else:
-                if self._solo.active:
+                if self._solo.active or self._educational.active:
                     raise DomainValidationError("Build-Up cannot start during Solo")
                 self._build_up_restore_frequency = self._selected_harmonic_frequency
                 ordering = SpectrumOrdering(str(self._build_up_ordering.currentData()))
@@ -1566,7 +1874,7 @@ class DesktopWindow(QMainWindow):
 
     def _sync_build_up_controls(self, snapshot: BuildUpSnapshot | None) -> None:
         active = self._build_up.active
-        solo_active = self._solo.active
+        solo_active = self._solo.active or self._educational.active
         if active and snapshot is not None:
             action_text = self._translator.text("desktop.build_up.exit")
             self._build_up_mode.setText(
@@ -1643,7 +1951,12 @@ class DesktopWindow(QMainWindow):
                 else:
                     self._timer.stop()
             elif action == "harmonics":
-                if value is None or self._solo.active or self._build_up.active:
+                if (
+                    value is None
+                    or self._solo.active
+                    or self._build_up.active
+                    or self._educational.active
+                ):
                     return
                 next_frame = timeline.set_harmonic_count(int(value))
             elif action == "speed":
@@ -1680,6 +1993,20 @@ class DesktopWindow(QMainWindow):
         self._timeline_action("advance", delta)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
+        if self._educational.active and (
+            event.modifiers() & Qt.KeyboardModifier.AltModifier
+        ):
+            educational_action = None
+            if event.key() == Qt.Key.Key_Left:
+                educational_action = "previous"
+            elif event.key() == Qt.Key.Key_Right:
+                educational_action = "next"
+            elif event.key() == Qt.Key.Key_Home:
+                educational_action = "home"
+            if educational_action is not None:
+                self._educational_step(educational_action)
+                event.accept()
+                return
         if event.key() == Qt.Key.Key_Escape:
             self._cancel_current_job()
             event.accept()

@@ -36,6 +36,19 @@ from .dominant_contour import (
     build_dominant_contour_timeline,
 )
 from .edge_detection import detect_preprocessed_edges, export_edge_result
+from .educational_mode import (
+    CANONICAL_CIRCLE_FREQUENCY,
+    CANONICAL_CIRCLE_LESSON_ID,
+    CANONICAL_CIRCLE_SAMPLE_COUNT,
+    CanonicalCircleLesson,
+    EducationalModeSession,
+    EducationalProjection,
+    EducationalSnapshot,
+    EducationalStep,
+    EducationalUnavailable,
+    EducationalUnavailableReason,
+    build_canonical_circle_lesson,
+)
 from .exporting import (
     EXPORT_SCHEMA_VERSION,
     MAX_GIF_FRAME_DURATION_MS,
@@ -112,6 +125,9 @@ from .skeletonization import (
 )
 
 __all__ = [
+    "CANONICAL_CIRCLE_FREQUENCY",
+    "CANONICAL_CIRCLE_LESSON_ID",
+    "CANONICAL_CIRCLE_SAMPLE_COUNT",
     "DEFAULT_BUILD_UP_DWELL_SECONDS",
     "DEFAULT_CONTOUR_HARMONICS",
     "DEFAULT_CONTOUR_SAMPLES",
@@ -133,12 +149,19 @@ __all__ = [
     "BuildUpMetrics",
     "BuildUpSnapshot",
     "BuildUpState",
+    "CanonicalCircleLesson",
     "CaptureState",
     "CurveSimplificationComparison",
     "CurveSimplificationConfig",
     "DiscontinuitySpectrumComparison",
     "DiscontinuousFourierResult",
     "DiscontinuousMode",
+    "EducationalModeSession",
+    "EducationalProjection",
+    "EducationalSnapshot",
+    "EducationalStep",
+    "EducationalUnavailable",
+    "EducationalUnavailableReason",
     "EpicycleFrame",
     "EpicycleTimeline",
     "ExportCancelled",
@@ -173,6 +196,7 @@ __all__ = [
     "TimelineState",
     "analyze_discontinuity_vs_continuous",
     "atomic_publish_bytes",
+    "build_canonical_circle_lesson",
     "build_discontinuous_fourier",
     "build_dominant_contour_timeline",
     "build_fft2_image",

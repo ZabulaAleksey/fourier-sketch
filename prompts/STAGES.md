@@ -1390,14 +1390,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-030 — Educational Mode (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; validated on the feature branch, pending authorized MDP.
 - Goal: show the causal mapping samples→coefficient→circle/vector→chain→endpoint→trace.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-023 + FS-024 + FS-026 → FS-030`; hardened GUI, inspector and build-up completed.
 - Entry evidence: accessible instructional design, terminology/resources and stable step state.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: DAG prerequisites completed; accepted entry design is one actual-state canonical
+  32-sample circle lesson with scoped keyboard/pause and no mock values.
 
 ### Scope / non-goals / invariants
 
@@ -1418,6 +1419,9 @@ completion claim. Evidence records environment/branch and caveats.
 
 - Unit mapping/equation formatting; integration actual states; component keyboard/fallback/
   pseudo-locale/text expansion; live guided E2E; content/math review; full/static/overlay PASS.
+- Evidence: focused `10 passed`; full `656 passed in 196.90s`; frozen sync 38 packages; Ruff,
+  strict mypy (231 source files), diff and overlay PASS; 10,000 projections in `0.208681s`;
+  independent read-only re-review `GO`. Actual Qt E2E is offscreen, not manual visible GUI evidence.
 
 ### Temporary / deferred / failure
 

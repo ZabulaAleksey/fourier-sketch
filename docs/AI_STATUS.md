@@ -2,9 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-029`.
-- Active Stage ID: `FS-029`, lifecycle `completed`; automated gates PASS, independent review GO,
-  integrated in `main` and published to `origin/main`.
+- Last completed Stage ID: `FS-030`; validated on `feature/fs-030-educational-mode`, pending MDP.
+- Active Stage ID: none until the next stage is selected after FS-030 publication.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -16,10 +15,25 @@
   FS-029 Better Single-Stroke Optimization `5c9dcc0` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
-- Scope: только FS-029 Better Single-Stroke Optimization; FS-030+, FS-031 и FS-032 не начинались.
+- Scope: FS-030 Educational Mode completed on its feature branch; FS-031 and FS-032 were not started.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-030 progress
+
+- Один canonical 32-sample counter-clockwise circle lesson проходит по actual
+  `samples → coefficient → circle/vector → chain → endpoint → trace` state existing Fourier
+  timeline. Session проверяет source-owner identity и lesson id; stale/missing state fail-closed без
+  fabricated partial values.
+- Desktop stepper использует localized buttons/equations, начинает paused и сохраняет normal
+  Play/Pause/Restart timeline. Scoped `Alt+Left`/`Alt+Right`/`Alt+Home` работают из дочерних controls;
+  K, inspector retarget, Solo, Build-Up и export locked, а zoom/pan/visibility остаются presentation
+  controls. Trace рисуется только существующим live ledger path.
+- Focused FS-030 suite: `10 passed`; final repository suite: `656 passed in 196.90s`. Frozen sync
+  checked 38 packages; Ruff, strict mypy (231 source files), diff and overlay PASS. Performance
+  sanity: 10,000 lesson projections in `0.208681s`. Independent read-only re-review: `GO`, no
+  findings. Qt E2E evidence is offscreen and is not manual visible GUI/DPI evidence.
 
 ## FS-029 progress
 
@@ -285,13 +299,13 @@
 
 ## Следующее разумное действие
 
-FS-029 опубликован; следующим отдельным slice выбрать FS-030 Educational Mode. Не смешивать
-mobile/basis scope с этим следующим stage.
+Опубликовать завершённый FS-030 через разрешённый МДП, затем выбрать ровно один следующий stage по
+его entry gates. Mobile/basis scope с FS-030 не смешивался.
 
 ## Синхронизация документации
 
-- Для FS-029 обновлены README, image SPEC, architecture/decisions/design/mathematics/testing,
-  traceability и AI plan/status/roadmap/stage registry. Fourier math, dependency set, security,
-  export schema, desktop/mobile UI и piecewise behavior не изменены.
+- Для FS-030 обновлены README, desktop SPEC, architecture/decisions/design/testing, traceability и
+  AI plan/status/roadmap/stage registry. Fourier math, dependency set, security, export schema,
+  Android и basis behavior не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: incoming/outgoing turning-angle regression и
   route heuristic/budget contracts закреплены executable tests без нового operational runbook.

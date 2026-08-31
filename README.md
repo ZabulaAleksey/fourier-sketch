@@ -53,6 +53,13 @@ first-K sequence `1..N` с retained energy/RMSE. Play/Pause/Restart управл
 `FS-028` добавляет отдельный opt-in adaptive sampling diagnostic: discrete turning-angle density
 перераспределяет exact N samples, а uniform/adaptive equal-K paths сравниваются без изменения
 canonical Fourier math и без утверждения универсального преимущества.
+`FS-029` добавляет selectable bounded single-stroke heuristic и measured comparison с прежним
+baseline без silent fallback. `FS-030` добавляет один actual-state Educational Mode: кнопка
+`Load circle lesson` создаёт canonical 32-sample circle через обычный Fourier timeline, после чего
+шаги `samples → coefficient → circle/vector → chain → endpoint → trace` доступны кнопками и
+`Alt+Left`/`Alt+Right`/`Alt+Home`. Lesson начинает paused; Play/Pause анимируют и фиксируют те же
+actual frame values. Solo, Build-Up, K и export временно locked, а zoom/pan/visibility остаются
+presentation controls.
 
 ## Целевой pipeline
 

@@ -106,6 +106,15 @@ coverage/continuity parity, deterministic algorithm selection, bounded shortest-
 cancel/resource failure. Integration/component/live CLI показывают method, duplicate/bridge/added
 delta и routing time; full/performance evidence не объявляет heuristic exact/global optimum.
 
+FS-030 unit tests проверяют stable six-step state machine, actual sample/coefficient/vector/endpoint/
+trace alignment, canonical equations и typed stale-source fail-closed. Integration использует
+настоящий 32-sample circle Fourier timeline. Qt component tests проверяют disabled fallback,
+buttons, scoped `Alt+Left`/`Alt+Right`/`Alt+Home`, Play/Pause, pseudo-locale/text expansion и
+mutually-exclusive locks; actual Qt offscreen E2E проходит `load circle → enter → step → animate/
+pause → exit`. Offscreen evidence не называется manual visible GUI/accessibility evidence.
+Final FS-030 evidence: focused `10 passed`, full repository `656 passed in 196.90s`, Ruff, strict
+mypy (231 source files), overlay и independent read-only re-review `GO`.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility

@@ -108,6 +108,28 @@ timer прекращает sequence. Exit раскрывает exact latest base
 running до входа, normal ticks возобновляются без catch-up. Новый timeline/source mismatch очищает
 mode. Invalid budget/dwell/ordering отклоняются transactionally.
 
+### UI-FR-014 — Canonical Educational Mode
+
+Desktop UI предоставляет один bounded canonical-circle lesson: пользователь явно загружает
+32-sample counter-clockwise unit circle и входит в Educational Mode. Lesson использует реальный
+Fourier timeline с selected dominant `k=1`, а не fixture-only display values, и проводит через шесть
+stable steps `samples → coefficient → circle/vector → chain → endpoint → trace`.
+
+Каждый snapshot ссылается на actual `EpicycleFrame`: highlighted sample принадлежит
+`frame.original`, coefficient — `frame.selection`, vector/circle — aligned item
+`frame.chain.vectors`, chain/endpoint — той же head-to-tail geometry, а trace equality использует
+только `frame.trace[-1] == frame.chain.endpoint`. Equations форматируются из canonical
+normalization/frequency convention и фактических finite значений; mock coefficient/endpoint или
+отдельная educational trace запрещены.
+
+Вход доступен только для ready canonical lesson и взаимоисключающ с Solo/Build-Up. Session хранит
+source-owner identity и canonical lesson id; source mismatch или отсутствие `k=1` дают typed
+unavailable state без partial values. Lesson начинает с paused existing timeline; Play/Pause может
+анимировать/заморозить actual state без смены step. `Previous`/`Next`/`Restart lesson`, scoped
+`Alt+Left`/`Alt+Right`/`Alt+Home` и localized textual step/equation дают non-color navigation.
+Harmonic count, inspector retarget, Solo, Build-Up и export disabled до Exit; zoom/pan/visibility
+остаются доступны. Дополнительные lessons/quizzes, Android и basis selection остаются вне FS-030.
+
 ### UI-FR-003 — State separation
 
 Widgets dispatch application commands и render immutable/explicit view state. Fourier/CV logic,
@@ -201,9 +223,12 @@ error и completed state. Missing translation показывает fallback stri
 - UI-AC-010: unit/property/integration/component/live desktop E2E подтверждают exact deterministic
   prefixes `1..N`, no-skipped-step dwell/pause/restart/completed transitions, per-K trace reset,
   measured metrics, accessible provenance, Solo/export/harmonic gating и exact baseline isolation.
+- UI-AC-011: unit/integration/component/actual Qt offscreen E2E подтверждают canonical circle actual
+  sample/coefficient/vector/chain/endpoint/trace mapping, six bounded steps, canonical equations,
+  scoped keyboard/pause, pseudo-locale, control locks и typed unavailable clearing без mock values.
 
 ## Планируемая трассировка
 
 Stages `FS-006`–`FS-008`, `FS-013`, `FS-021`–`FS-026`, `FS-030`; Behaviors
 `BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`, `BH-SOLO-001`,
-`BH-BUILDUP-001`.
+`BH-BUILDUP-001`, `BH-EDUCATION-001`.
