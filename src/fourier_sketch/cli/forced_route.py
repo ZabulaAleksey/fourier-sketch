@@ -8,12 +8,16 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import NoReturn
 
-from fourier_sketch.application import build_local_forced_route
+from fourier_sketch.application import build_local_forced_route, compare_local_forced_routes
 from fourier_sketch.domain import DomainValidationError
 from fourier_sketch.imaging import DenoiseMode, ImageInputError, ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, resolve_locale
-from fourier_sketch.render import render_forced_route_overlay_png
-from fourier_sketch.routing import ForcedRouteStatus
+from fourier_sketch.render import render_forced_route_overlay_png, render_route_optimization_png
+from fourier_sketch.routing import (
+    DEFAULT_MAX_OPTIMIZATION_EXPANSIONS,
+    ForcedRouteAlgorithm,
+    ForcedRouteStatus,
+)
 
 
 class _ArgumentValidationError(ValueError):
@@ -33,17 +37,32 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     try:
         options = _parser(translator).parse_args(arguments)
-        result = build_local_forced_route(
-            options.input,
-            ImagePreprocessingOptions(
-                denoise=DenoiseMode(options.denoise),
-                autocontrast=options.autocontrast,
-                threshold=options.threshold,
-                invert=options.invert,
-            ),
-            sample_count=options.samples,
-            harmonic_count=options.harmonics,
+        preprocessing = ImagePreprocessingOptions(
+            denoise=DenoiseMode(options.denoise),
+            autocontrast=options.autocontrast,
+            threshold=options.threshold,
+            invert=options.invert,
         )
+        algorithm = ForcedRouteAlgorithm(options.route_algorithm)
+        if algorithm is ForcedRouteAlgorithm.GREEDY_SHORTEST_ODD_PAIRING_V1:
+            comparison = compare_local_forced_routes(
+                options.input,
+                preprocessing,
+                sample_count=options.samples,
+                harmonic_count=options.harmonics,
+                max_optimization_expansions=options.optimization_budget,
+            )
+            result = comparison.improved
+        else:
+            comparison = None
+            result = build_local_forced_route(
+                options.input,
+                preprocessing,
+                sample_count=options.samples,
+                harmonic_count=options.harmonics,
+                route_algorithm=algorithm,
+                max_optimization_expansions=options.optimization_budget,
+            )
         routing = result.routing
         if routing.status is not ForcedRouteStatus.READY:
             print(
@@ -53,22 +72,46 @@ def main(argv: Sequence[str] | None = None) -> int:
                     reason=routing.reason or routing.status.value,
                 )
             )
+            if comparison is not None:
+                print(translator.text("cli.forced_route_no_fallback"), file=sys.stderr)
             return 0 if routing.status is ForcedRouteStatus.EMPTY else 2
         output = Path(options.output)
-        render_forced_route_overlay_png(
-            result, output, translator, overwrite=options.overwrite
-        )
+        if comparison is None:
+            render_forced_route_overlay_png(
+                result, output, translator, overwrite=options.overwrite
+            )
+        else:
+            render_route_optimization_png(
+                comparison, output, translator, overwrite=options.overwrite
+            )
         assert routing.metrics is not None
-        print(
-            translator.text(
+        if comparison is None:
+            message = translator.text(
                 "cli.forced_route_success",
                 name=_safe_display_basename(output),
+                algorithm=routing.algorithm.value,
                 original=routing.metrics.original_steps,
                 duplicated=routing.metrics.duplicated_steps,
                 bridges=routing.metrics.bridge_steps,
                 added=routing.metrics.added_length,
             )
-        )
+        else:
+            baseline_metrics = comparison.baseline.routing.metrics
+            assert baseline_metrics is not None
+            message = translator.text(
+                "cli.forced_route_comparison_success",
+                name=_safe_display_basename(output),
+                baseline=comparison.baseline.routing.algorithm.value,
+                improved=routing.algorithm.value,
+                baseline_added=baseline_metrics.added_length,
+                improved_added=routing.metrics.added_length,
+                baseline_bridges=baseline_metrics.bridge_steps,
+                improved_bridges=routing.metrics.bridge_steps,
+                delta=comparison.added_length_delta,
+                baseline_seconds=comparison.baseline_routing_seconds,
+                improved_seconds=comparison.improved_routing_seconds,
+            )
+        print(message)
         return 0
     except (ImageInputError, _ArgumentValidationError, DomainValidationError):
         print(
@@ -122,6 +165,18 @@ def _parser(translator: Translator) -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--harmonics", type=int, default=25, help=translator.text("cli.help.harmonics")
+    )
+    parser.add_argument(
+        "--route-algorithm",
+        choices=tuple(algorithm.value for algorithm in ForcedRouteAlgorithm),
+        default=ForcedRouteAlgorithm.BASELINE_TREE_T_JOIN_V1.value,
+        help=translator.text("cli.help.route_algorithm"),
+    )
+    parser.add_argument(
+        "--optimization-budget",
+        type=int,
+        default=DEFAULT_MAX_OPTIMIZATION_EXPANSIONS,
+        help=translator.text("cli.help.optimization_budget"),
     )
     parser.add_argument(
         "--overwrite", action="store_true", help=translator.text("cli.help.overwrite")

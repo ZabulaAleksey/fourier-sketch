@@ -101,6 +101,11 @@ FS-017 проверяет shared adjacency parity, Euler loop/open trail, non-Eu
 disconnected cyclic bridges, exact original-link coverage, deterministic generated paths и live
 `image → Lee → graph → route → resampling → Fourier timeline → PNG`.
 
+FS-029 добавляет accepted corpus loop/branch/asymmetric comb/disconnected, baseline/improved
+coverage/continuity parity, deterministic algorithm selection, bounded shortest-path expansion and
+cancel/resource failure. Integration/component/live CLI показывают method, duplicate/bridge/added
+delta и routing time; full/performance evidence не объявляет heuristic exact/global optimum.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility

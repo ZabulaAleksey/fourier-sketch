@@ -101,6 +101,20 @@ Adaptive option несовместим с FS-027 simplification option в одн
 остаётся отдельным измеримым slice. Без option legacy contour path не меняется. Invalid/degenerate
 input или render/output failure сохраняют existing destination и не включают silent fallback.
 
+### IM-FR-011 — Selectable bounded route optimization
+
+FS-029 сохраняет FS-017 `baseline_tree_t_join_v1` default и добавляет explicit
+`greedy_shortest_odd_pairing_v1`. Для каждого connected component с более чем двумя odd vertices
+improved policy берёт lowest-key remaining odd vertex, bounded weighted shortest-path search до
+остальных odd vertices, выбирает minimum `(distance, target_key)` и дублирует найденный source path;
+затем existing Hierholzer/component-order/bridge/Fourier path не меняется.
+
+Optimization expansion budget explicit `1..10,000,000`; exhaustion/cancel публикуют typed non-ready
+result без partial route или silent baseline. Comparison строит baseline и improved независимо над
+одним immutable graph, показывает method/budget, duplicated/bridge/added length и measured routing
+time/delta. Improved route может быть valid, но не дешевле; exact/global optimum не заявляется.
+`PIECEWISE_DISCONNECTED` остаётся отдельным доступным mode и не получает fabricated bridges.
+
 ## Fallback/failure
 
 Invalid/corrupt/oversized input fail closed. Отсутствие optional CV backend не разрешает silent
@@ -127,8 +141,11 @@ algorithm switch: capability проверяется, provenance отобража
 - IM-AC-010: unit/property/integration/component/live CLI evidence подтверждает normalized contour →
   uniform/adaptive equal-N sampling → equal-K actual timelines, deterministic density provenance,
   side-by-side PNG/metrics и unchanged legacy path.
+- IM-AC-011: accepted loop/branch/disconnected corpus подтверждает original-link coverage,
+  continuity, deterministic policy/provenance, explicit budget/cancel failures и measured baseline
+  comparison; at least one asymmetric branch fixture имеет lower improved duplicated/added length.
 
 ## Планируемая трассировка
 
 Stages `FS-010`–`FS-020`, `FS-027`–`FS-029`; Behaviors `BH-IMPORT-001`,
-`BH-DISCONTINUITY-001`, `BH-SIMPLIFY-001`, `BH-ADAPTIVE-001`.
+`BH-DISCONTINUITY-001`, `BH-SIMPLIFY-001`, `BH-ADAPTIVE-001`, `BH-ROUTE-OPT-001`.

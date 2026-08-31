@@ -289,6 +289,21 @@ uv run python -m fourier_sketch.cli.forced_route input.png --output forced-route
 Overlay различает original/duplicated/bridge steps и показывает Fourier diagnostic того же closed
 route. Baseline deterministic и bounded, но не заявляет global Postman/TSP optimality.
 
+FS-029 добавляет selectable bounded heuristic, которая жадно соединяет odd vertices кратчайшими
+путями по исходному graph. При её выборе создаётся один comparison PNG с baseline/improved route,
+Fourier frames, duplicated/bridge/added cost, delta и временем routing:
+
+```powershell
+uv run python -m fourier_sketch.cli.forced_route input.png `
+  --route-algorithm greedy_shortest_odd_pairing_v1 `
+  --optimization-budget 100000 `
+  --output route-comparison.png
+```
+
+Default остаётся `baseline_tree_t_join_v1`; budget exhaustion/cancellation не подменяются baseline
+молча. Improved heuristic снижает стоимость на принятом asymmetric fixture, но не обещает улучшение
+на каждом graph или global optimum. `PIECEWISE_DISCONNECTED` остаётся отдельным mode без bridges.
+
 ## Discontinuous Fourier diagnostic
 
 FS-018 распределяет ровно заданный sample budget между independent segments, материализует

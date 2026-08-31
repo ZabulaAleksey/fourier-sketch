@@ -262,6 +262,26 @@ algorithm substitution. Zero/non-finite geometric length остаётся typed 
 Uniform и adaptive samples сравниваются при одинаковых `N/K/speed` и одной uniform sampled
 reference. Spacing/RMSE описывают только конкретный fixture и не доказывают universal superiority.
 
+## Route optimization cost
+
+FS-029 не меняет graph coverage или cyclic route definition. Для odd set `O` improved heuristic
+повторяет, пока `O` не пуст: берёт lowest-key `u`, находит weighted shortest paths по original raw
+links, выбирает `v` с minimum `(distance(u,v), key(v))`, удаляет `u,v` и дублирует path `u→v`.
+Edge weight — Euclidean length в общем normalized raster transform. Expansion budget общий для всех
+components; exhaustion не создаёт route.
+
+После pairing используется existing Hierholzer walk. Поэтому каждый original link покрыт ровно один
+раз, duplicated paths делают degrees even, а inter-component/closing bridges остаются FS-017.
+Reported objective:
+
+```text
+added_length = duplicated_length + bridge_length
+delta = improved.added_length - baseline.added_length
+```
+
+Negative delta означает measured improvement только на данном graph/corpus. Greedy pairing не
+является proof global matching, Chinese Postman или component-order optimum.
+
 ## Discontinuous curves
 
 `PiecewiseCurve` определяет intervals/segments, для которых может быть:

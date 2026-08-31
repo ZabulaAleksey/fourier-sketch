@@ -6,9 +6,13 @@ import pytest
 from matplotlib.figure import Figure
 from PIL import Image, ImageDraw
 
-from fourier_sketch.application import build_local_forced_route
+from fourier_sketch.application import build_local_forced_route, compare_local_forced_routes
 from fourier_sketch.presentation import Translator
-from fourier_sketch.render import draw_forced_route_overlay, render_forced_route_overlay_png
+from fourier_sketch.render import (
+    draw_forced_route_overlay,
+    render_forced_route_overlay_png,
+    render_route_optimization_png,
+)
 
 pytestmark = pytest.mark.component
 
@@ -44,3 +48,22 @@ def test_forced_route_png_is_atomic_and_readable(tmp_path: Path) -> None:
     assert output.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
     with pytest.raises(FileExistsError):
         render_forced_route_overlay_png(_result(tmp_path), output, Translator("en"))
+
+
+def test_optimization_comparison_renders_both_routes_and_fourier_frames(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "route-comparison.png"
+    image = Image.new("L", (60, 32), 0)
+    draw = ImageDraw.Draw(image)
+    draw.line((5, 8, 24, 8), fill=255, width=5)
+    draw.line((36, 24, 55, 24), fill=255, width=5)
+    image.save(source)
+    comparison = compare_local_forced_routes(source, sample_count=32, harmonic_count=8)
+    output = tmp_path / "comparison-output.png"
+
+    render_route_optimization_png(comparison, output, Translator("en"))
+
+    assert output.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+    with pytest.raises(FileExistsError):
+        render_route_optimization_png(comparison, output, Translator("en"))

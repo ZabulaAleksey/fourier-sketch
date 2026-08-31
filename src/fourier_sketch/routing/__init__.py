@@ -15,6 +15,8 @@ from .dominant_contour import (
     select_dominant_contour,
 )
 from .forced_route import (
+    DEFAULT_MAX_OPTIMIZATION_EXPANSIONS,
+    ForcedRouteAlgorithm,
     ForcedRouteMetrics,
     ForcedRouteResult,
     ForcedRouteStatus,
@@ -33,10 +35,12 @@ from .raster_coordinates import RasterCoordinateTransform
 
 __all__ = [
     "COORDINATE_TRANSFORM_ID",
+    "DEFAULT_MAX_OPTIMIZATION_EXPANSIONS",
     "DOMINANT_SELECTION_POLICY",
     "ORIENTATION_POLICY",
     "START_POINT_POLICY",
     "DominantContourSelection",
+    "ForcedRouteAlgorithm",
     "ForcedRouteMetrics",
     "ForcedRouteResult",
     "ForcedRouteStatus",

@@ -57,8 +57,10 @@ from .fft2_image import build_fft2_image
 from .forced_route import (
     DEFAULT_ROUTE_HARMONICS,
     DEFAULT_ROUTE_SAMPLES,
+    ForcedRouteOptimizationComparison,
     LocalForcedRouteResult,
     build_local_forced_route,
+    compare_local_forced_routes,
 )
 from .freehand import (
     DEFAULT_FREEHAND_HARMONICS,
@@ -144,6 +146,7 @@ __all__ = [
     "ExportFormat",
     "ExportUnavailable",
     "ForcedRouteFourierComparison",
+    "ForcedRouteOptimizationComparison",
     "FreehandCapture",
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
@@ -181,6 +184,7 @@ __all__ = [
     "compare_adaptive_sampling",
     "compare_curve_simplification",
     "compare_discontinuous_with_forced_route",
+    "compare_local_forced_routes",
     "detect_preprocessed_edges",
     "export_coefficient_data",
     "export_curve_data",

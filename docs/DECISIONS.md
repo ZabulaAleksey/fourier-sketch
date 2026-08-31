@@ -537,3 +537,22 @@ typed. Comparison использует uniform baseline с теми же N/K/spe
 
 **Последствия:** density каждого positive segment остаётся positive, exact output budget и topology
 проверяемы; curvature concentration является measured allocation, не обещанием меньшего RMSE.
+
+## 2026-08-31 — ADR-029: Greedy shortest odd pairing as selectable route heuristic
+
+**Статус:** Accepted.
+
+**Контекст:** FS-017 tree T-join deterministic/linear, но на asymmetric branched graphs может
+дублировать длинный trunk. FS-029 требует measured alternative без claims exact Chinese Postman/TSP.
+
+**Решение:** сохранить `baseline_tree_t_join_v1` default. Improved policy сортирует odd vertices,
+берёт lowest remaining, выполняет weighted Dijkstra по original raw links, выбирает nearest odd с
+stable key tie-break и дублирует shortest source path. Общий expansion budget `1..10,000,000`,
+cancellation cooperative; failure не публикует partial route. Baseline/improved comparison использует
+один immutable graph и показывает duplicated/bridge/added cost и measured routing time.
+
+**Отклонено:** global matching/Postman solver без accepted dependency/proof, изменение component TSP
+order в том же slice, silent baseline fallback и изменение `PIECEWISE_DISCONNECTED` semantics.
+
+**Последствия:** heuristic может не улучшить каждый graph, но route correctness/provenance измеримы;
+baseline остаётся selectable и regression-compatible.

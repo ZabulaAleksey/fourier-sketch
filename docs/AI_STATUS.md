@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-028`.
-- Active Stage ID: `FS-028`, lifecycle `completed`; automated gates PASS, independent review GO,
-  integrated in `main` and published to `origin/main`.
+- Last completed Stage ID: `FS-029`.
+- Active Stage ID: `FS-029`, lifecycle `completed`; automated gates PASS and independent review GO
+  on the feature branch, integration/publication pending.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -14,10 +14,27 @@
   `main` and published to `origin/main`.
   FS-028 Adaptive Sampling `2b127f7` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
-- Scope: только FS-028 Adaptive Sampling; FS-029+, FS-031 и FS-032 не начинались.
+- Scope: только FS-029 Better Single-Stroke Optimization; FS-030+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-029 progress
+
+- `baseline_tree_t_join_v1` остаётся default/selectable; новый
+  `greedy_shortest_odd_pairing_v1` использует deterministic weighted Dijkstra и общий bounded
+  expansion budget для всех components. Coverage, Hierholzer continuity, component bridges и
+  Fourier consumer не изменены; cancel/resource exhaustion публикуют typed non-ready result без
+  partial route или silent baseline fallback.
+- Explicit CLI selector создаёт atomic baseline/improved comparison с method/budget,
+  duplicated/bridge/added cost, delta, routing time и actual Fourier frames. Отдельный piecewise mode
+  не изменён. На принятом asymmetric fixture duplicated/added length снизилась с `2.000000` до
+  `1.466667`; universal/global optimum не заявляется.
+- Final focused regression after review fixes: `7 passed`; final full repository suite: `646 passed
+  in 181.01s`. Frozen sync checked 38 packages; Ruff, strict mypy (224 source files), diff and overlay
+  PASS. Performance sanity: 1000 improved routes, 27 expansions each, `1.470118s` total.
+  Independent read-only review: `GO`, no blocking findings; its three low-priority test/API hygiene
+  gaps were closed and rechecked.
 
 ## FS-028 progress
 
@@ -266,13 +283,13 @@
 
 ## Следующее разумное действие
 
-FS-028 опубликован; следующим отдельным slice выбрать FS-029 Better Single-Stroke Optimization. Не
-смешивать FS-030 или mobile/basis scope с этим следующим stage.
+Завершить разрешённый MDP для FS-029; затем выбрать FS-030 отдельным slice. Не смешивать
+mobile/basis scope с публикацией FS-029.
 
 ## Синхронизация документации
 
-- Для FS-028 обновлены README, Fourier/image SPEC, architecture/decisions/design/mathematics/testing,
-  traceability и AI plan/status/roadmap/stage registry. Fourier convention, dependency set, security,
-  export schema и desktop/mobile UI не изменены.
+- Для FS-029 обновлены README, image SPEC, architecture/decisions/design/mathematics/testing,
+  traceability и AI plan/status/roadmap/stage registry. Fourier math, dependency set, security,
+  export schema, desktop/mobile UI и piecewise behavior не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: incoming/outgoing turning-angle regression и
-  explicit uniform provenance закреплены executable tests без отдельного operational runbook.
+  route heuristic/budget contracts закреплены executable tests без нового operational runbook.

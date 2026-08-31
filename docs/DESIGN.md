@@ -105,6 +105,14 @@ smaller window heights it remains usable instead of overlapping the source contr
   одинаковых N/K/speed. Summary называет algorithm, weight, policy, curvature/density range,
   spacing CV и reconstruction RMSE; universal improvement claim отсутствует.
 
+## Route Optimization diagnostic FS-029
+
+- Forced-route CLI сохраняет baseline default и получает explicit improved algorithm selector плюс
+  bounded optimization budget. Improved selection создаёт comparison artifact/summary с названиями
+  обеих policies, duplicated/bridge/added lengths, delta и measured routing time.
+- Цвета original/duplicated/bridge и Fourier panel сохраняют FS-017 semantics. Baseline и separate
+  piecewise command остаются доступны; timeout/resource/cancel не переключают algorithm молча.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

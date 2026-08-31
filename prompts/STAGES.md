@@ -1289,15 +1289,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-029 — Better Single-Stroke Optimization (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integration pending.
 - Goal: improve added route cost over FS-017 baseline without weakening coverage/correctness.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-023 + FS-017 → FS-029`; hardened product and baseline route/cost completed.
 - Entry evidence: representative benchmark corpus, baseline costs/time and optimization goal.
-- Current gate: DAG prerequisites are completed; optional stage remains unselected and its benchmark
-  entry evidence has not been accepted.
+- Current gate: PASS — accepted corpus, selector, bounded failures, comparison/performance evidence,
+  full/static/overlay gates and independent review are complete on the feature branch.
 
 ### Scope / non-goals / invariants
 

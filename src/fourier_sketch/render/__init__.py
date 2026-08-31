@@ -24,6 +24,7 @@ from .matplotlib_image_mvp import (
     run_image_mvp_interactive,
 )
 from .matplotlib_piecewise import draw_piecewise_overlay, render_piecewise_overlay_png
+from .matplotlib_route_optimization import render_route_optimization_png
 from .matplotlib_skeleton import draw_skeleton_preview, render_skeleton_preview_png
 from .matplotlib_skeleton_graph import (
     draw_skeleton_graph_overlay,
@@ -54,6 +55,7 @@ __all__ = [
     "render_frame_png",
     "render_image_mvp_png",
     "render_piecewise_overlay_png",
+    "render_route_optimization_png",
     "render_skeleton_graph_overlay_png",
     "render_skeleton_preview_png",
     "render_spectrum_analysis_png",

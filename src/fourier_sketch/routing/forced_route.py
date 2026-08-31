@@ -6,8 +6,9 @@ from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
+from heapq import heappop, heappush
 from itertools import pairwise
-from math import hypot, isclose, isfinite
+from math import hypot, inf, isclose, isfinite
 
 from fourier_sketch.domain import Curve, DomainValidationError
 from fourier_sketch.imaging import PixelPoint, SkeletonGraphResult, SkeletonNodeKind, raw_adjacency
@@ -17,6 +18,12 @@ from .raster_coordinates import RasterCoordinateTransform
 MAX_FORCED_ROUTE_COMPONENTS = 1024
 MAX_FORCED_ROUTE_SAMPLES = 262_144
 _CANCELLATION_BATCH = 4096
+DEFAULT_MAX_OPTIMIZATION_EXPANSIONS = 100_000
+
+
+class ForcedRouteAlgorithm(StrEnum):
+    BASELINE_TREE_T_JOIN_V1 = "baseline_tree_t_join_v1"
+    GREEDY_SHORTEST_ODD_PAIRING_V1 = "greedy_shortest_odd_pairing_v1"
 
 
 class ForcedRouteStatus(StrEnum):
@@ -113,12 +120,18 @@ class ForcedRouteResult:
     component_order: tuple[int, ...] = ()
     metrics: ForcedRouteMetrics | None = None
     reason: str | None = None
+    algorithm: ForcedRouteAlgorithm = ForcedRouteAlgorithm.BASELINE_TREE_T_JOIN_V1
+    optimization_expansions: int = 0
 
     def __post_init__(self) -> None:
         if not isinstance(self.graph, SkeletonGraphResult) or not isinstance(
             self.status, ForcedRouteStatus
         ):
             raise DomainValidationError("forced route result requires typed graph and status")
+        if not isinstance(self.algorithm, ForcedRouteAlgorithm):
+            raise DomainValidationError("forced route result requires algorithm provenance")
+        if type(self.optimization_expansions) is not int or self.optimization_expansions < 0:
+            raise DomainValidationError("optimization expansions must be non-negative")
         if self.status is not ForcedRouteStatus.READY:
             if any(
                 (self.curve, self.raster_points, self.steps, self.component_order, self.metrics)
@@ -165,24 +178,62 @@ class _EdgeInstance:
     source_edge_id: int | None
 
 
+@dataclass(slots=True)
+class _OptimizationBudget:
+    limit: int
+    expansions: int = 0
+
+    def consume(self, cancellation_check: Callable[[], bool] | None) -> None:
+        self.expansions += 1
+        if self.expansions > self.limit:
+            raise _Abort(ForcedRouteStatus.RESOURCE_LIMIT, "optimization_limit")
+        _check_cancelled(cancellation_check, self.expansions)
+
+
 def build_forced_route(
     graph: SkeletonGraphResult,
     *,
     cancellation_check: Callable[[], bool] | None = None,
+    algorithm: ForcedRouteAlgorithm = ForcedRouteAlgorithm.BASELINE_TREE_T_JOIN_V1,
+    max_optimization_expansions: int = DEFAULT_MAX_OPTIMIZATION_EXPANSIONS,
 ) -> ForcedRouteResult:
     if not isinstance(graph, SkeletonGraphResult):
         raise DomainValidationError("forced route requires a typed skeleton graph")
+    if not isinstance(algorithm, ForcedRouteAlgorithm):
+        raise DomainValidationError("forced route algorithm must be explicit")
+    if (
+        type(max_optimization_expansions) is not int
+        or not 1 <= max_optimization_expansions <= 10_000_000
+    ):
+        raise DomainValidationError("optimization expansion budget must be between 1 and 10000000")
     if cancellation_check is not None and cancellation_check():
-        return ForcedRouteResult(graph, ForcedRouteStatus.CANCELLED, reason="cancelled")
+        return ForcedRouteResult(
+            graph, ForcedRouteStatus.CANCELLED, reason="cancelled", algorithm=algorithm
+        )
     if graph.is_empty:
-        return ForcedRouteResult(graph, ForcedRouteStatus.EMPTY, reason="empty_graph")
+        return ForcedRouteResult(
+            graph, ForcedRouteStatus.EMPTY, reason="empty_graph", algorithm=algorithm
+        )
     if len(graph.components) > MAX_FORCED_ROUTE_COMPONENTS:
-        return ForcedRouteResult(graph, ForcedRouteStatus.RESOURCE_LIMIT, reason="component_limit")
+        return ForcedRouteResult(
+            graph,
+            ForcedRouteStatus.RESOURCE_LIMIT,
+            reason="component_limit",
+            algorithm=algorithm,
+        )
     try:
         transform = RasterCoordinateTransform.for_dimensions(graph.source.source_dimensions)
         ownership = _source_ownership(graph)
+        optimization_budget = _OptimizationBudget(max_optimization_expansions)
         component_routes = [
-            _component_route(graph, component.id, ownership, cancellation_check)
+            _component_route(
+                graph,
+                component.id,
+                ownership,
+                cancellation_check,
+                algorithm,
+                optimization_budget,
+            )
             for component in graph.components
         ]
         ordered = _order_components(component_routes, transform)
@@ -198,14 +249,31 @@ def build_forced_route(
             steps,
             tuple(component_id for component_id, _points, _steps in ordered),
             _metrics(graph, steps),
+            None,
+            algorithm,
+            optimization_budget.expansions,
         )
     except _Abort as error:
-        return ForcedRouteResult(graph, error.status, reason=error.reason)
+        return ForcedRouteResult(
+            graph,
+            error.status,
+            reason=error.reason,
+            algorithm=algorithm,
+            optimization_expansions=optimization_budget.expansions,
+        )
     except DomainValidationError:
         if cancellation_check is not None and cancellation_check():
-            return ForcedRouteResult(graph, ForcedRouteStatus.CANCELLED, reason="cancelled")
+            return ForcedRouteResult(
+                graph,
+                ForcedRouteStatus.CANCELLED,
+                reason="cancelled",
+                algorithm=algorithm,
+            )
         return ForcedRouteResult(
-            graph, ForcedRouteStatus.MALFORMED_TOPOLOGY, reason="malformed_topology"
+            graph,
+            ForcedRouteStatus.MALFORMED_TOPOLOGY,
+            reason="malformed_topology",
+            algorithm=algorithm,
         )
 
 
@@ -214,6 +282,8 @@ def _component_route(
     component_id: int,
     ownership: dict[frozenset[PixelPoint], tuple[int | None, int | None]],
     cancellation_check: Callable[[], bool] | None,
+    algorithm: ForcedRouteAlgorithm,
+    optimization_budget: _OptimizationBudget,
 ) -> tuple[int, tuple[PixelPoint, ...], tuple[ForcedRouteStep, ...]]:
     component = graph.components[component_id]
     pixels = {
@@ -239,40 +309,109 @@ def _component_route(
         if owner is None:
             raise _Abort(ForcedRouteStatus.MALFORMED_TOPOLOGY, "unowned_raw_link")
         instances.append(_EdgeInstance(left, right, RouteStepKind.ORIGINAL, *owner))
+    owners = {
+        frozenset((edge.start, edge.end)): (edge.source_node_id, edge.source_edge_id)
+        for edge in instances
+    }
+    transform = RasterCoordinateTransform.for_dimensions(graph.source.source_dimensions)
     if len(odd) > 2:
-        parent, order = _spanning_tree(adjacency, min(pixels, key=_key), cancellation_check)
-        parity = {point: int(point in odd) for point in pixels}
-        owners = {
-            frozenset((edge.start, edge.end)): (edge.source_node_id, edge.source_edge_id)
-            for edge in instances
-        }
-        for index, point in enumerate(reversed(order[1:])):
-            _check_cancelled(cancellation_check, index)
-            parent_point = parent[point]
-            if parity[point]:
-                instances.append(
-                    _EdgeInstance(
-                        point,
-                        parent_point,
-                        RouteStepKind.DUPLICATED,
-                        *owners[frozenset((point, parent_point))],
-                    )
-                )
-                parity[parent_point] ^= 1
-                parity[point] = 0
-                if len(instances) > MAX_FORCED_ROUTE_SAMPLES:
-                    raise _Abort(ForcedRouteStatus.RESOURCE_LIMIT, "sample_limit")
-        if any(parity.values()):
-            raise _Abort(ForcedRouteStatus.MALFORMED_TOPOLOGY, "invalid_t_join")
+        if algorithm is ForcedRouteAlgorithm.GREEDY_SHORTEST_ODD_PAIRING_V1:
+            _greedy_pair(
+                odd,
+                adjacency,
+                instances,
+                owners,
+                transform,
+                cancellation_check,
+                optimization_budget,
+            )
+        else:
+            _tree_pair(adjacency, odd, instances, owners, cancellation_check)
+    if len(odd) > 2 and len(instances) > MAX_FORCED_ROUTE_SAMPLES:
+        raise _Abort(ForcedRouteStatus.RESOURCE_LIMIT, "sample_limit")
     start = odd[0] if len(odd) == 2 else min(pixels, key=_key)
     traversed = _hierholzer(instances, start, cancellation_check)
-    transform = RasterCoordinateTransform.for_dimensions(graph.source.source_dimensions)
     steps = tuple(
         _make_step(instance, left, right, component_id, transform)
         for instance, left, right in traversed
     )
     points = (steps[0].start, *(step.end for step in steps))
     return component_id, points, steps
+
+
+def _tree_pair(
+    adjacency: dict[PixelPoint, tuple[PixelPoint, ...]],
+    odd: tuple[PixelPoint, ...],
+    instances: list[_EdgeInstance],
+    owners: dict[frozenset[PixelPoint], tuple[int | None, int | None]],
+    cancellation_check: Callable[[], bool] | None,
+) -> None:
+    parent, order = _spanning_tree(adjacency, min(adjacency, key=_key), cancellation_check)
+    parity = {point: int(point in odd) for point in adjacency}
+    for index, point in enumerate(reversed(order[1:])):
+        _check_cancelled(cancellation_check, index)
+        parent_point = parent[point]
+        if parity[point]:
+            instances.append(
+                _EdgeInstance(
+                    point,
+                    parent_point,
+                    RouteStepKind.DUPLICATED,
+                    *owners[frozenset((point, parent_point))],
+                )
+            )
+            parity[parent_point] ^= 1
+            parity[point] = 0
+    if any(parity.values()):
+        raise _Abort(ForcedRouteStatus.MALFORMED_TOPOLOGY, "invalid_t_join")
+
+
+def _greedy_pair(
+    odd: tuple[PixelPoint, ...],
+    adjacency: dict[PixelPoint, tuple[PixelPoint, ...]],
+    instances: list[_EdgeInstance],
+    owners: dict[frozenset[PixelPoint], tuple[int | None, int | None]],
+    transform: RasterCoordinateTransform,
+    cancellation_check: Callable[[], bool] | None,
+    budget: _OptimizationBudget,
+) -> None:
+    remaining = set(odd)
+    while remaining:
+        start = min(remaining, key=_key)
+        remaining.remove(start)
+        distances = {start: 0.0}
+        parents = {}
+        queue = [(0.0, _key(start), start)]
+        target = None
+        while queue:
+            distance, _, point = heappop(queue)
+            if distance != distances[point]:
+                continue
+            budget.consume(cancellation_check)
+            if point in remaining:
+                target = point
+                break
+            for neighbor in adjacency[point]:
+                candidate = distance + _distance(transform, point, neighbor)
+                if candidate < distances.get(neighbor, inf):
+                    distances[neighbor] = candidate
+                    parents[neighbor] = point
+                    heappush(queue, (candidate, _key(neighbor), neighbor))
+        if target is None:
+            raise _Abort(ForcedRouteStatus.MALFORMED_TOPOLOGY, "unreachable_odd_vertex")
+        remaining.remove(target)
+        point = target
+        while point != start:
+            previous = parents[point]
+            instances.append(
+                _EdgeInstance(
+                    previous,
+                    point,
+                    RouteStepKind.DUPLICATED,
+                    *owners[frozenset((previous, point))],
+                )
+            )
+            point = previous
 
 
 def _source_ownership(
@@ -492,8 +631,10 @@ def _key(point: PixelPoint) -> tuple[int, int]:
 
 
 __all__ = [
+    "DEFAULT_MAX_OPTIMIZATION_EXPANSIONS",
     "MAX_FORCED_ROUTE_COMPONENTS",
     "MAX_FORCED_ROUTE_SAMPLES",
+    "ForcedRouteAlgorithm",
     "ForcedRouteMetrics",
     "ForcedRouteResult",
     "ForcedRouteStatus",

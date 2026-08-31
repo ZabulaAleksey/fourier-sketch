@@ -274,6 +274,11 @@ step aligned с closed `Curve` и имеет original/duplicated/bridge provenan
 added cost. Application resamples именно этот route в существующий Fourier timeline. Policy opt-in,
 не меняет FS-016 PiecewiseCurve и не обещает optimal Postman/TSP.
 
+FS-029 расширяет только internal odd-vertex duplication policy: default FS-017 tree T-join остаётся
+неизменным, improved policy использует bounded weighted shortest-path pairing и тот же Hierholzer,
+component ordering, explicit bridges и Fourier consumer. Application comparison владеет двумя
+route results и routing-time measurements; piecewise pipeline не импортирует optimization layer.
+
 ## Discontinuous Fourier boundary (FS-018)
 
 `math.piecewise_sampling` владеет bounded exact-budget allocation и immutable boundary ledger.
