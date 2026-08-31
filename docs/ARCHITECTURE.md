@@ -148,6 +148,11 @@ explicit tolerance и передаёт typed result read-only renderer-у. Work-
 публикует partial result и не включает silent original fallback. Curvature/adaptive allocation не
 принадлежат этой boundary.
 
+FS-028 добавляет отдельный pure `math.adaptive_sampling` рядом с FS-009 resampling, не изменяя
+существующие `resample_curve_by_arc_length` или Fourier APIs. Application comparison строит uniform
+и adaptive curves с одинаковыми N/K/speed; contour CLI/render подключают это только opt-in и
+запрещают смешанный simplification+adaptive invocation.
+
 FS-010 `imaging.model` хранит one-byte `RasterImage` как grayscale или binary, decode provenance,
 transform sequence и stable privacy-safe failure code без Pillow/NumPy values в public result.
 `pillow_backend` сначала проверяет file size, читает не более 25 MiB + 1, дважды открывает один

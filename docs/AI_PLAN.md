@@ -2,17 +2,17 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-027 Curve Simplification slice поверх завершённых
-parameterization/image MVP и hardening contracts.
+Реализовать отдельный проверяемый FS-028 Adaptive Sampling slice поверх завершённых
+arc-length parameterization и FS-027 simplification baseline.
 
 ## Активный stage
 
-- Stage ID: `FS-027`
-- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated in `main` and
-  published to `origin/main`.
-- Prerequisites: FS-023, FS-009 and FS-013 are `completed` and published in `origin/main`.
-- Contract: simplify curve geometry under explicit bounded/error semantics without changing the
-  canonical Fourier pipeline or starting adaptive sampling FS-028.
+- Stage ID: `FS-028`
+- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
+  awaiting the already-authorized MDP publication.
+- Prerequisites: FS-027 and FS-009 are `completed` and published in `origin/main`.
+- Contract: read and execute only the exact FS-028 stage record before implementation; do not start
+  route optimization FS-029 or later scope.
 
 ## Integration state
 
@@ -27,12 +27,12 @@ parameterization/image MVP и hardening contracts.
 
 ## План выполнения
 
-1. [completed] Прочитать exact FS-027 contract и зафиксировать simplification/error/budget semantics.
-2. [completed] Реализовать только FS-027 vertical slice без FS-028+.
+1. [completed] Прочитать exact FS-028 contract и зафиксировать curvature/budget/error semantics.
+2. [completed] Реализовать только FS-028 vertical slice без FS-029+.
 3. [completed] Выполнить targeted/full/static/overlay gates, independent review и documentation sync.
-4. [completed] Создать атомарные commits и выполнить разрешённый МДП.
+4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-027 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий отдельный stage —
-FS-028; FS-030/mobile/basis scope в завершённый slice не добавлялся.
+FS-028 validated на рабочей ветке; independent review GO. Следующий шаг — атомарный commit и
+разрешённый МДП; FS-029/FS-030/mobile/basis scope до интеграции не начинать.

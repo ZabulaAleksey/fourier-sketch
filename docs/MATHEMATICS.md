@@ -239,6 +239,29 @@ sampled error сравнивает их aligned periodic samples; baseline и si
 сравниваются с одной baseline sampled reference при одинаковом `K`. Эти measured значения не
 доказывают универсальное улучшение после simplification.
 
+## Adaptive sampling
+
+FS-028 измеряет unsigned discrete turning angle в source vertex. Для non-zero incoming/outgoing
+vectors `a,b`:
+
+```text
+κ_i = acos(clamp((a·b)/(|a||b|), -1, 1)) / π,  0 ≤ κ_i ≤ 1
+```
+
+Open endpoints получают `κ=0`; closed curve использует cyclic neighbors. Для segment `i→i+1`
+adaptive density равна `w_i = length_i * (1 + α(κ_i+κ_(i+1))/2)`, где explicit `0≤α≤100`.
+Базовый множитель `1` сохраняет positive weight каждому positive-length segment. Output targets
+равномерны в cumulative `w`; interpolation внутри segment линейна по доле его weight.
+
+Open curve использует targets `jW/(N-1)` и exact source endpoints. Closed curve использует `jW/N`,
+exact source start и не повторяет seam. Поэтому total output budget всегда ровно `N`, order/closure
+сохранены. При `α=0` или all-zero curvature policy явно помечается
+`uniform_arc_length_zero_adaptive_signal`; это заранее принятый uniform fallback, а не silent
+algorithm substitution. Zero/non-finite geometric length остаётся typed failure.
+
+Uniform и adaptive samples сравниваются при одинаковых `N/K/speed` и одной uniform sampled
+reference. Spacing/RMSE описывают только конкретный fixture и не доказывают universal superiority.
+
 ## Discontinuous curves
 
 `PiecewiseCurve` определяет intervals/segments, для которых может быть:

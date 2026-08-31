@@ -2,6 +2,11 @@
 
 from fourier_sketch.math import ResamplingMethod
 
+from .adaptive_sampling import (
+    AdaptiveSamplingComparison,
+    AdaptiveSamplingConfig,
+    compare_adaptive_sampling,
+)
 from .curve_simplification import (
     CurveSimplificationComparison,
     CurveSimplificationConfig,
@@ -120,6 +125,8 @@ __all__ = [
     "MIN_BUILD_UP_DWELL_SECONDS",
     "MIN_GIF_FRAMES",
     "MIN_GIF_FRAME_DURATION_MS",
+    "AdaptiveSamplingComparison",
+    "AdaptiveSamplingConfig",
     "AnimationExportPlan",
     "BuildUpMetrics",
     "BuildUpSnapshot",
@@ -171,6 +178,7 @@ __all__ = [
     "build_local_piecewise",
     "build_local_skeleton",
     "build_local_skeleton_graph",
+    "compare_adaptive_sampling",
     "compare_curve_simplification",
     "compare_discontinuous_with_forced_route",
     "detect_preprocessed_edges",

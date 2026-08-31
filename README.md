@@ -50,6 +50,9 @@ first-K sequence `1..N` с retained energy/RMSE. Play/Pause/Restart управл
 `FS-027` добавляет opt-in curve simplification diagnostic: bounded project-owned Douglas–Peucker
 уменьшает ordered contour до arc-length resampling, сохраняет original/retained-index provenance и
 сравнивает original/simplified equal-N/equal-K Fourier paths без universal quality claim.
+`FS-028` добавляет отдельный opt-in adaptive sampling diagnostic: discrete turning-angle density
+перераспределяет exact N samples, а uniform/adaptive equal-K paths сравниваются без изменения
+canonical Fourier math и без утверждения универсального преимущества.
 
 ## Целевой pipeline
 
@@ -168,6 +171,7 @@ pixel centers в центрированные aspect-preserving domain coordinat
 uv run python -m fourier_sketch.cli.contours input.png --output contour-trace.png --algorithm threshold_boundary --samples 256 --harmonics 25 --frames 60
 uv run python -m fourier_sketch.cli.contours input.jpg --output canny-trace.png --algorithm canny --canny-low 50 --canny-high 150
 uv run python -m fourier_sketch.cli.contours input.png --output simplification.png --simplify-tolerance 0.02 --samples 256 --harmonics 25
+uv run python -m fourier_sketch.cli.contours input.png --output adaptive.png --adaptive-curvature-weight 20 --samples 256 --harmonics 25
 ```
 
 Summary показывает только output basename, выбранный algorithm, bounded backend identifier,
@@ -184,6 +188,13 @@ deviation, sampled RMSE и reconstruction RMSE против одной baseline 
 удаляет только exact collinear/duplicate interior points. `--simplification-budget` ограничивает
 distance evaluations; invalid/resource failure не создаёт partial output и не включает silent
 fallback на original. Curvature-aware simplification и adaptive sampling остаются отдельными stages.
+
+При `--adaptive-curvature-weight 0..100` normalized contour отдельно проходит weighted arc-length
+sampling: discrete turning angle увеличивает positive segment density, но output всегда содержит
+ровно N ordered samples, сохраняет open endpoints или closed start/closure. Значение `0` и all-zero
+curvature используют explicit `uniform_arc_length_zero_adaptive_signal` provenance. Comparison PNG
+показывает uniform/adaptive samples и actual timelines при одинаковых N/K/speed. Adaptive и
+simplification options в одном invocation запрещены; default contour path не изменён.
 
 ## Image-to-Fourier MVP
 

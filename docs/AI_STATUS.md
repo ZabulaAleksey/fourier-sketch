@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-027`.
-- Active Stage ID: `FS-027`, lifecycle `completed`; automated gates PASS, independent review GO,
-  integrated in `main` and published to `origin/main`.
+- Last completed Stage ID: `FS-028` on the working branch, awaiting publication.
+- Active Stage ID: `FS-028`, lifecycle `completed`; automated gates PASS and independent review GO,
+  awaiting the already-authorized MDP publication.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -13,10 +13,27 @@
   FS-027 property-contract correction `dea56ba` and Curve Simplification `15ea3f7` are integrated in
   `main` and published to `origin/main`.
   No PR, release or deployment was performed.
-- Scope: только FS-027 Curve Simplification; FS-028+, FS-031 и FS-032 не начинались.
+- Scope: только FS-028 Adaptive Sampling; FS-029+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-028 progress
+
+- Project-owned adaptive sampler вычисляет normalized unsigned turning angle и positive weighted
+  arc-length density, затем выдаёт exact N ordered samples. Open endpoints, closed start/closure,
+  source immutability и duplicate-seam cleanup сохраняются; source `≤250,000`, N `≤4096`, curvature
+  weight `0..100`.
+- `weight=0`/all-zero curvature используют explicit
+  `uniform_arc_length_zero_adaptive_signal` provenance. Contour CLI включает отдельный opt-in
+  uniform/adaptive comparison при одинаковых N/K/speed; совместный FS-027+FS-028 invocation
+  отклоняется, legacy path без options не меняется.
+- Focused FS-028 regression: `10 passed`; expanded FS-009/FS-027/FS-028 regression: `53 passed`;
+  full repeat: `638 passed in 140.63s`. Первый full run дал `637 passed` и один legacy
+  forced-route subprocess timeout на 30 s; изолированный rerun `1 passed in 2.70s`, затем full repeat
+  PASS. Frozen sync checked 38 packages; Ruff, strict mypy (222 source files), diff and overlay PASS.
+  Maximum accepted 250 000-point source → 4096 samples measured `1.340139s`. Independent read-only
+  review: `GO`, no P0/P1/P2.
 
 ## FS-027 progress
 
@@ -248,13 +265,13 @@
 
 ## Следующее разумное действие
 
-FS-027 опубликован; следующим отдельным slice выбрать FS-028 Adaptive Sampling. Не смешивать FS-030
-или mobile/basis scope с этим следующим stage.
+Создать атомарный FS-028 commit и выполнить разрешённый МДП. После публикации отдельно выбрать
+FS-029; не смешивать FS-030 или mobile/basis scope с текущим slice.
 
 ## Синхронизация документации
 
-- Для FS-027 обновлены README, Fourier/image SPEC, architecture/decisions/design/mathematics/testing,
-  traceability и AI plan/status/roadmap/stage registry. Fourier math, dependency set, security,
+- Для FS-028 обновлены README, Fourier/image SPEC, architecture/decisions/design/mathematics/testing,
+  traceability и AI plan/status/roadmap/stage registry. Fourier convention, dependency set, security,
   export schema и desktop/mobile UI не изменены.
-- `docs/LEARNING_LOG.md` проверен без изменений: замкнутый cyclic-anchor regression и constant-
-  reference property semantics закреплены executable tests без отдельного operational runbook.
+- `docs/LEARNING_LOG.md` проверен без изменений: incoming/outgoing turning-angle regression и
+  explicit uniform provenance закреплены executable tests без отдельного operational runbook.

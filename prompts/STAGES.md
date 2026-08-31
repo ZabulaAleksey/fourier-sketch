@@ -1248,14 +1248,16 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-028 — Adaptive Sampling (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
+  awaiting the already-authorized MDP publication.
 - Goal: allocate more samples near measured curvature while preserving curve semantics and budget.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-027 + FS-009 → FS-028`; simplification/baseline arc-length sampling completed.
 - Entry evidence: curvature definition, sample budget and comparison fixtures accepted.
-- Current gate: unsatisfied while prerequisites are planned.
+- Current gate: FS-027/FS-009 prerequisites completed; discrete turning-angle, positive weighted
+  arc-length density, exact-N and explicit uniform provenance contract accepted.
 
 ### Scope / non-goals / invariants
 

@@ -89,6 +89,18 @@ length/deviation metrics, baseline-vs-simplified sampled error и обе reconst
 cancellation или render/output failure завершаются controlled state, сохраняют existing destination
 и не переключаются молча на original. Curvature-aware simplification и adaptive sampling — не FS-027.
 
+### IM-FR-010 — Adaptive sampling comparison
+
+FS-028 contour diagnostic принимает отдельный opt-in curvature weight и сравнивает uniform
+arc-length/adaptive samples одного normalized contour при одинаковых `N`, `K`, speed и timeline
+advance. Comparison показывает source curvature/density provenance, обе sampled geometries, spacing
+diagnostics и обе reconstruction errors против uniform baseline reference. Он не утверждает, что
+adaptive sampling лучше для произвольной curve.
+
+Adaptive option несовместим с FS-027 simplification option в одном invocation: каждый diagnostic
+остаётся отдельным измеримым slice. Без option legacy contour path не меняется. Invalid/degenerate
+input или render/output failure сохраняют existing destination и не включают silent fallback.
+
 ## Fallback/failure
 
 Invalid/corrupt/oversized input fail closed. Отсутствие optional CV backend не разрешает silent
@@ -112,8 +124,11 @@ algorithm switch: capability проверяется, provenance отобража
 - IM-AC-009: unit/property/integration/component/live CLI evidence подтверждает normalized contour →
   bounded Douglas–Peucker → equal-N resampling → two actual timelines, side-by-side PNG/provenance,
   source recoverability и atomic no-overwrite failure behavior.
+- IM-AC-010: unit/property/integration/component/live CLI evidence подтверждает normalized contour →
+  uniform/adaptive equal-N sampling → equal-K actual timelines, deterministic density provenance,
+  side-by-side PNG/metrics и unchanged legacy path.
 
 ## Планируемая трассировка
 
 Stages `FS-010`–`FS-020`, `FS-027`–`FS-029`; Behaviors `BH-IMPORT-001`,
-`BH-DISCONTINUITY-001`, `BH-SIMPLIFY-001`.
+`BH-DISCONTINUITY-001`, `BH-SIMPLIFY-001`, `BH-ADAPTIVE-001`.

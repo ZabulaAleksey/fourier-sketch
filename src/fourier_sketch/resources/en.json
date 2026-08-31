@@ -64,6 +64,8 @@
   "cli.simplification_failed": "Curve simplification failed: {reason}",
   "simplification.error.resource_limit": "The curve or distance-evaluation work exceeds the simplification resource budget.",
   "simplification.error.cancelled": "Curve simplification was cancelled; no comparison was published.",
+  "cli.help.adaptive_curvature_weight": "Optional adaptive curvature weight from 0 to 100; cannot be combined with simplification.",
+  "cli.adaptive_success": "Adaptive sampling comparison written: {name} ({algorithm}, {policy}, weight {weight:.6g}, {samples} samples, sampled RMSE {sampled_rmse:.6g}, uniform/adaptive reconstruction RMSE {uniform_rmse:.6g}/{adaptive_rmse:.6g}, {trace} trace points per panel).",
   "cli.output_exists": "Output already exists: {name}",
   "cli.render_failed": "Diagnostic rendering failed: {reason}",
   "cli.success": "Diagnostic written: {name}",
@@ -321,5 +323,10 @@
   "simplification.simplified": "Simplified geometry",
   "simplification.baseline_frame": "Original current frame",
   "simplification.simplified_frame": "Simplified current frame",
-  "simplification.summary": "Simplification comparison · {algorithm} · tolerance={tolerance:.6g} · points {source_points}->{simplified_points}\nmax/RMS deviation={maximum_deviation:.6g}/{rms_deviation:.6g} · length delta={length_delta:.6g} · sampled RMSE={sampled_rmse:.6g}\nbaseline/simplified reconstruction RMSE vs baseline={baseline_rmse:.6g}/{simplified_rmse:.6g}"
+  "simplification.summary": "Simplification comparison · {algorithm} · tolerance={tolerance:.6g} · points {source_points}->{simplified_points}\nmax/RMS deviation={maximum_deviation:.6g}/{rms_deviation:.6g} · length delta={length_delta:.6g} · sampled RMSE={sampled_rmse:.6g}\nbaseline/simplified reconstruction RMSE vs baseline={baseline_rmse:.6g}/{simplified_rmse:.6g}",
+  "adaptive.uniform_samples": "Uniform arc-length samples",
+  "adaptive.weighted_samples": "Adaptive weighted samples",
+  "adaptive.uniform_frame": "Uniform current frame",
+  "adaptive.weighted_frame": "Adaptive current frame",
+  "adaptive.summary": "Adaptive sampling comparison · {algorithm} · {policy} · weight={weight:.6g}\ncurvature min/max={minimum_curvature:.6g}/{maximum_curvature:.6g} · density min/max={minimum_density:.6g}/{maximum_density:.6g} · spacing CV uniform/adaptive={uniform_cv}/{adaptive_cv}\nsampled RMSE={sampled_rmse:.6g} · reconstruction RMSE uniform/adaptive vs uniform={uniform_rmse:.6g}/{adaptive_rmse:.6g}"
 }

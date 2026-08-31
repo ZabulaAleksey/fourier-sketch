@@ -517,3 +517,23 @@ adaptive allocation отклонены для этого slice.
 **Последствия:** существующий contour CLI остаётся неизменным без opt-in tolerance; FS-027 добавляет
 side-by-side diagnostic и controlled failure без новой dependency. Metric не называется Hausdorff/
 Fréchet и не поддерживает universal quality claim. FS-028 остаётся отдельным stage.
+
+## 2026-08-31 — ADR-028: Weighted arc-length density для bounded adaptive sampling
+
+**Статус:** Accepted.
+
+**Контекст:** FS-028 должен перераспределять fixed sample budget к measured turns без изменения
+curve order/closure, Fourier convention или универсального quality claim.
+
+**Решение:** использовать project-owned discrete turning angle и positive weighted arc-length
+density. Open endpoints имеют zero curvature; closed vertices cyclic. Exact N targets равномерны в
+cumulative density; `weight=0`/all-zero curvature имеют explicit uniform provenance. Ограничить
+weight `0..100`, output существующим `MAX_RESAMPLED_POINTS=4096`; invalid/zero-length input fail
+typed. Comparison использует uniform baseline с теми же N/K/speed и atomic opt-in CLI artifact.
+
+**Рассмотренные альтернативы:** изменение canonical arc-length sampler, integer per-segment quotas
+(не определены при `N < segment_count`), curvature-aware simplification, learned/optimized allocation
+и FS-029 routing.
+
+**Последствия:** density каждого positive segment остаётся positive, exact output budget и topology
+проверяемы; curvature concentration является measured allocation, не обещанием меньшего RMSE.

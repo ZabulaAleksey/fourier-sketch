@@ -97,6 +97,14 @@ smaller window heights it remains usable instead of overlapping the source contr
 - Invalid tolerance/resource/cancel/output state локализован, existing destination сохраняется;
   пользователь может повторить command без option и получить unchanged original path.
 
+## Adaptive Sampling diagnostic FS-028
+
+- Existing contour CLI получает отдельный opt-in `--adaptive-curvature-weight`; без option
+  UI/output остаются прежними, совместное использование с `--simplify-tolerance` отклоняется.
+- Comparison PNG показывает uniform/adaptive sampled geometry и два current Fourier frames при
+  одинаковых N/K/speed. Summary называет algorithm, weight, policy, curvature/density range,
+  spacing CV и reconstruction RMSE; universal improvement claim отсутствует.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

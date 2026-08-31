@@ -35,6 +35,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-025` | Frequency Solo | `completed` |
 | `FS-026` | Harmonic Build-Up Animation | `completed` |
 | `FS-027` | Curve Simplification | `completed` |
+| `FS-028` | Adaptive Sampling | `completed`, awaiting publication |
 
 ## Текущий этап
 
@@ -43,8 +44,9 @@ Harmonic Inspector завершён, интегрирован в `main` и оп�
 GO. `FS-025` Frequency Solo завершён, интегрирован в `main` и опубликован в `origin/main`; selected
 record `FS-026` Harmonic Build-Up Animation завершён, интегрирован в `main` и опубликован в
 `origin/main`; independent review GO. Selected record `FS-027` Curve Simplification завершён,
-интегрирован в `main` и опубликован в `origin/main`; independent review GO. Более поздние stages не
-начаты.
+интегрирован в `main` и опубликован в `origin/main`; independent review GO. Selected record `FS-028`
+Adaptive Sampling validated на рабочей ветке, independent review GO и ожидает разрешённый МДП;
+FS-029+ не начаты.
 
 ## Image-to-curve pipeline
 

@@ -1,5 +1,11 @@
 """Public numerical API for Fourier Sketch."""
 
+from .adaptive_sampling import (
+    ADAPTIVE_SAMPLING_ALGORITHM,
+    AdaptiveSamplingPolicy,
+    AdaptiveSamplingResult,
+    resample_curve_adaptive,
+)
 from .conversion import (
     complex_samples_to_curve,
     complex_to_point,
@@ -65,6 +71,7 @@ from .spectrum_analysis import (
 from .transforms import MAX_FFT_SAMPLES, MAX_REFERENCE_SAMPLES, fft_dft, idft, reference_dft
 
 __all__ = [
+    "ADAPTIVE_SAMPLING_ALGORITHM",
     "CLOSED_ANCHOR_POLICY",
     "DEFAULT_SIMPLIFICATION_EVALUATIONS",
     "DOUGLAS_PEUCKER_ALGORITHM",
@@ -77,6 +84,8 @@ __all__ = [
     "MAX_RESAMPLED_POINTS",
     "MAX_SIMPLIFICATION_EVALUATIONS",
     "MAX_SIMPLIFICATION_POINTS",
+    "AdaptiveSamplingPolicy",
+    "AdaptiveSamplingResult",
     "CurveSimplificationError",
     "CurveSimplificationMetrics",
     "CurveSpacingMetrics",
@@ -112,6 +121,7 @@ __all__ = [
     "reconstruct_samples",
     "reconstruction_metrics",
     "reference_dft",
+    "resample_curve_adaptive",
     "resample_curve_by_arc_length",
     "resample_curve_by_index",
     "retained_energy_ratio",

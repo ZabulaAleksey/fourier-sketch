@@ -1,4 +1,4 @@
-"""Localized contour timeline diagnostic with opt-in FS-027 simplification comparison."""
+"""Localized contour diagnostic with opt-in FS-027/FS-028 comparisons."""
 
 import argparse
 import locale as system_locale
@@ -12,9 +12,11 @@ from typing import NoReturn
 from fourier_sketch.application import (
     DEFAULT_CONTOUR_HARMONICS,
     DEFAULT_CONTOUR_SAMPLES,
+    AdaptiveSamplingConfig,
     CurveSimplificationConfig,
     ImageNoContourResult,
     build_dominant_contour_timeline,
+    compare_adaptive_sampling,
     compare_curve_simplification,
     preprocess_local_image,
     validate_timeline_speed,
@@ -39,7 +41,11 @@ from fourier_sketch.math import (
     CurveSimplificationError,
 )
 from fourier_sketch.presentation import Translator, resolve_locale
-from fourier_sketch.render import render_curve_simplification_png, render_frame_png
+from fourier_sketch.render import (
+    render_adaptive_sampling_png,
+    render_curve_simplification_png,
+    render_frame_png,
+)
 
 
 class _ArgumentValidationError(ValueError):
@@ -59,6 +65,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     translator = Translator(resolve_locale(requested_locale, os_hint=system_locale.getlocale()[0]))
     try:
         options = _parser(translator).parse_args(arguments)
+        if (
+            options.simplify_tolerance is not None
+            and options.adaptive_curvature_weight is not None
+        ):
+            raise _ArgumentValidationError
         algorithm = EdgeAlgorithm(options.algorithm)
         _validate_timeline_options(options.frames, options.frame_delta, options.speed)
         boundary_parameters = ThresholdBoundaryParameters()
@@ -101,8 +112,46 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 0
 
+        if options.adaptive_curvature_weight is not None:
+            adaptive_comparison = compare_adaptive_sampling(
+                result.normalized.curve,
+                AdaptiveSamplingConfig(
+                    curvature_weight=options.adaptive_curvature_weight,
+                    sample_count=options.samples,
+                    harmonic_count=options.harmonics,
+                    speed=options.speed,
+                ),
+            )
+            adaptive_comparison.uniform_timeline.play()
+            adaptive_comparison.adaptive_timeline.play()
+            for _ in range(options.frames):
+                adaptive_comparison.uniform_timeline.advance(options.frame_delta)
+                adaptive_comparison.adaptive_timeline.advance(options.frame_delta)
+            output = Path(options.output)
+            render_adaptive_sampling_png(
+                adaptive_comparison,
+                output,
+                translator,
+                overwrite=options.overwrite,
+            )
+            print(
+                translator.text(
+                    "cli.adaptive_success",
+                    name=_safe_display_basename(output),
+                    algorithm=adaptive_comparison.adaptive.algorithm,
+                    policy=adaptive_comparison.adaptive.policy,
+                    weight=adaptive_comparison.adaptive.curvature_weight,
+                    samples=adaptive_comparison.adaptive.sample_count,
+                    sampled_rmse=adaptive_comparison.sampled_metrics.rmse,
+                    uniform_rmse=adaptive_comparison.uniform_reconstruction_metrics.rmse,
+                    adaptive_rmse=adaptive_comparison.adaptive_reconstruction_metrics.rmse,
+                    trace=len(adaptive_comparison.uniform_timeline.snapshot().trace),
+                )
+            )
+            return 0
+
         if options.simplify_tolerance is not None:
-            comparison = compare_curve_simplification(
+            simplification_comparison = compare_curve_simplification(
                 result.normalized.curve,
                 CurveSimplificationConfig(
                     tolerance=options.simplify_tolerance,
@@ -112,32 +161,34 @@ def main(argv: Sequence[str] | None = None) -> int:
                     max_distance_evaluations=options.simplification_budget,
                 ),
             )
-            comparison.baseline_timeline.play()
-            comparison.simplified_timeline.play()
+            simplification_comparison.baseline_timeline.play()
+            simplification_comparison.simplified_timeline.play()
             for _ in range(options.frames):
-                comparison.baseline_timeline.advance(options.frame_delta)
-                comparison.simplified_timeline.advance(options.frame_delta)
+                simplification_comparison.baseline_timeline.advance(options.frame_delta)
+                simplification_comparison.simplified_timeline.advance(options.frame_delta)
             output = Path(options.output)
             render_curve_simplification_png(
-                comparison,
+                simplification_comparison,
                 output,
                 translator,
                 overwrite=options.overwrite,
             )
-            metrics = comparison.simplification.metrics
+            metrics = simplification_comparison.simplification.metrics
             print(
                 translator.text(
                     "cli.simplification_success",
                     name=_safe_display_basename(output),
-                    algorithm=comparison.simplification.algorithm,
-                    tolerance=comparison.simplification.tolerance,
+                    algorithm=simplification_comparison.simplification.algorithm,
+                    tolerance=simplification_comparison.simplification.tolerance,
                     source_points=metrics.source_point_count,
                     simplified_points=metrics.simplified_point_count,
                     maximum_deviation=metrics.maximum_segment_deviation,
-                    sampled_rmse=comparison.sampled_metrics.rmse,
-                    baseline_rmse=comparison.baseline_reconstruction_metrics.rmse,
-                    simplified_rmse=comparison.simplified_reconstruction_metrics.rmse,
-                    trace=len(comparison.baseline_timeline.snapshot().trace),
+                    sampled_rmse=simplification_comparison.sampled_metrics.rmse,
+                    baseline_rmse=simplification_comparison.baseline_reconstruction_metrics.rmse,
+                    simplified_rmse=(
+                        simplification_comparison.simplified_reconstruction_metrics.rmse
+                    ),
+                    trace=len(simplification_comparison.baseline_timeline.snapshot().trace),
                 )
             )
             return 0
@@ -280,6 +331,12 @@ def _parser(translator: Translator) -> argparse.ArgumentParser:
         type=int,
         default=DEFAULT_SIMPLIFICATION_EVALUATIONS,
         help=translator.text("cli.help.simplification_budget"),
+    )
+    parser.add_argument(
+        "--adaptive-curvature-weight",
+        type=float,
+        default=None,
+        help=translator.text("cli.help.adaptive_curvature_weight"),
     )
     parser.add_argument(
         "--overwrite",

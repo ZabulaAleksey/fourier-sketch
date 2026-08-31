@@ -58,6 +58,19 @@ budget/cancel не публикуют partial result.
 Metrics называют measured source-vertex-to-retained-segment deviation, point/length reduction и не
 выдают его за Hausdorff/Fréchet distance или универсальное улучшение shape/Fourier quality.
 
+### FC-FR-009 — Deterministic adaptive sampling
+
+Project-owned adaptive sampler принимает immutable ordered `Curve`, exact output budget `N` и
+finite curvature weight `0..100`. После adjacent-duplicate cleanup (и удаления explicit duplicate
+closed seam) discrete vertex curvature равна unsigned turning angle, normalized by `π`. Open
+endpoints имеют curvature `0`; closed vertices используют cyclic neighbors.
+
+Каждый positive-length source segment получает positive density
+`length * (1 + weight * mean(endpoint_curvature))`. Равномерные targets в cumulative density дают
+ровно `N` ordered samples; open endpoints и closed start/index `0` назначаются точно, closed seam не
+дублируется. `weight=0` или all-zero curvature используют заранее принятую uniform arc-length policy
+с explicit provenance. Zero/non-finite total length отклоняется typed; silent fallback запрещён.
+
 ## Численные свойства
 
 - `IDFT(DFT(z)) ≈ z`;
@@ -84,8 +97,11 @@ fail with typed/domain errors. Один sample даёт только stationary 
 - FC-AC-005: math package не импортирует UI/render/imaging modules.
 - FC-AC-006: known/property fixtures подтверждают source subsequence/order/topology, deterministic
   closed seam, tolerance bound, immutable source и controlled invalid/budget/cancel failure.
+- FC-AC-007: known/property fixtures подтверждают exact sample budget, deterministic curvature/
+  segment density, open endpoints, closed start/closure, finite ordered interpolation, immutable
+  source и explicit uniform provenance для zero adaptive signal.
 
 ## Планируемая трассировка
 
-Stages `FS-001`–`FS-004`, `FS-009`, `FS-027`; Behaviors `BH-FOURIER-001`, `BH-HARMONICS-001`,
-`BH-SIMPLIFY-001`.
+Stages `FS-001`–`FS-004`, `FS-009`, `FS-027`, `FS-028`; Behaviors `BH-FOURIER-001`,
+`BH-HARMONICS-001`, `BH-SIMPLIFY-001`, `BH-ADAPTIVE-001`.

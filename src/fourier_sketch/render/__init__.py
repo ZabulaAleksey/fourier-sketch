@@ -1,6 +1,7 @@
 """Rendering adapters for immutable application frames."""
 
 from .exporting import export_animation_gif, render_spectrum_png
+from .matplotlib_adaptive_sampling import render_adaptive_sampling_png
 from .matplotlib_curve_simplification import render_curve_simplification_png
 from .matplotlib_discontinuous import draw_discontinuous_source, render_discontinuous_png
 from .matplotlib_epicycles import draw_frame, render_frame_png, run_interactive
@@ -45,6 +46,7 @@ __all__ = [
     "draw_skeleton_preview",
     "draw_spectrum_analysis",
     "export_animation_gif",
+    "render_adaptive_sampling_png",
     "render_curve_simplification_png",
     "render_discontinuous_png",
     "render_fft2_png",

@@ -307,6 +307,11 @@ side-by-side artists/metrics, atomic no-overwrite output and unchanged legacy pa
 Performance evidence records representative completion and bounded worst-case abort; it does not
 claim asymptotic improvement.
 
+FS-028 unit/property tests cover turning-angle fixtures, exact N, deterministic weighted targets,
+open endpoints, closed seam/start, duplicates, all-zero curvature provenance, invalid/zero-length
+failure and immutable source. Integration compares uniform/adaptive equal-N/equal-K timelines;
+component/live CLI verify atomic side-by-side PNG, metrics, option conflict and unchanged legacy path.
+
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
