@@ -1208,8 +1208,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-027 — Curve Simplification (Optional)
 
-- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
-  awaiting the already-authorized MDP publication.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated in `main` and
+  published to `origin/main`.
 - Goal: simplify contours with measured shape/error impact before resampling.
 
 ### Dependency DAG & entry preconditions
