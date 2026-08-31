@@ -1435,6 +1435,62 @@ completion claim. Evidence records environment/branch and caveats.
 - Docs: DESIGN/user guide in README only if launch behavior changes, trace/status/plan.
 - Handoff: commit optional stage, synchronize evidence and stop.
 
+## FS-033 — Indexed Bases and Harmonic Playground (Optional)
+
+- Lifecycle: `completed`; automated gates PASS and independent review GO on
+  `feature/fs-033-basis-playground`; publication pending.
+- Goal: add bounded DCT-II/Walsh reconstruction and let a desktop user build an actual Fourier
+  curve from explicitly authored harmonics.
+
+### Dependency DAG & entry preconditions
+
+- DAG: `FS-023 + FS-021 + FS-030 + FS-032 → FS-033`; hardened desktop, educational-mode isolation
+  and typed basis dispatch are completed prerequisites.
+- Entry evidence: accepted `specs/features/basis-playground.spec.md`, analytical transform fixtures,
+  existing 128-sample desktop adapter and actual Qt offscreen harness.
+- Current gate: prerequisites complete; Android SDK/device is not a dependency for this desktop slice.
+
+### Scope / non-goals / invariants
+
+- Scope: project-owned orthonormal complex DCT-II and natural-order Walsh–Hadamard; immutable indexed
+  term provenance/selection; honest non-epicycle reconstruction timeline; Fourier-only Playground
+  with ordered `k/amplitude/phase` terms and baseline restore.
+- Non-goals: additional wavelet families, learned bases, quality ranking, Android, export extension,
+  quizzes/scoring or a transform plugin framework.
+- Invariants: existing Fourier/Haar math and frames remain valid; non-Fourier terms never fabricate
+  circles/frequency/endpoint/trace; composer coefficients are exact, bounded and transactional;
+  existing timeline/canvas/QTimer are reused.
+
+### Runnable vertical slice & concrete E2E
+
+- Entry A: user selects DCT-II or Walsh before drawing; source becomes a recorded 128-sample analysis
+  curve and Terms builds an actual indexed-basis reconstruction/contribution view.
+- Entry B: user opens Harmonic Playground, applies two ordered terms, animates/inspects the resulting
+  actual epicycle chain, exits and receives the exact prior desktop result.
+- Observable result: all four basis labels have honest distinct geometry and manual harmonics draw a
+  reproducible curve without mutating baseline source/timeline or requiring Android.
+
+### PASS evidence
+
+- Analytical/property DCT/Walsh round-trip and partial-contribution parity; ownership/resource
+  negatives; composer exact-coefficient/order/budget/baseline isolation unit/integration; selector,
+  locks, animation and restore component tests; actual Qt offscreen E2E for both paths; performance,
+  full pytest, Ruff, mypy, overlay, diff and independent read-only review.
+- Offscreen Qt does not count as manual visible Windows GUI/DPI evidence.
+- Evidence: focused desktop/timeline `29 passed`; final full repository `728 passed in 114.52s`; focused
+  post-review `20 passed`; frozen sync 38 packages; Ruff, strict mypy (251 files), overlay/diff PASS;
+  bounded DCT-II/Walsh analysis and round-trip sanity PASS. Independent review GO.
+
+### Temporary / deferred / failure
+
+- Allowed: exactly two indexed orthonormal bases and one bounded manual Fourier laboratory as a fully
+  working slice.
+- Deferred: Daubechies/biorthogonal/continuous wavelets, learned bases, comparisons and Android.
+- Failure: invalid/over-budget input leaves previous valid state; no partial/stale publication or
+  silent basis fallback.
+- Docs: basis-playground SPEC, ARCHITECTURE/ADR, DESIGN/MATHEMATICS/TESTING, trace/status/plan.
+- Handoff: atomic commit, permitted merge/delete/push, no PR/release/deployment claim.
+
 ## FS-031 — Android Touch-to-Epicycles MVP
 
 - Lifecycle: `planned`, optional mobile expansion.

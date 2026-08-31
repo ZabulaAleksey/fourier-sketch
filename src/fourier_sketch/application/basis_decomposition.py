@@ -10,6 +10,9 @@ from fourier_sketch.domain import (
     HaarDecomposition,
     HaarSelection,
     HaarTerm,
+    IndexedDecomposition,
+    IndexedSelection,
+    IndexedTerm,
 )
 from fourier_sketch.math import (
     MAX_HAAR_SAMPLES,
@@ -19,8 +22,12 @@ from fourier_sketch.math import (
     haar_analyze,
     haar_synthesize,
     haar_term_contribution,
+    indexed_basis_analyze,
+    indexed_synthesize,
+    indexed_term_contribution,
     resample_curve_by_arc_length,
     select_haar_terms,
+    select_indexed_terms,
 )
 
 from .diagnostic_epicycles import (
@@ -34,6 +41,10 @@ MAX_HAAR_SOURCE_POINTS = 10_000
 HAAR_TERMS_PER_SECOND = 4.0
 HAAR_MIN_SPEED = 0.01
 HAAR_MAX_SPEED = 1.0
+INDEXED_ANALYSIS_SAMPLES = 128
+INDEXED_TERMS_PER_SECOND = 4.0
+INDEXED_MIN_SPEED = 0.01
+INDEXED_MAX_SPEED = 1.0
 DEFAULT_BASIS_HARMONICS = 15
 
 
@@ -236,6 +247,200 @@ class HaarTimeline:
         return self.snapshot()
 
 
+@dataclass(frozen=True, slots=True)
+class IndexedBasisFrame:
+    """Immutable renderer input for DCT-II/Walsh indexed reconstruction."""
+
+    source: Curve
+    analysis: Curve
+    reconstruction: Curve
+    active_contribution: Curve
+    decomposition: IndexedDecomposition
+    selection: IndexedSelection
+    state: TimelineState
+    speed: float
+
+    def __post_init__(self) -> None:
+        if not all(
+            isinstance(value, Curve)
+            for value in (self.source, self.analysis, self.reconstruction, self.active_contribution)
+        ):
+            raise DomainValidationError("indexed frame curves must be Curve values")
+        if not isinstance(self.decomposition, IndexedDecomposition):
+            raise DomainValidationError("indexed frame decomposition must be IndexedDecomposition")
+        if not isinstance(self.selection, IndexedSelection):
+            raise DomainValidationError("indexed frame selection must be IndexedSelection")
+        if self.selection.source_decomposition is not self.decomposition:
+            raise DomainValidationError("indexed frame selection must own its decomposition")
+        if self.analysis.sample_count != self.decomposition.sample_count:
+            raise DomainValidationError("indexed analysis must match decomposition grid")
+        if self.reconstruction.sample_count != self.analysis.sample_count:
+            raise DomainValidationError("indexed reconstruction must match analysis grid")
+        if self.active_contribution.sample_count != self.analysis.sample_count:
+            raise DomainValidationError("indexed contribution must match analysis grid")
+        if self.source.closed != self.analysis.closed:
+            raise DomainValidationError("indexed source and analysis topology must match")
+        if not isinstance(self.state, TimelineState):
+            raise DomainValidationError("indexed frame state must be a TimelineState")
+        object.__setattr__(self, "speed", _validated_indexed_speed(self.speed))
+
+    @property
+    def basis(self) -> BasisKind:
+        return self.decomposition.basis
+
+    @property
+    def term_count(self) -> int:
+        return self.selection.term_count
+
+    @property
+    def total_terms(self) -> int:
+        return self.decomposition.sample_count
+
+    @property
+    def source_curve(self) -> Curve:
+        return self.source
+
+    @property
+    def analysis_curve(self) -> Curve:
+        return self.analysis
+
+    @property
+    def timeline_state(self) -> TimelineState:
+        return self.state
+
+    @property
+    def active_term(self) -> IndexedTerm:
+        return self.selection.terms[-1]
+
+    @property
+    def active_term_contribution(self) -> Curve:
+        return self.active_contribution
+
+
+class IndexedBasisTimeline:
+    """Bounded deterministic activation of DCT-II or Walsh terms."""
+
+    def __init__(
+        self,
+        source: Curve,
+        analysis: Curve,
+        decomposition: IndexedDecomposition,
+        *,
+        term_count: int = 1,
+        speed: float = 1.0,
+    ) -> None:
+        _validate_indexed_inputs(source, analysis, decomposition)
+        self._source = source
+        self._analysis = analysis
+        self._decomposition = decomposition
+        self._term_count = _validated_term_count(term_count, decomposition.sample_count)
+        self._speed = _validated_indexed_speed(speed)
+        self._state = TimelineState.PAUSED
+        self._elapsed = 0.0
+
+    @property
+    def state(self) -> TimelineState:
+        return self._state
+
+    @property
+    def speed(self) -> float:
+        return self._speed
+
+    @property
+    def term_count(self) -> int:
+        return self._term_count
+
+    @property
+    def maximum_terms(self) -> int:
+        return self._decomposition.sample_count
+
+    @property
+    def basis(self) -> BasisKind:
+        return self._decomposition.basis
+
+    @property
+    def source(self) -> Curve:
+        return self._source
+
+    @property
+    def source_curve(self) -> Curve:
+        return self._source
+
+    @property
+    def analysis(self) -> Curve:
+        return self._analysis
+
+    @property
+    def analysis_curve(self) -> Curve:
+        return self._analysis
+
+    @property
+    def decomposition(self) -> IndexedDecomposition:
+        return self._decomposition
+
+    def snapshot(self) -> IndexedBasisFrame:
+        selection = select_indexed_terms(self._decomposition, self._term_count)
+        reconstruction = complex_samples_to_curve(
+            indexed_synthesize(selection), closed=self._analysis.closed
+        )
+        contribution = complex_samples_to_curve(
+            indexed_term_contribution(selection.terms[-1], self._analysis.sample_count),
+            closed=self._analysis.closed,
+        )
+        return IndexedBasisFrame(
+            source=self._source,
+            analysis=self._analysis,
+            reconstruction=reconstruction,
+            active_contribution=contribution,
+            decomposition=self._decomposition,
+            selection=selection,
+            state=self._state,
+            speed=self._speed,
+        )
+
+    def play(self) -> IndexedBasisFrame:
+        if self._term_count < self.maximum_terms:
+            self._state = TimelineState.RUNNING
+        return self.snapshot()
+
+    def pause(self) -> IndexedBasisFrame:
+        self._state = TimelineState.PAUSED
+        return self.snapshot()
+
+    def restart(self) -> IndexedBasisFrame:
+        self._state = TimelineState.PAUSED
+        self._term_count = 1
+        self._elapsed = 0.0
+        return self.snapshot()
+
+    def advance(self, delta_seconds: float) -> IndexedBasisFrame:
+        delta = _validated_delta(delta_seconds)
+        if self._state is TimelineState.RUNNING and delta:
+            elapsed = self._elapsed + delta * self._speed * INDEXED_TERMS_PER_SECOND
+            if not isfinite(elapsed):
+                raise DomainValidationError("indexed activation accumulator must remain finite")
+            transitions = min(self.maximum_terms - self._term_count, floor(elapsed))
+            if transitions:
+                self._term_count += transitions
+                elapsed -= transitions
+                if self._term_count == self.maximum_terms:
+                    self._state = TimelineState.PAUSED
+                    elapsed = 0.0
+            self._elapsed = elapsed
+        return self.snapshot()
+
+    def set_term_count(self, term_count: int) -> IndexedBasisFrame:
+        self._term_count = _validated_term_count(term_count, self.maximum_terms)
+        self._elapsed = 0.0
+        if self._term_count == self.maximum_terms:
+            self._state = TimelineState.PAUSED
+        return self.snapshot()
+
+    def set_speed(self, speed: float) -> IndexedBasisFrame:
+        self._speed = _validated_indexed_speed(speed)
+        return self.snapshot()
+
+
 def build_basis_timeline(
     curve: Curve,
     *,
@@ -243,7 +448,7 @@ def build_basis_timeline(
     harmonic_count: int | None = None,
     term_count: int | None = None,
     speed: float = 1.0,
-) -> EpicycleTimeline | HaarTimeline:
+) -> EpicycleTimeline | HaarTimeline | IndexedBasisTimeline:
     """Build the selected basis without silently switching on failure."""
     if not isinstance(curve, Curve):
         raise DomainValidationError("curve must be a Curve")
@@ -277,7 +482,30 @@ def build_basis_timeline(
             term_count=count,
             speed=speed,
         )
-    raise DomainValidationError("unsupported basis; choose Fourier epicycles or Haar wavelet")
+    if basis in {BasisKind.DCT_II, BasisKind.WALSH_HADAMARD}:
+        if harmonic_count is not None:
+            raise DomainValidationError("harmonic_count is only valid for Fourier basis")
+        analysis = _make_analysis_curve(curve)
+        indexed_decomposition = indexed_basis_analyze(
+            curve_to_complex_samples(analysis),
+            basis,
+            provenance=(
+                ("basis", basis.value),
+                ("source_sample_count", str(curve.sample_count)),
+                ("analysis_sample_count", str(analysis.sample_count)),
+            ),
+        )
+        count = 1 if term_count is None else term_count
+        return IndexedBasisTimeline(
+            curve,
+            analysis,
+            indexed_decomposition,
+            term_count=count,
+            speed=speed,
+        )
+    raise DomainValidationError(
+        "unsupported basis; choose Fourier epicycles, Haar wavelet, DCT-II or Walsh-Hadamard"
+    )
 
 
 def build_basis_decomposition(
@@ -287,7 +515,7 @@ def build_basis_decomposition(
     harmonic_count: int | None = None,
     term_count: int | None = None,
     speed: float = 1.0,
-) -> EpicycleTimeline | HaarTimeline:
+) -> EpicycleTimeline | HaarTimeline | IndexedBasisTimeline:
     """Compatibility name for the explicit basis timeline adapter."""
     return build_basis_timeline(
         curve,
@@ -363,5 +591,27 @@ def _validated_haar_speed(value: float) -> float:
     if normalized < HAAR_MIN_SPEED or normalized > HAAR_MAX_SPEED:
         raise DomainValidationError(
             f"Haar speed must be between {HAAR_MIN_SPEED} and {HAAR_MAX_SPEED}"
+        )
+    return normalized
+
+
+def _validate_indexed_inputs(
+    source: Curve,
+    analysis: Curve,
+    decomposition: IndexedDecomposition,
+) -> None:
+    if not isinstance(source, Curve) or not isinstance(analysis, Curve):
+        raise DomainValidationError("indexed timeline curves must be Curve values")
+    if not isinstance(decomposition, IndexedDecomposition):
+        raise DomainValidationError("indexed timeline decomposition must be IndexedDecomposition")
+    if analysis.sample_count != decomposition.sample_count:
+        raise DomainValidationError("analysis curve and indexed decomposition grids must match")
+
+
+def _validated_indexed_speed(value: float) -> float:
+    normalized = validate_timeline_speed(value)
+    if normalized < INDEXED_MIN_SPEED or normalized > INDEXED_MAX_SPEED:
+        raise DomainValidationError(
+            f"indexed speed must be between {INDEXED_MIN_SPEED} and {INDEXED_MAX_SPEED}"
         )
     return normalized

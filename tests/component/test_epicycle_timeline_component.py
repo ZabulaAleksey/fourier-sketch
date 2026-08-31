@@ -1,6 +1,7 @@
 """Component contracts for the diagnostic timeline and its presentation controls."""
 
 from cmath import exp
+from collections.abc import Sequence
 from dataclasses import replace
 from math import pi
 from typing import cast
@@ -124,6 +125,14 @@ def test_invalid_delta_visibility_and_explicit_ordering_are_rejected() -> None:
             frame.original,
             harmonic_count=1,
             ordering=SpectrumOrdering.EXPLICIT,
+        )
+    with pytest.raises(DomainValidationError, match="iterable"):
+        EpicycleTimeline(
+            fft_dft(tuple(complex(point.x, point.y) for point in frame.original.points)),
+            frame.original,
+            harmonic_count=1,
+            ordering=SpectrumOrdering.EXPLICIT,
+            explicit_frequencies=cast(Sequence[int], 1),
         )
 
 

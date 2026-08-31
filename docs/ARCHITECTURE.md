@@ -375,6 +375,20 @@ paths. Existing Play/Pause/Restart, speed and one bounded count slider are prese
 Fourier inspector/Solo/Build-Up/Educational/export surfaces are disabled in Haar mode rather than
 receiving fabricated frequency state. Android remains outside this adapter.
 
+## Indexed basis and harmonic authoring boundary (FS-033)
+
+`domain.indexed_basis` хранит immutable indexed terms/decomposition/selection только для DCT-II и
+Walsh-Hadamard; exact ownership и canonical prefix проверяются отдельно от Haar types.
+`math.indexed_basis` владеет ортонормированными analysis/synthesis/contribution algorithms и
+resource bounds. `application.basis_decomposition` dispatches их в отдельный
+`IndexedBasisTimeline`/`IndexedBasisFrame`; Fourier/Haar frames не расширяются union-полями.
+
+`application.harmonic_playground` валидирует ordered user-authored polar terms и строит complete
+zero-filled canonical `FourierSpectrum` плюс explicit-frequency `EpicycleTimeline`. Generated Curve
+является точной sample-grid суммой authored terms, а не placeholder. Desktop владеет reversible mode
+lock/previous-timeline reference; math, source capture и canonical Educational session не знают о UI
+режиме. Один existing QTimer обслуживает normal, indexed-basis и playground animation.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

@@ -588,3 +588,25 @@ endpoint/trace invariants.
 
 **Последствия:** basis-specific renderer branches and disabled controls are explicit; future basis
 families require their own typed decomposition/view semantics and SPEC extension.
+
+## ADR-033 — Two indexed orthonormal bases and an explicit Fourier authoring lab
+
+**Статус:** Accepted.
+
+**Контекст:** пользователь запросил больше basis choices и возможность самостоятельно собирать
+рисунок по гармоникам, не начиная заблокированный Android stage и не превращая canonical FS-030
+lesson в неограниченный editor.
+
+**Решение:** FS-033 добавляет ровно DCT-II и natural-order Walsh-Hadamard через отдельные typed
+indexed decomposition/frame contracts. Оба используют recorded 128-sample desktop analysis grid и
+не получают epicycle semantics. Отдельный Harmonic Playground принимает bounded ordered
+`k/amplitude/phase`, строит exact canonical Fourier spectrum и explicit-order timeline, блокируя
+конфликтующие analysis/export/source действия и восстанавливая previous result при Exit.
+
+**Отклонено:** произвольный transform/plugin framework, несколько новых wavelet filter banks без
+boundary-policy, dense learned basis, fake epicycles для DCT/Walsh, расширение six-step lesson и
+необратимая замена пользовательского source result.
+
+**Последствия:** новые basis остаются численно и визуально честными; будущие Daubechies/biorthogonal
+families требуют отдельной SPEC. Playground переиспользует canonical Fourier math/QTimer/canvas, но
+export и canonical lesson в mode намеренно unavailable.

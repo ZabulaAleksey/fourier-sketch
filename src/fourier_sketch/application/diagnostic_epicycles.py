@@ -1,5 +1,6 @@
 """Application timeline that composes accepted Fourier and epicycle contracts."""
 
+from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from enum import StrEnum
 from math import isfinite
@@ -18,6 +19,7 @@ from fourier_sketch.math import (
     complex_samples_to_curve,
     reconstruct_samples,
     select_first,
+    select_frequencies,
 )
 
 MAX_INTERACTIVE_HARMONICS = 4096
@@ -115,6 +117,7 @@ class EpicycleTimeline:
         *,
         harmonic_count: int,
         ordering: SpectrumOrdering = SpectrumOrdering.AMPLITUDE_DESCENDING,
+        explicit_frequencies: Sequence[int] | None = None,
         speed: float = 1.0,
         visibility: RenderVisibility | None = None,
     ) -> None:
@@ -124,12 +127,35 @@ class EpicycleTimeline:
             raise DomainValidationError("original must be a Curve")
         if original.sample_count != spectrum.sample_count:
             raise DomainValidationError("original and spectrum sample_count must match")
-        if not isinstance(ordering, SpectrumOrdering) or ordering is SpectrumOrdering.EXPLICIT:
-            raise DomainValidationError("timeline ordering must be a non-explicit SpectrumOrdering")
+        if not isinstance(ordering, SpectrumOrdering):
+            raise DomainValidationError("timeline ordering must be a SpectrumOrdering")
+        if ordering is SpectrumOrdering.EXPLICIT:
+            if explicit_frequencies is None:
+                raise DomainValidationError(
+                    "non-explicit timeline requires explicit_frequencies for "
+                    "SpectrumOrdering.EXPLICIT"
+                )
+            try:
+                requested = tuple(explicit_frequencies)
+            except TypeError as error:
+                raise DomainValidationError(
+                    "explicit_frequencies must be an iterable of signed frequencies"
+                ) from error
+            if not requested:
+                raise DomainValidationError("explicit_frequencies must not be empty")
+            # Reuse the accepted selector as the complete validation boundary.
+            select_frequencies(spectrum, requested)
+        elif explicit_frequencies is not None:
+            raise DomainValidationError(
+                "explicit_frequencies require SpectrumOrdering.EXPLICIT"
+            )
 
         self._spectrum = spectrum
         self._original = original
         self._ordering = ordering
+        self._explicit_frequencies = (
+            tuple(explicit_frequencies) if explicit_frequencies is not None else None
+        )
         self._visibility = visibility or RenderVisibility()
         self._state = TimelineState.PAUSED
         self._time = 0.0
@@ -153,7 +179,12 @@ class EpicycleTimeline:
 
     @property
     def maximum_harmonics(self) -> int:
-        return min(self._spectrum.sample_count, MAX_INTERACTIVE_HARMONICS)
+        available = (
+            len(self._explicit_frequencies)
+            if self._explicit_frequencies is not None
+            else self._spectrum.sample_count
+        )
+        return min(available, MAX_INTERACTIVE_HARMONICS)
 
     @property
     def complete_spectrum(self) -> FourierSpectrum:
@@ -232,6 +263,11 @@ class EpicycleTimeline:
             raise DomainValidationError(
                 f"harmonic_count must be between 1 and {self.maximum_harmonics}"
             )
+        if self._ordering is SpectrumOrdering.EXPLICIT:
+            frequencies = self._explicit_frequencies
+            if frequencies is None:
+                raise DomainValidationError("explicit timeline frequencies are unavailable")
+            return select_frequencies(self._spectrum, frequencies[:harmonic_count])
         return select_first(self._spectrum, harmonic_count, self._ordering)
 
     def _make_reconstruction(

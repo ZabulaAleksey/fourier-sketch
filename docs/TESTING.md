@@ -341,6 +341,19 @@ component/live CLI verify atomic side-by-side PNG, metrics, option conflict and 
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
+FS-033 unit/property tests cover orthonormal DCT-II and Walsh constant/impulse/random round-trip,
+canonical first-K contribution sums, finite/resource bounds and exact decomposition ownership.
+Integration/component tests drive all four basis selector values, distinct non-epicycle geometry,
+term animation/reset/completion and disabled Fourier-only controls. Playground tests cover ordered
+exact coefficients, transactional duplicate/non-finite/amplitude/term budgets, apply-at-zero,
+single-QTimer animation, inspector parity and exact previous-result restoration. Actual Qt offscreen
+E2E exercises user controls but is not manual visible Windows GUI/DPI evidence.
+Accepted evidence: focused desktop/timeline `29 passed`; final full repository `728 passed in 114.52s`
+with an isolated repository-local `--basetemp`; post-review typed-error regression `20 passed`;
+frozen sync 38 packages, Ruff, strict mypy (251 files), overlay/diff PASS and independent review GO.
+The default shared Windows pytest temp directory was inaccessible and is recorded as an environment
+constraint, not hidden or counted as a product failure.
+
 ## Manual diagnostics
 
 Visual stages сохраняют command, fixture/inputs, expected geometry/state и observed result. Manual

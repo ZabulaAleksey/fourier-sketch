@@ -10,7 +10,12 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import pytest
 from PySide6.QtWidgets import QApplication
 
-from fourier_sketch.application import HaarTimeline, TimelineState, build_basis_timeline
+from fourier_sketch.application import (
+    HaarTimeline,
+    IndexedBasisTimeline,
+    TimelineState,
+    build_basis_timeline,
+)
 from fourier_sketch.domain import BasisKind, Curve, Point2D
 from fourier_sketch.ui.desktop import DesktopWindow
 
@@ -134,6 +139,52 @@ def test_haar_view_uses_terms_without_fourier_geometry_and_keeps_view_controls()
     assert window._canvas.view_zoom != zoom_before
     assert timeline.source is source
     assert timeline.analysis is analysis
+    window.close()
+
+
+@pytest.mark.parametrize("basis", (BasisKind.DCT_II, BasisKind.WALSH_HADAMARD))
+def test_indexed_basis_view_uses_ordered_terms_without_epicycle_geometry(
+    basis: BasisKind,
+) -> None:
+    _application()
+    window = DesktopWindow()
+    index = window._basis_selector.findData(basis.value)
+    window._basis_selector.setCurrentIndex(index)
+
+    timeline = build_basis_timeline(_curve(), basis=basis, speed=1.0)
+    assert isinstance(timeline, IndexedBasisTimeline)
+    window._apply_basis_timeline(timeline, reference_view_size=(600.0, 400.0))
+
+    frame = window._canvas._indexed_frame
+    assert frame is not None
+    assert frame.basis is basis
+    assert frame.source is timeline.source
+    assert frame.analysis is timeline.analysis
+    assert frame.active_term.index == 0
+    assert window._canvas._frame is None
+    assert window._canvas._haar_frame is None
+    assert not window._canvas._circle_centers
+    assert not window._canvas._vector_lines
+    assert window._term_label.text() == window._translator.text("control.terms")
+    assert not window._inspector_list.isEnabled()
+    assert not window._solo_action.isEnabled()
+    assert not window._build_up_action.isEnabled()
+    assert not window._educational_action.isEnabled()
+    assert not window._export_nav.isEnabled()
+
+    window._harmonics.setValue(3)
+    assert window._canvas._indexed_frame is not None
+    assert window._canvas._indexed_frame.term_count == 3
+    assert window._canvas._indexed_frame.active_term.index == 2
+    window._timeline_action("restart")
+    assert window._canvas._indexed_frame is not None
+    assert window._canvas._indexed_frame.term_count == 1
+    assert window._canvas._indexed_frame.state is TimelineState.PAUSED
+    window._timeline_action("play")
+    window._timeline_action("advance", 0.25)
+    assert window._canvas._indexed_frame is not None
+    assert window._canvas._indexed_frame.term_count == 2
+    assert timeline.state is TimelineState.RUNNING
     window.close()
 
 

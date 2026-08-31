@@ -4,7 +4,8 @@
 
 - Last completed Stage ID: `FS-032`; commit `1c18ff2` integrated in `main` and published to
   `origin/main`; feature branch deleted.
-- Active Stage ID: none; FS-031 remains planned behind its Android entry gate.
+- Active Stage ID: `FS-033`; implementation is validated on `feature/fs-033-basis-playground` and
+  permitted MDP is pending. FS-031 remains planned behind its Android entry gate.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -20,11 +21,31 @@
   FS-032 Basis Selection/Haar Reconstruction `1c18ff2` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
-- Scope: FS-032 Basis Selection/Haar Reconstruction completed on its feature branch; FS-031 was not
-  started.
+- Scope: FS-033 Indexed Bases and Harmonic Playground completed and validated on its feature branch;
+  FS-031 was not started.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-033 progress
+
+- Explicit `DCT_II` and natural-order `WALSH_HADAMARD` extend the pre-draw basis selector while
+  Fourier stays default. Typed immutable decompositions/selections own exact provenance; DCT accepts
+  `N<=1024`, Walsh accepts power-of-two `N<=4096`, and desktop uses the existing immutable source plus
+  a recorded 128-sample analysis grid. Indexed frames show source/reconstruction/latest term without
+  fabricated circles, Fourier frequencies, endpoint or trace.
+- `HARMONIC PLAYGROUND` builds an actual Fourier curve from up to 16 ordered unique signed `k` terms
+  (`N=128`, `A<=4`, total `A<=8`, phase `[-pi,pi]`). It starts with the canonical circle, reuses the
+  existing timeline/QTimer/inspector, rejects invalid edits transactionally, temporarily identifies
+  Fourier explicitly, and restores the exact prior timeline, basis, visibility and zoom/pan view.
+- Focused final desktop/timeline regression: `29 passed`; final full repository suite after the
+  reviewer API-hardening delta: `728 passed in 114.52s`; focused post-review regression: `20 passed`.
+  Frozen sync checked 38 packages; Ruff, strict mypy (251 source files), diff/JSON and overlay PASS.
+  Maximum-bound analysis sanity: DCT-II `N=1024` in `1.230540s`, max round-trip error `2.550e-13`;
+  Walsh `N=4096` in `3.520344s`, max error `5.040e-15`. Independent read-only review: `GO`, no
+  blocking findings; its raw-TypeError observation was fixed and covered. Qt evidence is offscreen,
+  not a manual visible Windows GUI/DPI check. Default `%TEMP%\\pytest-of-aleks` remains inaccessible;
+  the successful full suite used an isolated repository-local `--basetemp` that was removed.
 
 ## FS-032 progress
 

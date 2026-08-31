@@ -19,11 +19,29 @@ from .fourier import (
     FrequencyConvention,
     SpectrumOrdering,
 )
+from .harmonic_playground import (
+    PLAYGROUND_MAX_AMPLITUDE,
+    PLAYGROUND_MAX_FREQUENCY,
+    PLAYGROUND_MIN_FREQUENCY,
+    PLAYGROUND_SAMPLE_COUNT,
+    ManualHarmonic,
+)
+from .indexed_basis import (
+    IndexedDecomposition,
+    IndexedNormalization,
+    IndexedOrdering,
+    IndexedSelection,
+    IndexedTerm,
+)
 from .piecewise_curve import PiecewiseCurve
 from .point import Point2D
 from .selection import CoefficientSelection, NormalizedErrorStatus, ReconstructionMetrics
 
 __all__ = [
+    "PLAYGROUND_MAX_AMPLITUDE",
+    "PLAYGROUND_MAX_FREQUENCY",
+    "PLAYGROUND_MIN_FREQUENCY",
+    "PLAYGROUND_SAMPLE_COUNT",
     "BasisKind",
     "CoefficientSelection",
     "Curve",
@@ -40,6 +58,12 @@ __all__ = [
     "HaarSelection",
     "HaarTerm",
     "HaarTermKind",
+    "IndexedDecomposition",
+    "IndexedNormalization",
+    "IndexedOrdering",
+    "IndexedSelection",
+    "IndexedTerm",
+    "ManualHarmonic",
     "NormalizedErrorStatus",
     "PiecewiseCurve",
     "Point2D",

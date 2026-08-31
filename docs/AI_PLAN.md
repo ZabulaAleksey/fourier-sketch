@@ -2,15 +2,17 @@
 
 ## Текущая цель
 
-Спланировать и реализовать отдельный проверяемый FS-032 Basis Selection and Haar Wavelet
-Reconstruction slice поверх завершённых desktop и partial-reconstruction contracts.
+Реализовать отдельный проверяемый FS-033 Indexed Bases and Harmonic Playground desktop slice:
+orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authoring.
 
 ## Активный stage
 
-- Stage ID: `FS-032`
-- Lifecycle: `completed`; commit `1c18ff2` integrated in `main` and published to `origin/main`.
-- Prerequisites: exact DAG and accepted SPEC/numerical/UI entry evidence verified.
-- Contract: read and execute only the exact FS-032 stage record; do not start FS-031 scope.
+- Stage ID: `FS-033`
+- Lifecycle: `completed` and validated on `feature/fs-033-basis-playground`; permitted MDP is in
+  progress.
+- Prerequisites: completed FS-032/FS-030/FS-024 and accepted
+  `specs/features/basis-playground.spec.md`.
+- Contract: execute only FS-033; Android FS-031 remains behind its SDK/device entry gate.
 
 ## Integration state
 
@@ -29,12 +31,14 @@ Reconstruction slice поверх завершённых desktop и partial-reco
 
 ## План выполнения
 
-1. [completed] Прочитать exact FS-032 contract и проверить SPEC/numerical/UI entry evidence.
-2. [completed] Реализовать только FS-032 Fourier/Haar vertical slice без Android scope.
-3. [completed] Выполнить targeted/full/static/overlay gates, numerical/content review и documentation sync.
-4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
+1. [completed] Принять bounded FS-033 SPEC/ADR/stage contract и numerical/UI boundaries.
+2. [completed] Реализовать DCT-II/Walsh typed decomposition/timeline и desktop views.
+3. [completed] Реализовать Fourier-only Harmonic Playground с exact ordered terms и baseline restore.
+4. [completed] Выполнить focused/full/static/overlay gates, numerical/UI review и documentation sync.
+5. [in_progress] Создать атомарный commit и выполнить ранее разрешённый МДП.
 
 ## Handoff
 
-FS-032 получил terminal evidence, independent re-review `GO`, интегрирован и опубликован. FS-031
-не начинался; его entry gate требует отдельной Android technology decision и SDK/device evidence.
+FS-033 implementation и automated evidence завершены; independent review GO. Commit/merge/push ещё
+не зафиксированы в этом snapshot. FS-031 не начинался и по-прежнему требует Android SDK/device
+evidence.

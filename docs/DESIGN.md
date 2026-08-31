@@ -119,6 +119,24 @@ smaller window heights it remains usable instead of overlapping the source contr
   freehand stroke строится только выбранным basis adapter. Image input disabled при выбранном Haar
   с explanation; этот slice не делает silent Fourier image fallback и не расширяет raster pipeline.
 
+## Indexed bases and Harmonic Playground FS-033
+
+- Basis combo добавляет `DCT-II` и `Walsh-Hadamard` после Fourier/Haar. Оба режима используют тот же
+  source lock/Clear lifecycle и отдельный reconstruction view: grey source, teal selected-term
+  reconstruction и violet active indexed-term contribution. Terms/Play/Pause/Restart/speed/zoom/pan
+  работают; circles/vectors/endpoint, inspector, Solo, Build-Up, Educational, image input и export
+  disabled с basis-specific explanation.
+- Sidebar получает отдельную страницу `Harmonic Playground`. В ней keyboard-focusable list хранит
+  explicit row order, а поля `k`, amplitude и phase degrees позволяют Apply/update; Remove/Clear и
+  Start/Exit являются явными действиями. Entry загружает один term `k=1, A=1, phase=0`.
+- Каждая успешная edit операция перестраивает actual paused Fourier frame при `t=0`; central canvas и
+  read-only inspector показывают exact authored coefficients/vectors. Harmonic-count, source/basis,
+  Solo/Build-Up/canonical lesson/export locked. Generated `Original` скрыт и disabled, поскольку это
+  synthesis, а не captured input. Exit возвращает exact prior normal result либо empty canvas.
+- Zoom/pan не сбрасываются входом, edit или выходом. Color не является единственным cue: строки
+  содержат signed `k`, amplitude и phase; status сообщает active term count/budget и mode. Invalid
+  edit сохраняет предыдущий список и frame.
+
 ## Curve Simplification diagnostic FS-027
 
 - Existing contour CLI получает opt-in `--simplify-tolerance`; без option UI/output остаются

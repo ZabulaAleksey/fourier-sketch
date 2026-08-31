@@ -107,9 +107,10 @@ def test_freehand_builds_and_animates_only_the_explicit_basis(
         window._timeline_action("advance", 0.1)
         assert window._canvas._frame is not None
         assert window._canvas._frame.chain.endpoint != endpoint
-    else:
+    elif basis is BasisKind.HAAR_WAVELET:
         assert window._timeline is None
         assert window._haar_timeline is not None
+        assert window._indexed_timeline is None
         assert window._canvas._haar_frame is not None
         assert window._canvas._frame is None
         source_curve = window._canvas._haar_frame.source
@@ -120,5 +121,20 @@ def test_freehand_builds_and_animates_only_the_explicit_basis(
         assert window._canvas._haar_frame.term_count == 2
         assert window._canvas._haar_frame.source is source_curve
         assert window._canvas._haar_frame.state is TimelineState.RUNNING
+    else:
+        assert window._timeline is None
+        assert window._haar_timeline is None
+        assert window._indexed_timeline is not None
+        assert window._canvas._indexed_frame is not None
+        assert window._canvas._frame is None
+        assert window._canvas._haar_frame is None
+        source_curve = window._canvas._indexed_frame.source
+        window._speed.setValue(window._speed.maximum())
+        window._timeline_action("play")
+        window._timeline_action("advance", 0.25)
+        assert window._canvas._indexed_frame is not None
+        assert window._canvas._indexed_frame.term_count == 2
+        assert window._canvas._indexed_frame.source is source_curve
+        assert window._canvas._indexed_frame.state is TimelineState.RUNNING
 
     window.close()

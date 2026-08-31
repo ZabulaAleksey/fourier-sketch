@@ -66,6 +66,12 @@ orthonormal 128-sample reconstruction с actual root/coarse-to-fine terms. В Ha
 fabricated circles/frequencies/endpoint trace; Play/Pause/Restart, speed, Terms, zoom/pan и
 Original/Reconstruction работают отдельно, а Fourier-only inspector/Solo/Build-Up/Educational/
 export и image input явно unavailable. Clear удаляет displayed result и снова открывает selector.
+`FS-033` расширяет selector двумя честными indexed-базисами: orthonormal complex `DCT-II` и
+natural-order `Walsh-Hadamard`. Они собирают reconstruction по индексам `0..N-1`, показывают вклад
+последнего выбранного term и не изображают несуществующие circles/vectors/endpoint trace. Отдельная
+страница `HARMONIC PLAYGROUND` позволяет вручную собрать до 16 Fourier-компонент по signed `k`,
+amplitude и phase, увидеть реальную цепочку эпициклов и анимировать её. Режим начинается с круга
+`k=1, A=1, phi=0`; выход восстанавливает предыдущий результат и его состояние.
 
 ## Целевой pipeline
 
@@ -394,6 +400,13 @@ disabled/unchecked без ready curve и затем точно отражает 
 каждой harmonic pair имеют стабильный различимый
 rainbow color по selection order. Другие workflow pages и installer пока disabled/deferred.
 
+Basis выбирается до рисования stroke. `DCT-II` и `Walsh-Hadamard` используют тот же `Terms`,
+Play/Pause/Restart, speed и navigation surface, но Fourier-only Inspector/Solo/Build-Up/
+Educational/export для них заблокированы. В `HARMONIC PLAYGROUND` кнопка входа создаёт canonical
+circle; поля `k`, `Amplitude`, `Phase (degrees)` и `Add / update k` добавляют или меняют компоненту,
+а Remove/Clear/Reset управляют набором. Суммарная amplitude ограничена `8`, поэтому недопустимое
+изменение отклоняется без потери предыдущего набора.
+
 После построения timeline страница EXPORT позволяет сохранить current Curve и ordered selected
 coefficients как versioned JSON/CSV, reconstruction/spectrum PNG или bounded animated GIF. GIF
 использует тот же chain/endpoint path, хранит endpoint-history metadata и ограничен `2..120`
@@ -423,7 +436,9 @@ compliance decisions.
 Matplotlib diagnostics остаются поддерживаемыми diagnostic adapters. FS-021 добавляет source-run
 PySide6 shell, FS-022 — local data/PNG/GIF export, FS-023 — measured hardening и проверяемый
 source wheel, FS-024 — read-only inspector выбранной гармоники, а FS-025 — single-frequency Solo
-analysis с точным baseline restore. Bundled installer и MP4 ещё не реализованы.
+analysis с точным baseline restore. FS-032/FS-033 добавляют Haar, DCT-II, Walsh-Hadamard и ручную
+Fourier-песочницу без утверждения, что один basis универсально лучше другого. Bundled installer и
+MP4 ещё не реализованы.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
 Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,

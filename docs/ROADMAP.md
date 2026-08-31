@@ -39,6 +39,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-029` | Better Single-Stroke Optimization | `completed` |
 | `FS-030` | Actual-state canonical-circle Educational Mode | `completed` |
 | `FS-032` | Explicit Fourier/Haar selection and bounded wavelet reconstruction | `completed` |
+| `FS-033` | DCT-II/Walsh bases and manual Harmonic Playground | `completed` |
 
 ## Текущий этап
 
@@ -52,8 +53,9 @@ Adaptive Sampling завершён, интегрирован в `main` и опу
 GO. Selected record `FS-029` Better Single-Stroke Optimization завершён, интегрирован в `main` и
 опубликован в `origin/main`; independent review GO. Selected record `FS-030` Educational Mode
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-032
-завершён, интегрирован в `main` и опубликован в `origin/main`; independent re-review GO. FS-031 не
-начат и остаётся за Android entry gate.
+завершён, интегрирован в `main` и опубликован в `origin/main`; independent re-review GO. FS-033
+завершён и validated на feature branch; independent review GO, publication pending. FS-031 не начат
+и остаётся за Android entry gate.
 
 ## Image-to-curve pipeline
 
@@ -71,7 +73,7 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 ## Optional extensions
 
 Эти stages не являются обязательными для milestone `FS-023`; `FS-025`–`FS-030` и `FS-032`
-опубликованы.
+опубликованы, FS-033 validated и ожидает publication.
 
 | Stage | Результат |
 |---|---|
@@ -82,6 +84,7 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 | `FS-029` | Better Single-Stroke Optimization |
 | `FS-030` | Educational Mode |
 | `FS-032` | Basis Selection and Haar Wavelet Reconstruction |
+| `FS-033` | Indexed Bases and Harmonic Playground |
 
 ## Mobile expansion
 

@@ -353,6 +353,36 @@ recorded provenance; raw source budget равен 10 000 points до resampling.
 является curve-on-grid, а не rotating-vector sum;
 `trace == endpoint` к нему не применяется.
 
+## Orthonormal indexed bases
+
+FS-033 DCT-II применяет real orthonormal basis к complex samples напрямую:
+
+```text
+C_k = alpha_k sum(n=0..N-1) z[n] cos(pi (n+1/2) k / N)
+alpha_0 = 1/sqrt(N), alpha_k = sqrt(2/N) for k>0
+z[n] = sum(k=0..N-1) alpha_k C_k cos(pi (n+1/2) k / N)
+```
+
+Walsh-Hadamard использует Sylvester natural-order matrix `H_N` с entries `+1/-1`:
+
+```text
+C = H_N z / sqrt(N)
+z = H_N C / sqrt(N)
+```
+
+где `N=1` или power of two. В обоих bases canonical activation — ascending term index; partial
+selection заменяет только unselected coefficients нулями. Эти indices не являются signed Fourier
+frequencies, а reconstruction не имеет epicycle endpoint/trace semantics.
+
+Harmonic Playground использует fixed `N=128` и exact explicit order:
+
+```text
+z[n] = sum(j) A_j exp(i(phi_j + 2 pi k_j n / N))
+```
+
+Каждая строка соответствует Fourier coefficient `C_k=A exp(i phi)`; порядок строк меняет
+head-to-tail intermediate chain, но не сумму endpoint. Bounds принадлежат FS-033 SPEC.
+
 ## Numerical evidence policy
 
 - finite input проверяется до transform;

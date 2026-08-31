@@ -12,6 +12,8 @@ class BasisKind(StrEnum):
 
     FOURIER_EPICYCLE = "fourier_epicycle"
     HAAR_WAVELET = "haar_wavelet"
+    DCT_II = "dct_ii"
+    WALSH_HADAMARD = "walsh_hadamard"
 
 
 class HaarTermKind(StrEnum):

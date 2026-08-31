@@ -30,6 +30,8 @@
 | `BH-EDUCATION-001` | UI-FR-014, UI-AC-011 | FS-030 | canonical actual-state six-step circle lesson over existing timeline/inspector/canvas | unit + integration + component + actual Qt offscreen E2E + content/math/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-BASIS-SELECT-001` | BS-FR-001..002, BS-AC-001..002 | FS-032 | explicit default-Fourier basis adapter and basis-specific frame provenance | unit + integration + component + offscreen desktop E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-WAVELET-RECONSTRUCTION-001` | BS-FR-003..005, BS-AC-003..006 | FS-032 | project-owned orthonormal Haar analysis/selection/synthesis and typed timeline | analytical + property + integration + component + performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
+| `BH-INDEXED-BASIS-001` | BP-FR-001..004, BP-AC-001..003 | FS-033 | typed orthonormal DCT-II/Walsh decomposition, selection and reconstruction timeline | analytical + property + integration + component + offscreen desktop E2E + full/static/overlay | verified locally; independent review GO; publication pending |
+| `BH-HARMONIC-PLAYGROUND-001` | BP-FR-005..006, BP-AC-004..006 | FS-033 | bounded ordered Fourier authoring session over canonical epicycle timeline | unit + integration + component + offscreen desktop E2E + full/static/overlay | verified locally; independent review GO; publication pending |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain
