@@ -2,8 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-032`; validated on `feature/fs-032-basis-selection`, pending MDP.
-- Active Stage ID: none until FS-032 publication and next-stage selection.
+- Last completed Stage ID: `FS-032`; commit `1c18ff2` integrated in `main` and published to
+  `origin/main`; feature branch deleted.
+- Active Stage ID: none; FS-031 remains planned behind its Android entry gate.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -16,6 +17,8 @@
   `origin/main`; its feature branch was deleted.
   FS-030 Educational Mode `6f8a30b` is integrated in `main` and published to `origin/main`; its
   feature branch was deleted.
+  FS-032 Basis Selection/Haar Reconstruction `1c18ff2` is integrated in `main` and published to
+  `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
 - Scope: FS-032 Basis Selection/Haar Reconstruction completed on its feature branch; FS-031 was not
   started.

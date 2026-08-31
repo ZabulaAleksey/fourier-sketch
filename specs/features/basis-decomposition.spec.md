@@ -1,6 +1,6 @@
 # Feature SPEC — Basis Selection and Wavelet Reconstruction
 
-Статус: Принята, completed `FS-032` on feature branch; pending MDP
+Статус: Принята, completed `FS-032`; integrated in `main` and published to `origin/main`
 
 ## Назначение и область
 

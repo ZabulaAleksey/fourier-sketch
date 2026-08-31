@@ -8,7 +8,7 @@ Reconstruction slice поверх завершённых desktop и partial-reco
 ## Активный stage
 
 - Stage ID: `FS-032`
-- Lifecycle: `completed`; validated on the feature branch and ready for the authorized MDP.
+- Lifecycle: `completed`; commit `1c18ff2` integrated in `main` and published to `origin/main`.
 - Prerequisites: exact DAG and accepted SPEC/numerical/UI entry evidence verified.
 - Contract: read and execute only the exact FS-032 stage record; do not start FS-031 scope.
 
@@ -25,15 +25,16 @@ Reconstruction slice поверх завершённых desktop и partial-reco
 - FS-028 commit `2b127f7` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-029 commit `5c9dcc0` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-030 commit `6f8a30b` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
+- FS-032 commit `1c18ff2` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 
 ## План выполнения
 
 1. [completed] Прочитать exact FS-032 contract и проверить SPEC/numerical/UI entry evidence.
 2. [completed] Реализовать только FS-032 Fourier/Haar vertical slice без Android scope.
 3. [completed] Выполнить targeted/full/static/overlay gates, numerical/content review и documentation sync.
-4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
+4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-032 получил terminal evidence и independent re-review `GO`; остаётся commit и разрешённый МДП.
-FS-031 в этот slice не включался.
+FS-032 получил terminal evidence, independent re-review `GO`, интегрирован и опубликован. FS-031
+не начинался; его entry gate требует отдельной Android technology decision и SDK/device evidence.

@@ -1335,7 +1335,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-032 — Basis Selection and Haar Wavelet Reconstruction (Optional)
 
-- Lifecycle: `completed`; validated on the feature branch, pending authorized MDP.
+- Lifecycle: `completed`; commit `1c18ff2` integrated in `main` and published to `origin/main`.
 - Goal: let a user explicitly choose `FOURIER_EPICYCLE` or `HAAR_WAVELET` for a bounded curve
   decomposition, then animate the selected basis' actual partial reconstruction.
 

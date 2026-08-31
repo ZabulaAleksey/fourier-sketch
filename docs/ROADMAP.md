@@ -52,8 +52,8 @@ Adaptive Sampling завершён, интегрирован в `main` и опу
 GO. Selected record `FS-029` Better Single-Stroke Optimization завершён, интегрирован в `main` и
 опубликован в `origin/main`; independent review GO. Selected record `FS-030` Educational Mode
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-032
-завершён и validated на feature branch с independent re-review GO; разрешённый МДП ещё выполняется.
-FS-031 не начат.
+завершён, интегрирован в `main` и опубликован в `origin/main`; independent re-review GO. FS-031 не
+начат и остаётся за Android entry gate.
 
 ## Image-to-curve pipeline
 
@@ -70,8 +70,8 @@ FS-031 не начат.
 
 ## Optional extensions
 
-Эти stages не являются обязательными для milestone `FS-023`; `FS-025`–`FS-030` опубликованы, а
-`FS-032` завершён на feature branch и ожидает МДП.
+Эти stages не являются обязательными для milestone `FS-023`; `FS-025`–`FS-030` и `FS-032`
+опубликованы.
 
 | Stage | Результат |
 |---|---|
