@@ -1169,15 +1169,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-026 — Harmonic Build-Up Animation (Optional)
 
-- Lifecycle: `completed`; automated gates PASS and independent review GO, awaiting MDP.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated and published.
 - Goal: animate reconstruction sets `1 → 2 → … → N` using deterministic ordering.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-024 + FS-004 + FS-021 → FS-026`; inspector, selection/reconstruction and GUI completed.
 - Entry evidence: deterministic ordering and timeline/state-machine decision.
-- Current gate: deterministic first-K/dwell/metrics contract is implemented; focused/full/static/
-  overlay/performance evidence PASS and independent review found no P0/P1/P2.
+- Current gate: deterministic first-K/dwell/metrics contract is implemented and published; focused/
+  full/static/overlay/performance evidence PASS and independent review found no P0/P1/P2.
 
 ### Scope / non-goals / invariants
 

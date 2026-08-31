@@ -40,8 +40,8 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`. Selected record `FS-024`
 Harmonic Inspector завершён, интегрирован в `main` и опубликован в `origin/main`; independent review
 GO. `FS-025` Frequency Solo завершён, интегрирован в `main` и опубликован в `origin/main`; selected
-record `FS-026` Harmonic Build-Up Animation завершён на рабочей ветке: automated gates PASS,
-independent review GO, MDP ожидается. Более поздние stages не начаты.
+record `FS-026` Harmonic Build-Up Animation завершён, интегрирован в `main` и опубликован в
+`origin/main`; independent review GO. Более поздние stages не начаты.
 
 ## Image-to-curve pipeline
 
@@ -58,8 +58,8 @@ independent review GO, MDP ожидается. Более поздние stages 
 
 ## Optional extensions
 
-Эти stages не являются обязательными для milestone `FS-023`: `FS-025` опубликован, `FS-026`
-завершён и ожидает MDP, остальные записи остаются `planned`.
+Эти stages не являются обязательными для milestone `FS-023`: `FS-025` и `FS-026` опубликованы,
+остальные записи остаются `planned`.
 
 | Stage | Результат |
 |---|---|

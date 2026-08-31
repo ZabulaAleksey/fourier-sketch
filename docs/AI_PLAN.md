@@ -8,7 +8,7 @@ inspector/Solo и существующей deterministic coefficient ordering.
 ## Активный stage
 
 - Stage ID: `FS-026`
-- Lifecycle: `completed`; all automated gates PASS and independent review GO, awaiting MDP.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated and published.
 - Prerequisites: FS-024, FS-004 and FS-021 are `completed` and published in `origin/main`.
 - Contract: build-up must use an explicit deterministic order and bounded animation state without
   mutating the complete Fourier spectrum or silently inheriting FS-025 Solo semantics.
@@ -20,6 +20,7 @@ inspector/Solo и существующей deterministic coefficient ordering.
   maintenance `02c026b`, завершённый FS-023 `a2d7a2c` и FS-024 `e480382`.
 - `main` с FS-024 опубликован в `origin/main`. PR, release и deployment не выполнялись.
 - FS-025 commit `517b7d8` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
+- FS-026 commit `fe46cac` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 
 ## План выполнения
 
@@ -27,9 +28,9 @@ inspector/Solo и существующей deterministic coefficient ordering.
 2. [completed] Реализовать bounded Harmonic Build-Up без FS-027+ и без изменения Fourier math.
 3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review
    и documentation synchronization.
-4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
+4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-026 completed и validated на рабочей ветке; следующий шаг — атомарный commit и разрешённый MDP.
-FS-027/FS-030/mobile/basis scope в этот slice не добавлялся.
+FS-026 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий отдельный stage —
+FS-027; FS-030/mobile/basis scope в завершённый slice не добавлялся.

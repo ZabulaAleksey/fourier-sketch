@@ -2,12 +2,14 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-026` (validated on the working branch, awaiting MDP).
-- Active Stage ID: `FS-026`, lifecycle `completed`; automated gates PASS and independent review GO.
+- Last completed Stage ID: `FS-026`.
+- Active Stage ID: `FS-026`, lifecycle `completed`; automated gates PASS, independent review GO,
+  integrated in `main` and published to `origin/main`.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
   FS-025 Frequency Solo `517b7d8` is integrated in `main` and published to `origin/main`.
+  FS-026 Harmonic Build-Up `fe46cac` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
 - Scope: только FS-026 Harmonic Build-Up Animation; FS-027+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -226,8 +228,8 @@
 
 ## Следующее разумное действие
 
-Выполнить разрешённый MDP для validated FS-026, затем выбрать следующий отдельный stage. Не смешивать
-FS-027/FS-030 или mobile/basis scope с уже завершённым slice.
+FS-026 опубликован; следующим отдельным slice выбрать FS-027 Curve Simplification. Не смешивать
+FS-030 или mobile/basis scope с этим следующим stage.
 
 ## Синхронизация документации
 
