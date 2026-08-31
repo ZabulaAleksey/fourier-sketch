@@ -1248,8 +1248,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-028 — Adaptive Sampling (Optional)
 
-- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
-  awaiting the already-authorized MDP publication.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated in `main` and
+  published to `origin/main`.
 - Goal: allocate more samples near measured curvature while preserving curve semantics and budget.
 
 ### Dependency DAG & entry preconditions

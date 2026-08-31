@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-028` on the working branch, awaiting publication.
-- Active Stage ID: `FS-028`, lifecycle `completed`; automated gates PASS and independent review GO,
-  awaiting the already-authorized MDP publication.
+- Last completed Stage ID: `FS-028`.
+- Active Stage ID: `FS-028`, lifecycle `completed`; automated gates PASS, independent review GO,
+  integrated in `main` and published to `origin/main`.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -12,6 +12,7 @@
   FS-026 Harmonic Build-Up `fe46cac` is integrated in `main` and published to `origin/main`.
   FS-027 property-contract correction `dea56ba` and Curve Simplification `15ea3f7` are integrated in
   `main` and published to `origin/main`.
+  FS-028 Adaptive Sampling `2b127f7` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
 - Scope: только FS-028 Adaptive Sampling; FS-029+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -265,8 +266,8 @@
 
 ## Следующее разумное действие
 
-Создать атомарный FS-028 commit и выполнить разрешённый МДП. После публикации отдельно выбрать
-FS-029; не смешивать FS-030 или mobile/basis scope с текущим slice.
+FS-028 опубликован; следующим отдельным slice выбрать FS-029 Better Single-Stroke Optimization. Не
+смешивать FS-030 или mobile/basis scope с этим следующим stage.
 
 ## Синхронизация документации
 
