@@ -37,8 +37,7 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 
 `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`. Selected record `FS-024`
 Harmonic Inspector завершён, интегрирован в `main` и опубликован в `origin/main`; independent review
-GO. Следующим selected record является `FS-025` Frequency Solo, lifecycle `completed` с independent
-re-review GO и ожидаемой интеграцией; более
+GO. `FS-025` Frequency Solo завершён, интегрирован в `main` и опубликован в `origin/main`; более
 поздние optional/mobile stages ещё не начаты.
 
 ## Image-to-curve pipeline
@@ -56,7 +55,7 @@ re-review GO и ожидаемой интеграцией; более
 
 ## Optional extensions
 
-Эти stages не являются обязательными для milestone `FS-023`: `FS-025` сейчас `completed`, остальные
+Эти stages не являются обязательными для milestone `FS-023`: `FS-025` завершён и опубликован, остальные
 записи остаются `planned`.
 
 | Stage | Результат |

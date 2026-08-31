@@ -3,11 +3,12 @@
 ## Текущий этап
 
 - Last completed Stage ID: `FS-025`.
-- Active Stage ID: `FS-025`, lifecycle `completed`; automated gates PASS and independent re-review
-  GO, integration/push pending.
+- Active Stage ID: `FS-025`, lifecycle `completed`; automated gates PASS, independent re-review GO,
+  integrated in `main` and published to `origin/main`.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
+  FS-025 Frequency Solo `517b7d8` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
 - Scope: только FS-025 Frequency Solo; FS-026+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -211,8 +212,8 @@
 
 ## Следующее разумное действие
 
-Создать атомарный FS-025 commit и выполнить разрешённый МДП; после подтверждённой публикации отдельно
-выбрать FS-026. Не смешивать FS-026/FS-030 или mobile/basis scope с этим commit.
+FS-025 опубликован; отдельно выбрать FS-026 Harmonic Build-Up Animation. Не смешивать FS-030 или
+mobile/basis scope с этим следующим slice.
 
 ## Синхронизация документации
 

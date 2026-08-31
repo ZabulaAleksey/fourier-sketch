@@ -1127,7 +1127,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-025 — Frequency Solo (Optional)
 
-- Lifecycle: `completed`; automated gates PASS and independent re-review GO, integration pending.
+- Lifecycle: `completed`; automated gates PASS, independent re-review GO, integrated and published.
 - Goal: let user visually isolate selected harmonics with explicit analysis semantics.
 
 ### Dependency DAG & entry preconditions
@@ -1165,6 +1165,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Failure: empty selection rejected; no hidden state loss.
 - Docs: SPEC if one-vs-multi contract changes, DESIGN/trace/status/plan.
 - Handoff: commit and stop.
+- Publication: product commit `517b7d8` is integrated in `main` and published to `origin/main`.
 
 ## FS-026 — Harmonic Build-Up Animation (Optional)
 

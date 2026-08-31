@@ -8,7 +8,7 @@
 ## Активный stage
 
 - Stage ID: `FS-025`
-- Lifecycle: `completed`; automated gates PASS and independent re-review GO, integration pending.
+- Lifecycle: `completed`; automated gates PASS, independent re-review GO, integrated and published.
 - Prerequisites: FS-024 and FS-003 are `completed` and published in `origin/main`.
 - Contract: Solo has explicit analysis semantics, keeps the complete spectrum immutable, derives the
   visible/active contribution from stable frequency IDs and restores the exact pre-solo set on exit.
@@ -19,6 +19,7 @@
   `644fd82`/`7d53100`/`66ec1ef`/`7cf355d`, touch/rainbow `cb323e2` и fixed-center canvas
   maintenance `02c026b`, завершённый FS-023 `a2d7a2c` и FS-024 `e480382`.
 - `main` с FS-024 опубликован в `origin/main`. PR, release и deployment не выполнялись.
+- FS-025 commit `517b7d8` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 
 ## План выполнения
 
@@ -31,5 +32,5 @@
 
 ## Handoff
 
-FS-025 локально завершён: automated gates PASS и independent re-review GO. Следующий шаг —
-атомарный commit и разрешённый МДП; не выбирать FS-026 до подтверждённой интеграции.
+FS-025 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий отдельный stage —
+FS-026; не смешивать его scope с уже опубликованным FS-025.
