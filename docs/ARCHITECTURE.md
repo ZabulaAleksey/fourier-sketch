@@ -140,6 +140,14 @@ FS-009 `ResamplingMethod` различает `uniform_index` и `arc_length`. Ar
 отклоняет non-positive/non-finite total length. Method switch публикует result/timeline только
 после полного успешного rebuild; при failure предыдущий method/result остаётся согласованным с UI.
 
+FS-027 добавляет `math.curve_simplification` как bounded geometry transform перед resampling.
+Application comparison сохраняет source/simplified curves, независимо resample-ит их к одному N и
+создаёт два existing `EpicycleTimeline` с одинаковым K/speed. Core не импортирует OpenCV/UI/render;
+contour DTO/default builder не меняются. Existing contour CLI включает comparison только через
+explicit tolerance и передаёт typed result read-only renderer-у. Work-budget/cancel failure не
+публикует partial result и не включает silent original fallback. Curvature/adaptive allocation не
+принадлежат этой boundary.
+
 FS-010 `imaging.model` хранит one-byte `RasterImage` как grayscale или binary, decode provenance,
 transform sequence и stable privacy-safe failure code без Pillow/NumPy values в public result.
 `pillow_backend` сначала проверяет file size, читает не более 25 MiB + 1, дважды открывает один

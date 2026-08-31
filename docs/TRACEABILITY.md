@@ -24,6 +24,7 @@
 | `BH-INSPECTOR-001` | UI-FR-011, UI-AC-008 | FS-024 | pure presentation projection + frequency-keyed desktop list/canvas selection | unit + component + actual Qt offscreen E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-SOLO-001` | UI-FR-012, UI-AC-009, EP-FR-008, EP-AC-007 | FS-025 | one-frequency analysis session over immutable baseline frame | unit + property + component + actual Qt offscreen E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent re-review GO |
 | `BH-BUILDUP-001` | UI-FR-013, UI-AC-010, EP-FR-009, EP-AC-008 | FS-026 | bounded deterministic first-K analysis state machine over immutable baseline | unit + property + integration + component + actual Qt offscreen E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
+| `BH-SIMPLIFY-001` | FC-FR-008, FC-AC-006, IM-FR-009, IM-AC-009 | FS-027 | bounded Douglas–Peucker before equal-N resampling and existing timelines | unit + property + integration + component + live CLI E2E + benchmark/full/static/overlay | verified on working branch; independent review GO; awaiting publication |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain

@@ -219,6 +219,26 @@ approximation. Для fixture `x=(0,0.1,1,4), N=16`: index `CV≈0.917196816392`
 application result оставляет обе spacing metrics недоступными; ancillary diagnostics не блокируют
 принятый resampling/timeline path.
 
+## Curve simplification
+
+FS-027 применяет iterative Douglas–Peucker к ordered source vertices до resampling. Для retained
+segment `a→b` interior vertex `p` сравнивается с finite Euclidean distance до bounded segment, а не
+до бесконечной line. Split выполняется только при `max_distance > tolerance`; tie выбирает меньший
+source index. Поэтому `tolerance=0` удаляет exact collinear interior vertices, но не допускает
+positive deviation.
+
+Open curve фиксирует first/last indices. Closed curve не дублирует seam: index `0` остаётся первым,
+second anchor — farthest vertex from start с lowest-index tie-break; две cyclic arcs упрощаются тем
+же open algorithm, а retained indices объединяются в исходном cyclic order. Для non-degenerate
+closed input сохраняются минимум три source indices. Метрика deviation — maximum/RMS расстояние
+source vertex до соответствующего retained-order segment. Это bounded discrete diagnostic, не
+Hausdorff/Fréchet distance.
+
+Original и simplified curves отдельно resample-ятся по arc length к одинаковому `N`. Pointwise
+sampled error сравнивает их aligned periodic samples; baseline и simplified Fourier reconstruction
+сравниваются с одной baseline sampled reference при одинаковом `K`. Эти measured значения не
+доказывают универсальное улучшение после simplification.
+
 ## Discontinuous curves
 
 `PiecewiseCurve` определяет intervals/segments, для которых может быть:

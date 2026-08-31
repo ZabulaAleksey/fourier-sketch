@@ -2,19 +2,37 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-026`.
-- Active Stage ID: `FS-026`, lifecycle `completed`; automated gates PASS, independent review GO,
-  integrated in `main` and published to `origin/main`.
+- Last completed Stage ID: `FS-027` on the working branch, awaiting publication.
+- Active Stage ID: `FS-027`, lifecycle `completed`; automated gates PASS and independent review GO,
+  awaiting the already-authorized MDP publication.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
   FS-025 Frequency Solo `517b7d8` is integrated in `main` and published to `origin/main`.
   FS-026 Harmonic Build-Up `fe46cac` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
-- Scope: только FS-026 Harmonic Build-Up Animation; FS-027+, FS-031 и FS-032 не начинались.
+- Scope: только FS-027 Curve Simplification; FS-028+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-027 progress
+
+- Project-owned iterative Douglas–Peucker упрощает immutable ordered curve до resampling, сохраняет
+  open endpoints или closed index `0`/closure, source-subsequence provenance и deterministic anchors.
+  Tolerance, 250 000-point ceiling, bounded distance-evaluation budget и cancellation дают typed
+  all-or-nothing failures без partial result.
+- Existing contour CLI получил opt-in comparison: original/simplified geometry независимо
+  arc-length-resample-ятся к одному N, используют одинаковые K/speed и две actual timelines.
+  Atomic 2x2 PNG и localized summary показывают reduction, retained-segment deviation, sampled RMSE
+  и обе reconstruction RMSE против одной baseline reference; legacy path без option не изменён.
+- Focused FS-027 regression: `21 passed`; full repository suite: `628 passed in 169.56s`. Frozen sync
+  checked 38 packages; Ruff, strict mypy (214 source files), diff and overlay PASS. Bounded sanity:
+  250 000 collinear points → 2 points in `0.899786s`; 50 000-point zigzag with budget 1000 → typed
+  resource limit in `0.002319s`. Independent read-only review: `GO`, no P0/P1/P2.
+- Full-suite diagnosis also corrected an incomplete legacy property assertion: for a constant
+  reference, non-zero floating-point residual correctly permits documented
+  `UNDEFINED_ZERO_REFERENCE` while retaining the absolute error bound. Production math is unchanged.
 
 ## FS-026 progress
 
@@ -228,13 +246,13 @@
 
 ## Следующее разумное действие
 
-FS-026 опубликован; следующим отдельным slice выбрать FS-027 Curve Simplification. Не смешивать
-FS-030 или mobile/basis scope с этим следующим stage.
+Создать атомарный FS-027 commit и выполнить разрешённый МДП. После публикации отдельно выбрать
+FS-028; не смешивать FS-030 или mobile/basis scope с текущим slice.
 
 ## Синхронизация документации
 
-- Для FS-026 обновлены README, desktop/epicycle SPEC, architecture/design/testing/traceability и
-  AI plan/status/roadmap/stage registry. Fourier coefficients/domain, export schema, security,
-  dependencies и worker lifecycle не изменены.
-- `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
-  диагностику; Build-Up ordering/provenance, bounded dwell и baseline restore покрыты executable tests.
+- Для FS-027 обновлены README, Fourier/image SPEC, architecture/decisions/design/mathematics/testing,
+  traceability и AI plan/status/roadmap/stage registry. Fourier math, dependency set, security,
+  export schema и desktop/mobile UI не изменены.
+- `docs/LEARNING_LOG.md` проверен без изменений: замкнутый cyclic-anchor regression и constant-
+  reference property semantics закреплены executable tests без отдельного operational runbook.

@@ -45,6 +45,19 @@ error и normalized error используют документированны�
 Arc-length resampling сохраняет open endpoints, closed semantics и order; zero-length input
 возвращает typed validation error, а не NaN.
 
+### FC-FR-008 — Bounded curve simplification
+
+Project-owned iterative Douglas–Peucker принимает immutable ordered `Curve` до resampling и
+возвращает новый source-subsequence с retained source indices, тем же `closed` и explicit tolerance.
+Tolerance finite `>=0`; zero удаляет только exact collinear/duplicate interior points. Open curve
+сохраняет endpoints. Closed curve сохраняет index `0`, выбирает farthest-from-start second anchor с
+lowest-index tie-break, упрощает две cyclic arcs и не добавляет duplicate seam sample. Source
+ограничен 250 000 points, distance-evaluation budget explicit/bounded, cancellation cooperative;
+budget/cancel не публикуют partial result.
+
+Metrics называют measured source-vertex-to-retained-segment deviation, point/length reduction и не
+выдают его за Hausdorff/Fréchet distance или универсальное улучшение shape/Fourier quality.
+
 ## Численные свойства
 
 - `IDFT(DFT(z)) ≈ z`;
@@ -69,7 +82,10 @@ fail with typed/domain errors. Один sample даёт только stationary 
 - FC-AC-003: все orderings содержат один и тот же selected set без duplicates.
 - FC-AC-004: metric edge cases не возвращают silent NaN/Inf.
 - FC-AC-005: math package не импортирует UI/render/imaging modules.
+- FC-AC-006: known/property fixtures подтверждают source subsequence/order/topology, deterministic
+  closed seam, tolerance bound, immutable source и controlled invalid/budget/cancel failure.
 
 ## Планируемая трассировка
 
-Stages `FS-001`–`FS-004`, `FS-009`; Behavior `BH-FOURIER-001`, `BH-HARMONICS-001`.
+Stages `FS-001`–`FS-004`, `FS-009`, `FS-027`; Behaviors `BH-FOURIER-001`, `BH-HARMONICS-001`,
+`BH-SIMPLIFY-001`.

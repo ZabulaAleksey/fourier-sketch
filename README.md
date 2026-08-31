@@ -47,6 +47,9 @@ count и export блокируются. `FS-026` добавляет отдель
 deterministic ordering, target `N` и bounded dwell, после чего canvas/inspector показывают actual
 first-K sequence `1..N` с retained energy/RMSE. Play/Pause/Restart управляют только этой sequence,
 а baseline timeline не меняется и точно раскрывается при Exit; Solo/export/manual K временно gated.
+`FS-027` добавляет opt-in curve simplification diagnostic: bounded project-owned Douglas–Peucker
+уменьшает ordered contour до arc-length resampling, сохраняет original/retained-index provenance и
+сравнивает original/simplified equal-N/equal-K Fourier paths без universal quality claim.
 
 ## Целевой pipeline
 
@@ -164,6 +167,7 @@ pixel centers в центрированные aspect-preserving domain coordinat
 ```powershell
 uv run python -m fourier_sketch.cli.contours input.png --output contour-trace.png --algorithm threshold_boundary --samples 256 --harmonics 25 --frames 60
 uv run python -m fourier_sketch.cli.contours input.jpg --output canny-trace.png --algorithm canny --canny-low 50 --canny-high 150
+uv run python -m fourier_sketch.cli.contours input.png --output simplification.png --simplify-tolerance 0.02 --samples 256 --harmonics 25
 ```
 
 Summary показывает только output basename, выбранный algorithm, bounded backend identifier,
@@ -171,6 +175,15 @@ aggregate candidate/point/sample/trace counts. Пустая edge map или то
 возвращают явный успешный no-contour state без Curve, timeline и PNG. Backend failure и resource
 limit дают controlled exit `2`; другой contour algorithm не подставляется. Stage выбирает ровно
 один внешний contour: holes, disconnected components, skeleton и forced routing остаются deferred.
+
+При `--simplify-tolerance` тот же normalized contour сначала проходит bounded iterative
+Douglas–Peucker, затем original и simplified geometry независимо resample-ятся к одному N и
+передаются в существующие timelines. Comparison PNG показывает обе geometry и оба actual
+Fourier/trace frames; summary фиксирует tolerance, point reduction, discrete retained-segment
+deviation, sampled RMSE и reconstruction RMSE против одной baseline reference. Значение `0`
+удаляет только exact collinear/duplicate interior points. `--simplification-budget` ограничивает
+distance evaluations; invalid/resource failure не создаёт partial output и не включает silent
+fallback на original. Curvature-aware simplification и adaptive sampling остаются отдельными stages.
 
 ## Image-to-Fourier MVP
 

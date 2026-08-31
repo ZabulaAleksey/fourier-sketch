@@ -6,6 +6,18 @@ from .conversion import (
     curve_to_complex_samples,
     point_to_complex,
 )
+from .curve_simplification import (
+    CLOSED_ANCHOR_POLICY,
+    DEFAULT_SIMPLIFICATION_EVALUATIONS,
+    DOUGLAS_PEUCKER_ALGORITHM,
+    MAX_SIMPLIFICATION_EVALUATIONS,
+    MAX_SIMPLIFICATION_POINTS,
+    CurveSimplificationError,
+    CurveSimplificationMetrics,
+    DouglasPeuckerResult,
+    SimplificationFailureCode,
+    simplify_curve_douglas_peucker,
+)
 from .epicycles import build_epicycle_chain, rotating_value
 from .errors import FourierBackendError
 from .fft2_image import (
@@ -53,6 +65,9 @@ from .spectrum_analysis import (
 from .transforms import MAX_FFT_SAMPLES, MAX_REFERENCE_SAMPLES, fft_dft, idft, reference_dft
 
 __all__ = [
+    "CLOSED_ANCHOR_POLICY",
+    "DEFAULT_SIMPLIFICATION_EVALUATIONS",
+    "DOUGLAS_PEUCKER_ALGORITHM",
     "MAX_FFT2_PIXELS",
     "MAX_FFT_SAMPLES",
     "MAX_PIECEWISE_SAMPLES",
@@ -60,7 +75,12 @@ __all__ = [
     "MAX_RECONSTRUCTION_TERMS",
     "MAX_REFERENCE_SAMPLES",
     "MAX_RESAMPLED_POINTS",
+    "MAX_SIMPLIFICATION_EVALUATIONS",
+    "MAX_SIMPLIFICATION_POINTS",
+    "CurveSimplificationError",
+    "CurveSimplificationMetrics",
     "CurveSpacingMetrics",
+    "DouglasPeuckerResult",
     "FFT2Image",
     "FFT2MaskPolicy",
     "FFT2Raster",
@@ -71,6 +91,7 @@ __all__ = [
     "PiecewiseBoundary",
     "PiecewiseSampled",
     "ResamplingMethod",
+    "SimplificationFailureCode",
     "SpectrumAnalysis",
     "SpectrumAnalysisStatus",
     "SpectrumPoint",
@@ -100,5 +121,6 @@ __all__ = [
     "select_frequencies",
     "signed_frequencies",
     "signed_frequency",
+    "simplify_curve_douglas_peucker",
     "spectrum_energy",
 ]

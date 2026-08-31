@@ -2,6 +2,11 @@
 
 from fourier_sketch.math import ResamplingMethod
 
+from .curve_simplification import (
+    CurveSimplificationComparison,
+    CurveSimplificationConfig,
+    compare_curve_simplification,
+)
 from .diagnostic_epicycles import (
     EpicycleFrame,
     EpicycleTimeline,
@@ -120,6 +125,8 @@ __all__ = [
     "BuildUpSnapshot",
     "BuildUpState",
     "CaptureState",
+    "CurveSimplificationComparison",
+    "CurveSimplificationConfig",
     "DiscontinuitySpectrumComparison",
     "DiscontinuousFourierResult",
     "DiscontinuousMode",
@@ -164,6 +171,7 @@ __all__ = [
     "build_local_piecewise",
     "build_local_skeleton",
     "build_local_skeleton_graph",
+    "compare_curve_simplification",
     "compare_discontinuous_with_forced_route",
     "detect_preprocessed_edges",
     "export_coefficient_data",

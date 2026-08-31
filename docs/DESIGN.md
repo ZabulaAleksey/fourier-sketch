@@ -85,6 +85,18 @@ smaller window heights it remains usable instead of overlapping the source contr
 - Build-Up и Solo mutually exclusive; harmonic slider, mode configuration и export disabled до Exit.
   Exit раскрывает exact latest baseline object, новый timeline очищает analysis session.
 
+## Curve Simplification diagnostic FS-027
+
+- Existing contour CLI получает opt-in `--simplify-tolerance`; без option UI/output остаются
+  прежними. Отдельная PySide page и adaptive sampling не добавляются.
+- Comparison PNG содержит original и simplified ordered geometry, а также baseline и simplified
+  Fourier/trace panels. Цвет/линия и textual titles различают варианты без color-only semantics.
+- Summary показывает algorithm/tolerance, points before/after, measured maximum/RMS deviation,
+  length delta, sampled RMSE и обе reconstruction RMSE против baseline. Это diagnostics, не quality
+  ranking.
+- Invalid tolerance/resource/cancel/output state локализован, existing destination сохраняется;
+  пользователь может повторить command без option и получить unchanged original path.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

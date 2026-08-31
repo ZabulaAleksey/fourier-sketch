@@ -1,4 +1,4 @@
-"""Localized FS-012 local-image to dominant-contour timeline diagnostic."""
+"""Localized contour timeline diagnostic with opt-in FS-027 simplification comparison."""
 
 import argparse
 import locale as system_locale
@@ -12,8 +12,10 @@ from typing import NoReturn
 from fourier_sketch.application import (
     DEFAULT_CONTOUR_HARMONICS,
     DEFAULT_CONTOUR_SAMPLES,
+    CurveSimplificationConfig,
     ImageNoContourResult,
     build_dominant_contour_timeline,
+    compare_curve_simplification,
     preprocess_local_image,
     validate_timeline_speed,
 )
@@ -32,8 +34,12 @@ from fourier_sketch.imaging import (
     ImagePreprocessingOptions,
     ThresholdBoundaryParameters,
 )
+from fourier_sketch.math import (
+    DEFAULT_SIMPLIFICATION_EVALUATIONS,
+    CurveSimplificationError,
+)
 from fourier_sketch.presentation import Translator, resolve_locale
-from fourier_sketch.render import render_frame_png
+from fourier_sketch.render import render_curve_simplification_png, render_frame_png
 
 
 class _ArgumentValidationError(ValueError):
@@ -95,6 +101,47 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 0
 
+        if options.simplify_tolerance is not None:
+            comparison = compare_curve_simplification(
+                result.normalized.curve,
+                CurveSimplificationConfig(
+                    tolerance=options.simplify_tolerance,
+                    sample_count=options.samples,
+                    harmonic_count=options.harmonics,
+                    speed=options.speed,
+                    max_distance_evaluations=options.simplification_budget,
+                ),
+            )
+            comparison.baseline_timeline.play()
+            comparison.simplified_timeline.play()
+            for _ in range(options.frames):
+                comparison.baseline_timeline.advance(options.frame_delta)
+                comparison.simplified_timeline.advance(options.frame_delta)
+            output = Path(options.output)
+            render_curve_simplification_png(
+                comparison,
+                output,
+                translator,
+                overwrite=options.overwrite,
+            )
+            metrics = comparison.simplification.metrics
+            print(
+                translator.text(
+                    "cli.simplification_success",
+                    name=_safe_display_basename(output),
+                    algorithm=comparison.simplification.algorithm,
+                    tolerance=comparison.simplification.tolerance,
+                    source_points=metrics.source_point_count,
+                    simplified_points=metrics.simplified_point_count,
+                    maximum_deviation=metrics.maximum_segment_deviation,
+                    sampled_rmse=comparison.sampled_metrics.rmse,
+                    baseline_rmse=comparison.baseline_reconstruction_metrics.rmse,
+                    simplified_rmse=comparison.simplified_reconstruction_metrics.rmse,
+                    trace=len(comparison.baseline_timeline.snapshot().trace),
+                )
+            )
+            return 0
+
         timeline = result.timeline
         timeline.play()
         frame = timeline.snapshot()
@@ -125,6 +172,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     except ContourExtractionError as error:
         _print_contour_failure(translator, error.code)
+        return 2
+    except CurveSimplificationError as error:
+        print(
+            translator.text(
+                "cli.simplification_failed",
+                reason=translator.text(f"simplification.error.{error.code.value}"),
+            ),
+            file=sys.stderr,
+        )
         return 2
     except DomainValidationError:
         _print_contour_failure(translator, ContourFailureCode.INVALID_INPUT)
@@ -212,6 +268,18 @@ def _parser(translator: Translator) -> argparse.ArgumentParser:
         type=float,
         default=1.0 / 60.0,
         help=translator.text("cli.help.frame_delta"),
+    )
+    parser.add_argument(
+        "--simplify-tolerance",
+        type=float,
+        default=None,
+        help=translator.text("cli.help.simplify_tolerance"),
+    )
+    parser.add_argument(
+        "--simplification-budget",
+        type=int,
+        default=DEFAULT_SIMPLIFICATION_EVALUATIONS,
+        help=translator.text("cli.help.simplification_budget"),
     )
     parser.add_argument(
         "--overwrite",

@@ -497,3 +497,23 @@ matrix; force-terminate worker; объявить wheel готовым к public 
 **Последствия:** stress timeline на measured host стал `≈0.1 s`; reference/large-N parity и broad
 resource guards входят в suite. NumPy остается explicit backend без scalar fallback. Installer/public
 release требует отдельного license/third-party-notice/PySide6 LGPL решения; rollback — source-run path.
+
+## 2026-08-31 — ADR-027: Project-owned bounded Douglas–Peucker before resampling
+
+**Контекст:** FS-027 должен измеримо уменьшать contour vertices, сохраняя topology/order/recovery,
+но не подменять parameterization, не зависеть от OpenCV behavior и не начинать FS-028 allocation.
+
+**Решение:** использовать iterative project-owned Douglas–Peucker над immutable source `Curve` до
+arc-length resampling. Open endpoints фиксированы. Closed seam определяется source index `0` и
+farthest second anchor с deterministic tie-break; duplicate closing sample не материализуется.
+Tolerance finite non-negative, source и distance evaluations bounded, cancellation cooperative.
+Comparison хранит original/simplified provenance, discrete retained-segment deviation и одинаковые
+N/K baseline/simplified Fourier paths с одной baseline reference.
+
+**Рассмотренные альтернативы:** OpenCV `approxPolyDP`, recursive unbounded implementation,
+post-resampling simplification, implicit scale-normalized tolerance, curvature-aware policy и
+adaptive allocation отклонены для этого slice.
+
+**Последствия:** существующий contour CLI остаётся неизменным без opt-in tolerance; FS-027 добавляет
+side-by-side diagnostic и controlled failure без новой dependency. Metric не называется Hausdorff/
+Fréchet и не поддерживает universal quality claim. FS-028 остаётся отдельным stage.

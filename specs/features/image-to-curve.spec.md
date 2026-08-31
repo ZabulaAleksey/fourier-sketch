@@ -76,6 +76,19 @@ coefficients, reconstruction или endpoint history. Insufficient allocation о
 FFT2 consumes raster intensity and returns 2D frequency data (magnitude/log magnitude/phase and
 filtered reconstruction), не `FourierSpectrum` complex curve.
 
+### IM-FR-009 — Simplification comparison
+
+FS-027 contour diagnostic принимает opt-in finite non-negative simplification tolerance. Normalized
+source contour сохраняется, упрощение выполняется до resampling, а original и simplified curves
+независимо arc-length-resample-ятся к одному `N` и проходят существующий Fourier/timeline path с
+одинаковым `K`, ordering и speed. Comparison явно показывает source/result point counts, tolerance,
+length/deviation metrics, baseline-vs-simplified sampled error и обе reconstruction errors против
+одной baseline reference. Никакой metric не объявляет универсальное improvement.
+
+Без simplification option существующий contour path не меняется. Invalid tolerance, work budget,
+cancellation или render/output failure завершаются controlled state, сохраняют existing destination
+и не переключаются молча на original. Curvature-aware simplification и adaptive sampling — не FS-027.
+
 ## Fallback/failure
 
 Invalid/corrupt/oversized input fail closed. Отсутствие optional CV backend не разрешает silent
@@ -96,8 +109,11 @@ algorithm switch: capability проверяется, provenance отобража
   foreground partition, отсутствие implicit bridges и byte-stable canonical graph serialization.
 - IM-AC-008: two-component path/loop fixture даёт deterministic `PiecewiseCurve` с exact pixel
   coverage и explicit pen-up boundary; branched fixture не создаёт partial curve или hidden route.
+- IM-AC-009: unit/property/integration/component/live CLI evidence подтверждает normalized contour →
+  bounded Douglas–Peucker → equal-N resampling → two actual timelines, side-by-side PNG/provenance,
+  source recoverability и atomic no-overwrite failure behavior.
 
 ## Планируемая трассировка
 
 Stages `FS-010`–`FS-020`, `FS-027`–`FS-029`; Behaviors `BH-IMPORT-001`,
-`BH-DISCONTINUITY-001`.
+`BH-DISCONTINUITY-001`, `BH-SIMPLIFY-001`.

@@ -2,16 +2,17 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-026 Harmonic Build-Up Animation slice поверх завершённых
-inspector/Solo и существующей deterministic coefficient ordering.
+Реализовать отдельный проверяемый FS-027 Curve Simplification slice поверх завершённых
+parameterization/image MVP и hardening contracts.
 
 ## Активный stage
 
-- Stage ID: `FS-026`
-- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated and published.
-- Prerequisites: FS-024, FS-004 and FS-021 are `completed` and published in `origin/main`.
-- Contract: build-up must use an explicit deterministic order and bounded animation state without
-  mutating the complete Fourier spectrum or silently inheriting FS-025 Solo semantics.
+- Stage ID: `FS-027`
+- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
+  awaiting the already-authorized MDP publication.
+- Prerequisites: FS-023, FS-009 and FS-013 are `completed` and published in `origin/main`.
+- Contract: simplify curve geometry under explicit bounded/error semantics without changing the
+  canonical Fourier pipeline or starting adaptive sampling FS-028.
 
 ## Integration state
 
@@ -24,13 +25,12 @@ inspector/Solo и существующей deterministic coefficient ordering.
 
 ## План выполнения
 
-1. [completed] Зафиксировать FS-026 ordering, timing, controls, restore и failure contract до code.
-2. [completed] Реализовать bounded Harmonic Build-Up без FS-027+ и без изменения Fourier math.
-3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review
-   и documentation synchronization.
-4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
+1. [completed] Прочитать exact FS-027 contract и зафиксировать simplification/error/budget semantics.
+2. [completed] Реализовать только FS-027 vertical slice без FS-028+.
+3. [completed] Выполнить targeted/full/static/overlay gates, independent review и documentation sync.
+4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-026 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий отдельный stage —
-FS-027; FS-030/mobile/basis scope в завершённый slice не добавлялся.
+FS-027 validated на рабочей ветке; следующий шаг — атомарный commit и разрешённый МДП. Не начинать
+FS-028/FS-030/mobile/basis scope до интеграции.

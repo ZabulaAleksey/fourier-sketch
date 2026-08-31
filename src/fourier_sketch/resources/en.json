@@ -58,6 +58,12 @@
   "cli.help.invert": "Invert the binary threshold result.",
   "cli.help.overwrite": "Explicitly replace an existing output file.",
   "cli.help.threshold": "Inclusive grayscale threshold from 0 to 255.",
+  "cli.help.simplify_tolerance": "Optional finite non-negative Douglas-Peucker tolerance in normalized contour coordinates.",
+  "cli.help.simplification_budget": "Maximum bounded point-to-segment distance evaluations for simplification.",
+  "cli.simplification_success": "Contour simplification comparison written: {name} ({algorithm}, tolerance {tolerance:.6g}, {source_points} -> {simplified_points} points, max deviation {maximum_deviation:.6g}, sampled RMSE {sampled_rmse:.6g}, baseline RMSE {baseline_rmse:.6g}, simplified RMSE {simplified_rmse:.6g}, {trace} trace points per panel).",
+  "cli.simplification_failed": "Curve simplification failed: {reason}",
+  "simplification.error.resource_limit": "The curve or distance-evaluation work exceeds the simplification resource budget.",
+  "simplification.error.cancelled": "Curve simplification was cancelled; no comparison was published.",
   "cli.output_exists": "Output already exists: {name}",
   "cli.render_failed": "Diagnostic rendering failed: {reason}",
   "cli.success": "Diagnostic written: {name}",
@@ -310,5 +316,10 @@
   "export.spectrum.frequency": "Signed frequency",
   "export.spectrum.amplitude": "Amplitude",
   "control.zoom": "View zoom",
-  "control.reset_view": "Reset view"
+  "control.reset_view": "Reset view",
+  "simplification.original": "Original geometry",
+  "simplification.simplified": "Simplified geometry",
+  "simplification.baseline_frame": "Original current frame",
+  "simplification.simplified_frame": "Simplified current frame",
+  "simplification.summary": "Simplification comparison · {algorithm} · tolerance={tolerance:.6g} · points {source_points}->{simplified_points}\nmax/RMS deviation={maximum_deviation:.6g}/{rms_deviation:.6g} · length delta={length_delta:.6g} · sampled RMSE={sampled_rmse:.6g}\nbaseline/simplified reconstruction RMSE vs baseline={baseline_rmse:.6g}/{simplified_rmse:.6g}"
 }

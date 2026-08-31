@@ -1208,15 +1208,16 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-027 — Curve Simplification (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; automated gates PASS and independent review GO on the working branch,
+  awaiting the already-authorized MDP publication.
 - Goal: simplify contours with measured shape/error impact before resampling.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-023 + FS-009 + FS-013 → FS-027`; hardened metrics/parameterization/image MVP completed.
 - Entry evidence: baseline sample/error/performance measurements and algorithm decision.
-- Current gate: DAG prerequisites are completed; optional stage remains unselected and its algorithm
-  entry evidence has not been accepted.
+- Current gate: DAG prerequisites are completed; bounded iterative Douglas–Peucker, deterministic
+  closed seam, discrete error metrics and opt-in contour comparison contract are accepted.
 
 ### Scope / non-goals / invariants
 

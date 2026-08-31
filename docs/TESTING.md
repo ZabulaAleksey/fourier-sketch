@@ -299,6 +299,14 @@ ordering/target/dwell, context-sensitive Play/Pause/Restart, inspector refresh, 
 Solo/harmonic/export gating. Offscreen remains functional evidence, not manual visible GUI/DPI or
 screen-reader evidence.
 
+FS-027 unit/property tests cover open/closed known polylines, deterministic anchors/ties, degenerate
+and duplicate samples, source subsequence/order/topology, tolerance residual, immutable source and
+typed invalid/budget/cancel failure. Integration compares original/simplified equal-N resampling and
+same-K actual timelines against one baseline reference. Component/live CLI tests require localized
+side-by-side artists/metrics, atomic no-overwrite output and unchanged legacy path without tolerance.
+Performance evidence records representative completion and bounded worst-case abort; it does not
+claim asymptotic improvement.
+
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
