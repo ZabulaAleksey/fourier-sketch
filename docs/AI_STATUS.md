@@ -2,16 +2,35 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-024`.
-- Active Stage ID: `FS-024`, lifecycle `completed`; automated gates PASS and independent review GO.
+- Last completed Stage ID: `FS-025`.
+- Active Stage ID: `FS-025`, lifecycle `completed`; automated gates PASS and independent re-review
+  GO, integration/push pending.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
-- Scope: только завершённый FS-024 read-only Harmonic Inspector; FS-025+, FS-031 и FS-032 не начинались.
+- Scope: только FS-025 Frequency Solo; FS-026+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-025 progress
+
+- Desktop inspector now provides an explicit accessible `Solo selected harmonic` / `Exit Solo`
+  control and localized `SOLO — active set: k=…` mode label. FS-025 intentionally supports one
+  frequency; multi-select/build-up remains FS-026.
+- `FrequencySoloSession` projects the selected signed `k` into a real one-coefficient explicit
+  selection with canonical reconstruction, chain endpoint and a bounded mode-local trace. Baseline
+  timeline selection/K, complete spectrum, state/time/speed/visibility and trace remain unchanged;
+  exit reveals the exact current baseline frame.
+- Harmonic-count and export controls are disabled and defensively gated during Solo. Animation,
+  restart, speed, visibility and presentation zoom/pan continue through existing owners; new/stale
+  timeline provenance clears the analysis session without retargeting it.
+- Targeted unit/property/component/actual-Qt offscreen E2E: `62 passed`; post-review focused set:
+  `21 passed`; full repository suite: `589 passed in 141.98s`. Frozen sync checked 38 packages; Ruff,
+  strict mypy (201 source files), diff and overlay PASS. Independent re-review: `GO`, no remaining
+  blocking findings. Offscreen Qt evidence is not manual visible Windows GUI/DPI or screen-reader
+  evidence.
 
 ## FS-024 progress
 
@@ -192,13 +211,13 @@
 
 ## Следующее разумное действие
 
-FS-024 completed, integrated and published; отдельно выбрать FS-025 Frequency Solo. Не начинать
-FS-026/FS-030 или mobile/basis stages в том же slice.
+Создать атомарный FS-025 commit и выполнить разрешённый МДП; после подтверждённой публикации отдельно
+выбрать FS-026. Не смешивать FS-026/FS-030 или mobile/basis scope с этим commit.
 
 ## Синхронизация документации
 
-- Для FS-024 обновлены README, desktop SPEC, architecture/design/testing/traceability и
-  AI plan/status/roadmap/stage registry. Fourier convention, export schema, security/dependencies,
-  worker lifecycle и accepted domain/application contracts не изменены.
+- Для FS-025 обновлены README, desktop/epicycle SPEC, architecture/design/testing/traceability и
+  AI plan/status/roadmap/stage registry. Fourier math/domain, export schema, security/dependencies и
+  worker lifecycle не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
-  диагностику; click/drag signal-sync regression покрыта executable tests.
+  диагностику; Solo trace/provenance и baseline restore покрыты executable tests.

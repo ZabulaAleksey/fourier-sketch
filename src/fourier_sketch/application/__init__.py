@@ -60,6 +60,7 @@ from .freehand import (
     FreehandCurveResult,
     build_freehand_timeline,
 )
+from .frequency_solo import FrequencySoloSession
 from .image_mvp import (
     ImageMvpConfig,
     ImageMvpController,
@@ -117,6 +118,7 @@ __all__ = [
     "FreehandCapture",
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
+    "FrequencySoloSession",
     "ImageContourTimelineResult",
     "ImageMvpConfig",
     "ImageMvpController",

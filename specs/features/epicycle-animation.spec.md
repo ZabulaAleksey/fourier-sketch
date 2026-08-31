@@ -47,6 +47,15 @@ vectors, endpoint, trace, original/reconstruction. Invalid control values отк
 `STRICT_PATH` показывает полную Fourier trajectory. `PEN_UP_RENDERING` разрывает stroke только по
 segment metadata и не меняет coefficients/chain endpoint.
 
+### EP-FR-008 — Single-frequency analysis projection
+
+Solo analysis принимает immutable baseline frame и выбранную signed frequency `k`, присутствующую
+в его ordered selection. Результат использует explicit active set `(k,)` и канонические
+reconstruction/chain formulas при тех же `time` и `origin`. Его mode-local trace начинается с
+фактического Solo endpoint, добавляет endpoint только для нового времени и сбрасывается при restart;
+baseline selection, reconstruction, chain и trace ledger не меняются. Выход возвращает текущий
+baseline frame без restore-реконструкции. Multi-frequency sequence остаётся FS-026.
+
 ## Behavior contracts
 
 ### BH-EPICYCLE-001
@@ -71,7 +80,9 @@ Play/pause/restart меняют timeline предсказуемо; restart оч�
 - EP-AC-004: trace test доказывает provenance из chain state.
 - EP-AC-005: renderer smoke показывает nested circles/vectors/endpoint/trace без math logic.
 - EP-AC-006: live freehand E2E доказывает drawing → endpoint trace path.
+- EP-AC-007: property/component tests доказывают `(k,)` endpoint/reconstruction parity, Solo trace
+  provenance, отсутствие same-time duplicates и точное раскрытие нетронутого baseline frame.
 
 ## Планируемая трассировка
 
-Stages `FS-005`–`FS-008`, `FS-018`, `FS-021`, `FS-022`.
+Stages `FS-005`–`FS-008`, `FS-018`, `FS-021`, `FS-022`, `FS-025`.

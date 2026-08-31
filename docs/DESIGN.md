@@ -53,6 +53,25 @@ smaller window heights it remains usable instead of overlapping the source contr
 - Панель допускает text expansion и использует `en` resources с существующей pseudo-locale. Editing,
   Solo и Build-Up controls отсутствуют до FS-025/FS-026.
 
+## Frequency Solo FS-025
+
+- Inspector получает отдельные доступные mode label и кнопку `Solo` / `Exit Solo`. Вход разрешён
+  только для выбранного signed `k`; FS-025 поддерживает ровно одну гармонику, multi-select отложен.
+- Solo является analysis-проекцией текущего immutable baseline frame. Canvas показывает настоящий
+  explicit active set `(k,)`: один vector/circle, его endpoint и reconstruction; отдельный Solo
+  endpoint trace остаётся application ledger и по UI-FR-002 не рисуется. Это не visibility-only
+  фильтр и не `K=1` prefix selection.
+- Baseline timeline продолжает владеть полным spectrum/ordered selection, временем, speed,
+  play/pause state и trace. Кнопка выхода раскрывает тот же baseline state, поэтому отдельный restore
+  cache с риском потери состояния не нужен.
+- При animation tick Solo projection пересчитывается для baseline time и накапливает только actual
+  isolated endpoint. Restart начинает новый Solo trace с `t=0`; pause/speed работают как раньше.
+- Пока Solo активен, harmonic slider и export navigation/action disabled с локализованным
+  объяснением. Inspector остаётся привязанным к baseline list и выбранному `k`; новый timeline или
+  stale/empty selection завершает/отклоняет Solo без публикации partial state.
+- Явный текст `SOLO — k=…` и состояние кнопки являются non-color cues. Zoom/pan и visibility
+  продолжают быть presentation controls и не входят в Solo state.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

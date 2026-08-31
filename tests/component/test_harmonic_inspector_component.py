@@ -305,3 +305,73 @@ def test_harmonic_count_and_new_timeline_clear_only_when_identity_is_stale() -> 
     assert window._selected_harmonic_frequency is None
     assert window._inspector_list.currentRow() == -1
     window.close()
+
+
+def test_accessible_solo_control_is_explicit_and_restores_exact_baseline() -> None:
+    app = _application()
+    window = DesktopWindow(locale="pseudo")
+    timeline = _timeline()
+    window._apply_timeline(timeline)
+    baseline = timeline.snapshot()
+    window._inspector_list.setCurrentRow(1)
+    frequency = window._selected_harmonic_frequency
+    assert frequency is not None
+    assert window._solo_action.isEnabled()
+    assert window._solo_action.accessibleName()
+
+    window._solo_action.click()
+    app.processEvents()
+
+    assert window._solo.active
+    assert window._current_frame is not None
+    assert window._current_frame.selection.frequencies == (frequency,)
+    assert str(frequency) in window._solo_mode.text()
+    assert window._solo_mode.text().startswith("[!! ")
+    assert not window._harmonics.isEnabled()
+    assert not window._inspector_list.isEnabled()
+    assert not window._export_nav.isEnabled()
+    assert not window._export_action.isEnabled()
+    assert timeline.snapshot() == baseline
+
+    window._timeline_action("harmonics", 1)
+    assert timeline.snapshot() == baseline
+
+    window._timeline_action("play")
+    window._timeline_action("advance", 0.125)
+    advanced = timeline.snapshot()
+    assert advanced.timeline_state.value == "running"
+    assert window._current_frame is not None
+    assert window._current_frame.chain.time == advanced.chain.time
+    assert window._current_frame.trace[-1] == window._current_frame.chain.endpoint
+    baseline_before_exit = window._baseline_frame
+    assert baseline_before_exit == advanced
+
+    window._solo_action.click()
+    app.processEvents()
+    assert not window._solo.active
+    assert window._current_frame is baseline_before_exit
+    assert window._harmonics.isEnabled()
+    assert window._inspector_list.isEnabled()
+    assert window._export_nav.isEnabled()
+    assert timeline.snapshot() == advanced
+    window.close()
+
+
+def test_solo_requires_selection_and_new_timeline_clears_mode() -> None:
+    _application()
+    window = DesktopWindow()
+    first = _timeline()
+    window._apply_timeline(first)
+    assert not window._solo_action.isEnabled()
+
+    window._inspector_list.setCurrentRow(0)
+    window._solo_action.click()
+    assert window._solo.active
+
+    replacement = _timeline(phase=0.5)
+    window._apply_timeline(replacement)
+    assert not window._solo.active
+    assert window._selected_harmonic_frequency is None
+    assert not window._solo_action.isEnabled()
+    assert window._current_frame == replacement.snapshot()
+    window.close()

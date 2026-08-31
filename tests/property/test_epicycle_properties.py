@@ -7,11 +7,13 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from fourier_sketch.domain import Point2D, SpectrumOrdering
+from fourier_sketch.application import EpicycleTimeline, FrequencySoloSession
+from fourier_sketch.domain import Curve, Point2D, SpectrumOrdering
 from fourier_sketch.math import (
     build_epicycle_chain,
     fft_dft,
     reconstruct_at,
+    reconstruct_samples,
     select_first,
     select_frequencies,
 )
@@ -79,3 +81,35 @@ def test_permutation_changes_order_not_endpoint(
         atol=ABS_TOL,
         rtol=ABS_TOL,
     )
+
+
+@given(
+    complex_samples,
+    st.floats(min_value=-2.0, max_value=2.0, allow_nan=False, allow_infinity=False),
+)
+def test_solo_active_set_endpoint_matches_selected_coefficient(
+    samples: tuple[complex, ...],
+    time: float,
+) -> None:
+    spectrum = fft_dft(samples)
+    curve = Curve(tuple(Point2D(value.real, value.imag) for value in samples), closed=True)
+    timeline = EpicycleTimeline(
+        spectrum,
+        curve,
+        harmonic_count=len(samples),
+        ordering=SpectrumOrdering.INTERLEAVED,
+    )
+    frequency = timeline.snapshot().selection.frequencies[len(samples) // 2]
+    session = FrequencySoloSession()
+    session.enter(timeline.snapshot(), frequency, source=timeline)
+    timeline.play()
+    projected = session.project(timeline.advance(abs(time)), source=timeline)
+
+    expected = reconstruct_at(projected.selection, projected.chain.time)
+    actual = complex(projected.chain.endpoint.x, projected.chain.endpoint.y)
+    assert actual == pytest.approx(expected, abs=ABS_TOL)
+    reconstructed = tuple(
+        complex(point.x, point.y) for point in projected.reconstruction.points
+    )
+    assert reconstructed == pytest.approx(reconstruct_samples(projected.selection), abs=ABS_TOL)
+    assert projected.trace[-1] == projected.chain.endpoint

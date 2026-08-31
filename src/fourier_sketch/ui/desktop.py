@@ -51,6 +51,7 @@ from fourier_sketch.application import (
     EpicycleTimeline,
     ExportFormat,
     FreehandCapture,
+    FrequencySoloSession,
     ImageMvpConfig,
     ImageMvpController,
     ImageMvpSnapshot,
@@ -742,6 +743,10 @@ class DesktopWindow(QMainWindow):
         self._inspector_values: dict[str, QLabel] = {}
         self._inspector_frequencies: tuple[int, ...] = ()
         self._selected_harmonic_frequency: int | None = None
+        self._solo = FrequencySoloSession()
+        self._solo_mode: QLabel
+        self._solo_action: QPushButton
+        self._baseline_frame: EpicycleFrame | None = None
         self._current_frame: EpicycleFrame | None = None
         self._status = QLabel()
         self._source = FreehandCanvas()
@@ -902,6 +907,15 @@ class DesktopWindow(QMainWindow):
         self._inspector_message = QLabel(self._translator.text("desktop.inspector.empty"))
         self._inspector_message.setWordWrap(True)
         inspector_layout.addWidget(self._inspector_message)
+        self._solo_mode = QLabel(self._translator.text("desktop.solo.inactive"))
+        self._solo_mode.setWordWrap(True)
+        self._solo_mode.setAccessibleName(self._translator.text("desktop.solo.mode"))
+        inspector_layout.addWidget(self._solo_mode)
+        self._solo_action = QPushButton(self._translator.text("desktop.solo.enter"))
+        self._solo_action.setAccessibleName(self._translator.text("desktop.solo.enter"))
+        self._solo_action.setEnabled(False)
+        self._solo_action.clicked.connect(self._toggle_solo)
+        inspector_layout.addWidget(self._solo_action)
         self._inspector_list = QListWidget()
         self._inspector_list.setAccessibleName(
             self._translator.text("desktop.inspector.list")
@@ -1067,6 +1081,7 @@ class DesktopWindow(QMainWindow):
         if not isinstance(timeline, EpicycleTimeline):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
+        self._solo.clear()
         self._reset_harmonic_inspector()
         self._timeline = timeline
         self._canvas.set_reference_view_size(reference_view_size)
@@ -1084,10 +1099,17 @@ class DesktopWindow(QMainWindow):
     def _export_format_changed(self) -> None:
         export_format = self._selected_export_format()
         is_mp4 = export_format is ExportFormat.MP4
-        self._export_action.setEnabled(self._timeline is not None and not is_mp4)
+        solo_active = self._solo.active
+        self._export_action.setEnabled(
+            self._timeline is not None and not is_mp4 and not solo_active
+        )
         self._export_frames.setEnabled(export_format is ExportFormat.GIF)
         self._export_duration.setEnabled(export_format is ExportFormat.GIF)
-        if is_mp4:
+        if solo_active:
+            self._export_action.setToolTip(
+                self._translator.text("desktop.solo.export_disabled")
+            )
+        elif is_mp4:
             self._export_action.setToolTip(mp4_capability().reason)
             self._set_status(self._translator.text("desktop.export.mp4_unavailable"))
         else:
@@ -1096,7 +1118,9 @@ class DesktopWindow(QMainWindow):
     def _choose_export(self) -> None:
         timeline = self._timeline
         export_format = self._selected_export_format()
-        if timeline is None:
+        if timeline is None or self._solo.active:
+            if self._solo.active:
+                self._set_status(self._translator.text("desktop.solo.export_disabled"))
             return
         if export_format is ExportFormat.MP4:
             self._set_status(self._translator.text("desktop.export.mp4_unavailable"))
@@ -1221,8 +1245,15 @@ class DesktopWindow(QMainWindow):
         if not isinstance(frame, EpicycleFrame):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
-        self._current_frame = frame
-        self._canvas.set_frame(frame)
+        self._baseline_frame = frame
+        try:
+            display_frame = self._solo.project(frame, source=self._timeline)
+        except DomainValidationError:
+            self._solo.clear()
+            display_frame = frame
+            self._set_status(self._translator.text("desktop.status.invalid_control"))
+        self._current_frame = display_frame
+        self._canvas.set_frame(display_frame)
         self._sync_harmonic_inspector(frame)
         for field, toggle in self._visibility_toggles.items():
             blocked = toggle.blockSignals(True)
@@ -1233,18 +1264,20 @@ class DesktopWindow(QMainWindow):
         self._harmonics.setRange(1, frame.selection.sample_count)
         self._harmonics.setValue(frame.selection.coefficient_count)
         self._harmonics.blockSignals(harmonics_blocked)
+        self._sync_solo_controls(frame)
         self._set_status(
             self._translator.text(
                 "status.summary",
                 state=frame.timeline_state,
-                time=frame.chain.time,
-                harmonics=frame.selection.coefficient_count,
-                speed=frame.speed,
+                time=display_frame.chain.time,
+                harmonics=display_frame.selection.coefficient_count,
+                speed=display_frame.speed,
             )
         )
 
     def _reset_harmonic_inspector(self) -> None:
         self._selected_harmonic_frequency = None
+        self._baseline_frame = None
         self._current_frame = None
         self._inspector_frequencies = ()
         blocked = self._inspector_list.blockSignals(True)
@@ -1271,7 +1304,7 @@ class DesktopWindow(QMainWindow):
                 self._inspector_list.addItem(row)
             self._inspector_list.blockSignals(blocked)
             self._inspector_frequencies = frequencies
-        self._inspector_list.setEnabled(True)
+        self._inspector_list.setEnabled(not self._solo.active)
 
         stale_selection = (
             self._selected_harmonic_frequency is not None
@@ -1332,12 +1365,17 @@ class DesktopWindow(QMainWindow):
         )
 
     def _select_harmonic(self, frequency: int | None) -> None:
+        if self._solo.active:
+            return
         self._selected_harmonic_frequency = frequency
         frame = self._current_frame
         if frame is None:
             self._reset_harmonic_inspector()
             return
         self._sync_harmonic_inspector(frame)
+        baseline = self._baseline_frame
+        if baseline is not None:
+            self._sync_solo_controls(baseline)
 
     def _canvas_harmonic_selected(self, value: object) -> None:
         frequency = value if type(value) is int else None
@@ -1353,6 +1391,47 @@ class DesktopWindow(QMainWindow):
             return
         value = current.data(Qt.ItemDataRole.UserRole)
         self._select_harmonic(value if type(value) is int else None)
+
+    def _toggle_solo(self) -> None:
+        timeline = self._timeline
+        if timeline is None:
+            return
+        baseline = self._baseline_frame
+        if baseline is None:
+            return
+        try:
+            if self._solo.active:
+                self._solo.exit(baseline, source=timeline)
+            else:
+                frequency = self._selected_harmonic_frequency
+                if frequency is None:
+                    raise DomainValidationError("frequency Solo requires a selection")
+                self._solo.enter(baseline, frequency, source=timeline)
+            self._apply_frame(baseline)
+        except DomainValidationError:
+            self._set_status(self._translator.text("desktop.solo.requires_selection"))
+
+    def _sync_solo_controls(self, _frame: EpicycleFrame) -> None:
+        active = self._solo.active
+        frequency = self._solo.frequency
+        if active and frequency is not None:
+            action_text = self._translator.text("desktop.solo.exit")
+            self._solo_mode.setText(
+                self._translator.text("desktop.solo.active", frequency=frequency)
+            )
+        else:
+            action_text = self._translator.text("desktop.solo.enter")
+            self._solo_mode.setText(self._translator.text("desktop.solo.inactive"))
+        self._solo_action.setText(action_text)
+        self._solo_action.setAccessibleName(action_text)
+        self._solo_action.setEnabled(active or self._selected_harmonic_frequency is not None)
+        self._harmonics.setEnabled(not active)
+        self._inspector_list.setEnabled(not active)
+        self._export_nav.setEnabled(self._timeline is not None and not active)
+        self._export_nav.setToolTip(
+            self._translator.text("desktop.solo.export_disabled") if active else ""
+        )
+        self._export_format_changed()
 
     def _timeline_action(self, action: str, value: float | int | None = None) -> None:
         timeline = self._timeline
@@ -1372,7 +1451,7 @@ class DesktopWindow(QMainWindow):
                 else:
                     self._timer.stop()
             elif action == "harmonics":
-                if value is None:
+                if value is None or self._solo.active:
                     return
                 next_frame = timeline.set_harmonic_count(int(value))
             elif action == "speed":

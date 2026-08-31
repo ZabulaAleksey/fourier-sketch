@@ -65,6 +65,29 @@ local contribution обновляется из нового immutable frame. П�
 click явно очищает inspector. Canvas различает click selection и drag-pan, поэтому inspection не
 ломает существующую navigation.
 
+### UI-FR-012 — Single-frequency Solo analysis
+
+Ready inspector позволяет включить Solo для ровно одной выбранной signed frequency `k`. В FS-025
+multi-select явно отложен: Solo строит отдельную analysis-проекцию из соответствующего coefficient,
+а не вызывает `set_harmonic_count(1)` и не заменяет baseline Fourier selection. На canvas
+`selection`, chain vectors/circles, endpoint, reconstruction и отдельный Solo trace display frame
+соответствуют фактическому active set `(k,)`; persistent trace по общему UI-FR-002 не рисуется, а
+видимый mode label сообщает, что активен `SOLO` и содержит `k`.
+
+Baseline timeline остаётся source of truth и во время Solo не меняет complete spectrum, ordered
+selection/K, current time, speed, visibility, play/pause state, animation lifecycle или свой trace
+ledger. Animation advance проецируется в Solo при том же времени, а Solo trace содержит только
+endpoint фактического `(k,)` active set. Выход из Solo раскрывает нетронутый baseline frame и тем
+самым точно восстанавливает selection, geometry, endpoint, reconstruction и trace без обратной
+мутации. Harmonic-count control блокируется на время Solo; новый timeline очищает Solo. Empty/stale
+inspector selection отклоняется и не создаёт скрытого режима.
+
+Solo — analysis-only view: export navigation/action недоступны до выхода из режима, поэтому
+FS-022 продолжает экспортировать baseline current selection и не получает неявную новую семантику.
+Solo activation/exit не ставит animation на паузу и не меняет presentation zoom/pan. Keyboard
+пользователь может выбрать строку, включить и выключить Solo отдельной доступной кнопкой; color не
+является единственным носителем режима.
+
 ### UI-FR-003 — State separation
 
 Widgets dispatch application commands и render immutable/explicit view state. Fourier/CV logic,
@@ -152,8 +175,11 @@ error и completed state. Missing translation показывает fallback stri
 - UI-AC-008: unit/component/live desktop E2E подтверждают exact coefficient/vector mapping,
   pointer/list/keyboard selection, animation-time refresh, explicit empty/stale clearing,
   pseudo-locale expansion и отсутствие изменений Fourier/timeline/trace/animation state.
+- UI-AC-009: unit/property/component/live desktop E2E подтверждают single-frequency active-set
+  chain/endpoint/reconstruction/Solo-trace parity, explicit accessible mode, empty/stale rejection,
+  disabled baseline mutation/export controls и точное восстановление нетронутого timeline frame.
 
 ## Планируемая трассировка
 
 Stages `FS-006`–`FS-008`, `FS-013`, `FS-021`–`FS-026`, `FS-030`; Behaviors
-`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`.
+`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`, `BH-SOLO-001`.

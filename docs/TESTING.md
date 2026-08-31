@@ -283,6 +283,14 @@ speed or trace; animation advance updates the inspector's current local contribu
 E2E drives actual freehand pointer callbacks through the worker-backed timeline before list/canvas
 selection. Offscreen Qt execution is functional E2E evidence, not manual visible Windows DPI evidence.
 
+FS-025 unit/property tests exercise entry/advance/restart/exit over a one-frequency explicit
+selection and require display endpoint/reconstruction/Solo-trace parity with the canonical Fourier
+coefficient. They also cover empty/unknown frequency rejection and transactional failure without
+changing the baseline frame. Component tests drive keyboard inspector selection and the accessible
+Solo/Exit Solo control, verify the explicit mode label, disabled harmonic/export controls, continuing
+play/pause/time/speed behavior and exact baseline snapshot restoration. Actual Qt offscreen E2E may
+prove the live user-to-canvas path, but remains distinct from visible Windows GUI/DPI evidence.
+
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 

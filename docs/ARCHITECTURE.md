@@ -302,6 +302,22 @@ capability result; no subprocess, alternate codec or silent format substitution 
 Новый timeline и отсутствующий в текущем frame `k` очищают selection; обычный animation frame только
 обновляет projection. Solo/visibility filtering и build-up ordering остаются FS-025/FS-026.
 
+## Frequency Solo boundary (FS-025)
+
+`application.frequency_solo` владеет bounded analysis session поверх immutable baseline
+`EpicycleFrame`. Session находит coefficient по stable signed frequency, создаёт explicit
+`CoefficientSelection` из одного элемента и через канонические `reconstruct_samples` и
+`build_epicycle_chain` формирует display frame с фактической isolated geometry/endpoint. Отдельный
+Solo trace обновляется только при новом baseline time и всегда заканчивается display endpoint.
+
+`EpicycleTimeline` и его complete `FourierSpectrum`, ordered selection, time/state/speed/visibility и
+trace ledger не мутируются Solo session. Desktop продолжает отправлять play/pause/restart/advance в
+baseline timeline и только затем применяет analysis projection к canvas. Inspector list/details
+читают baseline frame, mode label — session state, а export во время Solo блокируется; поэтому
+существующий FS-022 exporter не получает скрытую active-set подмену. Новый timeline завершает
+session; явный owner token не позволяет продолжить session на другом timeline даже при совпадающих
+Curve/coefficient values. Multi-select и ordered build-up принадлежат отдельному FS-026 contract.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

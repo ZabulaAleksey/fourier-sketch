@@ -1127,14 +1127,15 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-025 — Frequency Solo (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; automated gates PASS and independent re-review GO, integration pending.
 - Goal: let user visually isolate selected harmonics with explicit analysis semantics.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-024 + FS-003 → FS-025`; inspector and deterministic selection completed.
 - Entry evidence: selected coefficient IDs and separation of render selection vs Fourier selection.
-- Current gate: DAG prerequisites are completed after FS-024; optional stage remains unselected.
+- Current gate: DAG prerequisites are completed after FS-024; single-frequency contract,
+  implementation/full automated gates and independent re-review all PASS.
 
 ### Scope / non-goals / invariants
 

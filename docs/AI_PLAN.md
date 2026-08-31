@@ -2,16 +2,16 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-024 Harmonic Inspector slice поверх завершённого desktop
-milestone: read-only выбор гармоники и отображение её фактических параметров без solo/build-up.
+Реализовать отдельный проверяемый FS-025 Frequency Solo slice поверх завершённого Harmonic Inspector:
+явно изолировать выбранную гармонику для анализа и безопасно восстанавливать предыдущий active set.
 
 ## Активный stage
 
-- Stage ID: `FS-024`
-- Lifecycle: `completed`; targeted/full/static/overlay gates PASS and independent review GO.
-- Prerequisites: FS-023, FS-021 and FS-005 are `completed` and published in `origin/main`.
-- Contract: inspector reads the same coefficient/chain state used by the renderer, preserves stable
-  selection identity and never mutates coefficients, timeline, trace or animation state.
+- Stage ID: `FS-025`
+- Lifecycle: `completed`; automated gates PASS and independent re-review GO, integration pending.
+- Prerequisites: FS-024 and FS-003 are `completed` and published in `origin/main`.
+- Contract: Solo has explicit analysis semantics, keeps the complete spectrum immutable, derives the
+  visible/active contribution from stable frequency IDs and restores the exact pre-solo set on exit.
 
 ## Integration state
 
@@ -22,14 +22,14 @@ milestone: read-only выбор гармоники и отображение е�
 
 ## План выполнения
 
-1. [completed] Уточнить FS-024 requirement IDs, inspector view model, stable selection mapping,
-   empty/stale behavior и keyboard/accessibility contract до production code.
-2. [completed] Реализовать read-only inspector для pointer/list/keyboard selection без FS-025 solo или
-   FS-026 build-up semantics.
+1. [completed] Зафиксировать FS-025 requirement IDs и explicit Solo semantics/restore/failure
+   contract до production code.
+2. [completed] Реализовать bounded single-frequency Solo поверх inspector selection без FS-026 build-up
+   и без mutation/export complete spectrum.
 3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review,
    documentation synchronization и разрешённый МДП.
 
 ## Handoff
 
-FS-024 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующим отдельным stage
-выбрать FS-025, не смешивая его с FS-026/FS-030/mobile/basis scope.
+FS-025 локально завершён: automated gates PASS и independent re-review GO. Следующий шаг —
+атомарный commit и разрешённый МДП; не выбирать FS-026 до подтверждённой интеграции.
