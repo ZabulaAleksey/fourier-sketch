@@ -46,7 +46,11 @@ def test_full_selection_reconstructs_same_samples_for_every_ordering(
         assert metrics.normalized_status in (
             NormalizedErrorStatus.DEFINED,
             NormalizedErrorStatus.ZERO_REFERENCE_EXACT,
+            NormalizedErrorStatus.UNDEFINED_ZERO_REFERENCE,
         )
+        if metrics.normalized_status is NormalizedErrorStatus.UNDEFINED_ZERO_REFERENCE:
+            assert all(sample == samples[0] for sample in samples)
+            assert metrics.max_error <= ABS_TOL
         assert retained_energy_ratio(selection, spectrum) == 1.0
 
 
