@@ -8,8 +8,8 @@ orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authori
 ## Активный stage
 
 - Stage ID: `FS-033`
-- Lifecycle: `completed` and validated on `feature/fs-033-basis-playground`; permitted MDP is in
-  progress.
+- Lifecycle: `completed`; commit `ab20fcc` integrated in `main` and published to `origin/main`;
+  feature branch deleted.
 - Prerequisites: completed FS-032/FS-030/FS-024 and accepted
   `specs/features/basis-playground.spec.md`.
 - Contract: execute only FS-033; Android FS-031 remains behind its SDK/device entry gate.
@@ -28,6 +28,7 @@ orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authori
 - FS-029 commit `5c9dcc0` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-030 commit `6f8a30b` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-032 commit `1c18ff2` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
+- FS-033 commit `ab20fcc` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 
 ## План выполнения
 
@@ -35,10 +36,9 @@ orthonormal DCT-II/Walsh reconstruction и ручное Fourier harmonic authori
 2. [completed] Реализовать DCT-II/Walsh typed decomposition/timeline и desktop views.
 3. [completed] Реализовать Fourier-only Harmonic Playground с exact ordered terms и baseline restore.
 4. [completed] Выполнить focused/full/static/overlay gates, numerical/UI review и documentation sync.
-5. [in_progress] Создать атомарный commit и выполнить ранее разрешённый МДП.
+5. [completed] Создать атомарный commit и выполнить ранее разрешённый МДП.
 
 ## Handoff
 
-FS-033 implementation и automated evidence завершены; independent review GO. Commit/merge/push ещё
-не зафиксированы в этом snapshot. FS-031 не начинался и по-прежнему требует Android SDK/device
-evidence.
+FS-033 завершён и опубликован; independent review GO. FS-031 не начинался и по-прежнему требует
+Android SDK/device evidence.

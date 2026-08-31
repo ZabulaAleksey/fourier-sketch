@@ -1437,8 +1437,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-033 — Indexed Bases and Harmonic Playground (Optional)
 
-- Lifecycle: `completed`; automated gates PASS and independent review GO on
-  `feature/fs-033-basis-playground`; publication pending.
+- Lifecycle: `completed`; commit `ab20fcc` integrated in `main` and published to `origin/main`;
+  feature branch deleted; independent review GO.
 - Goal: add bounded DCT-II/Walsh reconstruction and let a desktop user build an actual Fourier
   curve from explicitly authored harmonics.
 

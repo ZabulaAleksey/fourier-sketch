@@ -2,10 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-032`; commit `1c18ff2` integrated in `main` and published to
+- Last completed Stage ID: `FS-033`; commit `ab20fcc` integrated in `main` and published to
   `origin/main`; feature branch deleted.
-- Active Stage ID: `FS-033`; implementation is validated on `feature/fs-033-basis-playground` and
-  permitted MDP is pending. FS-031 remains planned behind its Android entry gate.
+- Active Stage ID: none; FS-031 remains planned behind its Android entry gate.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -20,9 +19,11 @@
   feature branch was deleted.
   FS-032 Basis Selection/Haar Reconstruction `1c18ff2` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
+  FS-033 Indexed Bases/Harmonic Playground `ab20fcc` is integrated in `main` and published to
+  `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
-- Scope: FS-033 Indexed Bases and Harmonic Playground completed and validated on its feature branch;
-  FS-031 was not started.
+- Scope: FS-033 Indexed Bases and Harmonic Playground completed, integrated and published; FS-031
+  was not started.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.

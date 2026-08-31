@@ -54,8 +54,8 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 опубликован в `origin/main`; independent review GO. Selected record `FS-030` Educational Mode
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-032
 завершён, интегрирован в `main` и опубликован в `origin/main`; independent re-review GO. FS-033
-завершён и validated на feature branch; independent review GO, publication pending. FS-031 не начат
-и остаётся за Android entry gate.
+завершён, интегрирован в `main` и опубликован в `origin/main`; independent review GO. FS-031 не
+начат и остаётся за Android entry gate.
 
 ## Image-to-curve pipeline
 
@@ -72,8 +72,8 @@ GO. Selected record `FS-029` Better Single-Stroke Optimization завершён,
 
 ## Optional extensions
 
-Эти stages не являются обязательными для milestone `FS-023`; `FS-025`–`FS-030` и `FS-032`
-опубликованы, FS-033 validated и ожидает publication.
+Эти stages не являются обязательными для milestone `FS-023`; `FS-025`–`FS-030`, `FS-032` и
+`FS-033` опубликованы.
 
 | Stage | Результат |
 |---|---|

@@ -1,6 +1,6 @@
 # Feature SPEC — Indexed Bases and Harmonic Playground
 
-Статус: Выполнена и проверена на feature branch для `FS-033`; publication pending
+Статус: Выполнена, проверена, интегрирована в `main` и опубликована в `origin/main` для `FS-033`
 
 ## Назначение и область
 
