@@ -360,6 +360,21 @@ highlight и scoped keyboard, используя existing timeline/QTimer; от�
 coefficient math или trace ledger нет. Solo/Build-Up/export locks остаются UI boundary, а
 mobile/basis layers не импортируют lesson.
 
+## Basis selection and Haar boundary (FS-032)
+
+`domain.basis` owns only immutable basis/term/decomposition/selection values. `math.haar` owns the
+project Haar analysis/synthesis and validates the power-of-two/budget contract. Application
+`basis_decomposition` explicitly dispatches `FOURIER_EPICYCLE` to the unchanged
+`EpicycleTimeline` or adapts an immutable source Curve to a recorded Haar analysis grid and
+`HaarTimeline`; it never catches a Haar failure by switching to Fourier.
+
+`HaarFrame` is intentionally not an `EpicycleFrame`: it contains source/analysis/reconstruction and
+active term-contribution curves but no `FourierSpectrum`, vector chain, endpoint or trace ledger.
+Desktop owns the explicit basis selector and sends either frame type to mutually exclusive canvas
+paths. Existing Play/Pause/Restart, speed and one bounded count slider are presentation controls;
+Fourier inspector/Solo/Build-Up/Educational/export surfaces are disabled in Haar mode rather than
+receiving fabricated frequency state. Android remains outside this adapter.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

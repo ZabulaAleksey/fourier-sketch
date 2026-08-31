@@ -1,6 +1,6 @@
 # Feature SPEC — Basis Selection and Wavelet Reconstruction
 
-Статус: Принята, planned `FS-032`
+Статус: Принята, completed `FS-032` on feature branch; pending MDP
 
 ## Назначение и область
 
@@ -15,6 +15,8 @@ convention, existing `FourierSpectrum`, epicycle chain или FFT2 raster mode.
 Пользователь выбирает basis до decomposition: `FOURIER_EPICYCLE` (default) или `HAAR_WAVELET`.
 Result, UI state и diagnostics содержат selected basis и term/selection provenance. Unsupported,
 unavailable или invalid basis даёт explicit error/disabled state; silent fallback запрещён.
+После начала stroke selector locked до explicit Clear; Clear удаляет текущий displayed result и
+открывает selector. Поэтому selected combo value всегда соответствует recorded displayed basis.
 
 ### BS-FR-002 — Fourier compatibility
 
@@ -29,11 +31,30 @@ provenance и строит reconstruction из explicitly selected terms. Consta
 curve fixtures проверяют exact/declared-tolerance synthesis; input/output budgets и non-finite values
 fail closed.
 
+Canonical Haar analysis принимает `N=1` или power-of-two `N≤4096`. Desktop adapter не изменяет
+source `Curve`: one-point source анализируется напрямую, а non-degenerate multi-point source
+arc-length-resample-ится в отдельную recorded 128-sample analysis curve. Degenerate/non-finite или
+raw source `>10,000` points отклоняется явно до resampling; padding и silent basis/resampling
+fallback запрещены.
+
+Forward/inverse используют orthonormal pairwise normalization `1/√2`. Stable term order — root
+scaling term, затем detail levels от coarsest к finest, внутри level по ascending location. Selection
+содержит первые `K`, `1≤K≤N`, и записывает basis, total term count, ordering и exact selected term
+identities. Full `K=N` восстанавливает analysis curve в declared tolerance `1e-12` для fixture scale
+`≤1`; production finite validation остаётся обязательной независимо от tolerance.
+
 ### BS-FR-004 — Honest animation semantics
 
 Animation Haar показывает activation/order of scale-location terms and the resulting partial curve.
 Она не рисует rotating circles, не называет terms frequencies и не заявляет endpoint-trace equivalence.
 Fourier epicycle view и Haar reconstruction view имеют distinct accessible labels.
+Haar frame содержит source curve, recorded analysis curve, selected-term reconstruction и contribution
+текущего scale/location term. Play/Pause/Restart и bounded speed управляют только term activation;
+никакие Fourier coefficients, circles, endpoint или trace ledger для Haar не создаются.
+Activation rate равен 4 terms/second × существующий desktop speed `0.01..1.00×`; completion
+останавливается на `K=N`, Pause сохраняет K, Restart возвращает K=1. Slider задаёт current K.
+FS-032 selector применяется к новому completed freehand Curve; при выбранном Haar image input явно
+disabled, поскольку FFT2/image basis routing остаётся вне этого stage.
 
 ### BS-FR-005 — Comparison boundary
 
@@ -49,6 +70,8 @@ families и learned bases требуют отдельного SPEC/ADR/stage.
 - BS-AC-004: component/live desktop path различает labels and geometry of Fourier epicycles from Haar
   term reconstruction.
 - BS-AC-005: full/static/performance/overlay evidence records selected basis, environment and caveats.
+- BS-AC-006: restart сохраняет selected basis, возвращает Haar к first root-scaling term и не меняет
+  source/analysis curves; Fourier restart сохраняет существующий endpoint/trace contract.
 
 ## Планируемая трассировка
 

@@ -62,21 +62,29 @@ from fourier_sketch.application import (
     ExportFormat,
     FreehandCapture,
     FrequencySoloSession,
+    HaarFrame,
+    HaarTimeline,
     HarmonicBuildUpSession,
     ImageMvpConfig,
     ImageMvpController,
     ImageMvpSnapshot,
     ImageMvpState,
     TimelineState,
+    build_basis_timeline,
     build_canonical_circle_lesson,
-    build_freehand_timeline,
     export_coefficient_data,
     export_curve_data,
     mp4_capability,
     safe_display_basename,
     validate_local_path,
 )
-from fourier_sketch.domain import Curve, DomainValidationError, Point2D, SpectrumOrdering
+from fourier_sketch.domain import (
+    BasisKind,
+    Curve,
+    DomainValidationError,
+    Point2D,
+    SpectrumOrdering,
+)
 from fourier_sketch.imaging import ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, format_educational_copy, resolve_locale
 from fourier_sketch.presentation.harmonic_inspector import (
@@ -238,11 +246,14 @@ class EpicycleCanvas(QWidget):
         super().__init__(parent)
         self._translator = translator
         self._frame: EpicycleFrame | None = None
+        self._haar_frame: HaarFrame | None = None
         self._frame_cache_key: tuple[int, int, tuple[int, ...]] | None = None
         self._scene_bounds: tuple[float, float, float, float] | None = None
         self._reference_view_size: tuple[float, float] | None = None
         self._original_scene_path = QPainterPath()
         self._reconstruction_scene_path = QPainterPath()
+        self._haar_contribution_scene_path = QPainterPath()
+        self._haar_visibility = {"original": True, "reconstruction": True}
         self._vector_lines: list[QLineF] = []
         self._circle_centers: list[tuple[float, float, float]] = []
         self._vector_colors: list[QColor] = []
@@ -458,6 +469,8 @@ class EpicycleCanvas(QWidget):
         event.accept()
 
     def set_frame(self, frame: EpicycleFrame | None) -> None:
+        self._haar_frame = None
+        self.setAccessibleName("Epicycles canvas")
         if frame is not None:
             cache_key = (
                 id(frame.original),
@@ -537,10 +550,64 @@ class EpicycleCanvas(QWidget):
         self._frame = frame
         self.update()
 
+    def set_haar_frame(self, frame: HaarFrame | None) -> None:
+        """Display one actual Haar reconstruction without fabricating epicycle state."""
+
+        self._frame = None
+        self._selected_harmonic_frequency = None
+        self._educational_sample = None
+        self._vector_lines = []
+        self._circle_centers = []
+        self._vector_colors = []
+        self._circle_colors = []
+        self._frame_cache_key = None
+        if frame is None:
+            self._haar_frame = None
+            self._scene_bounds = None
+            self._original_scene_path = QPainterPath()
+            self._reconstruction_scene_path = QPainterPath()
+            self._haar_contribution_scene_path = QPainterPath()
+            self.setAccessibleName("Epicycles canvas")
+            self.update()
+            return
+        source_points = frame.source.points + (
+            (frame.source.start,) if frame.source.closed else ()
+        )
+        reconstruction_points = frame.reconstruction.points + (
+            (frame.reconstruction.start,) if frame.reconstruction.closed else ()
+        )
+        contribution_points = frame.active_contribution.points + (
+            (frame.active_contribution.start,) if frame.active_contribution.closed else ()
+        )
+        self._original_scene_path, source_bounds = self._build_scene_path(source_points)
+        self._reconstruction_scene_path, reconstruction_bounds = self._build_scene_path(
+            reconstruction_points
+        )
+        self._haar_contribution_scene_path, contribution_bounds = self._build_scene_path(
+            contribution_points
+        )
+        self._scene_bounds = (
+            min(source_bounds[0], reconstruction_bounds[0], contribution_bounds[0]),
+            max(source_bounds[1], reconstruction_bounds[1], contribution_bounds[1]),
+            min(source_bounds[2], reconstruction_bounds[2], contribution_bounds[2]),
+            max(source_bounds[3], reconstruction_bounds[3], contribution_bounds[3]),
+        )
+        self._haar_frame = frame
+        self.setAccessibleName(self._translator.text("basis.haar.accessible"))
+        self.update()
+
+    def set_haar_visibility(self, field: str, enabled: bool) -> None:
+        """Set source/reconstruction visibility as presentation-only Haar state."""
+
+        if field not in self._haar_visibility or not isinstance(enabled, bool):
+            raise DomainValidationError("unsupported Haar visibility field")
+        self._haar_visibility[field] = enabled
+        self.update()
+
     def _build_scene_path(
         self, points: tuple[Point2D, ...]
     ) -> tuple[QPainterPath, tuple[float, float, float, float]]:
-        if len(points) < 2:
+        if not points:
             return QPainterPath(), (0.0, 0.0, 0.0, 0.0)
         first = points[0]
         minimum_x = first.x
@@ -560,7 +627,8 @@ class EpicycleCanvas(QWidget):
         painter = QPainter(self)
         painter.fillRect(self.rect(), QColor("#f8fafc"))
         frame = self._frame
-        if frame is None:
+        haar_frame = self._haar_frame
+        if frame is None and haar_frame is None:
             painter.setPen(QColor("#4b5563"))
             painter.drawText(
                 self.rect(),
@@ -593,6 +661,17 @@ class EpicycleCanvas(QWidget):
             painter.setPen(QPen(QColor(color), width * line_scale))
             painter.drawPath(path)
 
+        if haar_frame is not None:
+            if self._haar_visibility["original"]:
+                draw_path(self._original_scene_path, "#94a3b8", 1.0)
+            if self._haar_visibility["reconstruction"]:
+                draw_path(self._reconstruction_scene_path, "#14b8a6", 1.8)
+            draw_path(self._haar_contribution_scene_path, "#7c3aed", 1.2)
+            painter.restore()
+            return
+        if frame is None:
+            painter.restore()
+            return
         visibility = frame.visibility
         if visibility.original:
             draw_path(self._original_scene_path, "#94a3b8", 1.0)
@@ -771,6 +850,7 @@ class DesktopWindow(QMainWindow):
         self._translator = Translator(resolve_locale(locale))
         self._image = ImageMvpController()
         self._timeline: EpicycleTimeline | None = None
+        self._haar_timeline: HaarTimeline | None = None
         self._job: _Job | None = None
         self._job_generation = 0
         self._close_pending = False
@@ -816,6 +896,9 @@ class DesktopWindow(QMainWindow):
         self._current_frame: EpicycleFrame | None = None
         self._status = QLabel()
         self._source = FreehandCanvas()
+        self._basis_selector: QComboBox
+        self._term_label: QLabel
+        self._image_button: QPushButton
         self._timer = QTimer(self)
         self._timer.setInterval(33)
         self._timer.timeout.connect(self._tick)
@@ -847,6 +930,13 @@ class DesktopWindow(QMainWindow):
         source_page = QWidget()
         source_layout = QVBoxLayout(source_page)
         source_layout.setContentsMargins(9, 9, 9, _SOURCE_LAYOUT_BOTTOM_RESERVE)
+        self._basis_selector = QComboBox()
+        for basis in BasisKind:
+            self._basis_selector.addItem(
+                self._translator.text(f"basis.{basis.value}"),
+                basis.value,
+            )
+        self._basis_selector.currentIndexChanged.connect(self._basis_changed)
         instructions = QLabel(self._translator.text("desktop.source.instructions"))
         instructions.setWordWrap(True)
         instructions.setSizePolicy(
@@ -857,15 +947,19 @@ class DesktopWindow(QMainWindow):
         self._source.setMaximumHeight(450)
         source_layout.addWidget(self._source)
         buttons = QHBoxLayout()
+        buttons.addWidget(QLabel(self._translator.text("control.basis")))
+        buttons.addWidget(self._basis_selector)
         clear = QPushButton(self._translator.text("desktop.source.clear"))
-        clear.clicked.connect(self._source.reset)
-        image = QPushButton(self._translator.text("desktop.source.choose_image"))
-        image.clicked.connect(self._choose_image)
+        clear.clicked.connect(self._reset_source)
+        self._image_button = QPushButton(
+            self._translator.text("desktop.source.choose_image")
+        )
+        self._image_button.clicked.connect(self._choose_image)
         self._dark_ink = QCheckBox(self._translator.text("desktop.source.dark_ink"))
         self._dark_ink.setChecked(True)
         self._dark_ink.setAccessibleName("Dark drawing on light background")
         buttons.addWidget(clear)
-        buttons.addWidget(image)
+        buttons.addWidget(self._image_button)
         source_layout.addLayout(buttons)
         source_layout.addWidget(self._dark_ink)
         self._pages.addWidget(source_page)
@@ -947,7 +1041,8 @@ class DesktopWindow(QMainWindow):
             lambda value: self._canvas.set_view_zoom(value / _VIEW_ZOOM_SCALE)
         )
         self._canvas.view_zoom_changed.connect(self._sync_zoom_control)
-        options.addRow(self._translator.text("control.harmonics"), self._harmonics)
+        self._term_label = QLabel(self._translator.text("control.harmonics"))
+        options.addRow(self._term_label, self._harmonics)
         options.addRow(self._translator.text("control.speed"), self._speed)
         reset_view = QPushButton(self._translator.text("control.reset_view"))
         reset_view.setAccessibleName("Reset canvas view")
@@ -1134,31 +1229,129 @@ class DesktopWindow(QMainWindow):
         self._source.completed.connect(self._build_freehand)
         self._source.changed.connect(self._capture_changed)
         self._canvas.harmonic_selected.connect(self._canvas_harmonic_selected)
+        self._basis_changed()
         self._set_status(self._translator.text("desktop.status.initial"))
 
     def _capture_changed(self, snapshot: object) -> None:
         count = len(getattr(snapshot, "points", ()))
+        state = getattr(snapshot, "state", None)
+        self._basis_selector.setEnabled(state is CaptureState.EMPTY and self._job is None)
         self._set_status(self._translator.text("desktop.status.captured", count=count))
+
+    def _selected_basis(self) -> BasisKind:
+        try:
+            return BasisKind(str(self._basis_selector.currentData()))
+        except ValueError as error:
+            raise DomainValidationError("desktop basis selection is invalid") from error
+
+    def _basis_changed(self) -> None:
+        try:
+            haar_selected = self._selected_basis() is BasisKind.HAAR_WAVELET
+        except DomainValidationError:
+            haar_selected = True
+        self._image_button.setEnabled(not haar_selected and self._job is None)
+        self._image_button.setToolTip(
+            self._translator.text("basis.haar.frequency_controls_disabled")
+            if haar_selected
+            else ""
+        )
+        if hasattr(self, "_educational_load"):
+            self._educational_load.setEnabled(
+                not haar_selected and not self._educational.active
+            )
+
+    def _reset_source(self) -> None:
+        self._timer.stop()
+        if self._job is not None:
+            self._cancel_current_job()
+        self._source.reset()
+        self._timeline = None
+        self._haar_timeline = None
+        self._solo.clear()
+        self._build_up.clear()
+        self._educational.clear()
+        self._educational_lesson = None
+        self._educational_snapshot = None
+        self._solo_mode.setText(self._translator.text("desktop.solo.inactive"))
+        self._build_up_mode.setText(self._translator.text("desktop.build_up.inactive"))
+        self._educational_mode.setText(
+            self._translator.text("desktop.educational.unavailable")
+        )
+        self._educational_body.setText("")
+        self._educational_equation.setText("")
+        self._reset_harmonic_inspector()
+        self._canvas.set_frame(None)
+        self._canvas.reset_view()
+        self._harmonics.setRange(1, 1)
+        self._harmonics.setValue(1)
+        self._term_label.setText(self._translator.text("control.harmonics"))
+        self._export_nav.setEnabled(False)
+        for toggle in self._visibility_toggles.values():
+            blocked = toggle.blockSignals(True)
+            toggle.setChecked(False)
+            toggle.setEnabled(False)
+            toggle.blockSignals(blocked)
+        self._basis_selector.setEnabled(self._job is None)
+        self._basis_changed()
 
     def _build_freehand(self, snapshot: object) -> None:
         points = tuple(getattr(snapshot, "points", ()))
         if not points:
             return
         reference_view_size = (float(self._source.width()), float(self._source.height()))
+        try:
+            basis = self._selected_basis()
+        except DomainValidationError:
+            self._set_status(self._translator.text("desktop.status.invalid_control"))
+            return
+        self._clear_displayed_result()
 
-        def operation() -> EpicycleTimeline:
+        def operation() -> EpicycleTimeline | HaarTimeline:
             curve = Curve(points, closed=False)
-            return build_freehand_timeline(curve)
+            return build_basis_timeline(
+                curve,
+                basis=basis,
+                speed=self._speed.value() / _SPEED_SCALE,
+            )
 
         self._start_job(
             operation,
-            lambda result: self._apply_timeline(
-                result,
-                reference_view_size=reference_view_size,
+            lambda result: self._apply_basis_timeline(
+                result, reference_view_size=reference_view_size
+            ),
+            failure_key=(
+                "basis.haar.invalid"
+                if basis is BasisKind.HAAR_WAVELET
+                else "desktop.status.runtime"
             ),
         )
 
+    def _clear_displayed_result(self) -> None:
+        """Remove an older basis result before publishing a new source result."""
+
+        self._timer.stop()
+        self._timeline = None
+        self._haar_timeline = None
+        self._solo.clear()
+        self._build_up.clear()
+        self._educational.clear()
+        self._educational_lesson = None
+        self._educational_snapshot = None
+        self._reset_harmonic_inspector()
+        self._canvas.set_frame(None)
+        self._export_nav.setEnabled(False)
+        for toggle in self._visibility_toggles.values():
+            blocked = toggle.blockSignals(True)
+            toggle.setChecked(False)
+            toggle.setEnabled(False)
+            toggle.blockSignals(blocked)
+
     def _choose_image(self) -> None:
+        if self._selected_basis() is BasisKind.HAAR_WAVELET:
+            self._set_status(
+                self._translator.text("basis.haar.frequency_controls_disabled")
+            )
+            return
         name, _ = QFileDialog.getOpenFileName(
             self,
             self._translator.text("desktop.source.dialog"),
@@ -1180,6 +1373,7 @@ class DesktopWindow(QMainWindow):
         on_success: Callable[[object], None],
         *,
         on_progress: Callable[[int], None] | None = None,
+        failure_key: str = "desktop.status.runtime",
     ) -> None:
         if self._job is not None and self._job.isRunning():
             self._set_status(self._translator.text("desktop.status.busy"))
@@ -1187,6 +1381,7 @@ class DesktopWindow(QMainWindow):
         self._job_generation += 1
         generation = self._job_generation
         self._job = _Job(operation)
+        self._basis_selector.setEnabled(False)
         self._cancel.setEnabled(True)
 
         def on_job_success(result: object, expected: int = generation) -> None:
@@ -1197,7 +1392,7 @@ class DesktopWindow(QMainWindow):
         def on_job_failed(_key: str, expected: int = generation) -> None:
             if self._job_generation != expected:
                 return
-            self._set_status(self._translator.text("desktop.status.runtime"))
+            self._set_status(self._translator.text(failure_key))
 
         self._job.finished_snapshot.connect(on_job_success)
         self._job.failed.connect(on_job_failed)
@@ -1223,6 +1418,15 @@ class DesktopWindow(QMainWindow):
         self._set_status(self._translator.text("desktop.status.cancelled"))
 
     def _set_visibility(self, field: str, enabled: bool) -> None:
+        if self._haar_timeline is not None:
+            if field in {"original", "reconstruction"}:
+                try:
+                    self._canvas.set_haar_visibility(field, enabled)
+                except DomainValidationError:
+                    self._set_status(
+                        self._translator.text("desktop.status.invalid_control")
+                    )
+            return
         timeline = self._timeline
         if timeline is None or self._build_up.active:
             return
@@ -1236,6 +1440,12 @@ class DesktopWindow(QMainWindow):
             self._job.deleteLater()
         self._job = None
         self._cancel.setEnabled(False)
+        self._basis_selector.setEnabled(
+            self._source._capture.snapshot().state is CaptureState.EMPTY
+            and self._timeline is None
+            and self._haar_timeline is None
+        )
+        self._basis_changed()
         if self._close_pending:
             self._close_pending = False
             QTimer.singleShot(0, self.close)
@@ -1270,6 +1480,7 @@ class DesktopWindow(QMainWindow):
         if not isinstance(timeline, EpicycleTimeline):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
+        self._haar_timeline = None
         self._solo.clear()
         self._build_up.clear()
         self._build_up_snapshot = None
@@ -1280,6 +1491,8 @@ class DesktopWindow(QMainWindow):
         self._canvas.set_educational_sample(None)
         self._reset_harmonic_inspector()
         self._timeline = timeline
+        self._basis_selector.setEnabled(False)
+        self._term_label.setText(self._translator.text("control.harmonics"))
         self._canvas.set_reference_view_size(reference_view_size)
         self._canvas.reset_view()
         for toggle in self._visibility_toggles.values():
@@ -1293,6 +1506,104 @@ class DesktopWindow(QMainWindow):
         self._export_format_changed()
         speed = self._speed.value() / _SPEED_SCALE
         self._apply_frame(timeline.set_speed(speed))
+
+    def _apply_basis_timeline(
+        self,
+        timeline: object,
+        *,
+        reference_view_size: tuple[float, float] | None = None,
+    ) -> None:
+        if isinstance(timeline, EpicycleTimeline):
+            self._apply_timeline(timeline, reference_view_size=reference_view_size)
+            return
+        if isinstance(timeline, HaarTimeline):
+            self._apply_haar_timeline(timeline, reference_view_size=reference_view_size)
+            return
+        self._set_status(self._translator.text("desktop.status.runtime"))
+
+    def _apply_haar_timeline(
+        self,
+        timeline: HaarTimeline,
+        *,
+        reference_view_size: tuple[float, float] | None = None,
+    ) -> None:
+        self._timer.stop()
+        self._timeline = None
+        self._haar_timeline = timeline
+        self._basis_selector.setEnabled(False)
+        self._solo.clear()
+        self._build_up.clear()
+        self._build_up_snapshot = None
+        self._build_up_restore_frequency = None
+        self._educational.clear()
+        self._educational_snapshot = None
+        self._educational_lesson = None
+        unavailable = self._translator.text(
+            "basis.haar.frequency_controls_disabled"
+        )
+        self._solo_mode.setText(unavailable)
+        self._build_up_mode.setText(unavailable)
+        self._educational_mode.setText(unavailable)
+        self._educational_body.setText("")
+        self._educational_equation.setText("")
+        self._reset_harmonic_inspector()
+        self._canvas.set_reference_view_size(reference_view_size)
+        self._canvas.reset_view()
+        self._term_label.setText(self._translator.text("control.terms"))
+        self._export_nav.setEnabled(False)
+        self._export_nav.setToolTip(
+            self._translator.text("basis.haar.frequency_controls_disabled")
+        )
+        for field, toggle in self._visibility_toggles.items():
+            available = field in {"original", "reconstruction"}
+            toggle_blocked = toggle.blockSignals(True)
+            toggle.setChecked(available)
+            toggle.setEnabled(available)
+            toggle.blockSignals(toggle_blocked)
+            if available:
+                self._canvas.set_haar_visibility(field, True)
+        self._apply_haar_frame(timeline.snapshot())
+
+    def _apply_haar_frame(self, frame: object) -> None:
+        if not isinstance(frame, HaarFrame):
+            self._set_status(self._translator.text("desktop.status.runtime"))
+            return
+        self._canvas.set_haar_frame(frame)
+        blocked = self._harmonics.blockSignals(True)
+        self._harmonics.setRange(1, frame.total_terms)
+        self._harmonics.setValue(frame.term_count)
+        self._harmonics.blockSignals(blocked)
+        self._harmonics.setEnabled(True)
+        self._inspector_list.setEnabled(False)
+        self._solo_action.setEnabled(False)
+        self._build_up_action.setEnabled(False)
+        self._build_up_ordering.setEnabled(False)
+        self._build_up_target.setEnabled(False)
+        self._build_up_dwell.setEnabled(False)
+        self._educational_action.setEnabled(False)
+        self._educational_load.setEnabled(False)
+        self._export_nav.setEnabled(False)
+        active = frame.active_term
+        if active.kind.value == "scaling":
+            key = "basis.haar.single_term"
+            values: dict[str, object] = {}
+        else:
+            key = "basis.haar.status"
+            values = {
+                "kind": active.kind.value,
+                "level": active.scale,
+                "location": active.location,
+            }
+        self._set_status(
+            self._translator.text(
+                key,
+                state=frame.state,
+                selected=frame.term_count,
+                total=frame.total_terms,
+                speed=frame.speed,
+                **values,
+            )
+        )
 
     def _export_format_changed(self) -> None:
         export_format = self._selected_export_format()
@@ -1609,7 +1920,11 @@ class DesktopWindow(QMainWindow):
         self._select_harmonic(frequency)
 
     def _load_educational_lesson(self) -> None:
-        if self._job is not None or self._educational.active:
+        if (
+            self._job is not None
+            or self._educational.active
+            or self._selected_basis() is BasisKind.HAAR_WAVELET
+        ):
             return
         try:
             lesson = build_canonical_circle_lesson()
@@ -1909,6 +2224,43 @@ class DesktopWindow(QMainWindow):
             toggle.setEnabled(self._timeline is not None and not active)
 
     def _timeline_action(self, action: str, value: float | int | None = None) -> None:
+        haar_timeline = self._haar_timeline
+        if haar_timeline is not None:
+            try:
+                haar_operation = {
+                    "play": haar_timeline.play,
+                    "pause": haar_timeline.pause,
+                    "restart": haar_timeline.restart,
+                }.get(action)
+                if haar_operation is not None:
+                    next_haar_frame = haar_operation()
+                    if action == "play" and next_haar_frame.state is TimelineState.RUNNING:
+                        self._last_tick = monotonic()
+                        self._timer.start()
+                    else:
+                        self._timer.stop()
+                elif action == "harmonics":
+                    if value is None:
+                        return
+                    next_haar_frame = haar_timeline.set_term_count(int(value))
+                    if next_haar_frame.state is TimelineState.PAUSED:
+                        self._timer.stop()
+                elif action == "speed":
+                    if value is None:
+                        return
+                    next_haar_frame = haar_timeline.set_speed(float(value))
+                elif action == "advance":
+                    if value is None:
+                        return
+                    next_haar_frame = haar_timeline.advance(float(value))
+                    if next_haar_frame.state is TimelineState.PAUSED:
+                        self._timer.stop()
+                else:
+                    return
+                self._apply_haar_frame(next_haar_frame)
+            except DomainValidationError:
+                self._set_status(self._translator.text("desktop.status.invalid_control"))
+            return
         timeline = self._timeline
         if timeline is None:
             return
@@ -1974,6 +2326,16 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.invalid_control"))
 
     def _tick(self) -> None:
+        haar_timeline = self._haar_timeline
+        if haar_timeline is not None:
+            if haar_timeline.state is TimelineState.PAUSED:
+                self._timer.stop()
+                return
+            now = monotonic()
+            delta = now - self._last_tick
+            self._last_tick = now
+            self._timeline_action("advance", delta)
+            return
         timeline = self._timeline
         if self._build_up.active:
             if self._build_up.state is not BuildUpState.RUNNING:
@@ -2012,11 +2374,20 @@ class DesktopWindow(QMainWindow):
             event.accept()
             return
         if event.key() == Qt.Key.Key_R:
-            self._source.reset()
-            self._timeline_action("restart")
+            self._reset_source()
             event.accept()
             return
         if event.key() == Qt.Key.Key_Space:
+            haar_timeline = self._haar_timeline
+            if haar_timeline is not None:
+                action = (
+                    "pause"
+                    if haar_timeline.state is TimelineState.RUNNING
+                    else "play"
+                )
+                self._timeline_action(action)
+                event.accept()
+                return
             timeline = self._timeline
             if timeline is not None:
                 if self._build_up.active:

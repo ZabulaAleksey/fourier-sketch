@@ -1,5 +1,14 @@
 """Public domain model for Fourier Sketch."""
 
+from .basis import (
+    BasisKind,
+    HaarDecomposition,
+    HaarNormalization,
+    HaarOrdering,
+    HaarSelection,
+    HaarTerm,
+    HaarTermKind,
+)
 from .curve import Curve
 from .epicycle import EpicycleChainState, EpicycleVector
 from .errors import DomainValidationError
@@ -15,6 +24,7 @@ from .point import Point2D
 from .selection import CoefficientSelection, NormalizedErrorStatus, ReconstructionMetrics
 
 __all__ = [
+    "BasisKind",
     "CoefficientSelection",
     "Curve",
     "DomainValidationError",
@@ -24,6 +34,12 @@ __all__ = [
     "FourierNormalization",
     "FourierSpectrum",
     "FrequencyConvention",
+    "HaarDecomposition",
+    "HaarNormalization",
+    "HaarOrdering",
+    "HaarSelection",
+    "HaarTerm",
+    "HaarTermKind",
     "NormalizedErrorStatus",
     "PiecewiseCurve",
     "Point2D",

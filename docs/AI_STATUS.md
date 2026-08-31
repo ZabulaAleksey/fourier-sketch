@@ -2,9 +2,8 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-030`; commit `6f8a30b` integrated in `main` and published to
-  `origin/main`; feature branch deleted.
-- Active Stage ID: none until the next stage is selected after FS-030 publication.
+- Last completed Stage ID: `FS-032`; validated on `feature/fs-032-basis-selection`, pending MDP.
+- Active Stage ID: none until FS-032 publication and next-stage selection.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -18,10 +17,28 @@
   FS-030 Educational Mode `6f8a30b` is integrated in `main` and published to `origin/main`; its
   feature branch was deleted.
   No PR, release or deployment was performed.
-- Scope: FS-030 Educational Mode completed on its feature branch; FS-031 and FS-032 were not started.
+- Scope: FS-032 Basis Selection/Haar Reconstruction completed on its feature branch; FS-031 was not
+  started.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-032 progress
+
+- Explicit `FOURIER_EPICYCLE` default dispatches the unchanged `EpicycleTimeline`; explicit
+  `HAAR_WAVELET` uses project-owned orthonormal complex Haar with root-scaling/coarse-to-fine terms,
+  exact selection ownership and no padding/silent fallback. Raw source is bounded to 10,000 points;
+  non-degenerate desktop input records a separate 128-sample arc-length analysis curve while source
+  stays immutable.
+- Separate `HaarFrame`/canvas path renders source, selected-term reconstruction and active
+  scale/location contribution without circles, frequencies, endpoint or trace. Selector/job/error
+  locking prevents label/frame mismatch and stale results; Play/Pause/Restart/current Terms use
+  `0.01..1.00×`, pause at `K=N`, and preserve zoom/pan/visibility presentation state.
+- Final focused independent suite: `36 passed`; final repository suite: `692 passed in 184.45s`.
+  Frozen sync checked 38 packages; Ruff, strict mypy (240 source files), diff and overlay PASS.
+  Performance sanity: 100 maximum-N (4096) analysis+synthesis runs in `4.682085s`. Independent
+  read-only re-review: `GO`, no P0/P1/P2. Actual Qt E2E is offscreen, not manual visible Windows
+  GUI/DPI evidence.
 
 ## FS-030 progress
 
@@ -302,13 +319,13 @@
 
 ## Следующее разумное действие
 
-Выбрать ровно один следующий optional stage по его entry gates. Mobile/basis scope с FS-030 не
-смешивался.
+Опубликовать завершённый FS-032 через разрешённый МДП. После этого остаётся planned FS-031, чей
+entry gate требует approved Android technology decision и Android SDK/emulator или named device.
 
 ## Синхронизация документации
 
-- Для FS-030 обновлены README, desktop SPEC, architecture/decisions/design/testing, traceability и
-  AI plan/status/roadmap/stage registry. Fourier math, dependency set, security, export schema,
-  Android и basis behavior не изменены.
+- Для FS-032 обновлены README, basis SPEC, architecture/decision/design/mathematics/testing,
+  traceability и AI plan/status/roadmap/stage registry. Existing Fourier math, dependency set,
+  security, export schema и Android behavior не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: incoming/outgoing turning-angle regression и
   route heuristic/budget contracts закреплены executable tests без нового operational runbook.

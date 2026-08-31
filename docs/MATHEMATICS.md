@@ -322,6 +322,37 @@ coefficients и `fftshift` только для magnitude/log-magnitude/phase vie
 `FFT2Spectrum` immutable/readonly и separate; IFFT real reconstruction отклоняет asymmetric mask,
 если imaginary residual превышает explicit tolerance.
 
+## Orthonormal Haar basis
+
+FS-032 применяет Haar только к complex 1D curve samples. Canonical analysis length равна `N=1` или
+power of two `N=2^L≤4096`; padding отсутствует. Для каждой adjacent pair текущего level:
+
+```text
+a[j] = (x[2j] + x[2j+1]) / √2
+d[j] = (x[2j] - x[2j+1]) / √2
+```
+
+Pairwise analysis повторяется над `a`, пока не останется root scaling coefficient. Inverse одного
+level:
+
+```text
+x[2j]   = (a[j] + d[j]) / √2
+x[2j+1] = (a[j] - d[j]) / √2
+```
+
+Каждый immutable term хранит kind (`scaling`/`detail`), level, location и complex value. Detail
+`level=0` — finest pairs исходного grid, `level=L-1` — coarsest detail. Canonical activation order:
+root scaling, затем detail levels `L-1..0`, внутри level ascending location. Partial selection первых
+`K` terms синтезируется с нулём только на невыбранных canonical coefficients; исходный coefficient
+array и source Curve не изменяются. Full selection восстанавливает analysis samples с tolerance
+`1e-12` на bounded analytical fixtures scale `≤1`.
+
+Desktop не выдаёт arbitrary stroke length за Haar-compatible grid: one-point Curve анализируется
+напрямую, non-degenerate multi-point source отдельно arc-length-resample-ится к 128 samples с
+recorded provenance; raw source budget равен 10 000 points до resampling. Haar reconstruction
+является curve-on-grid, а не rotating-vector sum;
+`trace == endpoint` к нему не применяется.
+
 ## Numerical evidence policy
 
 - finite input проверяется до transform;

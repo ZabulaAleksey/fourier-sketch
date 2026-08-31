@@ -100,6 +100,25 @@ smaller window heights it remains usable instead of overlapping the source contr
   retarget, Solo, Build-Up и export locked до Exit; zoom/pan/visibility остаются доступны. Новый
   timeline очищает lesson с explanation; Android/basis controls отсутствуют.
 
+## Basis selector and Haar view FS-032
+
+- Basis combo находится рядом с decomposition controls и default-ит в `Fourier epicycles`.
+  Пользователь выбирает `Fourier epicycles` или `Haar wavelet` до завершения нового stroke;
+  selection сохраняется при restart/error и никогда не меняется автоматически. С первого pointer
+  sample до explicit Clear combo locked; Clear удаляет displayed result и снова открывает выбор, так
+  что label никогда не расходится с basis уже отображаемого frame.
+- Fourier path и labels остаются прежними. Haar path подписан `Haar wavelet reconstruction`, count
+  control подписан `Terms`, а status показывает selected/total terms и active
+  `scaling`/`detail level/location`; terms не называются harmonics/frequencies.
+- Canvas в Haar mode рисует source curve, partial reconstruction и отличимый contribution active
+  term. Circles/vectors/endpoint/trace и frequency inspector/Solo/Build-Up/Educational/export
+  недоступны с локализованным explanation; zoom/pan и source/reconstruction visibility остаются.
+- Play активирует terms в canonical root-scaling/coarse-to-fine order с base rate 4 terms/second,
+  умноженным на существующий bounded speed `0.01..1.00×`; completion останавливает timer на `K=N`.
+  Pause фиксирует текущий K, Restart возвращает K=1, count slider задаёт current `1..N`. Новый
+  freehand stroke строится только выбранным basis adapter. Image input disabled при выбранном Haar
+  с explanation; этот slice не делает silent Fourier image fallback и не расширяет raster pipeline.
+
 ## Curve Simplification diagnostic FS-027
 
 - Existing contour CLI получает opt-in `--simplify-tolerance`; без option UI/output остаются

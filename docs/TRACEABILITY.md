@@ -28,6 +28,8 @@
 | `BH-ADAPTIVE-001` | FC-FR-009, FC-AC-007, IM-FR-010, IM-AC-010 | FS-028 | weighted arc-length density with exact N and uniform comparison | unit + property + integration + component + live CLI E2E + performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-ROUTE-OPT-001` | IM-FR-011, IM-AC-011 | FS-029 | selectable bounded shortest-odd-pairing vs FS-017 baseline | unit + property + integration + component + live CLI E2E + corpus/performance/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-EDUCATION-001` | UI-FR-014, UI-AC-011 | FS-030 | canonical actual-state six-step circle lesson over existing timeline/inspector/canvas | unit + integration + component + actual Qt offscreen E2E + content/math/full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
+| `BH-BASIS-SELECT-001` | BS-FR-001..002, BS-AC-001..002 | FS-032 | explicit default-Fourier basis adapter and basis-specific frame provenance | unit + integration + component + offscreen desktop E2E + full/static/overlay | verified on feature branch; independent review GO; pending MDP |
+| `BH-WAVELET-RECONSTRUCTION-001` | BS-FR-003..005, BS-AC-003..006 | FS-032 | project-owned orthonormal Haar analysis/selection/synthesis and typed timeline | analytical + property + integration + component + performance/full/static/overlay | verified on feature branch; independent review GO; pending MDP |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain

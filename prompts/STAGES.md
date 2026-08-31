@@ -1335,7 +1335,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-032 — Basis Selection and Haar Wavelet Reconstruction (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`; validated on the feature branch, pending authorized MDP.
 - Goal: let a user explicitly choose `FOURIER_EPICYCLE` or `HAAR_WAVELET` for a bounded curve
   decomposition, then animate the selected basis' actual partial reconstruction.
 
@@ -1345,8 +1345,8 @@ completion claim. Evidence records environment/branch and caveats.
   a completed desktop basis-control surface are required.
 - Entry evidence: accepted basis-decomposition SPEC, canonical freehand/closed-curve fixture corpus,
   numerical baseline and UI language distinguishing a rotating epicycle from a wavelet term.
-- Current gate: DAG prerequisites are completed; FS-032 remains unselected and may start only through
-  a separately approved stage slice.
+- Current gate: DAG prerequisites are completed; accepted SPEC now records orthonormal normalization,
+  power-of-two/budget policy, 128-sample desktop adapter and stable term activation order.
 
 ### Scope / non-goals / invariants
 
@@ -1375,6 +1375,10 @@ completion claim. Evidence records environment/branch and caveats.
   finite/bounded round trip and coefficient-selection provenance; integration basis adapter and
   reconstruction metrics; component selector/disabled/error/pseudo-locale paths; live desktop E2E for
   both bases; numerical/performance/full/static/overlay PASS with environment and caveats recorded.
+- Evidence: independent focused `36 passed`; full `692 passed in 184.45s`; frozen sync 38 packages;
+  Ruff, strict mypy (240 source files), diff and overlay PASS; 100 maximum-N analysis+synthesis runs
+  in `4.682085s`; independent read-only re-review `GO`. Actual Qt E2E is offscreen, not manual visible
+  GUI evidence.
 
 ### Temporary / deferred / failure
 

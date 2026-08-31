@@ -574,3 +574,17 @@ canvas и Play/Pause, добавляя buttons и scoped Alt-key navigation с e
 
 **Последствия:** content/math parity проверяется executable mapping tests; новые lesson families
 требуют отдельного stage/spec extension.
+
+## ADR-032 — Separate typed Haar timeline, no polymorphic epicycle frame
+
+**Решение:** FS-032 сохраняет `EpicycleTimeline`/`EpicycleFrame` без изменений и добавляет
+project-owned orthonormal Haar domain/math plus отдельный `HaarTimeline`/`HaarFrame`. Desktop basis
+selector dispatches explicitly; Haar uses a recorded 128-sample arc-length analysis grid for a
+non-degenerate multi-point source and canonical scaling/coarse-to-fine detail activation.
+
+**Отклонено:** padding arbitrary N, silent fallback to Fourier, representing Haar terms as signed
+frequencies/circles, mutating the source Curve, and a generic frame union that weakens Fourier
+endpoint/trace invariants.
+
+**Последствия:** basis-specific renderer branches and disabled controls are explicit; future basis
+families require their own typed decomposition/view semantics and SPEC extension.

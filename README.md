@@ -60,6 +60,12 @@ baseline без silent fallback. `FS-030` добавляет один actual-sta
 `Alt+Left`/`Alt+Right`/`Alt+Home`. Lesson начинает paused; Play/Pause анимируют и фиксируют те же
 actual frame values. Solo, Build-Up, K и export временно locked, а zoom/pan/visibility остаются
 presentation controls.
+`FS-032` добавляет explicit basis selector для нового freehand stroke: `Fourier epicycles` остаётся
+default и использует прежний endpoint/trace path, а `Haar wavelet` строит project-owned
+orthonormal 128-sample reconstruction с actual root/coarse-to-fine terms. В Haar view нет
+fabricated circles/frequencies/endpoint trace; Play/Pause/Restart, speed, Terms, zoom/pan и
+Original/Reconstruction работают отдельно, а Fourier-only inspector/Solo/Build-Up/Educational/
+export и image input явно unavailable. Clear удаляет displayed result и снова открывает selector.
 
 ## Целевой pipeline
 

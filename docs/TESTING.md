@@ -115,6 +115,18 @@ pause → exit`. Offscreen evidence не называется manual visible GUI
 Final FS-030 evidence: focused `10 passed`, full repository `656 passed in 196.90s`, Ruff, strict
 mypy (231 source files), overlay и independent read-only re-review `GO`.
 
+FS-032 unit/property matrix проверяет orthonormal Haar constant/impulse/step/complex fixtures,
+full round-trip, root-scaling/coarse-to-fine identities, first-K provenance, N=1, non-power-of-two,
+non-finite и `N>4096` failures. Integration сравнивает explicit Fourier dispatch с unchanged
+endpoint parity и Haar full/partial reconstruction metrics over recorded 128-sample analysis curve.
+Qt component/offscreen E2E проверяют default/explicit selector, labels, disabled frequency-only
+surfaces, Play/Pause/Restart/count/speed, pseudo-locale and visible failure without basis fallback.
+Performance evidence измеряет bounded analysis/synthesis separately; offscreen evidence не является
+manual visible GUI evidence.
+Final FS-032 evidence: independent focused `36 passed`, full repository `692 passed in 184.45s`,
+Ruff, strict mypy (240 source files), overlay и independent read-only re-review `GO`; 100 maximum-N
+analysis+synthesis runs completed in `4.682085s`.
+
 ### Component
 
 Matplotlib/PySide controls and state transitions: empty/loading/error/disabled/cancelled, visibility

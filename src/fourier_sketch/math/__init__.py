@@ -36,6 +36,15 @@ from .fft2_image import (
     ifft2_image,
 )
 from .frequencies import signed_frequencies, signed_frequency
+from .haar import (
+    MAX_HAAR_SAMPLES,
+    haar_analyze,
+    haar_synthesize,
+    haar_synthesize_samples,
+    haar_term_contribution,
+    haar_transform,
+    select_haar_terms,
+)
 from .metrics import reconstruction_metrics, retained_energy_ratio
 from .piecewise_sampling import (
     MAX_PIECEWISE_SAMPLES,
@@ -77,6 +86,7 @@ __all__ = [
     "DOUGLAS_PEUCKER_ALGORITHM",
     "MAX_FFT2_PIXELS",
     "MAX_FFT_SAMPLES",
+    "MAX_HAAR_SAMPLES",
     "MAX_PIECEWISE_SAMPLES",
     "MAX_RECONSTRUCTION_SAMPLES",
     "MAX_RECONSTRUCTION_TERMS",
@@ -113,6 +123,11 @@ __all__ = [
     "curve_to_complex_samples",
     "fft2_image",
     "fft_dft",
+    "haar_analyze",
+    "haar_synthesize",
+    "haar_synthesize_samples",
+    "haar_term_contribution",
+    "haar_transform",
     "idft",
     "ifft2_image",
     "ordered_coefficients",
@@ -129,6 +144,7 @@ __all__ = [
     "sample_piecewise_curve",
     "select_first",
     "select_frequencies",
+    "select_haar_terms",
     "signed_frequencies",
     "signed_frequency",
     "simplify_curve_douglas_peucker",

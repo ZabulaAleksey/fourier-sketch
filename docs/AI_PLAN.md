@@ -2,15 +2,15 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-030 Educational Mode slice поверх завершённых desktop
-inspector/build-up contracts.
+Спланировать и реализовать отдельный проверяемый FS-032 Basis Selection and Haar Wavelet
+Reconstruction slice поверх завершённых desktop и partial-reconstruction contracts.
 
 ## Активный stage
 
-- Stage ID: `FS-030`
-- Lifecycle: `completed`; commit `6f8a30b` integrated in `main` and published to `origin/main`.
-- Prerequisites: exact FS-030 DAG verified against completed published stages.
-- Contract: read and execute only the exact FS-030 stage record; do not start FS-031/FS-032 scope.
+- Stage ID: `FS-032`
+- Lifecycle: `completed`; validated on the feature branch and ready for the authorized MDP.
+- Prerequisites: exact DAG and accepted SPEC/numerical/UI entry evidence verified.
+- Contract: read and execute only the exact FS-032 stage record; do not start FS-031 scope.
 
 ## Integration state
 
@@ -28,12 +28,12 @@ inspector/build-up contracts.
 
 ## План выполнения
 
-1. [completed] Прочитать exact FS-030 contract и зафиксировать lesson/state/failure semantics.
-2. [completed] Реализовать только FS-030 vertical slice без mobile/basis scope.
-3. [completed] Выполнить targeted/full/static/overlay gates, independent review и documentation sync.
-4. [completed] Создать атомарный commit и выполнить разрешённый МДП.
+1. [completed] Прочитать exact FS-032 contract и проверить SPEC/numerical/UI entry evidence.
+2. [completed] Реализовать только FS-032 Fourier/Haar vertical slice без Android scope.
+3. [completed] Выполнить targeted/full/static/overlay gates, numerical/content review и documentation sync.
+4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-030 получил terminal evidence, independent review `GO`, интегрирован и опубликован. Следующий
-stage ещё не выбран; FS-031/FS-032 в этот slice не включались.
+FS-032 получил terminal evidence и independent re-review `GO`; остаётся commit и разрешённый МДП.
+FS-031 в этот slice не включался.
