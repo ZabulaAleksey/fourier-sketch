@@ -36,6 +36,23 @@ an explicit overwrite decision and no failed/cancelled export is shown as comple
 The freehand field is vertically aligned with the epicycle viewport in the normal desktop layout; at
 smaller window heights it remains usable instead of overlapping the source controls.
 
+## Harmonic Inspector FS-024
+
+- Ready desktop view показывает отдельную read-only inspector panel: keyboard-focusable ordered list
+  и textual details выбранной гармоники.
+- Row label содержит selection position и signed frequency `k`; detail labels показывают amplitude,
+  phase, angular velocity и current complex local contribution. Color не является единственным
+  носителем selection.
+- Click рядом с видимым vector/circle выбирает ту же frequency; click вне harmonic geometry очищает
+  selection. Pointer movement выше click threshold остаётся canvas pan и не меняет inspector.
+- Arrow-key navigation списка использует стандартное Qt focus behavior. Empty/stale state показывает
+  локализованное объяснение вместо старых значений.
+- Animation обновляет только current contribution выбранного `k`; selection не ставит timeline на
+  паузу и не меняет trace. Harmonic-count growth сохраняет доступный `k`, shrink очищает исчезнувший;
+  новый source/timeline всегда начинает с empty inspector.
+- Панель допускает text expansion и использует `en` resources с существующей pseudo-locale. Editing,
+  Solo и Build-Up controls отсутствуют до FS-025/FS-026.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

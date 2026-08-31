@@ -48,6 +48,23 @@ unchecked полностью скрывает её; новая принятая 
 В desktop-first layout поле freehand drawing выравнивается по вертикальному центру с epicycle canvas;
 на компактном окне сохраняется безопасный минимальный размер поля без перекрытия controls.
 
+### UI-FR-011 — Read-only harmonic inspector
+
+После появления ready `EpicycleFrame` desktop UI предоставляет inspector текущего ordered
+coefficient/vector set. Пользователь выбирает одну гармонику кликом по её vector/circle либо строкой
+списка; список поддерживает обычную keyboard navigation. Stable selection identity — signed
+frequency `k`, а не transient row index. Inspector показывает selection position, `k`, amplitude,
+phase, angular velocity и текущий complex local contribution из той же пары
+`frame.selection.coefficients[i]` / `frame.chain.vectors[i]`, которую рисует canvas.
+
+Inspector selection является только presentation state: выбор, очистка и обновление значений не
+меняют Curve, coefficients, harmonic count/order, chain geometry, endpoint, timeline state/speed,
+trace ledger или animation lifecycle. При animation advance выбранный `k` сохраняется и его current
+local contribution обновляется из нового immutable frame. При изменении K выбранный `k` сохраняется,
+только если он остаётся в selection; новый source/timeline, stale frequency или off-harmonic canvas
+click явно очищает inspector. Canvas различает click selection и drag-pan, поэтому inspection не
+ломает существующую navigation.
+
 ### UI-FR-003 — State separation
 
 Widgets dispatch application commands и render immutable/explicit view state. Fourier/CV logic,
@@ -132,8 +149,11 @@ error и completed state. Missing translation показывает fallback stri
 - EX-AC-003: existing file и cancellation не приводят к silent data loss.
 - UI-AC-007: cancellation остаётся responsive, не вызывает forced termination и сохраняет ownership
   worker до normal finish; close завершается после bounded worker completion.
+- UI-AC-008: unit/component/live desktop E2E подтверждают exact coefficient/vector mapping,
+  pointer/list/keyboard selection, animation-time refresh, explicit empty/stale clearing,
+  pseudo-locale expansion и отсутствие изменений Fourier/timeline/trace/animation state.
 
 ## Планируемая трассировка
 
 Stages `FS-006`–`FS-008`, `FS-013`, `FS-021`–`FS-026`, `FS-030`; Behaviors
-`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`.
+`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`.

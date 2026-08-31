@@ -2,17 +2,16 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-023 hardening slice поверх завершённых desktop/export primary
-paths: численные/resource/cancellation/platform/packaging evidence без optional FS-024+ или mobile.
+Реализовать отдельный проверяемый FS-024 Harmonic Inspector slice поверх завершённого desktop
+milestone: read-only выбор гармоники и отображение её фактических параметров без solo/build-up.
 
 ## Активный stage
 
-- Stage ID: `FS-023`
-- Lifecycle: `completed`; automated gates and independent review GO; atomic commit accompanies this
-  completion record.
-- Prerequisite: FS-022 `completed`; desktop/export primary paths validated and locally integrated.
-- Contract: hardening добавляет измеряемые guards/evidence и packaging decision, не меняя Fourier
-  convention, accepted UI/export semantics или dependency manager.
+- Stage ID: `FS-024`
+- Lifecycle: `completed`; targeted/full/static/overlay gates PASS and independent review GO.
+- Prerequisites: FS-023, FS-021 and FS-005 are `completed` and published in `origin/main`.
+- Contract: inspector reads the same coefficient/chain state used by the renderer, preserves stable
+  selection identity and never mutates coefficients, timeline, trace or animation state.
 
 ## Integration state
 
@@ -23,13 +22,14 @@ paths: численные/resource/cancellation/platform/packaging evidence бе
 
 ## План выполнения
 
-1. [completed] Прочитать FS-023 contract/SPEC/ADR и инвентаризировать numerical, resource,
-   cancellation, Windows-path, dependency/license и packaging gaps.
-2. [completed] Реализовать минимальные hardening guards и reproducible evidence harness без optional scope.
-3. [completed] Выполнить targeted/full/static/dependency/platform/package gates, independent review и
-   Completion Documentation Synchronization Gate.
+1. [completed] Уточнить FS-024 requirement IDs, inspector view model, stable selection mapping,
+   empty/stale behavior и keyboard/accessibility contract до production code.
+2. [completed] Реализовать read-only inspector для pointer/list/keyboard selection без FS-025 solo или
+   FS-026 build-up semantics.
+3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review,
+   documentation synchronization и разрешённый МДП.
 
 ## Handoff
 
-FS-023 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий stage не выбран:
-не начинать FS-024+, FS-031 или FS-032 без отдельного решения пользователя.
+FS-024 завершён и validated locally в feature branch; МДП разрешён пользователем. После интеграции
+следующим отдельным stage выбрать FS-025, не смешивая его с FS-026/FS-030/mobile/basis scope.

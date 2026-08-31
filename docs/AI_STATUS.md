@@ -2,15 +2,33 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-023`.
-- Active Stage ID: `FS-023`, lifecycle `completed`; automated gates PASS and independent re-review GO.
+- Last completed Stage ID: `FS-024`.
+- Active Stage ID: `FS-024`, lifecycle `completed`; automated gates PASS and independent review GO.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
-  No PR, release or deployment was performed.
-- Scope: только mandatory FS-023 hardening; FS-024+, FS-031 и FS-032 не начинались.
+  FS-024 is validated locally in `feature/fs-024-harmonic-inspector`; merge/push follow the authorized
+  MDP workflow. No PR, release or deployment was performed.
+- Scope: только завершённый FS-024 read-only Harmonic Inspector; FS-025+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-024 progress
+
+- Ready desktop frame now exposes a read-only Harmonic Inspector with an ordered keyboard-focusable
+  list and localized values for selection position, signed `k`, amplitude, phase, angular velocity
+  and current complex local contribution.
+- Stable identity is signed frequency. Canvas vector/circle click uses deterministic device-space
+  hit testing with current zoom/pan/Y transform; click and drag-pan are separated by the Qt drag
+  threshold. Off-harmonic click, K shrink, stale identity and a new timeline clear explicitly.
+- Selection is presentation-only. Unit/component regressions prove exact aligned coefficient/vector
+  mapping, K-grow/time persistence, animation value refresh and unchanged Curve, coefficients, chain,
+  endpoint, timeline, speed and trace. Harmonic slider UI synchronization blocks its own signal.
+- Targeted unit/component/actual-Qt offscreen E2E: `32 passed`; focused post-self-review assertions:
+  `7 passed`; full repository suite: `573 passed in 146.79s`. Frozen sync checked 38 packages; Ruff,
+  strict mypy (198 source files), diff and overlay PASS. Independent reviewer reran `7` focused and
+  `42` desktop/timeline tests: `GO`, no P0/P1/P2. Offscreen evidence is not manual visible GUI/DPI or
+  screen-reader evidence.
 
 ## FS-023 progress
 
@@ -174,14 +192,13 @@
 
 ## Следующее разумное действие
 
-FS-023 завершён, интегрирован в `main` и опубликован в `origin/main`; остановиться до выбора
-следующего stage. FS-024+, FS-031 и FS-032 не начинались заодно.
+FS-024 completed/validated locally; выполнить разрешённый МДП, затем отдельно выбрать FS-025
+Frequency Solo. Не начинать FS-026/FS-030 или mobile/basis stages в том же slice.
 
 ## Синхронизация документации
 
-- Обновлены README, system/desktop SPEC, architecture/decisions/design/security/testing/traceability/
-  dependencies и AI plan/status/roadmap/stage registry; добавлена bounded evidence note.
-- Fourier convention и export schema не изменены; optimized inverse-grid path проверен против scalar
-  oracle, а desktop cancellation contract усилен без нового product dependency.
+- Для FS-024 обновлены README, desktop SPEC, architecture/design/testing/traceability и
+  AI plan/status/roadmap/stage registry. Fourier convention, export schema, security/dependencies,
+  worker lifecycle и accepted domain/application contracts не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
-  диагностику сверх versioned hardening harness/evidence.
+  диагностику; click/drag signal-sync regression покрыта executable tests.

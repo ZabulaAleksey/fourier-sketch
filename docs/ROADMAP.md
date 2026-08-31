@@ -31,11 +31,13 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-021` | PySide6 GUI with central Epicycles view | `completed` |
 | `FS-022` | Data/image/GIF and capability-gated MP4 export | `completed` |
 | `FS-023` | Numerical, performance, cancellation and source-package hardening | `completed` |
+| `FS-024` | Read-only frequency-keyed Harmonic Inspector | `completed` |
 
 ## Текущий этап
 
-Текущий selected record `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`;
-automated gates и independent review GO. Optional/mobile stages не начинались.
+`FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`. Selected record `FS-024`
+Harmonic Inspector завершён и validated locally с independent review GO; разрешённый МДП ожидается.
+Более поздние optional/mobile stages ещё не начаты.
 
 ## Image-to-curve pipeline
 
@@ -52,11 +54,10 @@ automated gates и independent review GO. Optional/mobile stages не начин
 
 ## Optional extensions
 
-Эти stages planned, но не являются обязательными для milestone `FS-023`:
+Эти оставшиеся stages planned, но не являются обязательными для milestone `FS-023`:
 
 | Stage | Результат |
 |---|---|
-| `FS-024` | Harmonic Inspector |
 | `FS-025` | Frequency Solo |
 | `FS-026` | Harmonic Build-Up Animation |
 | `FS-027` | Curve Simplification |

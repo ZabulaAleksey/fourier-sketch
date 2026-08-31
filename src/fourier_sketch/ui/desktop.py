@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from math import isfinite
+from dataclasses import dataclass
+from math import hypot, isfinite
 from pathlib import Path
 from time import monotonic
 from typing import cast
@@ -27,8 +28,11 @@ from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
     QFormLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
+    QListWidget,
+    QListWidgetItem,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -62,6 +66,10 @@ from fourier_sketch.application import (
 from fourier_sketch.domain import Curve, DomainValidationError, Point2D
 from fourier_sketch.imaging import ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, resolve_locale
+from fourier_sketch.presentation.harmonic_inspector import (
+    HarmonicInspectorItem,
+    build_harmonic_inspector_item,
+)
 from fourier_sketch.render import export_animation_gif, render_frame_png, render_spectrum_png
 
 
@@ -97,6 +105,34 @@ _VIEW_ZOOM_SCALE = 100
 _VIEW_ZOOM_DEFAULT = 1.00
 _SOURCE_LAYOUT_BOTTOM_RESERVE = 250
 _RAINBOW_HUE_STEP = 0.618033988749895
+_HARMONIC_HIT_TOLERANCE = 8.0
+
+
+@dataclass(frozen=True, slots=True)
+class _DevicePoint:
+    x: float
+    y: float
+
+
+def _point_to_segment_distance(
+    point: _DevicePoint,
+    start: _DevicePoint,
+    end: _DevicePoint,
+) -> float:
+    """Return the shortest device-pixel distance to a finite segment."""
+
+    delta_x = end.x - start.x
+    delta_y = end.y - start.y
+    length_squared = delta_x * delta_x + delta_y * delta_y
+    if length_squared <= 1e-12:
+        return hypot(point.x - start.x, point.y - start.y)
+    projection = (
+        (point.x - start.x) * delta_x + (point.y - start.y) * delta_y
+    ) / length_squared
+    bounded = max(0.0, min(1.0, projection))
+    nearest_x = start.x + bounded * delta_x
+    nearest_y = start.y + bounded * delta_y
+    return hypot(point.x - nearest_x, point.y - nearest_y)
 
 
 def _export_dialog_contract(export_format: ExportFormat) -> tuple[str, str]:
@@ -183,6 +219,7 @@ class EpicycleCanvas(QWidget):
     """Paint-only view of a ready immutable frame; it never calculates Fourier state."""
 
     view_zoom_changed = Signal(float)
+    harmonic_selected = Signal(object)
 
     def __init__(self, translator: Translator, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -200,7 +237,10 @@ class EpicycleCanvas(QWidget):
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
         self._pan_anchor: QPointF | None = None
+        self._pan_origin = QPointF()
+        self._pan_dragged = False
         self._touch_points: dict[int, tuple[float, float]] = {}
+        self._selected_harmonic_frequency: int | None = None
         self.setMinimumSize(360, 300)
         self.setAttribute(Qt.WidgetAttribute.WA_AcceptTouchEvents)
         self.setAccessibleName("Epicycles canvas")
@@ -216,6 +256,26 @@ class EpicycleCanvas(QWidget):
         """Return the viewport translation in device pixels for component assertions."""
 
         return (self._view_pan.x(), self._view_pan.y())
+
+    @property
+    def selected_harmonic_frequency(self) -> int | None:
+        """Return the presentation-only signed frequency highlighted on the canvas."""
+
+        return self._selected_harmonic_frequency
+
+    def set_selected_harmonic(self, frequency: int | None) -> None:
+        """Highlight one currently visible harmonic without touching frame state."""
+
+        frame = self._frame
+        selected = frequency
+        if selected is not None and (
+            frame is None or selected not in frame.selection.frequencies
+        ):
+            selected = None
+        if selected == self._selected_harmonic_frequency:
+            return
+        self._selected_harmonic_frequency = selected
+        self.update()
 
     def set_view_zoom(self, zoom: float) -> None:
         """Set a bounded view scale; rendering remains independent from Fourier state."""
@@ -253,6 +313,8 @@ class EpicycleCanvas(QWidget):
         self._view_zoom = _VIEW_ZOOM_DEFAULT
         self._view_pan = QPointF()
         self._pan_anchor = None
+        self._pan_origin = QPointF()
+        self._pan_dragged = False
         self._touch_points = {}
         self.update()
         if zoom_changed:
@@ -315,6 +377,8 @@ class EpicycleCanvas(QWidget):
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() is Qt.MouseButton.LeftButton:
             self._pan_anchor = event.position()
+            self._pan_origin = QPointF(self._view_pan)
+            self._pan_dragged = False
             event.accept()
             return
         super().mousePressEvent(event)
@@ -323,16 +387,27 @@ class EpicycleCanvas(QWidget):
         if self._pan_anchor is not None and event.buttons() & Qt.MouseButton.LeftButton:
             position = event.position()
             delta = position - self._pan_anchor
-            self._view_pan = QPointF(self._view_pan.x() + delta.x(), self._view_pan.y() + delta.y())
-            self._pan_anchor = position
-            self.update()
+            if not self._pan_dragged:
+                self._pan_dragged = (
+                    abs(delta.x()) + abs(delta.y()) >= QApplication.startDragDistance()
+                )
+            if self._pan_dragged:
+                self._view_pan = QPointF(
+                    self._pan_origin.x() + delta.x(),
+                    self._pan_origin.y() + delta.y(),
+                )
+                self.update()
             event.accept()
             return
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         if event.button() is Qt.MouseButton.LeftButton and self._pan_anchor is not None:
+            if not self._pan_dragged:
+                self.harmonic_selected.emit(self._hit_test_harmonic(event.position()))
             self._pan_anchor = None
+            self._pan_origin = QPointF()
+            self._pan_dragged = False
             event.accept()
             return
         super().mouseReleaseEvent(event)
@@ -404,6 +479,7 @@ class EpicycleCanvas(QWidget):
             self._circle_centers = []
             self._vector_colors = []
             self._circle_colors = []
+            self._selected_harmonic_frequency = None
         else:
             self._vector_lines = []
             self._circle_centers = []
@@ -417,6 +493,8 @@ class EpicycleCanvas(QWidget):
                 self._circle_centers.append(
                     (vector.start.x, vector.start.y, vector.amplitude),
                 )
+            if self._selected_harmonic_frequency not in frame.selection.frequencies:
+                self._selected_harmonic_frequency = None
         self._frame = frame
         self.update()
 
@@ -485,20 +563,75 @@ class EpicycleCanvas(QWidget):
         # application trace remains available for export and other renderers.
         painter.setBrush(Qt.BrushStyle.NoBrush)
         if visibility.circles:
-            for (x, y, radius), color in zip(
-                self._circle_centers, self._circle_colors, strict=True
+            for index, ((x, y, radius), color) in enumerate(
+                zip(self._circle_centers, self._circle_colors, strict=True)
             ):
-                painter.setPen(QPen(color, 1.0 * line_scale))
+                selected = (
+                    frame.chain.vectors[index].frequency
+                    == self._selected_harmonic_frequency
+                )
+                painter.setPen(QPen(color, (2.8 if selected else 1.0) * line_scale))
                 painter.drawEllipse(QPointF(x, y), radius, radius)
         if visibility.vectors:
-            for line, color in zip(self._vector_lines, self._vector_colors, strict=True):
-                painter.setPen(QPen(color, 1.2 * line_scale))
+            for index, (line, color) in enumerate(
+                zip(self._vector_lines, self._vector_colors, strict=True)
+            ):
+                selected = (
+                    frame.chain.vectors[index].frequency
+                    == self._selected_harmonic_frequency
+                )
+                painter.setPen(QPen(color, (3.0 if selected else 1.2) * line_scale))
                 painter.drawLine(line)
         if visibility.endpoint:
             painter.setBrush(QColor("#dc2626"))
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawEllipse(map_point(frame.chain.endpoint), 4.0 * line_scale, 4.0 * line_scale)
         painter.restore()
+
+    def _hit_test_harmonic(self, point: QPointF) -> int | None:
+        """Return the nearest visible harmonic in device pixels, deterministically."""
+
+        frame = self._frame
+        if frame is None:
+            return None
+        scale, center_x, center_y = self._scene_transform()
+        target = _DevicePoint(point.x(), point.y())
+
+        def device_point(scene_point: Point2D) -> _DevicePoint:
+            return _DevicePoint(
+                self.width() / 2.0
+                + self._view_pan.x()
+                + (scene_point.x - center_x) * scale,
+                self.height() / 2.0
+                + self._view_pan.y()
+                - (scene_point.y - center_y) * scale,
+            )
+
+        best: tuple[float, int, int] | None = None
+        for index, vector in enumerate(frame.chain.vectors):
+            distances: list[float] = []
+            if frame.visibility.vectors:
+                distances.append(
+                    _point_to_segment_distance(
+                        target,
+                        device_point(vector.start),
+                        device_point(vector.end),
+                    )
+                )
+            if frame.visibility.circles:
+                center = device_point(vector.start)
+                radius = vector.amplitude * scale
+                distances.append(
+                    abs(hypot(target.x - center.x, target.y - center.y) - radius)
+                )
+            if not distances:
+                continue
+            candidate = (min(distances), index, vector.frequency)
+            if candidate[0] <= _HARMONIC_HIT_TOLERANCE and (
+                best is None or candidate[:2] < best[:2]
+            ):
+                best = candidate
+        return None if best is None else best[2]
 
     def _scene_transform(self) -> tuple[float, float, float]:
         """Return device scale and fixed scene center for the current presentation baseline."""
@@ -604,6 +737,12 @@ class DesktopWindow(QMainWindow):
         self._export_duration: QSpinBox
         self._export_action: QPushButton
         self._visibility_toggles: dict[str, QCheckBox] = {}
+        self._inspector_list: QListWidget
+        self._inspector_message: QLabel
+        self._inspector_values: dict[str, QLabel] = {}
+        self._inspector_frequencies: tuple[int, ...] = ()
+        self._selected_harmonic_frequency: int | None = None
+        self._current_frame: EpicycleFrame | None = None
         self._status = QLabel()
         self._source = FreehandCanvas()
         self._timer = QTimer(self)
@@ -755,9 +894,44 @@ class DesktopWindow(QMainWindow):
             options.addRow(toggle)
         center.addLayout(options)
         layout.addLayout(center, 2)
+        inspector = QGroupBox(self._translator.text("desktop.inspector.title"))
+        inspector.setAccessibleName(self._translator.text("desktop.inspector.title"))
+        inspector.setMinimumWidth(220)
+        inspector.setMaximumWidth(320)
+        inspector_layout = QVBoxLayout(inspector)
+        self._inspector_message = QLabel(self._translator.text("desktop.inspector.empty"))
+        self._inspector_message.setWordWrap(True)
+        inspector_layout.addWidget(self._inspector_message)
+        self._inspector_list = QListWidget()
+        self._inspector_list.setAccessibleName(
+            self._translator.text("desktop.inspector.list")
+        )
+        self._inspector_list.setEnabled(False)
+        self._inspector_list.currentItemChanged.connect(self._inspector_row_changed)
+        inspector_layout.addWidget(self._inspector_list, 1)
+        inspector_form = QFormLayout()
+        for key in (
+            "position",
+            "frequency",
+            "amplitude",
+            "phase",
+            "angular_velocity",
+            "local_value",
+        ):
+            value = QLabel("—")
+            value.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByKeyboard)
+            value.setAccessibleName(self._translator.text(f"desktop.inspector.{key}"))
+            self._inspector_values[key] = value
+            inspector_form.addRow(
+                self._translator.text(f"desktop.inspector.{key}"),
+                value,
+            )
+        inspector_layout.addLayout(inspector_form)
+        layout.addWidget(inspector)
         self.setCentralWidget(root)
         self._source.completed.connect(self._build_freehand)
         self._source.changed.connect(self._capture_changed)
+        self._canvas.harmonic_selected.connect(self._canvas_harmonic_selected)
         self._set_status(self._translator.text("desktop.status.initial"))
 
     def _capture_changed(self, snapshot: object) -> None:
@@ -893,6 +1067,7 @@ class DesktopWindow(QMainWindow):
         if not isinstance(timeline, EpicycleTimeline):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
+        self._reset_harmonic_inspector()
         self._timeline = timeline
         self._canvas.set_reference_view_size(reference_view_size)
         self._canvas.reset_view()
@@ -1046,14 +1221,18 @@ class DesktopWindow(QMainWindow):
         if not isinstance(frame, EpicycleFrame):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
+        self._current_frame = frame
         self._canvas.set_frame(frame)
+        self._sync_harmonic_inspector(frame)
         for field, toggle in self._visibility_toggles.items():
             blocked = toggle.blockSignals(True)
             toggle.setChecked(bool(getattr(frame.visibility, field)))
             toggle.setEnabled(True)
             toggle.blockSignals(blocked)
+        harmonics_blocked = self._harmonics.blockSignals(True)
         self._harmonics.setRange(1, frame.selection.sample_count)
         self._harmonics.setValue(frame.selection.coefficient_count)
+        self._harmonics.blockSignals(harmonics_blocked)
         self._set_status(
             self._translator.text(
                 "status.summary",
@@ -1063,6 +1242,117 @@ class DesktopWindow(QMainWindow):
                 speed=frame.speed,
             )
         )
+
+    def _reset_harmonic_inspector(self) -> None:
+        self._selected_harmonic_frequency = None
+        self._current_frame = None
+        self._inspector_frequencies = ()
+        blocked = self._inspector_list.blockSignals(True)
+        self._inspector_list.clear()
+        self._inspector_list.blockSignals(blocked)
+        self._inspector_list.setEnabled(False)
+        self._canvas.set_selected_harmonic(None)
+        self._set_inspector_item(None, message_key="desktop.inspector.empty")
+
+    def _sync_harmonic_inspector(self, frame: EpicycleFrame) -> None:
+        frequencies = frame.selection.frequencies
+        if frequencies != self._inspector_frequencies:
+            blocked = self._inspector_list.blockSignals(True)
+            self._inspector_list.clear()
+            for index, frequency in enumerate(frequencies):
+                row = QListWidgetItem(
+                    self._translator.text(
+                        "desktop.inspector.row",
+                        position=index + 1,
+                        frequency=frequency,
+                    )
+                )
+                row.setData(Qt.ItemDataRole.UserRole, frequency)
+                self._inspector_list.addItem(row)
+            self._inspector_list.blockSignals(blocked)
+            self._inspector_frequencies = frequencies
+        self._inspector_list.setEnabled(True)
+
+        stale_selection = (
+            self._selected_harmonic_frequency is not None
+            and self._selected_harmonic_frequency not in frequencies
+        )
+        if stale_selection:
+            self._selected_harmonic_frequency = None
+        selected = self._selected_harmonic_frequency
+        if selected is None:
+            blocked = self._inspector_list.blockSignals(True)
+            self._inspector_list.setCurrentRow(-1)
+            self._inspector_list.blockSignals(blocked)
+            self._canvas.set_selected_harmonic(None)
+            self._set_inspector_item(
+                None,
+                message_key=(
+                    "desktop.inspector.stale"
+                    if stale_selection
+                    else "desktop.inspector.select"
+                ),
+            )
+            return
+
+        item = build_harmonic_inspector_item(frame.selection, frame.chain, selected)
+        if item is None:
+            self._selected_harmonic_frequency = None
+            self._canvas.set_selected_harmonic(None)
+            self._set_inspector_item(None, message_key="desktop.inspector.stale")
+            return
+        blocked = self._inspector_list.blockSignals(True)
+        self._inspector_list.setCurrentRow(item.selection_index)
+        self._inspector_list.blockSignals(blocked)
+        self._canvas.set_selected_harmonic(item.frequency)
+        self._set_inspector_item(item)
+
+    def _set_inspector_item(
+        self,
+        item: HarmonicInspectorItem | None,
+        *,
+        message_key: str = "desktop.inspector.selected",
+    ) -> None:
+        self._inspector_message.setText(self._translator.text(message_key))
+        if item is None:
+            for value in self._inspector_values.values():
+                value.setText("—")
+            return
+        self._inspector_values["position"].setText(
+            f"{item.selection_index + 1}/{len(self._inspector_frequencies)}"
+        )
+        self._inspector_values["frequency"].setText(str(item.frequency))
+        self._inspector_values["amplitude"].setText(f"{item.amplitude:.6g}")
+        self._inspector_values["phase"].setText(f"{item.phase:.6g}")
+        self._inspector_values["angular_velocity"].setText(
+            f"{item.angular_velocity:.6g}"
+        )
+        self._inspector_values["local_value"].setText(
+            f"{item.local_value.real:+.6g} {item.local_value.imag:+.6g}i"
+        )
+
+    def _select_harmonic(self, frequency: int | None) -> None:
+        self._selected_harmonic_frequency = frequency
+        frame = self._current_frame
+        if frame is None:
+            self._reset_harmonic_inspector()
+            return
+        self._sync_harmonic_inspector(frame)
+
+    def _canvas_harmonic_selected(self, value: object) -> None:
+        frequency = value if type(value) is int else None
+        self._select_harmonic(frequency)
+
+    def _inspector_row_changed(
+        self,
+        current: QListWidgetItem | None,
+        _previous: QListWidgetItem | None,
+    ) -> None:
+        if current is None:
+            self._select_harmonic(None)
+            return
+        value = current.data(Qt.ItemDataRole.UserRole)
+        self._select_harmonic(value if type(value) is int else None)
 
     def _timeline_action(self, action: str, value: float | int | None = None) -> None:
         timeline = self._timeline

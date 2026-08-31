@@ -36,6 +36,10 @@ skeleton в детерминированный graph topology без прежд�
 Обязательный hardening `FS-023` реализован и локально проверен: inverse reconstruction использует
 parity-tested bounded NumPy IFFT, Qt cancellation не вызывает forced thread termination, Unicode/
 space Windows exports проходят actual codecs, а source wheel устанавливается в isolated environment.
+`FS-024` добавляет read-only Harmonic Inspector: signed frequency выбирается кликом по видимому
+vector/circle либо keyboard-навигацией списка, а панель показывает selection position, amplitude,
+phase, angular velocity и current local contribution из того же immutable frame. Выбор не меняет
+Fourier coefficients, chain, endpoint, timeline, trace или animation state.
 
 ## Целевой pipeline
 
@@ -358,8 +362,9 @@ compliance decisions.
 ## Ограничения
 
 Matplotlib diagnostics остаются поддерживаемыми diagnostic adapters. FS-021 добавляет source-run
-PySide6 shell, FS-022 — local data/PNG/GIF export, а FS-023 — measured hardening и проверяемый
-source wheel. Bundled installer и MP4 ещё не реализованы.
+PySide6 shell, FS-022 — local data/PNG/GIF export, FS-023 — measured hardening и проверяемый
+source wheel, а FS-024 — read-only inspector выбранной гармоники. Bundled installer и MP4 ещё не
+реализованы.
 Freehand input, единый Matplotlib MVP, arc-length resampling, безопасный image preprocessing, два
 edge intermediate и single dominant contour-to-trace реализованы как проверяемые vertical slices.
 Cohesive image MVP, Lee skeleton diagnostic, traversal-neutral graph, PiecewiseCurve conversion,

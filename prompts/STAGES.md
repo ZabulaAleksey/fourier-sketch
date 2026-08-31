@@ -1084,15 +1084,16 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-024 — Harmonic Inspector (Optional)
 
-- Lifecycle: `planned`, optional.
+- Lifecycle: `completed`, optional; automated gates PASS and independent review GO.
 - Goal: inspect one chain vector/coefficient without changing mathematical state.
 
 ### Dependency DAG & entry preconditions
 
 - DAG: `FS-023 + FS-021 + FS-005 → FS-024`; hardened GUI and chain metadata completed.
 - Entry evidence: stable selection/hit-test mapping and accessible inspector design.
-- Current gate: DAG prerequisites are completed; optional stage remains unselected and its entry
-  evidence has not been reviewed.
+- Current gate: implementation and terminal evidence complete in `feature/fs-024-harmonic-inspector`;
+  authorized MDP remains the integration action. Stable frequency identity, click/drag hit-test
+  separation and accessible list/panel are recorded in SPEC/architecture/design/testing.
 
 ### Scope / non-goals / invariants
 
@@ -1112,6 +1113,9 @@ completion claim. Evidence records environment/branch and caveats.
 
 - Unit mapping/format; integration chain state; component pointer/keyboard/empty/text expansion;
   live GUI E2E; full/static/overlay PASS.
+- Current evidence: targeted `32 passed`, focused post-self-review `7 passed`, full repository
+  `573 passed in 146.79s`; frozen sync, Ruff, strict mypy, diff and overlay PASS. Independent review
+  `GO`, no P0/P1/P2. Actual Qt offscreen E2E is functional evidence, not manual visible DPI evidence.
 
 ### Temporary / deferred / failure
 
@@ -1119,7 +1123,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: solo FS-025 and build-up FS-026.
 - Failure: off-canvas/stale selection clears explicitly, never shows wrong harmonic.
 - Docs: DESIGN/trace/status/plan.
-- Handoff: commit optional stage and stop.
+- Handoff: commit and perform the authorized MDP; stop FS-024 before selecting FS-025.
 
 ## FS-025 — Frequency Solo (Optional)
 
@@ -1130,7 +1134,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-024 + FS-003 → FS-025`; inspector and deterministic selection completed.
 - Entry evidence: selected coefficient IDs and separation of render selection vs Fourier selection.
-- Current gate: unsatisfied while FS-024 remains planned.
+- Current gate: DAG prerequisites are completed after FS-024; optional stage remains unselected.
 
 ### Scope / non-goals / invariants
 
@@ -1170,7 +1174,7 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-024 + FS-004 + FS-021 → FS-026`; inspector, selection/reconstruction and GUI completed.
 - Entry evidence: deterministic ordering and timeline/state-machine decision.
-- Current gate: unsatisfied while FS-024 remains planned.
+- Current gate: DAG prerequisites are completed after FS-024; optional stage remains unselected.
 
 ### Scope / non-goals / invariants
 

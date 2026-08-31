@@ -291,6 +291,17 @@ same selection and accumulate only actual endpoints; they do not mutate the inte
 only select parameters/destination and dispatch the existing worker. MP4 has an explicit unavailable
 capability result; no subprocess, alternate codec or silent format substitution exists.
 
+## Harmonic inspector boundary (FS-024)
+
+`presentation.harmonic_inspector` создаёт immutable read-only projection одной гармоники из
+согласованных по selection order `EpicycleFrame.selection` и `EpicycleFrame.chain`. Signed frequency
+`k` является stable presentation identity; projection не владеет coefficient, chain или timeline и
+не выполняет повторный Fourier calculation. `DesktopWindow` владеет выбранным `k`, списком и
+локализованным форматированием, а `EpicycleCanvas` выполняет только device-space hit-test уже
+подготовленных vector/circle geometry. Click selection отделён от drag-pan movement threshold.
+Новый timeline и отсутствующий в текущем frame `k` очищают selection; обычный animation frame только
+обновляет projection. Solo/visibility filtering и build-up ordering остаются FS-025/FS-026.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

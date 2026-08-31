@@ -273,6 +273,16 @@ representative large N and stress K within existing caps, measure rather than di
 timings, and prove that Cancel never force-terminates an owned Qt worker. Positive Unicode/space paths
 pass through real atomic export. Clean wheel installation/import/resource loading is source-package
 evidence only and does not substitute an installer or visible GUI/DPI verification.
+
+FS-024 unit tests require frequency-key lookup to return the exact aligned coefficient/vector
+projection, preserve selection position and return explicit empty for unknown/stale `k`. Component
+tests cover initial empty state, ordered list and keyboard navigation, canvas vector/circle click,
+click-versus-drag-pan separation, K grow persistence/K shrink clearing and pseudo-locale expansion.
+Before/after snapshots prove selection does not mutate Curve, coefficients, chain, endpoint, timeline,
+speed or trace; animation advance updates the inspector's current local contribution. A live desktop
+E2E drives actual freehand pointer callbacks through the worker-backed timeline before list/canvas
+selection. Offscreen Qt execution is functional E2E evidence, not manual visible Windows DPI evidence.
+
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 
