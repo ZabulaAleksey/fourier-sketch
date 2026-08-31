@@ -2,9 +2,9 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-033`; commit `ab20fcc` integrated in `main` and published to
+- Last completed Stage ID: `FS-031`; product commit `f261d0f` integrated in `main` and published to
   `origin/main`; feature branch deleted.
-- Active Stage ID: `FS-031`; implementation is validated on `feature/fs-031-android-mvp`, МДП pending.
+- Active Stage ID: none; no subsequent stage has been selected.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -21,6 +21,8 @@
   `origin/main`; its feature branch was deleted.
   FS-033 Indexed Bases/Harmonic Playground `ab20fcc` is integrated in `main` and published to
   `origin/main`; its feature branch was deleted.
+  FS-031 Android Touch-to-Epicycles MVP `f261d0f` is integrated in `main` and published to
+  `origin/main`.
   No PR, release or deployment was performed.
 - Scope: FS-031 native Android touch-to-epicycles only; Play Store/release and additional mobile
   features are outside the active stage.
@@ -371,8 +373,8 @@
 
 ## Следующее разумное действие
 
-Опубликовать validated FS-031 через уже разрешённый МДП; independent re-review уже дал `GO`. Store
-signing/publication и новые Android features требуют отдельного stage/разрешения.
+Текущий stage завершён; следующий stage не выбран. Store signing/publication, улучшение Android
+frame pacing и новые Android features требуют отдельного stage/разрешения.
 
 ## Синхронизация документации
 

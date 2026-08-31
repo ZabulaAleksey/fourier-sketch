@@ -1493,7 +1493,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-031 — Android Touch-to-Epicycles MVP
 
-- Lifecycle: `validated`; completion/publication pending current МДП.
+- Lifecycle: `completed`; product commit `f261d0f` integrated in `main` and published to
+  `origin/main`; independent re-review `GO`.
 - Goal: deliver an installable offline Android MVP where a finger/stylus stroke is decomposed into
   the same Fourier vectors and animated as an actual endpoint trace.
 

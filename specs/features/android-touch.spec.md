@@ -1,6 +1,6 @@
 # Feature SPEC — Android Touch-to-Epicycles
 
-Статус: Принята, v0.2; реализация FS-031 validated
+Статус: Принята, v0.2; реализация FS-031 completed and published
 
 ## Назначение и область
 

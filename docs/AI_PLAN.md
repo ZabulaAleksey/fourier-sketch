@@ -2,12 +2,14 @@
 
 ## Текущая цель
 
-Реализовать проверяемый FS-031 offline Android touch-to-epicycles vertical slice.
+Зафиксировать завершённый FS-031 offline Android touch-to-epicycles vertical slice без выбора
+следующего stage.
 
 ## Активный stage
 
 - Stage ID: `FS-031`
-- Lifecycle: `validated`, awaiting current permitted МДП on `feature/fs-031-android-mvp`.
+- Lifecycle: `completed`; product commit `f261d0f` integrated in `main` and published to
+  `origin/main`; feature branch deleted.
 - Prerequisites: completed FS-023/FS-008/FS-005 and accepted
   `specs/features/android-touch.spec.md`.
 - Entry evidence: Android SDK Platform 37, build-tools 36.0.0 and booted AVD
@@ -29,6 +31,7 @@
 - FS-030 commit `6f8a30b` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-032 commit `1c18ff2` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
 - FS-033 commit `ab20fcc` интегрирован в `main` и опубликован в `origin/main`; ветка stage удалена.
+- FS-031 product commit `f261d0f` интегрирован в `main` и опубликован в `origin/main`.
 
 ## План выполнения
 
@@ -36,9 +39,10 @@
 2. [completed] Реализовать bounded touch capture, parity-proven Fourier core и epicycle state.
 3. [completed] Реализовать Compose canvas, controls, lifecycle и accessibility.
 4. [completed] Выполнить unit/component/instrumented/live-device gates и измерения.
-5. [in_progress] Синхронизировать документы, independent review, commit и разрешённый МДП.
+5. [completed] Синхронизировать документы, independent review, commit и разрешённый МДП.
 
 ## Handoff
 
-FS-031 implementation и required gates validated. Store signing/release отсутствуют. Headless AVD
-frame profile записан как неудовлетворительный и не используется для smoothness claim.
+FS-031 implementation и required gates completed; product commit `f261d0f` integrated in `main` and
+published to `origin/main`. Store signing/release отсутствуют. Headless AVD frame profile записан
+как неудовлетворительный и не используется для smoothness claim. Следующий stage не выбран.
