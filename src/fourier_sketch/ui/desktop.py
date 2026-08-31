@@ -46,12 +46,15 @@ from PySide6.QtWidgets import (
 
 from fourier_sketch.application import (
     AnimationExportPlan,
+    BuildUpSnapshot,
+    BuildUpState,
     CaptureState,
     EpicycleFrame,
     EpicycleTimeline,
     ExportFormat,
     FreehandCapture,
     FrequencySoloSession,
+    HarmonicBuildUpSession,
     ImageMvpConfig,
     ImageMvpController,
     ImageMvpSnapshot,
@@ -64,7 +67,7 @@ from fourier_sketch.application import (
     safe_display_basename,
     validate_local_path,
 )
-from fourier_sketch.domain import Curve, DomainValidationError, Point2D
+from fourier_sketch.domain import Curve, DomainValidationError, Point2D, SpectrumOrdering
 from fourier_sketch.imaging import ImagePreprocessingOptions
 from fourier_sketch.presentation import Translator, resolve_locale
 from fourier_sketch.presentation.harmonic_inspector import (
@@ -746,6 +749,14 @@ class DesktopWindow(QMainWindow):
         self._solo = FrequencySoloSession()
         self._solo_mode: QLabel
         self._solo_action: QPushButton
+        self._build_up = HarmonicBuildUpSession()
+        self._build_up_snapshot: BuildUpSnapshot | None = None
+        self._build_up_restore_frequency: int | None = None
+        self._build_up_mode: QLabel
+        self._build_up_action: QPushButton
+        self._build_up_ordering: QComboBox
+        self._build_up_target: QSpinBox
+        self._build_up_dwell: QSpinBox
         self._baseline_frame: EpicycleFrame | None = None
         self._current_frame: EpicycleFrame | None = None
         self._status = QLabel()
@@ -941,6 +952,53 @@ class DesktopWindow(QMainWindow):
                 value,
             )
         inspector_layout.addLayout(inspector_form)
+        build_up = QGroupBox(self._translator.text("desktop.build_up.title"))
+        build_up.setAccessibleName(self._translator.text("desktop.build_up.title"))
+        build_up_layout = QVBoxLayout(build_up)
+        self._build_up_mode = QLabel(self._translator.text("desktop.build_up.inactive"))
+        self._build_up_mode.setWordWrap(True)
+        self._build_up_mode.setAccessibleName(
+            self._translator.text("desktop.build_up.mode")
+        )
+        build_up_layout.addWidget(self._build_up_mode)
+        build_up_form = QFormLayout()
+        self._build_up_ordering = QComboBox()
+        for ordering in SpectrumOrdering:
+            if ordering is SpectrumOrdering.EXPLICIT:
+                continue
+            self._build_up_ordering.addItem(
+                self._translator.text(f"desktop.build_up.ordering.{ordering.value}"),
+                ordering.value,
+            )
+        self._build_up_target = QSpinBox()
+        self._build_up_target.setRange(1, 1)
+        self._build_up_dwell = QSpinBox()
+        self._build_up_dwell.setRange(100, 5000)
+        self._build_up_dwell.setSingleStep(100)
+        self._build_up_dwell.setValue(500)
+        build_up_form.addRow(
+            self._translator.text("desktop.build_up.ordering"),
+            self._build_up_ordering,
+        )
+        build_up_form.addRow(
+            self._translator.text("desktop.build_up.target"),
+            self._build_up_target,
+        )
+        build_up_form.addRow(
+            self._translator.text("desktop.build_up.dwell"),
+            self._build_up_dwell,
+        )
+        build_up_layout.addLayout(build_up_form)
+        self._build_up_action = QPushButton(
+            self._translator.text("desktop.build_up.start")
+        )
+        self._build_up_action.setAccessibleName(
+            self._translator.text("desktop.build_up.start")
+        )
+        self._build_up_action.setEnabled(False)
+        self._build_up_action.clicked.connect(self._toggle_build_up)
+        build_up_layout.addWidget(self._build_up_action)
+        inspector_layout.addWidget(build_up)
         layout.addWidget(inspector)
         self.setCentralWidget(root)
         self._source.completed.connect(self._build_freehand)
@@ -1036,7 +1094,7 @@ class DesktopWindow(QMainWindow):
 
     def _set_visibility(self, field: str, enabled: bool) -> None:
         timeline = self._timeline
-        if timeline is None:
+        if timeline is None or self._build_up.active:
             return
         try:
             self._apply_frame(timeline.set_visibility(**{field: enabled}))
@@ -1082,6 +1140,9 @@ class DesktopWindow(QMainWindow):
             self._set_status(self._translator.text("desktop.status.runtime"))
             return
         self._solo.clear()
+        self._build_up.clear()
+        self._build_up_snapshot = None
+        self._build_up_restore_frequency = None
         self._reset_harmonic_inspector()
         self._timeline = timeline
         self._canvas.set_reference_view_size(reference_view_size)
@@ -1092,6 +1153,8 @@ class DesktopWindow(QMainWindow):
             toggle.setEnabled(True)
             toggle.blockSignals(blocked)
         self._export_nav.setEnabled(True)
+        self._build_up_target.setRange(1, timeline.maximum_harmonics)
+        self._build_up_target.setValue(timeline.harmonic_count)
         self._export_format_changed()
         speed = self._speed.value() / _SPEED_SCALE
         self._apply_frame(timeline.set_speed(speed))
@@ -1099,13 +1162,17 @@ class DesktopWindow(QMainWindow):
     def _export_format_changed(self) -> None:
         export_format = self._selected_export_format()
         is_mp4 = export_format is ExportFormat.MP4
-        solo_active = self._solo.active
+        analysis_active = self._solo.active or self._build_up.active
         self._export_action.setEnabled(
-            self._timeline is not None and not is_mp4 and not solo_active
+            self._timeline is not None and not is_mp4 and not analysis_active
         )
         self._export_frames.setEnabled(export_format is ExportFormat.GIF)
         self._export_duration.setEnabled(export_format is ExportFormat.GIF)
-        if solo_active:
+        if self._build_up.active:
+            self._export_action.setToolTip(
+                self._translator.text("desktop.build_up.export_disabled")
+            )
+        elif self._solo.active:
             self._export_action.setToolTip(
                 self._translator.text("desktop.solo.export_disabled")
             )
@@ -1118,8 +1185,12 @@ class DesktopWindow(QMainWindow):
     def _choose_export(self) -> None:
         timeline = self._timeline
         export_format = self._selected_export_format()
-        if timeline is None or self._solo.active:
-            if self._solo.active:
+        if timeline is None or self._solo.active or self._build_up.active:
+            if self._build_up.active:
+                self._set_status(
+                    self._translator.text("desktop.build_up.export_disabled")
+                )
+            elif self._solo.active:
                 self._set_status(self._translator.text("desktop.solo.export_disabled"))
             return
         if export_format is ExportFormat.MP4:
@@ -1248,13 +1319,22 @@ class DesktopWindow(QMainWindow):
         self._baseline_frame = frame
         try:
             display_frame = self._solo.project(frame, source=self._timeline)
+            build_snapshot = self._build_up.project(frame, source=self._timeline)
+            if build_snapshot is not None:
+                display_frame = build_snapshot.frame
+                self._selected_harmonic_frequency = (
+                    build_snapshot.metrics.latest_frequency
+                )
         except DomainValidationError:
             self._solo.clear()
+            self._build_up.clear()
             display_frame = frame
+            build_snapshot = None
             self._set_status(self._translator.text("desktop.status.invalid_control"))
+        self._build_up_snapshot = build_snapshot
         self._current_frame = display_frame
         self._canvas.set_frame(display_frame)
-        self._sync_harmonic_inspector(frame)
+        self._sync_harmonic_inspector(display_frame if build_snapshot is not None else frame)
         for field, toggle in self._visibility_toggles.items():
             blocked = toggle.blockSignals(True)
             toggle.setChecked(bool(getattr(frame.visibility, field)))
@@ -1265,6 +1345,7 @@ class DesktopWindow(QMainWindow):
         self._harmonics.setValue(frame.selection.coefficient_count)
         self._harmonics.blockSignals(harmonics_blocked)
         self._sync_solo_controls(frame)
+        self._sync_build_up_controls(build_snapshot)
         self._set_status(
             self._translator.text(
                 "status.summary",
@@ -1365,7 +1446,7 @@ class DesktopWindow(QMainWindow):
         )
 
     def _select_harmonic(self, frequency: int | None) -> None:
-        if self._solo.active:
+        if self._solo.active or self._build_up.active:
             return
         self._selected_harmonic_frequency = frequency
         frame = self._current_frame
@@ -1413,6 +1494,7 @@ class DesktopWindow(QMainWindow):
 
     def _sync_solo_controls(self, _frame: EpicycleFrame) -> None:
         active = self._solo.active
+        build_active = self._build_up.active
         frequency = self._solo.frequency
         if active and frequency is not None:
             action_text = self._translator.text("desktop.solo.exit")
@@ -1424,20 +1506,130 @@ class DesktopWindow(QMainWindow):
             self._solo_mode.setText(self._translator.text("desktop.solo.inactive"))
         self._solo_action.setText(action_text)
         self._solo_action.setAccessibleName(action_text)
-        self._solo_action.setEnabled(active or self._selected_harmonic_frequency is not None)
-        self._harmonics.setEnabled(not active)
-        self._inspector_list.setEnabled(not active)
-        self._export_nav.setEnabled(self._timeline is not None and not active)
+        self._solo_action.setEnabled(
+            not build_active and (active or self._selected_harmonic_frequency is not None)
+        )
+        self._harmonics.setEnabled(not active and not build_active)
+        self._inspector_list.setEnabled(not active and not build_active)
+        self._export_nav.setEnabled(
+            self._timeline is not None and not active and not build_active
+        )
         self._export_nav.setToolTip(
-            self._translator.text("desktop.solo.export_disabled") if active else ""
+            self._translator.text("desktop.build_up.export_disabled")
+            if build_active
+            else self._translator.text("desktop.solo.export_disabled")
+            if active
+            else ""
         )
         self._export_format_changed()
+
+    def _toggle_build_up(self) -> None:
+        timeline = self._timeline
+        baseline = self._baseline_frame
+        if timeline is None or baseline is None:
+            return
+        try:
+            if self._build_up.active:
+                self._build_up.exit(baseline, source=timeline)
+                restore = self._build_up_restore_frequency
+                self._build_up_restore_frequency = None
+                self._selected_harmonic_frequency = (
+                    restore if restore in baseline.selection.frequencies else None
+                )
+                self._last_tick = monotonic()
+                if timeline.state is TimelineState.RUNNING:
+                    self._timer.start()
+                else:
+                    self._timer.stop()
+            else:
+                if self._solo.active:
+                    raise DomainValidationError("Build-Up cannot start during Solo")
+                self._build_up_restore_frequency = self._selected_harmonic_frequency
+                ordering = SpectrumOrdering(str(self._build_up_ordering.currentData()))
+                snapshot = self._build_up.enter(
+                    baseline,
+                    spectrum=timeline.complete_spectrum,
+                    source=timeline,
+                    ordering=ordering,
+                    target_count=self._build_up_target.value(),
+                    dwell_seconds=self._build_up_dwell.value() / 1000.0,
+                )
+                self._selected_harmonic_frequency = snapshot.metrics.latest_frequency
+                self._last_tick = monotonic()
+                if snapshot.state is BuildUpState.RUNNING:
+                    self._timer.start()
+                else:
+                    self._timer.stop()
+            self._apply_frame(baseline)
+        except (DomainValidationError, ValueError):
+            self._set_status(self._translator.text("desktop.build_up.invalid"))
+
+    def _sync_build_up_controls(self, snapshot: BuildUpSnapshot | None) -> None:
+        active = self._build_up.active
+        solo_active = self._solo.active
+        if active and snapshot is not None:
+            action_text = self._translator.text("desktop.build_up.exit")
+            self._build_up_mode.setText(
+                self._translator.text(
+                    "desktop.build_up.active",
+                    state=snapshot.state,
+                    ordering=self._translator.text(
+                        f"desktop.build_up.ordering.{snapshot.ordering.value}"
+                    ),
+                    current=snapshot.metrics.current_count,
+                    target=snapshot.metrics.target_count,
+                    frequency=snapshot.metrics.latest_frequency,
+                    dwell=snapshot.dwell_seconds,
+                    energy=snapshot.metrics.retained_energy_ratio,
+                    rmse=snapshot.metrics.reconstruction_metrics.rmse,
+                )
+            )
+        else:
+            action_text = self._translator.text("desktop.build_up.start")
+            self._build_up_mode.setText(
+                self._translator.text("desktop.build_up.inactive")
+            )
+        self._build_up_action.setText(action_text)
+        self._build_up_action.setAccessibleName(action_text)
+        self._build_up_action.setEnabled(active or (self._timeline is not None and not solo_active))
+        configuration_enabled = not active and not solo_active and self._timeline is not None
+        self._build_up_ordering.setEnabled(configuration_enabled)
+        self._build_up_target.setEnabled(configuration_enabled)
+        self._build_up_dwell.setEnabled(configuration_enabled)
+        self._speed.setEnabled(not active)
+        for toggle in self._visibility_toggles.values():
+            toggle.setEnabled(self._timeline is not None and not active)
 
     def _timeline_action(self, action: str, value: float | int | None = None) -> None:
         timeline = self._timeline
         if timeline is None:
             return
         try:
+            if self._build_up.active:
+                baseline = self._baseline_frame
+                if baseline is None:
+                    return
+                if action == "play":
+                    self._build_up.play()
+                    self._last_tick = monotonic()
+                    if self._build_up.state is BuildUpState.RUNNING:
+                        self._timer.start()
+                elif action == "pause":
+                    self._build_up.pause()
+                    self._timer.stop()
+                elif action == "restart":
+                    self._build_up.restart()
+                    self._timer.stop()
+                elif action == "advance":
+                    if value is None:
+                        return
+                    self._build_up.advance(float(value))
+                    if self._build_up.state is BuildUpState.COMPLETED:
+                        self._timer.stop()
+                else:
+                    return
+                self._apply_frame(baseline)
+                return
             result = {
                 "play": timeline.play,
                 "pause": timeline.pause,
@@ -1451,7 +1643,7 @@ class DesktopWindow(QMainWindow):
                 else:
                     self._timer.stop()
             elif action == "harmonics":
-                if value is None or self._solo.active:
+                if value is None or self._solo.active or self._build_up.active:
                     return
                 next_frame = timeline.set_harmonic_count(int(value))
             elif action == "speed":
@@ -1470,6 +1662,15 @@ class DesktopWindow(QMainWindow):
 
     def _tick(self) -> None:
         timeline = self._timeline
+        if self._build_up.active:
+            if self._build_up.state is not BuildUpState.RUNNING:
+                self._timer.stop()
+                return
+            now = monotonic()
+            delta = now - self._last_tick
+            self._last_tick = now
+            self._timeline_action("advance", delta)
+            return
         if timeline is None or timeline.state is TimelineState.PAUSED:
             self._timer.stop()
             return
@@ -1491,7 +1692,14 @@ class DesktopWindow(QMainWindow):
         if event.key() == Qt.Key.Key_Space:
             timeline = self._timeline
             if timeline is not None:
-                action = "pause" if timeline.state.value == "running" else "play"
+                if self._build_up.active:
+                    action = (
+                        "pause"
+                        if self._build_up.state is BuildUpState.RUNNING
+                        else "play"
+                    )
+                else:
+                    action = "pause" if timeline.state.value == "running" else "play"
                 self._timeline_action(action)
             event.accept()
             return

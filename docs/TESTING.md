@@ -291,6 +291,14 @@ Solo/Exit Solo control, verify the explicit mode label, disabled harmonic/export
 play/pause/time/speed behavior and exact baseline snapshot restoration. Actual Qt offscreen E2E may
 prove the live user-to-canvas path, but remains distinct from visible Windows GUI/DPI evidence.
 
+FS-026 unit tests cover bounded dwell transitions, no-skipped K, pause/resume/restart/completed,
+invalid target/ordering/source and transactional projection. Property/integration tests require every
+selection to equal the deterministic first-K prefix, endpoint/reconstruction/retained-energy/RMSE
+parity and per-K singleton trace without baseline mutation. Component/actual-Qt offscreen E2E drive
+ordering/target/dwell, context-sensitive Play/Pause/Restart, inspector refresh, explicit metrics and
+Solo/harmonic/export gating. Offscreen remains functional evidence, not manual visible GUI/DPI or
+screen-reader evidence.
+
 FS-031 adds touch/lifecycle unit/component tests, Python-reference coefficient/endpoint parity,
 installed Android E2E and manifest/frame-time/memory/package-size evidence.
 

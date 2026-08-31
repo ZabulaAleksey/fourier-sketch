@@ -156,6 +156,12 @@ class EpicycleTimeline:
         return min(self._spectrum.sample_count, MAX_INTERACTIVE_HARMONICS)
 
     @property
+    def complete_spectrum(self) -> FourierSpectrum:
+        """Expose the immutable source spectrum to bounded analysis projections."""
+
+        return self._spectrum
+
+    @property
     def maximum_speed(self) -> float:
         return MAX_SPEED
 

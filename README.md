@@ -43,7 +43,10 @@ Fourier coefficients, chain, endpoint, timeline, trace или animation state.
 `FS-025` добавляет явный single-frequency Solo: выбранный signed `k` становится фактическим
 одночастотным analysis active set для canvas, reconstruction и отдельного Solo trace, а baseline
 timeline/selection/K остаётся неизменным и точно раскрывается при выходе. Во время Solo harmonic
-count и export блокируются; multi-select/build-up остаются отдельным FS-026.
+count и export блокируются. `FS-026` добавляет отдельный Harmonic Build-Up: пользователь выбирает
+deterministic ordering, target `N` и bounded dwell, после чего canvas/inspector показывают actual
+first-K sequence `1..N` с retained energy/RMSE. Play/Pause/Restart управляют только этой sequence,
+а baseline timeline не меняется и точно раскрывается при Exit; Solo/export/manual K временно gated.
 
 ## Целевой pipeline
 

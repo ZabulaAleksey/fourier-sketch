@@ -72,6 +72,19 @@ smaller window heights it remains usable instead of overlapping the source contr
 - Явный текст `SOLO — k=…` и состояние кнопки являются non-color cues. Zoom/pan и visibility
   продолжают быть presentation controls и не входят в Solo state.
 
+## Harmonic Build-Up FS-026
+
+- Inspector panel получает Build-Up mode label, ordering combo, target N, dwell milliseconds и
+  доступную кнопку `Start Build-Up` / `Exit Build-Up`. Start показывает `K=1` и state `running`.
+- Existing Play/Pause context-sensitive resume/pause sequence; Restart возвращает `K=1`, очищает
+  dwell/trace и оставляет sequence paused. Baseline timeline time/state/trace не изменяются.
+- Canvas и inspector показывают exact first-K set выбранного ordering. Label отображает `K/N`,
+  latest signed `k`, retained energy и measured RMSE; UI не обещает monotone RMSE.
+- Каждый K имеет singleton mode-local trace, не рисуемый desktop canvas. За один QTimer tick
+  выполняется максимум один K-step; smooth interpolation отсутствует.
+- Build-Up и Solo mutually exclusive; harmonic slider, mode configuration и export disabled до Exit.
+  Exit раскрывает exact latest baseline object, новый timeline очищает analysis session.
+
 ## Diagnostic FS-006 — фактический baseline
 
 - resizable Matplotlib canvas; manual layout `10×8`, controls под canvas, headless output `8×8`;

@@ -7,7 +7,11 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from fourier_sketch.application import EpicycleTimeline, FrequencySoloSession
+from fourier_sketch.application import (
+    EpicycleTimeline,
+    FrequencySoloSession,
+    HarmonicBuildUpSession,
+)
 from fourier_sketch.domain import Curve, Point2D, SpectrumOrdering
 from fourier_sketch.math import (
     build_epicycle_chain,
@@ -113,3 +117,39 @@ def test_solo_active_set_endpoint_matches_selected_coefficient(
     )
     assert reconstructed == pytest.approx(reconstruct_samples(projected.selection), abs=ABS_TOL)
     assert projected.trace[-1] == projected.chain.endpoint
+
+
+@given(complex_samples, st.sampled_from(tuple(SpectrumOrdering)[:-1]))
+def test_build_up_every_step_is_exact_ordered_prefix(
+    samples: tuple[complex, ...],
+    ordering: SpectrumOrdering,
+) -> None:
+    spectrum = fft_dft(samples)
+    curve = Curve(tuple(Point2D(value.real, value.imag) for value in samples), closed=True)
+    timeline = EpicycleTimeline(
+        spectrum,
+        curve,
+        harmonic_count=len(samples),
+        ordering=SpectrumOrdering.AMPLITUDE_DESCENDING,
+    )
+    baseline = timeline.snapshot()
+    session = HarmonicBuildUpSession()
+    session.enter(
+        baseline,
+        spectrum=spectrum,
+        source=timeline,
+        ordering=ordering,
+        target_count=len(samples),
+        dwell_seconds=0.1,
+    )
+
+    for count in range(1, len(samples) + 1):
+        snapshot = session.project(baseline, source=timeline)
+        assert snapshot is not None
+        assert snapshot.frame.selection == select_first(spectrum, count, ordering)
+        expected = reconstruct_at(snapshot.frame.selection, baseline.chain.time)
+        actual = complex(snapshot.frame.chain.endpoint.x, snapshot.frame.chain.endpoint.y)
+        assert actual == pytest.approx(expected, abs=ABS_TOL)
+        assert timeline.snapshot() == baseline
+        if count < len(samples):
+            session.advance(0.1)

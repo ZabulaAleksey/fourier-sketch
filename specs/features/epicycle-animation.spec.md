@@ -56,6 +56,15 @@ reconstruction/chain formulas при тех же `time` и `origin`. Его mode
 baseline selection, reconstruction, chain и trace ledger не меняются. Выход возвращает текущий
 baseline frame без restore-реконструкции. Multi-frequency sequence остаётся FS-026.
 
+### EP-FR-009 — Deterministic first-K Build-Up
+
+Build-Up analysis формирует `K=1..N` как exact prefixes одного выбранного non-explicit
+`SpectrumOrdering`. Каждый immutable display frame использует canonical reconstruction и chain при
+baseline `time/origin`; retained energy и reconstruction RMSE вычисляются для того же selection.
+Изменение K начинает новый mode-local trace, а одинаковое K/time не добавляет точку. Complete
+spectrum и baseline frame/trace не мутируются; ordering не создаёт необоснованного error-monotonicity
+claim. Target, dwell и trace bounded существующими interactive/resource limits.
+
 ## Behavior contracts
 
 ### BH-EPICYCLE-001
@@ -82,7 +91,9 @@ Play/pause/restart меняют timeline предсказуемо; restart оч�
 - EP-AC-006: live freehand E2E доказывает drawing → endpoint trace path.
 - EP-AC-007: property/component tests доказывают `(k,)` endpoint/reconstruction parity, Solo trace
   provenance, отсутствие same-time duplicates и точное раскрытие нетронутого baseline frame.
+- EP-AC-008: property/integration tests доказывают first-K prefix/endpoint/metrics parity для всех
+  supported orderings, reset trace на K transition и отсутствие baseline mutation.
 
 ## Планируемая трассировка
 
-Stages `FS-005`–`FS-008`, `FS-018`, `FS-021`, `FS-022`, `FS-025`.
+Stages `FS-005`–`FS-008`, `FS-018`, `FS-021`, `FS-022`, `FS-025`, `FS-026`.

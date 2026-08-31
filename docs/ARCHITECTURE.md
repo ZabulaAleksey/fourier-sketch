@@ -318,6 +318,20 @@ baseline timeline и только затем применяет analysis project
 session; явный owner token не позволяет продолжить session на другом timeline даже при совпадающих
 Curve/coefficient values. Multi-select и ordered build-up принадлежат отдельному FS-026 contract.
 
+## Harmonic Build-Up boundary (FS-026)
+
+`application.harmonic_build_up` владеет bounded state machine и analysis projection над immutable
+baseline `EpicycleFrame` и complete immutable `FourierSpectrum`. Session переиспользует canonical
+`select_first`, `reconstruct_samples`, `build_epicycle_chain`, `retained_energy_ratio` и
+`reconstruction_metrics`; `EpicycleTimeline` предоставляет только read-only spectrum provenance.
+Required source-owner identity запрещает продолжить mode на другом timeline.
+
+Desktop reuse existing QTimer: при активном mode tick продвигает только один bounded dwell step и
+не меняет baseline timeline. Play/Pause/Restart context-sensitive к Build-Up; Exit раскрывает exact
+latest baseline object и возобновляет обычные timeline ticks без catch-up. K transition сбрасывает
+только mode-local trace. Solo, manual K, configuration и export gated как взаимоисключающие policies.
+No second timer, coefficient mutation, smooth interpolation or FS-030 lesson orchestration.
+
 ## i18n/l10n boundary
 
 Первая user-facing surface использует resource keys и locale resolver. Production locale и

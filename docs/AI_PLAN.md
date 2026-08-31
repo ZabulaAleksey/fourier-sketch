@@ -2,16 +2,16 @@
 
 ## Текущая цель
 
-Реализовать отдельный проверяемый FS-025 Frequency Solo slice поверх завершённого Harmonic Inspector:
-явно изолировать выбранную гармонику для анализа и безопасно восстанавливать предыдущий active set.
+Реализовать отдельный проверяемый FS-026 Harmonic Build-Up Animation slice поверх завершённых
+inspector/Solo и существующей deterministic coefficient ordering.
 
 ## Активный stage
 
-- Stage ID: `FS-025`
-- Lifecycle: `completed`; automated gates PASS, independent re-review GO, integrated and published.
-- Prerequisites: FS-024 and FS-003 are `completed` and published in `origin/main`.
-- Contract: Solo has explicit analysis semantics, keeps the complete spectrum immutable, derives the
-  visible/active contribution from stable frequency IDs and restores the exact pre-solo set on exit.
+- Stage ID: `FS-026`
+- Lifecycle: `completed`; all automated gates PASS and independent review GO, awaiting MDP.
+- Prerequisites: FS-024, FS-004 and FS-021 are `completed` and published in `origin/main`.
+- Contract: build-up must use an explicit deterministic order and bounded animation state without
+  mutating the complete Fourier spectrum or silently inheriting FS-025 Solo semantics.
 
 ## Integration state
 
@@ -23,14 +23,13 @@
 
 ## План выполнения
 
-1. [completed] Зафиксировать FS-025 requirement IDs и explicit Solo semantics/restore/failure
-   contract до production code.
-2. [completed] Реализовать bounded single-frequency Solo поверх inspector selection без FS-026 build-up
-   и без mutation/export complete spectrum.
-3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review,
-   documentation synchronization и разрешённый МДП.
+1. [completed] Зафиксировать FS-026 ordering, timing, controls, restore и failure contract до code.
+2. [completed] Реализовать bounded Harmonic Build-Up без FS-027+ и без изменения Fourier math.
+3. [completed] Выполнить unit/component/live desktop E2E, full/static/overlay gates, independent review
+   и documentation synchronization.
+4. [in_progress] Создать атомарный commit и выполнить разрешённый МДП.
 
 ## Handoff
 
-FS-025 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующий отдельный stage —
-FS-026; не смешивать его scope с уже опубликованным FS-025.
+FS-026 completed и validated на рабочей ветке; следующий шаг — атомарный commit и разрешённый MDP.
+FS-027/FS-030/mobile/basis scope в этот slice не добавлялся.

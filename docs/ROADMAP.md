@@ -32,13 +32,16 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 | `FS-022` | Data/image/GIF and capability-gated MP4 export | `completed` |
 | `FS-023` | Numerical, performance, cancellation and source-package hardening | `completed` |
 | `FS-024` | Read-only frequency-keyed Harmonic Inspector | `completed` |
+| `FS-025` | Frequency Solo | `completed` |
+| `FS-026` | Harmonic Build-Up Animation | `completed` |
 
 ## Текущий этап
 
 `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`. Selected record `FS-024`
 Harmonic Inspector завершён, интегрирован в `main` и опубликован в `origin/main`; independent review
-GO. `FS-025` Frequency Solo завершён, интегрирован в `main` и опубликован в `origin/main`; более
-поздние optional/mobile stages ещё не начаты.
+GO. `FS-025` Frequency Solo завершён, интегрирован в `main` и опубликован в `origin/main`; selected
+record `FS-026` Harmonic Build-Up Animation завершён на рабочей ветке: automated gates PASS,
+independent review GO, MDP ожидается. Более поздние stages не начаты.
 
 ## Image-to-curve pipeline
 
@@ -55,8 +58,8 @@ GO. `FS-025` Frequency Solo завершён, интегрирован в `main`
 
 ## Optional extensions
 
-Эти stages не являются обязательными для milestone `FS-023`: `FS-025` завершён и опубликован, остальные
-записи остаются `planned`.
+Эти stages не являются обязательными для milestone `FS-023`: `FS-025` опубликован, `FS-026`
+завершён и ожидает MDP, остальные записи остаются `planned`.
 
 | Stage | Результат |
 |---|---|

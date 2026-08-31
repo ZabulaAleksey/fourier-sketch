@@ -61,6 +61,15 @@ from .freehand import (
     build_freehand_timeline,
 )
 from .frequency_solo import FrequencySoloSession
+from .harmonic_build_up import (
+    DEFAULT_BUILD_UP_DWELL_SECONDS,
+    MAX_BUILD_UP_DWELL_SECONDS,
+    MIN_BUILD_UP_DWELL_SECONDS,
+    BuildUpMetrics,
+    BuildUpSnapshot,
+    BuildUpState,
+    HarmonicBuildUpSession,
+)
 from .image_mvp import (
     ImageMvpConfig,
     ImageMvpController,
@@ -91,6 +100,7 @@ from .skeletonization import (
 )
 
 __all__ = [
+    "DEFAULT_BUILD_UP_DWELL_SECONDS",
     "DEFAULT_CONTOUR_HARMONICS",
     "DEFAULT_CONTOUR_SAMPLES",
     "DEFAULT_FREEHAND_HARMONICS",
@@ -98,12 +108,17 @@ __all__ = [
     "DEFAULT_ROUTE_HARMONICS",
     "DEFAULT_ROUTE_SAMPLES",
     "EXPORT_SCHEMA_VERSION",
+    "MAX_BUILD_UP_DWELL_SECONDS",
     "MAX_CAPTURE_POINTS",
     "MAX_GIF_FRAMES",
     "MAX_GIF_FRAME_DURATION_MS",
+    "MIN_BUILD_UP_DWELL_SECONDS",
     "MIN_GIF_FRAMES",
     "MIN_GIF_FRAME_DURATION_MS",
     "AnimationExportPlan",
+    "BuildUpMetrics",
+    "BuildUpSnapshot",
+    "BuildUpState",
     "CaptureState",
     "DiscontinuitySpectrumComparison",
     "DiscontinuousFourierResult",
@@ -119,6 +134,7 @@ __all__ = [
     "FreehandCaptureSnapshot",
     "FreehandCurveResult",
     "FrequencySoloSession",
+    "HarmonicBuildUpSession",
     "ImageContourTimelineResult",
     "ImageMvpConfig",
     "ImageMvpController",

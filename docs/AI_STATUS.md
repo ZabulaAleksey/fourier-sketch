@@ -2,18 +2,32 @@
 
 ## Текущий этап
 
-- Last completed Stage ID: `FS-025`.
-- Active Stage ID: `FS-025`, lifecycle `completed`; automated gates PASS, independent re-review GO,
-  integrated in `main` and published to `origin/main`.
+- Last completed Stage ID: `FS-026` (validated on the working branch, awaiting MDP).
+- Active Stage ID: `FS-026`, lifecycle `completed`; automated gates PASS and independent review GO.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
   FS-025 Frequency Solo `517b7d8` is integrated in `main` and published to `origin/main`.
   No PR, release or deployment was performed.
-- Scope: только FS-025 Frequency Solo; FS-026+, FS-031 и FS-032 не начинались.
+- Scope: только FS-026 Harmonic Build-Up Animation; FS-027+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
   DPI/resize and physical-touch checklist; automated capture was not represented as that evidence.
+
+## FS-026 progress
+
+- `HarmonicBuildUpSession` проецирует immutable baseline в deterministic first-K sequence для всех
+  четырёх non-explicit orderings. Target ограничен `1..min(sample_count, 4096)`, dwell —
+  `0.10..5.00 s`; каждый transition показывает actual reconstruction/chain и singleton trace.
+- Build-Up Play/Pause/Restart/Completed используют existing QTimer только как dwell clock. Baseline
+  time/state/speed/selection/trace не меняются; Exit раскрывает exact baseline object и running
+  timeline возобновляется без catch-up. Inspector показывает latest signed `k`, retained energy и
+  measured RMSE; Solo, manual K, configuration и export gated до Exit.
+- Focused desktop regression: `52 passed`; full repository suite: `607 passed in 152.55s`. Frozen
+  sync checked 38 packages; Ruff, strict mypy (206 source files), diff and overlay PASS. Maximum
+  bounded `K=4096` one-step projection measured `0.094405s`, 4096 vectors, singleton trace.
+  Independent read-only review: `GO`, no P0/P1/P2. Actual-Qt offscreen evidence is not manual visible
+  Windows GUI/DPI or screen-reader evidence.
 
 ## FS-025 progress
 
@@ -212,13 +226,13 @@
 
 ## Следующее разумное действие
 
-FS-025 опубликован; отдельно выбрать FS-026 Harmonic Build-Up Animation. Не смешивать FS-030 или
-mobile/basis scope с этим следующим slice.
+Выполнить разрешённый MDP для validated FS-026, затем выбрать следующий отдельный stage. Не смешивать
+FS-027/FS-030 или mobile/basis scope с уже завершённым slice.
 
 ## Синхронизация документации
 
-- Для FS-025 обновлены README, desktop/epicycle SPEC, architecture/design/testing/traceability и
-  AI plan/status/roadmap/stage registry. Fourier math/domain, export schema, security/dependencies и
-  worker lifecycle не изменены.
+- Для FS-026 обновлены README, desktop/epicycle SPEC, architecture/design/testing/traceability и
+  AI plan/status/roadmap/stage registry. Fourier coefficients/domain, export schema, security,
+  dependencies и worker lifecycle не изменены.
 - `docs/LEARNING_LOG.md` проверен без изменений: stage не добавил новую повторно полезную
-  диагностику; Solo trace/provenance и baseline restore покрыты executable tests.
+  диагностику; Build-Up ordering/provenance, bounded dwell и baseline restore покрыты executable tests.

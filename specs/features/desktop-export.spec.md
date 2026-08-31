@@ -88,6 +88,26 @@ Solo activation/exit не ставит animation на паузу и не мен�
 пользователь может выбрать строку, включить и выключить Solo отдельной доступной кнопкой; color не
 является единственным носителем режима.
 
+### UI-FR-013 — Harmonic Build-Up analysis
+
+Ready desktop view позволяет выбрать один из существующих deterministic non-explicit orderings,
+target `N` в bounded interactive range и dwell `0.10..5.00 s`, затем запустить Build-Up. Start
+создаёт actual `K=1` frame и запускает дискретную последовательность. Пока mode активен, existing
+Play/Pause/Restart context-sensitive: они resume/pause sequence либо возвращают её к paused `K=1`;
+baseline timeline time/state/trace не продвигаются и не мутируются. Один существующий QTimer считает
+только dwell, не больше одного K-step за tick; smooth interpolation отложен.
+
+Каждый display frame использует exact first-K prefix выбранного ordering и фактические chain,
+reconstruction/endpoint. K transition начинает отдельный singleton endpoint trace; histories разных
+K не смешиваются. Mode label показывает ordering, `K/N`, latest signed `k`, dwell, retained energy и
+measured RMSE без monotonic-error claim. Inspector читает current Build-Up set и фокусирует latest k.
+
+Solo и Build-Up взаимоисключающие. Во время Build-Up harmonic slider, Solo activation, ordering/
+target/dwell editing и export navigation/action disabled. При `K=N` state становится `completed` и
+timer прекращает sequence. Exit раскрывает exact latest baseline object; если baseline timeline был
+running до входа, normal ticks возобновляются без catch-up. Новый timeline/source mismatch очищает
+mode. Invalid budget/dwell/ordering отклоняются transactionally.
+
 ### UI-FR-003 — State separation
 
 Widgets dispatch application commands и render immutable/explicit view state. Fourier/CV logic,
@@ -178,8 +198,12 @@ error и completed state. Missing translation показывает fallback stri
 - UI-AC-009: unit/property/component/live desktop E2E подтверждают single-frequency active-set
   chain/endpoint/reconstruction/Solo-trace parity, explicit accessible mode, empty/stale rejection,
   disabled baseline mutation/export controls и точное восстановление нетронутого timeline frame.
+- UI-AC-010: unit/property/integration/component/live desktop E2E подтверждают exact deterministic
+  prefixes `1..N`, no-skipped-step dwell/pause/restart/completed transitions, per-K trace reset,
+  measured metrics, accessible provenance, Solo/export/harmonic gating и exact baseline isolation.
 
 ## Планируемая трассировка
 
 Stages `FS-006`–`FS-008`, `FS-013`, `FS-021`–`FS-026`, `FS-030`; Behaviors
-`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`, `BH-SOLO-001`.
+`BH-DRAW-001`, `BH-ANIMATION-001`, `BH-EXPORT-001`, `BH-INSPECTOR-001`, `BH-SOLO-001`,
+`BH-BUILDUP-001`.
