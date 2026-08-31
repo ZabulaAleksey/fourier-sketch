@@ -3,8 +3,8 @@
 ## Текущий этап
 
 - Last completed Stage ID: `FS-029`.
-- Active Stage ID: `FS-029`, lifecycle `completed`; automated gates PASS and independent review GO
-  on the feature branch, integration/publication pending.
+- Active Stage ID: `FS-029`, lifecycle `completed`; automated gates PASS, independent review GO,
+  integrated in `main` and published to `origin/main`.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
   FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
@@ -13,6 +13,8 @@
   FS-027 property-contract correction `dea56ba` and Curve Simplification `15ea3f7` are integrated in
   `main` and published to `origin/main`.
   FS-028 Adaptive Sampling `2b127f7` is integrated in `main` and published to `origin/main`.
+  FS-029 Better Single-Stroke Optimization `5c9dcc0` is integrated in `main` and published to
+  `origin/main`; its feature branch was deleted.
   No PR, release or deployment was performed.
 - Scope: только FS-029 Better Single-Stroke Optimization; FS-030+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
@@ -283,8 +285,8 @@
 
 ## Следующее разумное действие
 
-Завершить разрешённый MDP для FS-029; затем выбрать FS-030 отдельным slice. Не смешивать
-mobile/basis scope с публикацией FS-029.
+FS-029 опубликован; следующим отдельным slice выбрать FS-030 Educational Mode. Не смешивать
+mobile/basis scope с этим следующим stage.
 
 ## Синхронизация документации
 

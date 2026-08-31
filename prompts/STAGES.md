@@ -1289,7 +1289,8 @@ completion claim. Evidence records environment/branch and caveats.
 
 ## FS-029 — Better Single-Stroke Optimization (Optional)
 
-- Lifecycle: `completed`; automated gates PASS, independent review GO, integration pending.
+- Lifecycle: `completed`; automated gates PASS, independent review GO, integrated in `main` and
+  published to `origin/main`.
 - Goal: improve added route cost over FS-017 baseline without weakening coverage/correctness.
 
 ### Dependency DAG & entry preconditions
