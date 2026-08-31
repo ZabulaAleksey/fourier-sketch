@@ -17,8 +17,8 @@ milestone: read-only выбор гармоники и отображение е�
 
 - `main` содержит завершённый FS-021, включая renderer-control `0faf8fc`, последующие UI commits
   `644fd82`/`7d53100`/`66ec1ef`/`7cf355d`, touch/rainbow `cb323e2` и fixed-center canvas
-  maintenance `02c026b`, а также завершённый FS-023 commit `a2d7a2c`.
-- `main` с FS-023 опубликован в `origin/main`. PR, release и deployment не выполнялись.
+  maintenance `02c026b`, завершённый FS-023 `a2d7a2c` и FS-024 `e480382`.
+- `main` с FS-024 опубликован в `origin/main`. PR, release и deployment не выполнялись.
 
 ## План выполнения
 
@@ -31,5 +31,5 @@ milestone: read-only выбор гармоники и отображение е�
 
 ## Handoff
 
-FS-024 завершён и validated locally в feature branch; МДП разрешён пользователем. После интеграции
-следующим отдельным stage выбрать FS-025, не смешивая его с FS-026/FS-030/mobile/basis scope.
+FS-024 завершён, интегрирован в `main` и опубликован в `origin/main`. Следующим отдельным stage
+выбрать FS-025, не смешивая его с FS-026/FS-030/mobile/basis scope.

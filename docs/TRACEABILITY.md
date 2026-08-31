@@ -21,7 +21,7 @@
 | `BH-DISCONTINUITY-001` | FR-DISCONTINUITY-001, IM-FR-007 | FS-016, FS-018 | piecewise conversion + discontinuous Fourier/render policy | unit + property + integration + component + E2E | verified locally through FS-018 |
 | `BH-EXPORT-001` | FR-EXPORT-001, EX-FR-001..003 | FS-022 | export adapters consume timeline | integration + E2E | verified locally: versioned JSON/CSV, PNG, bounded endpoint-metadata GIF, atomic/cancel/no-overwrite and explicit MP4 unavailable; independent review GO |
 | `BH-HARDENING-001` | NFR-NUM-001, NFR-UI-001, NFR-REPRO-001, NFR-PORT-001, NFR-HARD-001 | FS-023 | inverse-grid adapter + owned Qt worker lifecycle + evidence harness | parity + hardening benchmark + coverage + Unicode export + isolated wheel smoke | verified, integrated in `main` and published to `origin/main`; independent re-review GO |
-| `BH-INSPECTOR-001` | UI-FR-011, UI-AC-008 | FS-024 | pure presentation projection + frequency-keyed desktop list/canvas selection | unit + component + actual Qt offscreen E2E + full/static/overlay | validated locally; independent review GO |
+| `BH-INSPECTOR-001` | UI-FR-011, UI-AC-008 | FS-024 | pure presentation projection + frequency-keyed desktop list/canvas selection | unit + component + actual Qt offscreen E2E + full/static/overlay | verified, integrated in `main` and published to `origin/main`; independent review GO |
 | `BH-MOBILE-001` | FR-MOBILE-001, AND-FR-001..006 | FS-031 | Android touch/presentation adapter over parity-proven core | parity + component + device E2E | planned |
 
 ## Critical epicycle chain

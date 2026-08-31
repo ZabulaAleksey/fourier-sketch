@@ -6,8 +6,8 @@
 - Active Stage ID: `FS-024`, lifecycle `completed`; automated gates PASS and independent review GO.
 - Integration: touch/rainbow `cb323e2`, export `ceaa6c7` and fixed-center canvas maintenance
   `02c026b`, and FS-023 hardening `a2d7a2c` are integrated in `main` and published to `origin/main`.
-  FS-024 is validated locally in `feature/fs-024-harmonic-inspector`; merge/push follow the authorized
-  MDP workflow. No PR, release or deployment was performed.
+  FS-024 Harmonic Inspector `e480382` is also integrated in `main` and published to `origin/main`.
+  No PR, release or deployment was performed.
 - Scope: только завершённый FS-024 read-only Harmonic Inspector; FS-025+, FS-031 и FS-032 не начинались.
 - Blockers: FS-021 terminal blockers отсутствуют. Windows Graphics Capture still returns
   `SetIsBorderRequired failed (0x80004002)`, but the user independently confirmed the manual visible
@@ -192,8 +192,8 @@
 
 ## Следующее разумное действие
 
-FS-024 completed/validated locally; выполнить разрешённый МДП, затем отдельно выбрать FS-025
-Frequency Solo. Не начинать FS-026/FS-030 или mobile/basis stages в том же slice.
+FS-024 completed, integrated and published; отдельно выбрать FS-025 Frequency Solo. Не начинать
+FS-026/FS-030 или mobile/basis stages в том же slice.
 
 ## Синхронизация документации
 

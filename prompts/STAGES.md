@@ -1091,9 +1091,9 @@ completion claim. Evidence records environment/branch and caveats.
 
 - DAG: `FS-023 + FS-021 + FS-005 → FS-024`; hardened GUI and chain metadata completed.
 - Entry evidence: stable selection/hit-test mapping and accessible inspector design.
-- Current gate: implementation and terminal evidence complete in `feature/fs-024-harmonic-inspector`;
-  authorized MDP remains the integration action. Stable frequency identity, click/drag hit-test
-  separation and accessible list/panel are recorded in SPEC/architecture/design/testing.
+- Current gate: implementation commit `e480382` and terminal evidence are integrated in `main` and
+  published to `origin/main`. Stable frequency identity, click/drag hit-test separation and accessible
+  list/panel are recorded in SPEC/architecture/design/testing.
 
 ### Scope / non-goals / invariants
 
@@ -1123,7 +1123,7 @@ completion claim. Evidence records environment/branch and caveats.
 - Deferred: solo FS-025 and build-up FS-026.
 - Failure: off-canvas/stale selection clears explicitly, never shows wrong harmonic.
 - Docs: DESIGN/trace/status/plan.
-- Handoff: commit and perform the authorized MDP; stop FS-024 before selecting FS-025.
+- Handoff: product milestone committed, integrated and published; stop FS-024 before selecting FS-025.
 
 ## FS-025 — Frequency Solo (Optional)
 

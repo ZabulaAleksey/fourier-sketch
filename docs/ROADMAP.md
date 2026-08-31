@@ -36,8 +36,8 @@ Roadmap — краткий индекс. Полный scope/PASS contract каж
 ## Текущий этап
 
 `FS-023` завершён, интегрирован в `main` и опубликован в `origin/main`. Selected record `FS-024`
-Harmonic Inspector завершён и validated locally с independent review GO; разрешённый МДП ожидается.
-Более поздние optional/mobile stages ещё не начаты.
+Harmonic Inspector завершён, интегрирован в `main` и опубликован в `origin/main`; independent review
+GO. Более поздние optional/mobile stages ещё не начаты.
 
 ## Image-to-curve pipeline
 
