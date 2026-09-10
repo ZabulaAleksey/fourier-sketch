@@ -2,7 +2,7 @@
 
 ## Устойчивые факты
 
-- Repository: независимый product Git root `~/codex-workspace/fourier-sketch`.
+- Repository: независимый product Git root `${PROJECTS_ROOT}/fourier-sketch`.
 - Classification: `GREENFIELD`, full staged ДЕВ overlay.
 - Complexity: `COMPLEX`; mode: production-oriented staged development.
 - Current SDLC at bootstrap: specification + architecture.
