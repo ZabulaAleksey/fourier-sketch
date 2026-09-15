@@ -40,12 +40,9 @@ DoD FS-031 закрыт историческим terminal evidence; новый s
 
 ### Действие пользователя по state migration
 
-- `USER-FS-STAGES-INTEGRATION` — `PENDING`, condition: isolated
-  `feature/docs-stages-canonical` commit/push, source/target compatibility
-  и regression checks готовы. Действие: разрешить merge этой точной ветки
-  в `main` после review archived stage contracts и FS-031 evidence,
-  без изменения product code/tests. Ожидаемое evidence: clean ancestry,
-  GitHub default branch содержит только `docs/STAGES.md` из старых
-  state paths, canonical adapter выбирает `FS-031` и `completed` с NEXT
-  `await-explicit-stage-selection`. Это разблокирует единый state owner;
-  дальнейшее product planning требует отдельного выбора.
+- `USER-FS-STAGES-INTEGRATION` — `DONE`: пользователь разрешил merge
+  `feature/docs-stages-canonical`; `main` fast-forward до `27722cc` и
+  опубликован. GitHub read-back подтвердил только `docs/STAGES.md` из
+  четырёх state paths. Ruff, strict mypy и canonical adapter прошли;
+  full Python suite 729 PASS на том же tree до merge. FS-031 сохраняет
+  `completed`; NEXT ждёт явного выбора нового product stage.
