@@ -374,7 +374,7 @@ py -3 ~/.codex/tools/validate_project_overlay.py .
 
 - `specs/` — стабильные требования;
 - `docs/` — архитектура, математика, дизайн, безопасность, тестирование и состояние;
-- `prompts/STAGES.md` — единственный подробный каталог этапов;
+- `docs/STAGES.md` — единственный текущий этап/status/NEXT; прежний подробный catalog сохранён в `docs/notes/legacy-stage-contracts.md`;
 - `src/fourier_sketch/` — domain/math, imaging contracts/Pillow/OpenCV adapters, project-owned
   routing policy, application use cases, presentation resources, renderer/CLI;
 - `tests/` — smoke, unit, property, integration, component и live E2E executable contracts.

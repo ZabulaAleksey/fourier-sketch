@@ -7,7 +7,8 @@
 
 **Решение:** Создать GREENFIELD repository как полный ДЕВ / КАРКАС overlay. Stage `FS-000`
 содержит package/tooling/docs/smoke scaffold; первый product stage — `FS-001` и требует отдельного
-запуска. `prompts/STAGES.md` — единственный detailed stage source.
+запуска. На момент ADR-001 `prompts/STAGES.md` был detailed stage source;
+его live роль заменена ADR-034.
 
 **Рассмотренные альтернативы:** Сразу реализовать MVP; создать только README; копировать каждый
 prompt отдельным файлом.
@@ -630,3 +631,15 @@ React Native/Skia добавляет JS/native/NDK bridge без reuse суще�
 **Последствия:** `uv` остаётся владельцем Python graph, Gradle Wrapper — воспроизводимого Android
 graph. Cross-language drift блокируется parity tests; public signing/store redistribution требуют
 отдельного решения.
+
+## ADR-034 — docs/STAGES.md как единый live state owner
+
+**Статус:** принято для state-location migration.
+
+`docs/STAGES.md` выбирает один record, его status/evidence/blockers/NEXT.
+`docs/ROADMAP.md` остаётся индексом порядка; SPEC задают требования.
+Прежний 84 KiB catalog перемещён в `docs/notes/legacy-stage-contracts.md`
+как historical reference с recoverable Git parent/hash. Separate AI plan
+и AI status выводятся после переноса проверенных FS-031 facts. `completed`
+FS-031 не означает выбор следующего product stage или store release.
+Formal DEV bridge не создаётся одним docs path.

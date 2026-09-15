@@ -64,7 +64,7 @@ trace(t) = chain.endpoint(t) = Σ selected vectors(t) ≈ reconstruction(t)
 | package scaffold imports | `src/fourier_sketch/__init__.py` | `uv run pytest` | PASS — 1 smoke test |
 | dependency contract | `pyproject.toml`, `uv.lock` | frozen sync + lock check | PASS — 14 packages |
 | staged overlay | specs/docs/prompts | global overlay validator | PASS |
-| stage context selector | `AI_PLAN` → `STAGES` | unique-ID audit | PASS — 31 IDs, FS-001 unique |
+| stage context selector | `docs/STAGES.md` exact `FS-031` | canonical stage adapter | PASS — completed, checkpoint/evidence and NEXT valid; formal bridge absent |
 | portable context | repository source/docs | machine-path audit | PASS |
 | commit evidence | bootstrap implementation | Git commit | PASS — `878f724` |
 

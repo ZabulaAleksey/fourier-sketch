@@ -1,4 +1,12 @@
-# Detailed stage contracts — Fourier Sketch
+# Historical stage contracts — Fourier Sketch
+
+Archive прежнего `prompts/STAGES.md`, SHA256 исходного файла:
+`ad8aa462415c71eb9b80e07bf7d537bab5bedee7dad1e531c2702aba30574d3a`.
+Ниже сохранены уникальные прежние contract bytes/формулировки для
+review и rollback. Они не выбирают live stage, status или NEXT;
+current owner — `docs/STAGES.md`, requirements — accepted SPEC.
+
+## Прежний catalog (исторический текст)
 
 Этот файл — единственный подробный источник stages. SPEC определяет требуемое поведение,
 `docs/ROADMAP.md` — порядок, `docs/AI_PLAN.md` — один current/next slice. Перед stage implementation

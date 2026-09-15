@@ -1,7 +1,8 @@
 # Roadmap Fourier Sketch
 
-Roadmap — краткий индекс. Полный scope/PASS contract каждого этапа находится только в
-`prompts/STAGES.md`. Status подтверждается `docs/AI_STATUS.md`, а не этим списком.
+Roadmap — краткий индекс порядка. Текущий scope/status/PASS evidence находится в
+`docs/STAGES.md`; подробные прежние contracts сохранены в
+`docs/notes/legacy-stage-contracts.md` как historical reference, не status owner.
 
 ## Выполнено
 

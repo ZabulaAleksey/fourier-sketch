@@ -4,8 +4,9 @@
 
 `fourier-sketch` — поэтапный Python-проект для преобразования плоских кривых и
 контуров изображений в комплексное Fourier-представление и для визуализации
-head-to-tail epicycle chain. Проект наследует глобальные правила ДЕВ / КАРКАСА;
-этот файл содержит только project-specific delta.
+head-to-tail epicycle chain. Глобальный Codex router действует как user layer
+этой сессии; formal project DEV bridge отсутствует. Этот файл содержит
+project-specific instructions без заявления полного overlay activation.
 
 ## Канонический контекст
 
@@ -13,10 +14,10 @@ head-to-tail epicycle chain. Проект наследует глобальны�
 - архитектура и математика: `docs/ARCHITECTURE.md`, `docs/MATHEMATICS.md`;
 - UI/UX и безопасность: `docs/DESIGN.md`, `docs/SECURITY.md`;
 - тестовый контракт: `docs/TESTING.md`, трассировка — `docs/TRACEABILITY.md`;
-- подробные этапы: `prompts/STAGES.md`;
-- текущий slice и подтверждённый статус: `docs/AI_PLAN.md`, `docs/AI_STATUS.md`.
+- выбранный этап, текущий slice и подтверждённый статус: `docs/STAGES.md`;
+- прежние детальные stage contracts для reference: `docs/notes/legacy-stage-contracts.md`.
 
-Для stage-bound задачи прочитай только record с `Stage ID` из `docs/AI_PLAN.md`.
+Для stage-bound задачи прочитай только record с `Stage ID` из `docs/STAGES.md`.
 Не реализуй возможности будущих stages «заодно».
 
 ## Неподвижные инварианты проекта

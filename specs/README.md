@@ -11,5 +11,5 @@
 | `features/desktop-export.spec.md` | Принята, v0.1 | Desktop UI, i18n boundary и exports |
 | `features/android-touch.spec.md` | Принята, v0.1 | Offline Android touch input и epicycle animation |
 
-Требования имеют устойчивые IDs. `prompts/STAGES.md` определяет порядок реализации, но не
+Требования имеют устойчивые IDs. `docs/STAGES.md` определяет выбранный этап и status; `docs/ROADMAP.md` задаёт порядок, но не
 переопределяет SPEC. Planned path или test name в traceability не является evidence реализации.
